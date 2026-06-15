@@ -175,38 +175,38 @@ function HeroBackdrop() {
   );
 }
 
-function HeroTrader() {
+function HeroTraderBg() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
-      className="relative mx-auto w-full max-w-md lg:max-w-none"
+      initial={{ opacity: 0, scale: 1.05 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.2, ease: "easeOut" }}
+      className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[55%] overflow-hidden"
     >
       {/* Green 3D glow halos */}
-      <div className="absolute inset-0 -z-10 scale-110 rounded-full blur-3xl opacity-80" style={{ background: "radial-gradient(circle at 50% 55%, oklch(0.72 0.22 150 / 0.55), transparent 60%)" }} />
-      <div className="absolute inset-0 -z-10 scale-125 rounded-full blur-3xl opacity-60" style={{ background: "radial-gradient(circle at 50% 70%, oklch(0.85 0.16 88 / 0.35), transparent 65%)" }} />
-
-      {/* Reflective floor */}
-      <div className="absolute -bottom-6 left-1/2 -z-10 h-10 w-[70%] -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,oklch(0.72_0.22_150/0.6),transparent_70%)] blur-2xl" />
+      <div className="absolute inset-0 -z-10 scale-110 rounded-full blur-3xl opacity-60" style={{ background: "radial-gradient(circle at 50% 55%, oklch(0.72 0.22 150 / 0.45), transparent 60%)" }} />
+      <div className="absolute inset-0 -z-10 scale-125 rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle at 50% 70%, oklch(0.85 0.16 88 / 0.25), transparent 65%)" }} />
 
       <img
         src={trader.url}
         alt="A professional trader overlooking the city — PrintEzy"
-        className="relative mx-auto w-full max-w-[440px] select-none"
+        className="absolute right-0 top-1/2 h-[85%] w-auto max-w-none -translate-y-1/2 select-none object-contain object-right"
         style={{
           filter:
             "drop-shadow(0 0 28px oklch(0.72 0.22 150 / 0.55)) drop-shadow(0 18px 36px oklch(0.10 0.015 155 / 0.8))",
-          transform: "perspective(1200px) rotateY(-4deg)",
+          transform: "translateY(-50%) perspective(1200px) rotateY(-4deg)",
         }}
         draggable={false}
       />
+
+      {/* Gradient overlay so text stays readable */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
 
       {/* Floating fintech accents */}
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-card absolute -left-2 top-[18%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
+        className="glass-card absolute right-[12%] top-[22%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
       >
         <TrendingUp className="h-4 w-4 text-accent" strokeWidth={2.5} />
         <span className="text-foreground">XAU/USD +2.4%</span>
@@ -214,7 +214,7 @@ function HeroTrader() {
       <motion.div
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-card absolute -right-2 bottom-[22%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
+        className="glass-card absolute right-[8%] bottom-[26%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
       >
         <CandlestickChart className="h-4 w-4 text-primary" strokeWidth={2.5} />
         <span className="text-foreground">Live setup</span>
@@ -227,14 +227,14 @@ function Hero() {
   return (
     <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-20">
       <HeroBackdrop />
+      <HeroTraderBg />
       <FintechBackdrop />
       <div className="relative mx-auto w-full max-w-6xl px-5">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center lg:text-left"
           >
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-3 py-1 text-xs font-medium text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
@@ -275,8 +275,6 @@ function Hero() {
               </div>
             </div>
           </motion.div>
-
-          <HeroTrader />
         </div>
       </div>
     </section>
