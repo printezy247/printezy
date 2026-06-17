@@ -290,7 +290,7 @@ const FEATURES = [
   { icon: Zap, title: "Live signals channel", body: "Curated entries with stop, target, and rationale. No spam 10-20 pips pings, only setups worth your screen time." },
   { icon: Clock, title: "Designed for busy professionals", body: "Mobile-first formats. Build a real trading edge around a full-time career." },
   { icon: Shield, title: "Risk-first by default", body: "Every resource centers position sizing and capital preservation. Compound, don't gamble." },
-  { icon: Sparkles, title: "Always free, always sharp", body: "Three free pillars. Ebook, analysis, channel, built to actually move your P&L." },
+  { icon: Sparkles, title: "Always free, always sharp", body: "Free premium ebook, analysis, channel, built to actually move your P&L." },
 ];
 
 function Features() {
