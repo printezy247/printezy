@@ -342,7 +342,7 @@ const TESTIMONIALS = [
   {
     name: "Budi D.",
     role: "Software Engineer · Side trader",
-    quote: "The free ebook alone clarified more in two hours than three months of YouTube. The channel keeps me sharp without burning my evenings.",
+    quote: "The free ebook alone clarified more in 2 hours than 3 months of YouTube. Jack keeps me sharp without burning my evenings.",
     initials: "BD",
   },
   {
