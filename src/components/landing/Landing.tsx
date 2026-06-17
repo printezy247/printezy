@@ -69,10 +69,6 @@ function LogoMark({ className = "h-12 w-auto" }: { className?: string }) {
       src={logo.url}
       alt="PrintEzy logo"
       className={`${className} object-contain select-none`}
-      style={{
-        filter:
-          "drop-shadow(0 0 14px oklch(0.72 0.22 150 / 0.55)) drop-shadow(0 0 28px oklch(0.85 0.16 88 / 0.35)) drop-shadow(0 4px 10px rgba(0,0,0,0.4))",
-      }}
       draggable={false}
     />
   );
