@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { BookOpen, LineChart, Send, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
-import logo from "@/assets/printezy-logo.jpg.asset.json";
+import logo from "@/assets/printezy-logo-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 
 const CTAS = [
   {
     label: "FREE EBOOK",
-    sub: "The trader's playbook, MC to withdraw",
+    sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
     href: "https://t.me/printezydollar/2154",
     tone: "gold" as const,
@@ -63,12 +63,17 @@ function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?:
   );
 }
 
-function LogoMark({ className = "h-9 w-9" }: { className?: string }) {
+function LogoMark({ className = "h-12 w-auto" }: { className?: string }) {
   return (
     <img
       src={logo.url}
       alt="PrintEzy logo"
-      className={`${className} rounded-lg object-cover shadow-gold`}
+      className={`${className} object-contain select-none`}
+      style={{
+        filter:
+          "drop-shadow(0 0 14px oklch(0.72 0.22 150 / 0.55)) drop-shadow(0 0 28px oklch(0.85 0.16 88 / 0.35)) drop-shadow(0 4px 10px rgba(0,0,0,0.4))",
+      }}
+      draggable={false}
     />
   );
 }
@@ -78,10 +83,8 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
         <a href="#top" className="flex items-center gap-2.5 font-display text-base font-bold">
-          <LogoMark className="h-9 w-9" />
-          <span className="hidden sm:inline">
-            Print<span className="text-gradient-gold">Ezy</span>
-          </span>
+          <LogoMark className="h-12 w-auto" />
+          <span className="sr-only">PrintEzy</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
@@ -287,7 +290,7 @@ const FEATURES = [
   { icon: Zap, title: "Live signals channel", body: "Curated entries with stop, target, and rationale. No spam 10-20 pips pings, only setups worth your screen time." },
   { icon: Clock, title: "Designed for busy professionals", body: "Mobile-first formats. Build a real trading edge around a full-time career." },
   { icon: Shield, title: "Risk-first by default", body: "Every resource centers position sizing and capital preservation. Compound, don't gamble." },
-  { icon: Sparkles, title: "Always free, always sharp", body: "Three free pillars. Ebook, analysis, channel, built to actually move your P&L." },
+  { icon: Sparkles, title: "Always free, always sharp", body: "Free premium ebook, analysis, channel, built to actually move your P&L." },
 ];
 
 function Features() {
@@ -301,7 +304,7 @@ function Features() {
             A complete edge, <span className="text-gradient-gold">on the house</span>.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Three free pillars built to take you from newbie to pro without selling you a course.
+            3 free pillars built to take newbie to pro without selling you a course.
           </p>
         </div>
 
@@ -339,7 +342,7 @@ const TESTIMONIALS = [
   {
     name: "Budi D.",
     role: "Software Engineer · Side trader",
-    quote: "The free ebook alone clarified more in two hours than three months of YouTube. The channel keeps me sharp without burning my evenings.",
+    quote: "The free ebook alone clarified more in 2 hours than 3 months of YouTube. Jack keeps me sharp without burning my evenings.",
     initials: "BD",
   },
   {
