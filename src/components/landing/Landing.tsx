@@ -285,7 +285,7 @@ const FEATURES = [
   { icon: LineChart, title: "Pro-level market analysis", body: "Weekly deep dives on gold, FX, and crypto. Bias, key levels, and the trade plan sent before the session opens." },
   { icon: Zap, title: "Live signals channel", body: "Curated entries with stop, target, and rationale. No spam 10-20 pips pings, only setups worth your screen time." },
   { icon: Clock, title: "Designed for busy professionals", body: "Mobile-first formats. Build a real trading edge around a full-time career." },
-  { icon: Shield, title: "Risk-first by default", body: "Every resource centers position sizing and capital preservation. Compound, don't gamble." },
+  { icon: Shield, title: "Risk-first by default", body: "Always focus on lot sizing and capital preservation. Compound, don't gamble." },
   { icon: Sparkles, title: "Always free, always sharp", body: "Free premium ebook, analysis, channel, built to actually move your P&L." },
 ];
 
@@ -338,13 +338,13 @@ const TESTIMONIALS = [
   {
     name: "Budi D.",
     role: "Software Engineer · Side trader",
-    quote: "The free ebook alone clarified more in 2 hours than 3 months of YouTube. Jack keeps me sharp without burning my evenings.",
+    quote: "The free ebook alone clarified more than 3 months of YouTube. Jack keeps me sharp without burning my evenings.",
     initials: "BD",
   },
   {
     name: "Priya R.",
     role: "Full-time Trader",
-    quote: "Jack's analysis is the first thing I read before London open. The bias calls are scary accurate and the risk framing is institutional-grade.",
+    quote: "Jack's analysis is the first thing I read before New York open. The bias calls are scary accurate and the risk framing is institutional-grade.",
     initials: "PR",
   },
   {
