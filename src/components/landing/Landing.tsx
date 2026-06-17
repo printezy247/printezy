@@ -39,7 +39,7 @@ function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?:
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
       className={`group relative flex items-center gap-4 overflow-hidden rounded-2xl px-5 py-4 text-left transition-shadow ${
-        large ? "min-w-[260px]" : "w-full sm:w-auto"
+        large ? "min-w-[260px]" : "w-full"
       } ${
         isGold
           ? "bg-gold text-accent-foreground shadow-gold hover:shadow-[0_18px_50px_-12px_oklch(0.85_0.16_88/0.6)]"
