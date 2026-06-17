@@ -6,7 +6,7 @@ import trader from "@/assets/hero-trader.png.asset.json";
 const CTAS = [
   {
     label: "FREE EBOOK",
-    sub: "The trader's playbook, MC to withdraw",
+    sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
     href: "https://t.me/printezydollar/2154",
     tone: "gold" as const,
