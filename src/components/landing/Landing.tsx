@@ -83,10 +83,8 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
         <a href="#top" className="flex items-center gap-2.5 font-display text-base font-bold">
-          <LogoMark className="h-9 w-9" />
-          <span className="hidden sm:inline">
-            Print<span className="text-gradient-gold">Ezy</span>
-          </span>
+          <LogoMark className="h-12 w-auto" />
+          <span className="sr-only">PrintEzy</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
