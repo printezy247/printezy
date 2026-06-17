@@ -304,7 +304,7 @@ function Features() {
             A complete edge, <span className="text-gradient-gold">on the house</span>.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Three free pillars built to take you from newbie to pro without selling you a course.
+            3 free pillars built to take newbie to pro without selling you a course.
           </p>
         </div>
 
