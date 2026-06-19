@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, LineChart, Send, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
-import logo from "@/assets/printezy-logo-3d.png.asset.json";
+import logo from "@/assets/printezy-logo-flat.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 
 const CTAS = [
