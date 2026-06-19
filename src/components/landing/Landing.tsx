@@ -78,9 +78,9 @@ function Nav() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
-        <a href="#top" className="flex items-center gap-2.5 font-display text-base font-bold">
-          <LogoMark className="h-12 w-auto" />
-          <span className="sr-only">PrintEzy</span>
+        <a href="#top" className="flex items-center gap-3">
+          <LogoMark className="h-10 w-auto" />
+          <span className="font-display text-lg font-bold tracking-tight text-foreground">PrintEzy</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
