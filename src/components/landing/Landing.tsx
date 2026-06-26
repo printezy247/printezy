@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, LineChart, Send, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
-import logo from "@/assets/printezy-logo-green-gold.png.asset.json";
+import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 
 const CTAS = [
@@ -79,7 +79,7 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
         <a href="#top" className="flex items-center gap-3">
-          <LogoMark className="h-10 w-auto" />
+          <LogoMark className="h-14 w-auto" />
           <span className="font-display text-lg font-bold tracking-tight text-foreground">PrintEzy</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
@@ -437,7 +437,7 @@ function Footer() {
     <footer className="border-t border-border/60 px-5 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-xs text-muted-foreground md:flex-row">
         <div className="flex items-center gap-2 font-display font-semibold text-foreground">
-          <LogoMark className="h-7 w-7" />
+          <LogoMark className="h-10 w-auto" />
           Print<span className="text-gradient-gold">Ezy</span>
         </div>
         <p>© {new Date().getFullYear()} PrintEzy. Trade responsibly. Not financial advice.</p>
