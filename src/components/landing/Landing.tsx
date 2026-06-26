@@ -437,7 +437,7 @@ function Footer() {
     <footer className="border-t border-border/60 px-5 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-xs text-muted-foreground md:flex-row">
         <div className="flex items-center gap-2 font-display font-semibold text-foreground">
-          <LogoMark className="h-7 w-7" />
+          <LogoMark className="h-10 w-auto" />
           Print<span className="text-gradient-gold">Ezy</span>
         </div>
         <p>© {new Date().getFullYear()} PrintEzy. Trade responsibly. Not financial advice.</p>
