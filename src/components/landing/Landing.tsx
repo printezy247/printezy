@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { BookOpen, LineChart, Send, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
+import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
+import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 
 const CTAS = [
@@ -12,18 +13,11 @@ const CTAS = [
     tone: "gold" as const,
   },
   {
-    label: "FREE ANALYSIS",
+    label: "PRO ANALYSIS",
     sub: "Pro tools for precise analysis",
     icon: LineChart,
     href: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
     tone: "green" as const,
-  },
-  {
-    label: "FREE CHANNEL",
-    sub: "Live signals + setups, no noise",
-    icon: Send,
-    href: "https://t.me/printezydollar",
-    tone: "gold" as const,
   },
 ];
 
@@ -63,7 +57,37 @@ function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?:
   );
 }
 
-function LogoMark({ className = "h-12 w-auto" }: { className?: string }) {
+function TelegramAskButton() {
+  return (
+    <motion.a
+      href="https://t.me/m/JrLzPcStOTc9"
+      target="_blank"
+      rel="noopener noreferrer"
+      whileHover={{ y: -4 }}
+      whileTap={{ y: -1 }}
+      transition={{ type: "spring", stiffness: 320, damping: 22 }}
+      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-green px-4 py-3 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)]"
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-black/20">
+        <img
+          src={telegramLogo.url}
+          alt="Telegram"
+          className="h-6 w-6 object-contain"
+          loading="lazy"
+          width={512}
+          height={512}
+        />
+      </span>
+      <span className="flex-1">
+        <span className="block text-xs font-bold tracking-[0.14em] font-display">ASK ME ANYTHING</span>
+      </span>
+      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+    </motion.a>
+  );
+}
+
+function LogoMark({ className = "h-14 w-auto" }: { className?: string }) {
   return (
     <img
       src={logo.url}
@@ -79,7 +103,7 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
         <a href="#top" className="flex items-center gap-3">
-          <LogoMark className="h-14 w-auto" />
+          <LogoMark className="h-16 w-auto" />
           <span className="font-display text-lg font-bold tracking-tight text-foreground">PrintEzy</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
@@ -252,11 +276,12 @@ function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 grid gap-3 sm:grid-cols-3 lg:max-w-none max-w-md mx-auto lg:mx-0"
+              className="mt-8 flex flex-col gap-3 sm:flex-row max-w-md mx-auto lg:max-w-3xl lg:mx-0"
             >
               {CTAS.map((c) => (
                 <CtaButton key={c.label} cta={c} />
               ))}
+              <TelegramAskButton />
             </motion.div>
 
             <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-xs text-muted-foreground">
@@ -422,10 +447,11 @@ function FinalCta() {
           </p>
         </div>
 
-        <div className="relative mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-3">
+        <div className="relative mx-auto mt-10 flex flex-col gap-3 sm:flex-row max-w-4xl">
           {CTAS.map((c) => (
             <CtaButton key={c.label} cta={c} />
           ))}
+          <TelegramAskButton />
         </div>
       </div>
     </section>
@@ -437,7 +463,7 @@ function Footer() {
     <footer className="border-t border-border/60 px-5 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-xs text-muted-foreground md:flex-row">
         <div className="flex items-center gap-2 font-display font-semibold text-foreground">
-          <LogoMark className="h-10 w-auto" />
+          <LogoMark className="h-12 w-auto" />
           Print<span className="text-gradient-gold">Ezy</span>
         </div>
         <p>© {new Date().getFullYear()} PrintEzy. Trade responsibly. Not financial advice.</p>
