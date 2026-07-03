@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { BookOpen, LineChart, Send, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
+import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
+import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 
 const CTAS = [
@@ -12,18 +13,11 @@ const CTAS = [
     tone: "gold" as const,
   },
   {
-    label: "FREE ANALYSIS",
+    label: "PRO ANALYSIS",
     sub: "Pro tools for precise analysis",
     icon: LineChart,
     href: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
     tone: "green" as const,
-  },
-  {
-    label: "FREE CHANNEL",
-    sub: "Live signals + setups, no noise",
-    icon: Send,
-    href: "https://t.me/printezydollar",
-    tone: "gold" as const,
   },
 ];
 
