@@ -69,22 +69,19 @@ function TelegramAskButton() {
       whileHover={{ y: -4 }}
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
-      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-green px-4 py-3 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)]"
+      className="group relative inline-flex shrink-0 items-center gap-2 self-center overflow-hidden rounded-xl bg-green px-3 py-2 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)] sm:self-stretch"
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-black/20">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-black/20">
         <img
           src={telegramLogo.url}
           alt="Telegram"
-          className="h-6 w-6 object-contain"
+          className="h-4 w-4 object-contain"
           loading="lazy"
           width={512}
           height={512}
         />
       </span>
-      <span className="flex-1">
-        <span className="block text-xs font-bold tracking-[0.14em] font-display">ASK ME ANYTHING</span>
-      </span>
-      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      <span className="text-[10px] font-bold tracking-[0.12em] font-display whitespace-nowrap">ASK ME ANYTHING</span>
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
     </motion.a>
   );
