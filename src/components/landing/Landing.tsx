@@ -25,7 +25,7 @@ const CTAS = [
   },
 ];
 
-function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
+function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
   const Icon = cta.icon;
   const isGold = cta.tone === "gold";
   return (
@@ -63,7 +63,7 @@ function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]
 }
 
 function useEbookHighlight() {
-  return (e: React.MouseEvent<HTMLAnchorElement>) => {
+  return (e: MouseEvent<HTMLAnchorElement>) => {
     if (typeof window === "undefined") return;
     const el = document.getElementById("ebook");
     if (!el) return;
