@@ -6,14 +6,15 @@ import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
 
-const EBOOK_URL = "https://t.me/printezydollar/2053";
+const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
+const HERO_EBOOK_URL = "https://t.me/printezydollar/2053";
 
 const CTAS = [
   {
     label: "FREE EBOOK",
     sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
-    href: "#ebook",
+    href: HERO_EBOOK_URL,
     tone: "gold" as const,
   },
   {
