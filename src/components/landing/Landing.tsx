@@ -505,7 +505,6 @@ function EbookSection() {
       <div className="relative mx-auto max-w-6xl">
         {/* Holo card wrapper */}
         <div
-          data-ebook-card
           className="relative overflow-hidden rounded-[2rem] border border-accent/25 bg-background/40 p-6 shadow-elevated backdrop-blur-xl md:p-10 lg:p-14"
           style={{
             background:
