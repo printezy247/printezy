@@ -265,8 +265,9 @@ function HeroTraderBg() {
 }
 
 function Hero() {
+  const highlightEbook = useEbookHighlight();
   return (
-    <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-20">
+    <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-16 lg:pb-12">
       <HeroBackdrop />
       <HeroTraderBg />
       <FintechBackdrop />
@@ -294,13 +295,20 @@ function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 flex flex-col gap-3 sm:flex-row max-w-md mx-auto lg:max-w-3xl lg:mx-0"
+              className="mt-8 flex flex-col gap-3 max-w-md mx-auto lg:mx-0 lg:max-w-sm"
             >
               {CTAS.map((c) => (
-                <CtaButton key={c.label} cta={c} />
+                <CtaButton
+                  key={c.label}
+                  cta={c}
+                  onClick={c.href === "#ebook" ? highlightEbook : undefined}
+                />
               ))}
-              <TelegramAskButton />
+              <div className="flex justify-center lg:justify-start">
+                <TelegramAskButton />
+              </div>
             </motion.div>
+
 
             <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
