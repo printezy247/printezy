@@ -267,7 +267,6 @@ function HeroTraderBg() {
 }
 
 function Hero() {
-  const highlightEbook = useEbookHighlight();
   return (
     <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-16 lg:pb-12">
       <HeroBackdrop />
@@ -303,7 +302,6 @@ function Hero() {
                 <CtaButton
                   key={c.label}
                   cta={c}
-                  onClick={c.href === "#ebook" ? highlightEbook : undefined}
                 />
               ))}
               <div className="flex justify-center lg:justify-start">
