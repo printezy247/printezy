@@ -452,6 +452,7 @@ function Testimonials() {
 }
 
 function FinalCta() {
+  const highlightEbook = useEbookHighlight();
   return (
     <section id="cta" className="relative px-5 py-20 md:py-28">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-accent/25 p-8 shadow-elevated md:p-14" style={{ background: "linear-gradient(135deg, oklch(0.22 0.04 155) 0%, oklch(0.14 0.02 155) 100%)" }}>
@@ -473,9 +474,13 @@ function FinalCta() {
           </p>
         </div>
 
-        <div className="relative mx-auto mt-10 flex flex-col gap-3 sm:flex-row max-w-4xl">
+        <div className="relative mx-auto mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center max-w-4xl">
           {CTAS.map((c) => (
-            <CtaButton key={c.label} cta={c} />
+            <CtaButton
+              key={c.label}
+              cta={c}
+              onClick={c.href === "#ebook" ? highlightEbook : undefined}
+            />
           ))}
           <TelegramAskButton />
         </div>
@@ -483,6 +488,7 @@ function FinalCta() {
     </section>
   );
 }
+
 
 function Footer() {
   return (
