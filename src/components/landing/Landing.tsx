@@ -3,7 +3,7 @@ import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, Do
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
-import ebookCover from "@/assets/ebook-cover.jpg.asset.json";
+import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
 
 const EBOOK_URL = "https://t.me/printezydollar/2154";
 
