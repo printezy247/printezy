@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
-import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
+import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer, Download, CheckCircle2, FileText } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
+import ebookCover from "@/assets/ebook-cover.jpg.asset.json";
+
+const EBOOK_URL = "https://t.me/printezydollar/2154";
 
 const CTAS = [
   {
