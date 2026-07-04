@@ -452,7 +452,6 @@ function Testimonials() {
 }
 
 function FinalCta() {
-  const highlightEbook = useEbookHighlight();
   return (
     <section id="cta" className="relative px-5 py-20 md:py-28">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-accent/25 p-8 shadow-elevated md:p-14" style={{ background: "linear-gradient(135deg, oklch(0.22 0.04 155) 0%, oklch(0.14 0.02 155) 100%)" }}>
@@ -479,7 +478,6 @@ function FinalCta() {
             <CtaButton
               key={c.label}
               cta={c}
-              onClick={c.href === "#ebook" ? highlightEbook : undefined}
             />
           ))}
           <TelegramAskButton />
