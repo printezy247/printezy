@@ -63,22 +63,6 @@ function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]
   );
 }
 
-function useEbookHighlight() {
-  return (e: MouseEvent<HTMLAnchorElement>) => {
-    if (typeof window === "undefined") return;
-    const el = document.getElementById("ebook");
-    if (!el) return;
-    e.preventDefault();
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    const card = el.querySelector<HTMLElement>("[data-ebook-card]");
-    if (card) {
-      card.classList.remove("animate-ebook-pulse");
-      // trigger reflow to restart animation
-      void card.offsetWidth;
-      card.classList.add("animate-ebook-pulse");
-    }
-  };
-}
 
 function TelegramAskButton() {
   return (
