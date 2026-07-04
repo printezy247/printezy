@@ -12,7 +12,7 @@ const CTAS = [
     label: "FREE EBOOK",
     sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
-    href: "https://t.me/printezydollar/2154",
+    href: "#ebook",
     tone: "gold" as const,
   },
   {
