@@ -24,12 +24,13 @@ const CTAS = [
   },
 ];
 
-function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?: boolean }) {
+function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void }) {
   const Icon = cta.icon;
   const isGold = cta.tone === "gold";
   return (
     <motion.a
       href={cta.href}
+      onClick={onClick}
       target={cta.href.startsWith("#") ? undefined : "_blank"}
       rel={cta.href.startsWith("#") ? undefined : "noopener noreferrer"}
       whileHover={{ y: -4 }}
@@ -58,6 +59,23 @@ function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?:
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
     </motion.a>
   );
+}
+
+function useEbookHighlight() {
+  return (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (typeof window === "undefined") return;
+    const el = document.getElementById("ebook");
+    if (!el) return;
+    e.preventDefault();
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const card = el.querySelector<HTMLElement>("[data-ebook-card]");
+    if (card) {
+      card.classList.remove("animate-ebook-pulse");
+      // trigger reflow to restart animation
+      void card.offsetWidth;
+      card.classList.add("animate-ebook-pulse");
+    }
+  };
 }
 
 function TelegramAskButton() {
