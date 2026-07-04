@@ -1,5 +1,4 @@
-import type { MouseEvent } from "react";
-import { motion } from "framer-motion";
+import { motion } from "framer-react";
 import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer, Download, CheckCircle2, FileText } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
