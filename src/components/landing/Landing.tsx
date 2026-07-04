@@ -6,14 +6,15 @@ import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
 
-const EBOOK_URL = "https://t.me/printezydollar/2053";
+const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
+const HERO_EBOOK_URL = "https://t.me/printezydollar/2053";
 
 const CTAS = [
   {
     label: "FREE EBOOK",
     sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
-    href: "#ebook",
+    href: HERO_EBOOK_URL,
     tone: "gold" as const,
   },
   {
@@ -62,22 +63,6 @@ function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]
   );
 }
 
-function useEbookHighlight() {
-  return (e: MouseEvent<HTMLAnchorElement>) => {
-    if (typeof window === "undefined") return;
-    const el = document.getElementById("ebook");
-    if (!el) return;
-    e.preventDefault();
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    const card = el.querySelector<HTMLElement>("[data-ebook-card]");
-    if (card) {
-      card.classList.remove("animate-ebook-pulse");
-      // trigger reflow to restart animation
-      void card.offsetWidth;
-      card.classList.add("animate-ebook-pulse");
-    }
-  };
-}
 
 function TelegramAskButton() {
   return (
@@ -266,7 +251,6 @@ function HeroTraderBg() {
 }
 
 function Hero() {
-  const highlightEbook = useEbookHighlight();
   return (
     <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-16 lg:pb-12">
       <HeroBackdrop />
@@ -302,7 +286,6 @@ function Hero() {
                 <CtaButton
                   key={c.label}
                   cta={c}
-                  onClick={c.href === "#ebook" ? highlightEbook : undefined}
                 />
               ))}
               <div className="flex justify-center lg:justify-start">
@@ -453,7 +436,6 @@ function Testimonials() {
 }
 
 function FinalCta() {
-  const highlightEbook = useEbookHighlight();
   return (
     <section id="cta" className="relative px-5 py-20 md:py-28">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-accent/25 p-8 shadow-elevated md:p-14" style={{ background: "linear-gradient(135deg, oklch(0.22 0.04 155) 0%, oklch(0.14 0.02 155) 100%)" }}>
@@ -480,7 +462,6 @@ function FinalCta() {
             <CtaButton
               key={c.label}
               cta={c}
-              onClick={c.href === "#ebook" ? highlightEbook : undefined}
             />
           ))}
           <TelegramAskButton />
@@ -524,7 +505,6 @@ function EbookSection() {
       <div className="relative mx-auto max-w-6xl">
         {/* Holo card wrapper */}
         <div
-          data-ebook-card
           className="relative overflow-hidden rounded-[2rem] border border-accent/25 bg-background/40 p-6 shadow-elevated backdrop-blur-xl md:p-10 lg:p-14"
           style={{
             background:
