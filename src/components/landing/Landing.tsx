@@ -1,15 +1,18 @@
 import { motion } from "framer-motion";
-import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer } from "lucide-react";
+import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer, Download, CheckCircle2, FileText } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
+import ebookCover from "@/assets/ebook-cover.jpg.asset.json";
+
+const EBOOK_URL = "https://t.me/printezydollar/2154";
 
 const CTAS = [
   {
     label: "FREE EBOOK",
     sub: "Traders' playbook, MC to grow",
     icon: BookOpen,
-    href: "https://t.me/printezydollar/2154",
+    href: "#ebook",
     tone: "gold" as const,
   },
   {
@@ -27,8 +30,8 @@ function CtaButton({ cta, large = false }: { cta: (typeof CTAS)[number]; large?:
   return (
     <motion.a
       href={cta.href}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={cta.href.startsWith("#") ? undefined : "_blank"}
+      rel={cta.href.startsWith("#") ? undefined : "noopener noreferrer"}
       whileHover={{ y: -4 }}
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
@@ -66,22 +69,19 @@ function TelegramAskButton() {
       whileHover={{ y: -4 }}
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
-      className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-green px-4 py-3 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)]"
+      className="group relative inline-flex shrink-0 items-center gap-2 self-center overflow-hidden rounded-xl bg-green px-3 py-2 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)] sm:self-stretch"
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-black/20">
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-black/20">
         <img
           src={telegramLogo.url}
           alt="Telegram"
-          className="h-6 w-6 object-contain"
+          className="h-4 w-4 object-contain"
           loading="lazy"
           width={512}
           height={512}
         />
       </span>
-      <span className="flex-1">
-        <span className="block text-xs font-bold tracking-[0.14em] font-display">ASK ME ANYTHING</span>
-      </span>
-      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      <span className="text-[10px] font-bold tracking-[0.12em] font-display whitespace-nowrap">ASK ME ANYTHING</span>
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
     </motion.a>
   );
@@ -472,12 +472,145 @@ function Footer() {
   );
 }
 
+const EBOOK_TOC = [
+  { n: "01", title: "Why Use Technical Analysis", body: "The trader's edge — reading the market's playbook." },
+  { n: "02", title: "Support & Resistance", body: "Spot demand zones, supply walls, and clean flip levels." },
+  { n: "03", title: "Trendlines", body: "Draw dynamic support & resistance the pros actually respect." },
+  { n: "04", title: "Chart Patterns", body: "Reversals & continuations — Head & Shoulders, Wedges, Flags." },
+  { n: "05", title: "Candlestick Patterns", body: "Single & multi-candle signals: Doji, Hammer, Engulfing, Stars." },
+  { n: "06", title: "Key Points & Pitfalls", body: "Context, confirmation, and how not to get faked out." },
+];
+
+function EbookSection() {
+  return (
+    <section id="ebook" className="relative px-5 py-24 md:py-32">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-32 left-1/4 h-[380px] w-[380px] rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
+        <div className="absolute -bottom-40 right-1/4 h-[380px] w-[380px] rounded-full opacity-30 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
+      </div>
+      <div className="relative mx-auto max-w-6xl">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_1.15fr] lg:items-center">
+          {/* Cover */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="relative mx-auto w-full max-w-sm"
+          >
+            <div className="absolute -inset-6 rounded-[2rem] opacity-70 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
+            <motion.div
+              whileHover={{ rotateY: -6, rotateX: 4, y: -6 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              style={{ transformStyle: "preserve-3d", perspective: 1200 }}
+              className="relative overflow-hidden rounded-[1.5rem] border border-accent/30 shadow-elevated"
+            >
+              <img
+                src={ebookCover.url}
+                alt="PrintEzy Technical Analysis — free trading ebook cover"
+                className="block h-auto w-full object-cover"
+                width={1200}
+                height={1500}
+                loading="lazy"
+              />
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/40 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 mix-blend-overlay" />
+            </motion.div>
+            <div className="absolute -bottom-3 -right-3 rotate-3 rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-accent-foreground shadow-gold font-display">
+              FREE · PDF
+            </div>
+          </motion.div>
+
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <p className="font-display text-xs font-bold tracking-[0.22em] text-accent">/ FREE EBOOK</p>
+            <h2 className="mt-3 text-3xl font-bold md:text-5xl">
+              The <span className="text-gradient-gold">Technical Analysis</span> playbook.
+            </h2>
+            <p className="mt-4 max-w-xl text-muted-foreground">
+              A no-fluff crash course by Jack — 20 pages that take you from zero to reading charts like the pros.
+              Support & resistance, trendlines, chart patterns, and candlesticks distilled into what actually moves
+              your P&amp;L.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-2 text-xs">
+              {["20 pages", "Beginner → Pro", "Mobile-ready", "$0"].map((t) => (
+                <span key={t} className="rounded-full border border-border/70 bg-background/40 px-3 py-1 text-muted-foreground backdrop-blur">
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            {/* TOC preview */}
+            <div className="mt-8 rounded-3xl border border-border/60 bg-background/40 p-5 backdrop-blur-xl">
+              <div className="mb-4 flex items-center gap-2 text-xs font-bold tracking-[0.18em] text-muted-foreground font-display">
+                <FileText className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
+                INSIDE THE EBOOK
+              </div>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {EBOOK_TOC.map((item, i) => (
+                  <motion.li
+                    key={item.n}
+                    initial={{ opacity: 0, x: -8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: i * 0.05 }}
+                    className="group flex gap-3 rounded-2xl border border-transparent p-3 transition-colors hover:border-accent/30 hover:bg-accent/5"
+                  >
+                    <span className="font-display text-sm font-bold text-accent">{item.n}</span>
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">{item.title}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{item.body}</div>
+                    </div>
+                    <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Download CTA */}
+            <motion.a
+              href={EBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ y: -4 }}
+              whileTap={{ y: -1 }}
+              transition={{ type: "spring", stiffness: 320, damping: 22 }}
+              className="group relative mt-8 inline-flex items-center gap-4 overflow-hidden rounded-2xl bg-gold px-6 py-4 text-accent-foreground shadow-gold transition-shadow hover:shadow-[0_20px_55px_-12px_oklch(0.85_0.16_88/0.7)]"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-black/15">
+                <Download className="h-5 w-5" strokeWidth={2.5} />
+              </span>
+              <span>
+                <span className="block text-sm font-bold tracking-[0.14em] font-display">DOWNLOAD THE EBOOK</span>
+                <span className="mt-0.5 block text-xs opacity-80">Instant access via Telegram · no signup</span>
+              </span>
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            </motion.a>
+
+            <p className="mt-4 text-xs text-muted-foreground">
+              Joined by 10,000+ traders. Not financial advice — for education only.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main>
         <Hero />
+        <EbookSection />
         <Features />
         <Testimonials />
         <FinalCta />
