@@ -24,10 +24,12 @@ function getContext() {
 
 export function track(eventType: AnalyticsEventType, eventName: string) {
   const ctx = getContext();
-  recordEvent({ data: { eventType, eventName, ...ctx } }).catch(() => {
-    // Silent fail: analytics should never break the landing page.
-  });
+  console.log("[analytics] track", eventType, eventName, ctx);
+  recordEvent({ data: { eventType, eventName, ...ctx } })
+    .then((res) => console.log("[analytics] recorded", res))
+    .catch((err) => console.error("[analytics] failed", err));
 }
+
 
 export function trackSectionVisibility(sectionIds: string[]) {
   if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
