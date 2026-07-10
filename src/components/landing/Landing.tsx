@@ -292,8 +292,10 @@ function Hero() {
                 <CtaButton
                   key={c.label}
                   cta={c}
+                  trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
                 />
               ))}
+
               <div className="flex justify-center lg:justify-start">
                 <TelegramAskButton />
               </div>
