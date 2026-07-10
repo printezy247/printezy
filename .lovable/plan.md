@@ -1,44 +1,133 @@
-# Ebook Section Refinement Plan
+Yes. Lovable already gives you page-level analytics for the published site (views, visitors, bounce rate, visit duration, traffic sources, devices). For granular metrics like "how many people clicked Free Ebook" or "which section was viewed," we need a small custom event tracker that stores data in your own backend.
 
-## 1. Replace ebook cover image
-- Upload the attached PNG (`/mnt/user-uploads/file_0000000060a4720896f1c9cefe4b9391.png`) via `lovable-assets` as `src/assets/ebook-cover-v2.jpg.asset.json` (jpg re-encoded for smaller size, or keep png).
-- Delete the old `src/assets/ebook-cover.jpg.asset.json` pointer.
-- Update the import in `Landing.tsx` to point to the new pointer.
+This plan adds a built-in, privacy-first analytics system using Lovable Cloud.
 
-## 2. Copy edits in `Landing.tsx`
-Text-only changes to existing strings:
-- Blurb (line 536-539) → "20 pages that take you from zero to reading charts like the pros. Support & resistance, trendlines, chart patterns, and more distilled into what actually moves your P&L."
-- TOC 01 body → "The trader's edge, it's like reading the market's story."
-- TOC 03 body → "Dynamic support & resistance the pros actually respect."
-- TOC 04 body → "Reversals & continuations spot"
-- CTA label "DOWNLOAD THE EBOOK" → "GET EBOOK NOW"
-- CTA sub "Instant access via Telegram · no signup" → "No deposit or payment needed"
-- Footer note → "Joined by 10,000+ traders. Not financial advice."
+## Goals
 
-## 3. Futuristic 3D upgrade for `EbookSection`
-- Wrap the whole content column in a glass "holo card": rounded 2xl, gold gradient border via mask, backdrop-blur, subtle inner shadow, animated conic-gradient glow behind.
-- Add tilt on hover for the cover already exists — extend with a rotating gold ring and animated shimmer sweep across the cover.
-- TOC list: convert to numbered chips with gold gradient number bubbles, hover raises tile with green glow.
-- Download CTA: add pulsing gold aura ring using an absolutely-positioned `motion.span` with `animate={{ scale, opacity }}` loop.
-- Tighten responsive spacing: `py-20 md:py-28`, `gap-10 lg:gap-16`, cover max-w tightened to `max-w-xs md:max-w-sm` on desktop so unused whitespace shrinks.
+- Track clicks on all main CTAs: Free Ebook, Pro Analysis, Ask Me Anything, Get Ebook Now, and Get Started.
+- Track when key sections become visible: Hero, Ebook, Features, Testimonials, Final CTA.
+- Store events in a secure database table with anonymous fingerprints (no PII).
+- Expose a simple read-only summary so you can see totals without leaving the project.
 
-## 4. Smooth scroll + active-section highlight
-- Global `html { scroll-behavior: smooth }` already set.
-- Add `scroll-mt-24` to `#ebook` so the sticky nav doesn't cover the heading.
-- FREE EBOOK CTA already uses `href="#ebook"`; add an `onClick` that also triggers a brief highlight: toggle a `data-highlight` attribute on the section that runs a 1.2s gold ring pulse animation defined as a new `@keyframes ebook-pulse` + `@utility` in `src/styles.css`.
-- Implement via a small `useEbookHighlight` hook or inline handler on the CTA button (no router changes).
+## User-facing summary
 
-## 5. Desktop hero layout refinement
-- On `lg+`, arrange the two primary CTAs (`FREE EBOOK`, `PRO ANALYSIS`) stacked top-to-bottom in a left column, with `ASK ME ANYTHING` sitting compactly to the right, removing the current wide unused whitespace.
-- Change hero CTA container to `flex-col sm:flex-row lg:flex-col lg:max-w-xs` and keep `TelegramAskButton` on its own row/inline as appropriate.
-- Trim `Hero` `pb-20` → `pb-16 lg:pb-12` and cap content width so trader image reads better without giant gaps.
+After this change, every important button and section will silently record anonymous interaction events. You will be able to query counts like "Free Ebook clicks today" or "Ebook section views this week" from a small dashboard or server function. Lovable's built-in page analytics will continue to show top-level traffic separately.
 
-## 6. Verification
-- Run build.
-- Playwright screenshot desktop (1280) and mobile (390) of the ebook section and hero to confirm layout, cover swap, and highlight animation trigger.
+## Technical plan
 
-## Files touched
-- `src/assets/ebook-cover.jpg.asset.json` (deleted)
-- `src/assets/ebook-cover-v2.jpg.asset.json` (new)
-- `src/components/landing/Landing.tsx` (copy, layout, 3D effects, scroll highlight, hero CTA arrangement)
-- `src/styles.css` (new `@keyframes ebook-pulse` + `@utility`)
+### 1. Enable Lovable Cloud backend
+
+- Call `supabase--enable` to activate the managed backend (required before any database work).
+
+### 2. Database schema
+
+Create a migration that adds `public.analytics_events`:
+
+```text
+id            uuid primary key default gen_random_uuid()
+event_type    text not null   -- 'click' | 'section_view' | 'page_load'
+event_name    text not null   -- 'free_ebook', 'pro_analysis', 'ask_me_anything', 'get_ebook_now', 'get_started', 'ebook_section', etc.
+path          text not null   -- current pathname, e.g. '/'
+referrer      text            -- document.referrer or null
+user_agent    text            -- browser/OS fingerprint hint
+session_id    text not null   -- anonymous session fingerprint (hash)
+created_at    timestamptz default now()
+```
+
+Include required grants:
+
+```text
+GRANT INSERT, SELECT ON public.analytics_events TO authenticated;
+GRANT ALL ON public.analytics_events TO service_role;
+```
+
+Enable RLS and add policies:
+
+```text
+-- Anyone can insert an anonymous event (public landing page)
+CREATE POLICY "Allow public inserts"
+  ON public.analytics_events FOR INSERT TO anon, authenticated WITH CHECK (true);
+
+-- Only service_role / authenticated reads; no public SELECT on raw rows
+CREATE POLICY "Restrict public reads"
+  ON public.analytics_events FOR SELECT TO authenticated USING (false);
+```
+
+Reads for the dashboard will go through a server function using the service role key.
+
+### 3. Frontend tracking utilities
+
+Add `src/lib/analytics.ts`:
+
+- `track(eventType, eventName)` sends a small POST to a server function.
+- `getSessionId()` generates a stable anonymous session id stored in `sessionStorage`.
+- `trackSectionVisibility(sections)` uses an IntersectionObserver to fire `section_view` once per section per session when it crosses 50% viewport.
+
+### 4. Instrument the landing page
+
+Update `src/components/landing/Landing.tsx`:
+
+- Wrap each CTA anchor with `onClick={() => track('click', '<name>')}` so the event fires before the browser navigates.
+- Add `useEffect` in `Landing` to attach section observers for `hero`, `ebook`, `features`, `testimonials`, `final_cta`.
+- Track one `page_load` event on mount.
+
+### 5. Server function to record events
+
+Create `src/lib/analytics.functions.ts`:
+
+```text
+export const recordEvent = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ eventType: z.string(), eventName: z.string(), path: z.string(), referrer: z.string().optional(), userAgent: z.string().optional(), sessionId: z.string() }))
+  .handler(async ({ data }) => {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } });
+    await supabase.from('analytics_events').insert({ ...data });
+    return { ok: true };
+  });
+```
+
+Uses the publishable-key client because the landing page is public and anonymous; RLS allows anon inserts.
+
+### 6. Read-only analytics summary
+
+Create `src/lib/analytics.functions.ts` (same file) with a protected or service-role function:
+
+```text
+export const getEventSummary = createServerFn({ method: 'POST' })
+  .inputValidator(z.object({ days: z.number().min(1).max(90).default(7) }))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: rows } = await supabaseAdmin.rpc('analytics_summary', { p_days: data.days });
+    return { summary: rows };
+  });
+```
+
+Add a Postgres function `analytics_summary(p_days int)` in the same migration that returns grouped counts by event_name and event_type.
+
+### 7. (Optional) Minimal dashboard route
+
+If you want to see the numbers inside the app, add a read-only route `src/routes/_authenticated/analytics.tsx` that renders a simple table/chart of event counts. Since reads are service-role, this route stays behind authentication so only you can open it. This step can be skipped initially; you can query the data directly via the server function or the built-in database tools.
+
+## Files to change
+
+```text
+- Enable Lovable Cloud (one-time project action)
+- supabase/migrations/... (new migration for analytics_events + summary function)
+- src/lib/analytics.ts (new)
+- src/lib/analytics.functions.ts (new)
+- src/components/landing/Landing.tsx (instrument CTAs and sections)
+- src/routes/_authenticated/analytics.tsx (optional dashboard)
+```
+
+## Privacy and security notes
+
+- No email, IP, or auth identity is stored. The session id is a random hash, not a login identifier.
+- The public insert policy lets anonymous visitors record events; raw reads are blocked from the public.
+- Dashboard reads use the service-role client inside a server function, and the route is authenticated-only.
+
+## Verification
+
+- Build passes.
+- Click each CTA in the preview and confirm rows appear in `analytics_events`.
+- Scroll through sections and confirm `section_view` events are recorded once per session.
+- If the dashboard route is added, open it and verify counts match inserted rows.

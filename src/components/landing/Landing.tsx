@@ -1,10 +1,12 @@
-import type { MouseEvent } from "react";
+import { type MouseEvent, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer, Download, CheckCircle2, FileText } from "lucide-react";
 import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
+import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
+
 
 const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
 const HERO_EBOOK_URL = "https://t.me/printezydollar/2053";
@@ -26,14 +28,18 @@ const CTAS = [
   },
 ];
 
-function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
+function CtaButton({ cta, large = false, onClick, trackName }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void; trackName?: string }) {
   const Icon = cta.icon;
   const isGold = cta.tone === "gold";
   return (
     <motion.a
       href={cta.href}
-      onClick={onClick}
+      onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+        if (trackName) track("click", trackName);
+        onClick?.(e);
+      }}
       target={cta.href.startsWith("#") ? undefined : "_blank"}
+
       rel={cta.href.startsWith("#") ? undefined : "noopener noreferrer"}
       whileHover={{ y: -4 }}
       whileTap={{ y: -1 }}
@@ -70,7 +76,9 @@ function TelegramAskButton() {
       href="https://t.me/m/JrLzPcStOTc9"
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => track("click", "ask_me_anything")}
       whileHover={{ y: -4 }}
+
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
       className="group relative inline-flex shrink-0 items-center gap-2 self-center overflow-hidden rounded-xl bg-green px-3 py-2 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)] sm:self-stretch"
@@ -116,10 +124,12 @@ function Nav() {
         </nav>
         <a
           href="#cta"
+          onClick={() => track("click", "get_started")}
           className="rounded-full bg-gold px-4 py-1.5 text-xs font-bold tracking-wider text-accent-foreground shadow-gold"
         >
           GET STARTED
         </a>
+
       </div>
     </header>
   );
@@ -286,8 +296,10 @@ function Hero() {
                 <CtaButton
                   key={c.label}
                   cta={c}
+                  trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
                 />
               ))}
+
               <div className="flex justify-center lg:justify-start">
                 <TelegramAskButton />
               </div>
@@ -462,8 +474,10 @@ function FinalCta() {
             <CtaButton
               key={c.label}
               cta={c}
+              trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
             />
           ))}
+
           <TelegramAskButton />
         </div>
       </div>
@@ -619,7 +633,9 @@ function EbookSection() {
                   href={EBOOK_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track("click", "get_ebook_now")}
                   whileHover={{ y: -4 }}
+
                   whileTap={{ y: -1 }}
                   transition={{ type: "spring", stiffness: 320, damping: 22 }}
                   className="group relative inline-flex items-center gap-4 overflow-hidden rounded-2xl bg-gold px-6 py-4 text-accent-foreground shadow-gold transition-shadow hover:shadow-[0_20px_55px_-12px_oklch(0.85_0.16_88/0.8)]"
@@ -649,6 +665,11 @@ function EbookSection() {
 
 
 export function Landing() {
+  useEffect(() => {
+    trackPageLoad();
+    return trackSectionVisibility(["top", "ebook", "features", "testimonials", "cta"]);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
@@ -663,3 +684,4 @@ export function Landing() {
     </div>
   );
 }
+
