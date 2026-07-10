@@ -474,8 +474,10 @@ function FinalCta() {
             <CtaButton
               key={c.label}
               cta={c}
+              trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
             />
           ))}
+
           <TelegramAskButton />
         </div>
       </div>
