@@ -5,6 +5,8 @@ import logo from "@/assets/printezy-logo-transparent.png.asset.json";
 import telegramLogo from "@/assets/telegram-3d.png.asset.json";
 import trader from "@/assets/hero-trader.png.asset.json";
 import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
+import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
+
 
 const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
 const HERO_EBOOK_URL = "https://t.me/printezydollar/2053";
