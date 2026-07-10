@@ -124,10 +124,12 @@ function Nav() {
         </nav>
         <a
           href="#cta"
+          onClick={() => track("click", "get_started")}
           className="rounded-full bg-gold px-4 py-1.5 text-xs font-bold tracking-wider text-accent-foreground shadow-gold"
         >
           GET STARTED
         </a>
+
       </div>
     </header>
   );
