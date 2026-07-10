@@ -34,8 +34,12 @@ function CtaButton({ cta, large = false, onClick, trackName }: { cta: (typeof CT
   return (
     <motion.a
       href={cta.href}
-      onClick={onClick}
+      onClick={(e: MouseEvent<HTMLAnchorElement>) => {
+        if (trackName) track("click", trackName);
+        onClick?.(e);
+      }}
       target={cta.href.startsWith("#") ? undefined : "_blank"}
+
       rel={cta.href.startsWith("#") ? undefined : "noopener noreferrer"}
       whileHover={{ y: -4 }}
       whileTap={{ y: -1 }}
