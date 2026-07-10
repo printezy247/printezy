@@ -76,7 +76,9 @@ function TelegramAskButton() {
       href="https://t.me/m/JrLzPcStOTc9"
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => track("click", "ask_me_anything")}
       whileHover={{ y: -4 }}
+
       whileTap={{ y: -1 }}
       transition={{ type: "spring", stiffness: 320, damping: 22 }}
       className="group relative inline-flex shrink-0 items-center gap-2 self-center overflow-hidden rounded-xl bg-green px-3 py-2 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)] sm:self-stretch"
