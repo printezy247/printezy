@@ -665,6 +665,11 @@ function EbookSection() {
 
 
 export function Landing() {
+  useEffect(() => {
+    trackPageLoad();
+    return trackSectionVisibility(["top", "ebook", "features", "testimonials", "cta"]);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
@@ -679,3 +684,4 @@ export function Landing() {
     </div>
   );
 }
+
