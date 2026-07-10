@@ -631,7 +631,9 @@ function EbookSection() {
                   href={EBOOK_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => track("click", "get_ebook_now")}
                   whileHover={{ y: -4 }}
+
                   whileTap={{ y: -1 }}
                   transition={{ type: "spring", stiffness: 320, damping: 22 }}
                   className="group relative inline-flex items-center gap-4 overflow-hidden rounded-2xl bg-gold px-6 py-4 text-accent-foreground shadow-gold transition-shadow hover:shadow-[0_20px_55px_-12px_oklch(0.85_0.16_88/0.8)]"
