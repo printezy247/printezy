@@ -28,7 +28,7 @@ const CTAS = [
   },
 ];
 
-function CtaButton({ cta, large = false, onClick }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void }) {
+function CtaButton({ cta, large = false, onClick, trackName }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void; trackName?: string }) {
   const Icon = cta.icon;
   const isGold = cta.tone === "gold";
   return (
