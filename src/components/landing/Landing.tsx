@@ -9,7 +9,7 @@ import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 
 const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
-const HERO_EBOOK_URL = "https://t.me/printezybyjack/2154";
+const HERO_EBOOK_URL = "https://telegram.me/printezybyjack/2854";
 
 const CTAS = [
   {
