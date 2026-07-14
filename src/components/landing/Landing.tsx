@@ -8,7 +8,7 @@ import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 
-const EBOOK_URL = "https://t.me/m/r7Oig5BLMTk9";
+const EBOOK_URL = "https://telegram.me/m/r7Oig5BLMTk9";
 const HERO_EBOOK_URL = "https://telegram.me/printezybyjack/2854";
 
 const CTAS = [
@@ -73,7 +73,7 @@ function CtaButton({ cta, large = false, onClick, trackName }: { cta: (typeof CT
 function TelegramAskButton() {
   return (
     <motion.a
-      href="https://t.me/m/JrLzPcStOTc9"
+      href="https://telegram.me/m/JrLzPcStOTc9"
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track("click", "ask_me_anything")}
