@@ -1,687 +1,1237 @@
-import { type MouseEvent, useEffect } from "react";
-import { motion } from "framer-motion";
-import { BookOpen, LineChart, ArrowRight, Sparkles, Shield, Zap, Clock, Star, DollarSign, Euro, Bitcoin, TrendingUp, BarChart3, CandlestickChart, Smile, PartyPopper, Flame, Timer, Download, CheckCircle2, FileText } from "lucide-react";
-import logo from "@/assets/printezy-logo-transparent.png.asset.json";
-import telegramLogo from "@/assets/telegram-3d.png.asset.json";
-import trader from "@/assets/hero-trader.png.asset.json";
-import ebookCover from "@/assets/ebook-cover-v2.png.asset.json";
+import { useEffect, useState, type ReactNode } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  ChevronDown,
+  Compass,
+  Crown,
+  Gauge,
+  LineChart,
+  Lock,
+  Map,
+  MessageCircle,
+  Play,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+import logoAsset from "@/assets/printezy-logo-transparent.png.asset.json";
+import heroMonitorUrl from "@/assets/ezymap-hero-monitor.jpg?url";
+import jackSilhouetteUrl from "@/assets/jack-silhouette.jpg?url";
+import ebooksPedestalUrl from "@/assets/ebooks-pedestal.jpg?url";
+import telegramPhoneUrl from "@/assets/telegram-phone.jpg?url";
+
+const logo = { url: logoAsset.url };
+const heroMonitor = { url: heroMonitorUrl };
+const jackSilhouette = { url: jackSilhouetteUrl };
+const ebooksPedestal = { url: ebooksPedestalUrl };
+const telegramPhone = { url: telegramPhoneUrl };
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
+// -------- Links (placeholder — Vantage IB / Zarif to be confirmed) --------
+const LINKS = {
+  vantage: "https://www.vantagemarkets.com/en/open-live-account/?affid=printezy",
+  ezymapLite: "https://t.me/printezydollar",
+  proSoftware: "https://telegram.me/m/JrLzPcStOTc9",
+  proPartner: "https://telegram.me/m/JrLzPcStOTc9",
+  zarif: "https://telegram.me/m/JrLzPcStOTc9",
+  channel: "https://t.me/printezydollar",
+  ebook: "https://telegram.me/printezybyjack/2854",
+  tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
+};
 
-const EBOOK_URL = "https://telegram.me/m/r7Oig5BLMTk9";
-const HERO_EBOOK_URL = "https://telegram.me/printezybyjack/2854";
-
-const CTAS = [
-  {
-    label: "FREE EBOOK",
-    sub: "Traders' playbook, MC to grow",
-    icon: BookOpen,
-    href: HERO_EBOOK_URL,
-    tone: "gold" as const,
-  },
-  {
-    label: "PRO ANALYSIS",
-    sub: "Pro tools for precise analysis",
-    icon: LineChart,
-    href: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
-    tone: "green" as const,
-  },
+const NAV_ITEMS = [
+  { label: "EzyMap", href: "#ezymap" },
+  { label: "How it works", href: "#how" },
+  { label: "Products", href: "#ladder" },
+  { label: "Education", href: "#education" },
+  { label: "Results", href: "#results" },
+  { label: "FAQ", href: "#faq" },
 ];
 
-function CtaButton({ cta, large = false, onClick, trackName }: { cta: (typeof CTAS)[number]; large?: boolean; onClick?: (e: MouseEvent<HTMLAnchorElement>) => void; trackName?: string }) {
-  const Icon = cta.icon;
-  const isGold = cta.tone === "gold";
+// ============== NAV ==============
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
-    <motion.a
-      href={cta.href}
-      onClick={(e: MouseEvent<HTMLAnchorElement>) => {
-        if (trackName) track("click", trackName);
-        onClick?.(e);
-      }}
-      target={cta.href.startsWith("#") ? undefined : "_blank"}
-
-      rel={cta.href.startsWith("#") ? undefined : "noopener noreferrer"}
-      whileHover={{ y: -4 }}
-      whileTap={{ y: -1 }}
-      transition={{ type: "spring", stiffness: 320, damping: 22 }}
-      className={`group relative flex items-center gap-4 overflow-hidden rounded-2xl px-5 py-4 text-left transition-shadow ${
-        large ? "min-w-[260px]" : "w-full"
-      } ${
-        isGold
-          ? "bg-gold text-accent-foreground shadow-gold hover:shadow-[0_18px_50px_-12px_oklch(0.85_0.16_88/0.6)]"
-          : "bg-green text-primary-foreground shadow-green hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)]"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled ? "backdrop-blur-xl bg-background/70 border-b border-white/5" : "bg-transparent"
       }`}
     >
-      <span
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-          isGold ? "bg-black/15" : "bg-black/20"
-        }`}
-      >
-        <Icon className="h-5 w-5" strokeWidth={2.4} />
-      </span>
-      <span className="flex-1">
-        <span className="block text-sm font-bold tracking-[0.14em] font-display">{cta.label}</span>
-        <span className="block text-xs opacity-80 mt-0.5">{cta.sub}</span>
-      </span>
-      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-    </motion.a>
-  );
-}
-
-
-function TelegramAskButton() {
-  return (
-    <motion.a
-      href="https://telegram.me/m/JrLzPcStOTc9"
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => track("click", "ask_me_anything")}
-      whileHover={{ y: -4 }}
-
-      whileTap={{ y: -1 }}
-      transition={{ type: "spring", stiffness: 320, damping: 22 }}
-      className="group relative inline-flex shrink-0 items-center gap-2 self-center overflow-hidden rounded-xl bg-green px-3 py-2 text-left text-primary-foreground shadow-green transition-shadow hover:shadow-[0_18px_50px_-12px_oklch(0.72_0.20_150/0.6)] sm:self-stretch"
-    >
-      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-black/20">
-        <img
-          src={telegramLogo.url}
-          alt="Telegram"
-          className="h-4 w-4 object-contain"
-          loading="lazy"
-          width={512}
-          height={512}
-        />
-      </span>
-      <span className="text-[10px] font-bold tracking-[0.12em] font-display whitespace-nowrap">ASK ME ANYTHING</span>
-      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-    </motion.a>
-  );
-}
-
-function LogoMark({ className = "h-14 w-auto" }: { className?: string }) {
-  return (
-    <img
-      src={logo.url}
-      alt="PrintEzy logo"
-      className={`${className} object-contain select-none`}
-      draggable={false}
-    />
-  );
-}
-
-function Nav() {
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="mx-auto mt-3 flex max-w-6xl items-center justify-between rounded-full border border-border/60 bg-background/60 px-3 py-2 backdrop-blur-xl md:px-5">
-        <a href="#top" className="flex items-center gap-3">
-          <LogoMark className="h-16 w-auto" />
-          <span className="font-display text-lg font-bold tracking-tight text-foreground">PrintEzy</span>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16 sm:h-18">
+        <a href="#top" className="flex items-center gap-2 shrink-0" aria-label="PrintEzy home">
+          <img src={logo.url} alt="PrintEzy" className="h-9 sm:h-11 w-auto" />
         </a>
-        <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-          <a href="#testimonials" className="hover:text-foreground transition-colors">Testimonials</a>
+        <nav className="hidden lg:flex items-center gap-8">
+          {NAV_ITEMS.map((i) => (
+            <a
+              key={i.href}
+              href={i.href}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {i.label}
+            </a>
+          ))}
         </nav>
-        <a
-          href="#cta"
-          onClick={() => track("click", "get_started")}
-          className="rounded-full bg-gold px-4 py-1.5 text-xs font-bold tracking-wider text-accent-foreground shadow-gold"
-        >
-          GET STARTED
-        </a>
-
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href={LINKS.ezymapLite}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("click", "nav_lite")}
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs sm:text-sm text-foreground/90 hover:bg-white/5 transition-colors"
+          >
+            Get Lite Free
+          </a>
+          <a
+            href={LINKS.vantage}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("click", "nav_open_account")}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs sm:text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all shadow-green"
+          >
+            Open Account <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
+          <button
+            className="lg:hidden ml-1 grid h-9 w-9 place-items-center rounded-full border border-white/10"
+            aria-label="Menu"
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span className="sr-only">Menu</span>
+            <div className="space-y-1">
+              <span className="block h-px w-4 bg-foreground/80" />
+              <span className="block h-px w-4 bg-foreground/80" />
+            </div>
+          </button>
+        </div>
       </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="lg:hidden border-t border-white/5 bg-background/95 backdrop-blur-xl"
+          >
+            <div className="px-6 py-4 flex flex-col gap-3">
+              {NAV_ITEMS.map((i) => (
+                <a
+                  key={i.href}
+                  href={i.href}
+                  onClick={() => setOpen(false)}
+                  className="text-base text-foreground/90 py-2"
+                >
+                  {i.label}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
 
-/* ---------- Background decorations ---------- */
-
-function FintechBackdrop() {
-  // Subtle transparent fintech elements: candlesticks, mini chart, ticker lines
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.12]">
-      <CandlestickChart className="absolute top-[12%] left-[6%] h-24 w-24 text-accent" strokeWidth={1} />
-      <BarChart3 className="absolute bottom-[18%] right-[8%] h-28 w-28 text-primary" strokeWidth={1} />
-      <TrendingUp className="absolute top-[40%] right-[14%] h-16 w-16 text-accent" strokeWidth={1} />
-      <LineChart className="absolute bottom-[35%] left-[10%] h-20 w-20 text-primary" strokeWidth={1} />
-      <svg className="absolute inset-x-0 top-1/3 w-full opacity-50" height="60" viewBox="0 0 600 60" preserveAspectRatio="none">
-        <path d="M0 40 L60 30 L120 45 L180 20 L240 35 L300 15 L360 30 L420 10 L480 25 L540 8 L600 22" fill="none" stroke="currentColor" className="text-accent" strokeWidth="1" />
-      </svg>
-    </div>
-  );
-}
-
-function CurrencyBackdrop() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.07]">
-      <DollarSign className="absolute top-[8%] left-[5%] h-32 w-32 text-accent" strokeWidth={1.2} />
-      <Euro className="absolute top-[20%] right-[10%] h-24 w-24 text-primary" strokeWidth={1.2} />
-      <Bitcoin className="absolute bottom-[15%] left-[12%] h-28 w-28 text-accent" strokeWidth={1.2} />
-      <DollarSign className="absolute bottom-[30%] right-[18%] h-20 w-20 text-primary" strokeWidth={1.2} />
-      <Euro className="absolute top-[55%] left-[40%] h-16 w-16 text-accent" strokeWidth={1.2} />
-      <Bitcoin className="absolute top-[5%] right-[35%] h-14 w-14 text-primary" strokeWidth={1.2} />
-    </div>
-  );
-}
-
-function EmojiBackdrop() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.08]">
-      <Smile className="absolute top-[10%] left-[8%] h-20 w-20 text-accent" strokeWidth={1.3} />
-      <PartyPopper className="absolute top-[25%] right-[12%] h-24 w-24 text-primary" strokeWidth={1.3} />
-      <Smile className="absolute bottom-[18%] left-[15%] h-16 w-16 text-primary" strokeWidth={1.3} />
-      <PartyPopper className="absolute bottom-[30%] right-[8%] h-20 w-20 text-accent" strokeWidth={1.3} />
-      <Smile className="absolute top-[55%] left-[45%] h-14 w-14 text-accent" strokeWidth={1.3} />
-    </div>
-  );
-}
-
-function UrgencyBackdrop() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.1]">
-      <Flame className="absolute top-[10%] left-[6%] h-20 w-20 text-accent" strokeWidth={1.3} />
-      <Timer className="absolute top-[30%] right-[10%] h-24 w-24 text-primary" strokeWidth={1.3} />
-      <Flame className="absolute bottom-[15%] right-[15%] h-16 w-16 text-accent" strokeWidth={1.3} />
-      <Timer className="absolute bottom-[25%] left-[12%] h-20 w-20 text-primary" strokeWidth={1.3} />
-    </div>
-  );
-}
-
-/* ---------- Hero ---------- */
-
-function HeroBackdrop() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-hero">
-      <div className="absolute -top-32 -left-24 h-[420px] w-[420px] animate-float-slow rounded-full opacity-70 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
-      <div className="absolute -top-10 right-[-120px] h-[380px] w-[380px] animate-float-slower rounded-full opacity-60 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
-      <div className="absolute bottom-[-160px] left-1/3 h-[460px] w-[460px] animate-float-slow rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
-      <div
-        className="absolute bottom-0 left-1/2 h-[55%] w-[180%] -translate-x-1/2 opacity-30"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, oklch(0.68 0.18 155 / 0.35) 1px, transparent 1px), linear-gradient(to bottom, oklch(0.80 0.14 88 / 0.25) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-          transform: "perspective(700px) rotateX(60deg) translateZ(0)",
-          transformOrigin: "center top",
-          maskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
-        }}
-      />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,oklch(0.10_0.015_155)_100%)]" />
-    </div>
-  );
-}
-
-function HeroTraderBg() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 1.05 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.2, ease: "easeOut" }}
-      className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[55%] overflow-hidden"
-    >
-      {/* Green 3D glow halos */}
-      <div className="absolute inset-0 -z-10 scale-110 rounded-full blur-3xl opacity-60" style={{ background: "radial-gradient(circle at 50% 55%, oklch(0.72 0.22 150 / 0.45), transparent 60%)" }} />
-      <div className="absolute inset-0 -z-10 scale-125 rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle at 50% 70%, oklch(0.85 0.16 88 / 0.25), transparent 65%)" }} />
-
-      <img
-        src={trader.url}
-        alt="A professional trader overlooking the city — PrintEzy"
-        className="absolute right-0 top-1/2 h-[85%] w-auto max-w-none -translate-y-1/2 select-none object-contain object-right"
-        style={{
-          filter:
-            "drop-shadow(0 0 28px oklch(0.72 0.22 150 / 0.55)) drop-shadow(0 18px 36px oklch(0.10 0.015 155 / 0.8))",
-          transform: "translateY(-50%) perspective(1200px) rotateY(-4deg)",
-        }}
-        draggable={false}
-      />
-
-      {/* Gradient overlay so text stays readable */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
-
-      {/* Floating fintech accents */}
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-card absolute right-[12%] top-[22%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
-      >
-        <TrendingUp className="h-4 w-4 text-accent" strokeWidth={2.5} />
-        <span className="text-foreground">XAU/USD +2.4%</span>
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="glass-card absolute right-[8%] bottom-[26%] hidden items-center gap-2 rounded-2xl px-3 py-2 text-xs font-semibold shadow-elevated sm:flex"
-      >
-        <CandlestickChart className="h-4 w-4 text-primary" strokeWidth={2.5} />
-        <span className="text-foreground">Live setup</span>
-      </motion.div>
-    </motion.div>
-  );
-}
-
+// ============== HERO ==============
 function Hero() {
+  const reduce = useReducedMotion();
   return (
-    <section id="top" className="relative flex min-h-[100svh] items-center pt-28 pb-16 lg:pb-12">
-      <HeroBackdrop />
-      <HeroTraderBg />
-      <FintechBackdrop />
-      <div className="relative mx-auto w-full max-w-6xl px-5">
-        <div className="relative z-10 flex flex-col items-center lg:items-start text-center lg:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-3 py-1 text-xs font-medium text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Built for traders who hate wasting time
-            </div>
-            <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl">
-              Meet <span className="text-gradient-gold">Jack</span>.
-              <br />
-              Your edge in <span className="text-gradient-green">the markets</span>.
-            </h1>
-            <p className="mt-6 max-w-xl text-base text-muted-foreground md:text-lg lg:mx-0 mx-auto">
-              Clear, no-fluff trading resources for newcomers, full-time pros, and busy professionals who want results without screen-staring all day.
-            </p>
+    <section id="top" className="relative overflow-hidden pt-28 sm:pt-36 pb-16 sm:pb-24">
+      {/* ambient glow */}
+      <div className="absolute inset-0 -z-10 bg-hero" />
+      <div
+        aria-hidden
+        className="absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[900px] rounded-full opacity-40 blur-3xl"
+        style={{ background: "var(--gradient-glow)" }}
+      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs text-foreground/80 backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            EzyMap — trade the plan, not the noise
+          </div>
+          <h1 className="mt-6 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-foreground">
+            <span className="block">Map it.</span>
+            <span className="block text-gradient-green">Plan it.</span>
+            <span className="block text-gradient-gold">Print it.</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+            PrintEzy is a premium trading education and analytics ecosystem. EzyMap turns Gold and BTC charts into
+            structured setups with clear zones, alerts, and a live trade plan — so you stop guessing and start executing.
+          </p>
+          <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
+            <PrimaryCta
+              label="Open Vantage Account"
+              href={LINKS.vantage}
+              tone="green"
+              trackName="hero_open_account"
+              icon={ArrowUpRight}
+            />
+            <PrimaryCta
+              label="Get EzyMap Lite Free"
+              href={LINKS.ezymapLite}
+              tone="ghost"
+              trackName="hero_lite"
+              icon={Sparkles}
+            />
+            <PrimaryCta
+              label="Chat With Zarif"
+              href={LINKS.zarif}
+              tone="gold"
+              trackName="hero_zarif"
+              icon={MessageCircle}
+            />
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground/80">
+            No signup walls. Education-first. Trading involves risk.
+          </p>
+        </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
-              className="mt-8 flex flex-col gap-3 max-w-md mx-auto lg:mx-0 lg:max-w-sm"
-            >
-              {CTAS.map((c) => (
-                <CtaButton
-                  key={c.label}
-                  cta={c}
-                  trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
-                />
-              ))}
+        {/* Chart-in-monitor visual */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.2 }}
+          className="relative mt-14 sm:mt-20"
+        >
+          <div
+            aria-hidden
+            className="absolute -inset-x-10 -inset-y-6 blur-3xl opacity-60 -z-10"
+            style={{ background: "var(--gradient-glow)" }}
+          />
+          <div className="relative mx-auto max-w-5xl">
+            <img
+              src={heroMonitor.url}
+              alt="EzyMap chart with mapped supply and demand zones on a premium display"
+              width={1600}
+              height={1200}
+              className="w-full h-auto rounded-2xl"
+            />
+            {/* floating READY→LIVE chips */}
+            {!reduce && (
+              <>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 0.6 }}
+                  className="absolute left-4 top-6 sm:left-10 sm:top-14 rounded-xl border border-primary/30 bg-background/70 backdrop-blur-md px-3 py-2 text-xs shadow-green"
+                >
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Status</div>
+                  <div className="flex items-center gap-2 text-primary font-semibold">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> READY
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.3, duration: 0.6 }}
+                  className="absolute right-4 bottom-8 sm:right-10 sm:bottom-16 rounded-xl border border-accent/30 bg-background/70 backdrop-blur-md px-3 py-2 text-xs shadow-gold"
+                >
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Alert</div>
+                  <div className="text-accent font-semibold">Gold — Demand tap</div>
+                </motion.div>
+              </>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-              <div className="flex justify-center lg:justify-start">
-                <TelegramAskButton />
-              </div>
-            </motion.div>
+function PrimaryCta({
+  label,
+  href,
+  tone,
+  trackName,
+  icon: Icon,
+}: {
+  label: string;
+  href: string;
+  tone: "green" | "gold" | "ghost";
+  trackName: string;
+  icon: React.ComponentType<{ className?: string }>;
+}) {
+  const cls =
+    tone === "green"
+      ? "bg-primary text-primary-foreground shadow-green hover:brightness-110"
+      : tone === "gold"
+      ? "bg-accent text-accent-foreground shadow-gold hover:brightness-110"
+      : "border border-white/15 text-foreground hover:bg-white/5";
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => track("click", trackName)}
+      className={`group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-all ${cls}`}
+    >
+      {label}
+      <Icon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+    </a>
+  );
+}
 
-
-            <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <span className="font-display text-lg font-bold text-foreground">10k+</span> active traders
-              </div>
-              <div className="h-3 w-px bg-border" />
-              <div className="flex items-center gap-1.5">
-                <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-                <span className="font-display text-lg font-bold text-foreground">4.9</span> average rating
-              </div>
-              <div className="h-3 w-px bg-border" />
-              <div className="flex items-center gap-2">
-                <span className="font-display text-lg font-bold text-foreground">$0</span> to start
-              </div>
-            </div>
-          </motion.div>
+// ============== TRUST BAR ==============
+function TrustBar() {
+  const items = [
+    "Powered by TradingView",
+    "Regulated broker: Vantage",
+    "24/7 Telegram community",
+    "Education-first",
+    "No guaranteed profits",
+  ];
+  return (
+    <section className="border-y border-white/5 bg-surface/40 backdrop-blur-md py-6">
+      <div className="mx-auto max-w-7xl overflow-hidden px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs uppercase tracking-widest text-muted-foreground">
+          {items.map((t) => (
+            <span key={t} className="flex items-center gap-2">
+              <span className="h-1 w-1 rounded-full bg-primary" /> {t}
+            </span>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-const FEATURES = [
-  { icon: BookOpen, title: "Beginner-friendly playbooks", body: "Breakdowns of setups, risk, and psychology. Start from zero and ship your first trade with confidence." },
-  { icon: LineChart, title: "Pro-level market analysis", body: "Weekly deep dives on gold, FX, and crypto. Bias, key levels, and the trade plan sent before the session opens." },
-  { icon: Zap, title: "Live signals channel", body: "Curated entries with stop, target, and rationale. No spam 10-20 pips pings, only setups worth your screen time." },
-  { icon: Clock, title: "Designed for busy professionals", body: "Mobile-first formats. Build a real trading edge around a full-time career." },
-  { icon: Shield, title: "Risk-first by default", body: "Always focus on lot sizing and capital preservation. Compound, don't gamble." },
-  { icon: Sparkles, title: "Always free, always sharp", body: "Free premium ebook, analysis, channel, built to actually move your P&L." },
+// ============== SECTION SHELL ==============
+function Section({
+  id,
+  eyebrow,
+  title,
+  intro,
+  children,
+  center = false,
+}: {
+  id: string;
+  eyebrow?: string;
+  title: ReactNode;
+  intro?: ReactNode;
+  children: ReactNode;
+  center?: boolean;
+}) {
+  return (
+    <section id={id} className="relative py-20 sm:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className={`max-w-3xl ${center ? "mx-auto text-center" : ""}`}>
+          {eyebrow && (
+            <div className="text-xs uppercase tracking-[0.2em] text-primary/90 font-medium">{eyebrow}</div>
+          )}
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight">
+            {title}
+          </h2>
+          {intro && <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">{intro}</p>}
+        </div>
+        <div className="mt-12 sm:mt-16">{children}</div>
+      </div>
+    </section>
+  );
+}
+
+// ============== PROBLEM ==============
+function Problem() {
+  const items = [
+    { icon: Compass, title: "Signals with no context", desc: "Random pings without bias, structure, or risk framing." },
+    { icon: Zap, title: "Endless YouTube loops", desc: "Hours of content, zero repeatable process for tomorrow's session." },
+    { icon: Gauge, title: "Screen-staring days", desc: "Watching every tick while burning out from work and life." },
+    { icon: Lock, title: "Locked behind paywalls", desc: "Real edge hidden behind $500 courses that never load a chart." },
+  ];
+  return (
+    <Section
+      id="problem"
+      eyebrow="The problem"
+      title={<>Trading shouldn't feel <span className="text-gradient-gold">random</span>.</>}
+      intro="Most traders don't lose because they lack information — they lose because there's no structure to their day. PrintEzy exists to fix that."
+    >
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it) => (
+          <motion.div
+            key={it.title}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5 }}
+            className="glass-card rounded-2xl p-6"
+          >
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+              <it.icon className="h-5 w-5" />
+            </div>
+            <div className="mt-5 font-display text-lg">{it.title}</div>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{it.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// ============== EZYMAP INTRO WITH MODE SWITCHER ==============
+const MODES = [
+  {
+    key: "scalping",
+    label: "Scalping",
+    tf: "1m · 5m · 15m",
+    desc: "Fast micro-structure zones for intraday scalpers. Alerts fire the second price taps a mapped level.",
+    accent: "green" as const,
+  },
+  {
+    key: "intraday",
+    label: "Intraday",
+    tf: "15m · 1h · 4h",
+    desc: "Session-based bias with clear supply and demand mapped before New York open. Trade the plan, not the wick.",
+    accent: "gold" as const,
+  },
+  {
+    key: "swing",
+    label: "Swing",
+    tf: "4h · 1D · 1W",
+    desc: "Higher-timeframe map for busy professionals. Check charts once a day, execute when zones align.",
+    accent: "green" as const,
+  },
 ];
 
-function Features() {
+function EzyMapIntro() {
+  const [mode, setMode] = useState(MODES[1].key);
+  const active = MODES.find((m) => m.key === mode)!;
   return (
-    <section id="features" className="relative px-5 py-24 md:py-32">
-      <CurrencyBackdrop />
-      <div className="relative mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="font-display text-xs font-bold tracking-[0.22em] text-accent">/ WHAT YOU GET</p>
-          <h2 className="mt-3 text-3xl font-bold md:text-5xl">
-            A complete edge, <span className="text-gradient-gold">on the house</span>.
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            3 free pillars built to take newbie to pro without selling you a course.
-          </p>
-        </div>
-
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => {
-            const Icon = f.icon;
+    <Section
+      id="ezymap"
+      eyebrow="Introducing EzyMap"
+      title={
+        <>
+          One system.<br />
+          <span className="text-gradient-green">Three modes.</span> Every trader.
+        </>
+      }
+      intro="EzyMap is a TradingView-based mapping system that reads market structure across timeframes. Pick the mode that matches your life — the system does the heavy lifting."
+    >
+      <div className="grid lg:grid-cols-[1fr_1.2fr] gap-8 items-center">
+        {/* Mode switcher */}
+        <div className="space-y-3">
+          {MODES.map((m) => {
+            const isActive = m.key === mode;
             return (
-              <motion.div
-                key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                whileHover={{ y: -6 }}
-                className="glass-card group relative overflow-hidden rounded-3xl p-6 shadow-elevated"
+              <button
+                key={m.key}
+                onClick={() => {
+                  setMode(m.key);
+                  track("click", `ezymap_mode_${m.key}`);
+                }}
+                className={`w-full text-left rounded-2xl border p-5 transition-all ${
+                  isActive
+                    ? "border-primary/40 bg-primary/5 shadow-green"
+                    : "border-white/8 hover:border-white/15 bg-white/[0.02]"
+                }`}
               >
-                <div className="absolute -top-16 -right-16 h-40 w-40 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" style={{ background: "var(--gradient-gold-glow)" }} />
-                <div className="relative">
-                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold shadow-gold">
-                    <Icon className="h-5 w-5 text-accent-foreground" strokeWidth={2.4} />
+                <div className="flex items-center justify-between">
+                  <div className="font-display text-xl">{m.label}</div>
+                  <div className={`text-xs px-2 py-1 rounded-full ${isActive ? "bg-primary/20 text-primary" : "bg-white/5 text-muted-foreground"}`}>
+                    {m.tf}
                   </div>
-                  <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
                 </div>
-              </motion.div>
+                <AnimatePresence initial={false}>
+                  {isActive && (
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-3 text-sm text-muted-foreground leading-relaxed overflow-hidden"
+                    >
+                      {m.desc}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </button>
             );
           })}
         </div>
+        {/* Preview panel */}
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="glass-card rounded-3xl p-4 sm:p-6"
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-white/5">
+            <img src={heroMonitor.url} alt="EzyMap live chart preview" loading="lazy" className="w-full h-auto" />
+            <div className="absolute top-4 left-4 rounded-full bg-background/70 backdrop-blur-md border border-white/10 px-3 py-1 text-xs">
+              <span className={`font-semibold ${active.accent === "gold" ? "text-accent" : "text-primary"}`}>
+                {active.label} mode
+              </span>{" "}
+              <span className="text-muted-foreground">· {active.tf}</span>
+            </div>
+          </div>
+          <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+            {[
+              { k: "Bias", v: "Long" },
+              { k: "Zone", v: "Demand" },
+              { k: "Status", v: "READY" },
+            ].map((s) => (
+              <div key={s.k} className="rounded-xl border border-white/5 bg-white/[0.02] py-3">
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.k}</div>
+                <div className="mt-1 text-sm font-semibold text-foreground">{s.v}</div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
-    </section>
+    </Section>
   );
 }
 
-const TESTIMONIALS = [
-  {
-    name: "Budi D.",
-    role: "Software Engineer · Side trader",
-    quote: "The free ebook alone clarified more than 3 months of YouTube. Jack keeps me sharp without burning my evenings.",
-    initials: "BD",
-  },
-  {
-    name: "Priya R.",
-    role: "Full-time Trader",
-    quote: "Jack's analysis is the first thing I read before New York open. The bias calls are scary accurate and the risk framing is institutional-grade.",
-    initials: "PR",
-  },
-  {
-    name: "Luqman R.",
-    role: "Consultant · Father of two",
-    quote: "I have 20 minutes a day for markets. PrintEzy fits that life. I'm finally green for the year and not glued to a screen.",
-    initials: "LR",
-  },
-];
-
-function Testimonials() {
+// ============== HOW IT WORKS ==============
+function HowItWorks() {
+  const steps = [
+    { icon: Map, label: "MAP", desc: "Every session, EzyMap plots supply and demand zones across your chosen timeframes." },
+    { icon: Target, label: "READY", desc: "Setups that meet criteria light up as READY — bias, invalidation, and target all pre-defined." },
+    { icon: Zap, label: "LIVE", desc: "Price taps the zone → alert fires. You get entry, stop, and target on your phone." },
+    { icon: TrendingUp, label: "MANAGE", desc: "Move stops, take partials, or invalidate. The system tracks the trade so you don't have to." },
+  ];
   return (
-    <section id="testimonials" className="relative px-5 py-24 md:py-32">
-      <div className="absolute inset-x-0 top-1/2 h-[400px] -translate-y-1/2 opacity-40" style={{ background: "var(--gradient-glow)" }} />
-      <EmojiBackdrop />
-      <div className="relative mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="font-display text-xs font-bold tracking-[0.22em] text-accent">/ TRADERS TALKING</p>
-          <h2 className="mt-3 text-3xl font-bold md:text-5xl">
-            Real results from <span className="text-gradient-green">real traders</span>.
-          </h2>
-        </div>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {TESTIMONIALS.map((t, i) => (
-            <motion.figure
-              key={t.name}
+    <Section
+      id="how"
+      eyebrow="How it works"
+      title={
+        <>
+          A workflow, not a signal.<br />
+          <span className="text-gradient-green">Four steps.</span> Every session.
+        </>
+      }
+    >
+      <div className="relative">
+        <div aria-hidden className="absolute left-6 sm:left-1/2 sm:-translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-accent/30 to-transparent" />
+        <div className="space-y-8">
+          {steps.map((s, i) => (
+            <motion.div
+              key={s.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="glass-card flex flex-col gap-5 rounded-3xl p-6 shadow-elevated"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: i * 0.05 }}
+              className="relative pl-16 sm:pl-0 sm:grid sm:grid-cols-2 sm:gap-8 items-center"
             >
-              <div className="flex gap-1">
-                {[0, 1, 2, 3, 4].map((s) => (
-                  <Star key={s} className="h-4 w-4 fill-accent text-accent" />
-                ))}
+              <div className={`${i % 2 === 1 ? "sm:col-start-2" : ""} sm:text-right sm:pr-12`}>
+                <div className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 top-0 grid h-12 w-12 place-items-center rounded-full border border-primary/30 bg-background text-primary shadow-green">
+                  <s.icon className="h-5 w-5" />
+                </div>
+                <div className={`${i % 2 === 1 ? "sm:hidden" : ""}`}>
+                  <div className="text-xs uppercase tracking-[0.25em] text-primary/80">Step {i + 1}</div>
+                  <div className="mt-1 font-display text-2xl sm:text-3xl">{s.label}</div>
+                  <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-md sm:ml-auto">{s.desc}</p>
+                </div>
               </div>
-              <blockquote className="text-sm leading-relaxed text-foreground/90">"{t.quote}"</blockquote>
-              <figcaption className="flex items-center gap-3 pt-2 border-t border-border/50">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green font-display text-sm font-bold text-primary-foreground">
-                  {t.initials}
+              <div className={`hidden sm:block ${i % 2 === 1 ? "sm:col-start-1 sm:row-start-1 sm:text-right sm:pr-12" : "sm:pl-12"}`}>
+                {i % 2 === 1 ? (
+                  <div className="sm:text-right">
+                    <div className="text-xs uppercase tracking-[0.25em] text-primary/80">Step {i + 1}</div>
+                    <div className="mt-1 font-display text-2xl sm:text-3xl">{s.label}</div>
+                    <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-md sm:ml-auto">{s.desc}</p>
+                  </div>
+                ) : (
+                  <div className="glass-card rounded-2xl p-5 text-sm text-muted-foreground">
+                    <span className="text-primary font-semibold">Example:</span>{" "}
+                    {i === 0 && "Gold H4 — supply 2,435 / demand 2,388 mapped pre-London."}
+                    {i === 2 && "BTC 1H tapped 68,200 demand at 09:14 UTC. Alert sent."}
+                  </div>
+                )}
+              </div>
+              {i % 2 === 0 && (
+                <div className="sm:hidden mt-4">
+                  <div className="glass-card rounded-2xl p-4 text-xs text-muted-foreground">
+                    <span className="text-primary font-semibold">Example:</span>{" "}
+                    {i === 0 && "Gold H4 — supply 2,435 / demand 2,388 mapped pre-London."}
+                    {i === 2 && "BTC 1H tapped 68,200 demand at 09:14 UTC. Alert sent."}
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
-                </div>
-              </figcaption>
-            </motion.figure>
+              )}
+            </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }
 
-function FinalCta() {
+// ============== WORKFLOW DEMO ==============
+function WorkflowDemo() {
   return (
-    <section id="cta" className="relative px-5 py-20 md:py-28">
-      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-accent/25 p-8 shadow-elevated md:p-14" style={{ background: "linear-gradient(135deg, oklch(0.22 0.04 155) 0%, oklch(0.14 0.02 155) 100%)" }}>
-        <UrgencyBackdrop />
-        <div className="absolute -top-24 -right-20 h-72 w-72 rounded-full opacity-60 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
-        <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full opacity-50 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
-
-        <div className="relative text-center">
-          <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
-            <Flame className="h-3.5 w-3.5" strokeWidth={2.5} />
-            Limited spots this week
+    <Section
+      id="demo"
+      eyebrow="See it live"
+      title={<>Before EzyMap. <span className="text-gradient-green">After EzyMap.</span></>}
+      intro="Same chart. Same market. Two very different states of mind."
+    >
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="glass-card rounded-3xl p-5">
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">Before</div>
+          <div className="mt-1 font-display text-xl">Blank chart. Blank plan.</div>
+          <div className="mt-5 aspect-[4/3] rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 grid place-items-center relative overflow-hidden">
+            <svg viewBox="0 0 300 200" className="w-full h-full opacity-40">
+              <path d="M0 140 L30 130 L60 150 L90 120 L120 135 L150 100 L180 115 L210 90 L240 110 L270 80 L300 95" stroke="oklch(0.7 0.02 155)" strokeWidth="1.5" fill="none" />
+            </svg>
+            <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">"Where do I even enter?"</div>
           </div>
-          <h2 className="font-display text-3xl font-bold md:text-5xl">
-            Pick your <span className="text-gradient-gold">free starter</span>.
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            No cards, no commitments. Just the tools traders actually use.
+        </div>
+        <div className="glass-card rounded-3xl p-5 relative overflow-hidden">
+          <div aria-hidden className="absolute -top-20 -right-20 h-60 w-60 rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
+          <div className="text-xs uppercase tracking-widest text-primary">After</div>
+          <div className="mt-1 font-display text-xl">Mapped. Ready. Executed.</div>
+          <div className="mt-5 rounded-2xl overflow-hidden border border-primary/20">
+            <img src={heroMonitor.url} alt="EzyMap after view" loading="lazy" className="w-full h-auto" />
+          </div>
+        </div>
+      </div>
+      <div className="mt-8 flex flex-wrap gap-3 justify-center">
+        <a
+          href={LINKS.ezymapLite}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track("click", "demo_lite")}
+          className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm hover:bg-white/5"
+        >
+          <Play className="h-4 w-4" /> See a live example on Telegram
+        </a>
+      </div>
+    </Section>
+  );
+}
+
+// ============== PRODUCT LADDER ==============
+function ProductLadder() {
+  const tiers = [
+    {
+      name: "EzyMap Lite",
+      price: "Free",
+      tag: "Start here",
+      desc: "Daily mapped charts on our public Telegram. See the workflow in action, zero commitment.",
+      features: [
+        "Daily Gold + BTC bias post",
+        "Sample mapped setups",
+        "Educational breakdowns",
+        "Community discussion",
+      ],
+      cta: { label: "Join Free Channel", href: LINKS.ezymapLite, tone: "ghost" as const, track: "ladder_lite" },
+      highlight: false,
+    },
+    {
+      name: "EzyMap Pro Software",
+      price: "$29",
+      priceNote: "/ month · or $69 lifetime",
+      tag: "Best for self-trained",
+      desc: "The TradingView indicator suite. Your charts, your entries, our mapping engine.",
+      features: [
+        "TradingView indicator access",
+        "All 3 modes (Scalping / Intraday / Swing)",
+        "READY & LIVE alerts",
+        "Private strategy channel",
+        "Setup videos + install support",
+      ],
+      cta: { label: "Get Software Access", href: LINKS.proSoftware, tone: "green" as const, track: "ladder_pro_software" },
+      highlight: true,
+    },
+    {
+      name: "EzyMap Pro Partner",
+      price: "Free",
+      priceNote: "with Vantage partner account",
+      tag: "Best for hands-on learners",
+      desc: "Full software + mentored community access when you open a live account through our Vantage partner link.",
+      features: [
+        "Everything in Pro Software",
+        "Priority partner Telegram",
+        "Zarif onboarding call",
+        "Trade reviews with Jack",
+        "Ongoing plan refinement",
+      ],
+      cta: { label: "Open Vantage Account", href: LINKS.vantage, tone: "gold" as const, track: "ladder_partner" },
+      highlight: false,
+      badge: "Partner offer",
+    },
+  ];
+  return (
+    <Section
+      id="ladder"
+      eyebrow="Choose your access"
+      title={<>Three ways in. <span className="text-gradient-gold">One system.</span></>}
+      intro="Start free on Telegram, level up to the Pro software, or unlock full mentorship as a Vantage partner. No hidden upsells."
+    >
+      <div className="grid lg:grid-cols-3 gap-5">
+        {tiers.map((t) => (
+          <motion.div
+            key={t.name}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5 }}
+            className={`relative rounded-3xl p-7 border transition-all ${
+              t.highlight
+                ? "border-primary/40 bg-gradient-to-b from-primary/10 to-transparent shadow-green"
+                : "border-white/8 bg-white/[0.02] glass-card"
+            }`}
+          >
+            {t.badge && (
+              <div className="absolute -top-3 right-6 rounded-full bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-widest px-3 py-1 shadow-gold">
+                {t.badge}
+              </div>
+            )}
+            <div className="text-xs uppercase tracking-widest text-muted-foreground">{t.tag}</div>
+            <div className="mt-2 font-display text-2xl">{t.name}</div>
+            <div className="mt-4 flex items-baseline gap-2">
+              <span className="font-display text-4xl">{t.price}</span>
+              {t.priceNote && <span className="text-xs text-muted-foreground">{t.priceNote}</span>}
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
+            <ul className="mt-6 space-y-2.5">
+              {t.features.map((f) => (
+                <li key={f} className="flex items-start gap-2.5 text-sm">
+                  <Check className={`h-4 w-4 mt-0.5 shrink-0 ${t.highlight ? "text-primary" : "text-primary/70"}`} />
+                  <span className="text-foreground/90">{f}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7">
+              <PrimaryCta
+                label={t.cta.label}
+                href={t.cta.href}
+                tone={t.cta.tone}
+                trackName={t.cta.track}
+                icon={ArrowRight}
+              />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      <p className="mt-8 text-center text-xs text-muted-foreground max-w-2xl mx-auto">
+        Trading CFDs carries risk. Vantage is an independent regulated broker; PrintEzy earns partner rebates on live
+        accounts opened through our link, at no extra cost to you.
+      </p>
+    </Section>
+  );
+}
+
+// ============== PARTNER JOURNEY ==============
+function PartnerJourney() {
+  const steps = [
+    { n: 1, t: "Open Vantage account", d: "Click our partner link. Standard account, 3-min form." },
+    { n: 2, t: "Verify KYC", d: "Upload ID + proof of address inside Vantage's secure portal." },
+    { n: 3, t: "Fund your account", d: "Any amount to start. We recommend a size you're comfortable losing." },
+    { n: 4, t: "Send us your account #", d: "DM Zarif — we tag your account to the partner program." },
+    { n: 5, t: "Unlock EzyMap Pro", d: "Full software + private partner channel activated within 24h." },
+    { n: 6, t: "Trade the plan", d: "Onboarding call with Zarif, ongoing reviews with Jack." },
+  ];
+  return (
+    <Section
+      id="partner"
+      eyebrow="Partner journey"
+      title={<>From signup to <span className="text-gradient-gold">first mapped trade</span> — in 24 hours.</>}
+    >
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {steps.map((s) => (
+          <div key={s.n} className="glass-card rounded-2xl p-6">
+            <div className="flex items-center gap-3">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-accent/15 text-accent font-bold">
+                {s.n}
+              </div>
+              <div className="font-display text-lg">{s.t}</div>
+            </div>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{s.d}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-8 text-center">
+        <PrimaryCta
+          label="Start Partner Signup"
+          href={LINKS.vantage}
+          tone="gold"
+          trackName="partner_start"
+          icon={ArrowUpRight}
+        />
+      </div>
+      <p className="mt-4 text-center text-xs text-muted-foreground">
+        We never ask for your password, OTP, or bank details. All funds stay in your Vantage account.
+      </p>
+    </Section>
+  );
+}
+
+// ============== EDUCATION ==============
+function Education() {
+  const cards = [
+    { icon: BookOpen, t: "Ebooks", d: "Structured PDFs on price action, risk, and psychology.", href: "#ebooks", track: "edu_ebooks" },
+    { icon: LineChart, t: "Weekly Analysis", d: "Deep dives on Gold, FX, and BTC before session open.", href: LINKS.channel, track: "edu_analysis" },
+    { icon: Target, t: "Trade Reviews", d: "Winners and losers broken down with what to repeat and what to cut.", href: LINKS.channel, track: "edu_reviews" },
+    { icon: MessageCircle, t: "Community Q&A", d: "Ask any question. Get answered by Jack or the partner desk.", href: LINKS.zarif, track: "edu_qa" },
+  ];
+  return (
+    <Section
+      id="education"
+      eyebrow="Education ecosystem"
+      title={<>Learn the <span className="text-gradient-green">why</span>, not just the entry.</>}
+      intro="EzyMap does the mapping. Our education stack teaches you the reasoning behind every zone, entry, and exit — so you build a real edge, not a dependency."
+    >
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {cards.map((c) => (
+          <a
+            key={c.t}
+            href={c.href}
+            target={c.href.startsWith("#") ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            onClick={() => track("click", c.track)}
+            className="glass-card rounded-2xl p-6 group hover:border-primary/30 transition-colors"
+          >
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/10 text-primary">
+              <c.icon className="h-5 w-5" />
+            </div>
+            <div className="mt-5 font-display text-lg">{c.t}</div>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{c.d}</p>
+            <div className="mt-4 inline-flex items-center gap-1 text-xs text-primary group-hover:gap-2 transition-all">
+              Explore <ArrowRight className="h-3.5 w-3.5" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// ============== EBOOK LIBRARY ==============
+function EbookLibrary() {
+  const books = [
+    { t: "Technical Analysis", sub: "20-page foundation", status: "Available", href: LINKS.ebook, track: "ebook_ta" },
+    { t: "Mapping Like a Pro", sub: "Advanced EzyMap workflow", status: "Available", href: LINKS.ebook, track: "ebook_map" },
+    { t: "The Small Account Playbook", sub: "Grow $500 to $5K responsibly", status: "Coming soon", href: "#", track: "ebook_small" },
+  ];
+  return (
+    <Section
+      id="ebooks"
+      eyebrow="Ebook library"
+      title={<>Books that <span className="text-gradient-gold">actually change</span> how you trade.</>}
+    >
+      <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
+        <div className="relative rounded-3xl overflow-hidden border border-white/5">
+          <img src={ebooksPedestal.url} alt="PrintEzy premium ebook covers" loading="lazy" className="w-full h-auto" />
+        </div>
+        <div className="space-y-4">
+          {books.map((b) => {
+            const disabled = b.status === "Coming soon";
+            return (
+              <a
+                key={b.t}
+                href={disabled ? "#ebooks" : b.href}
+                target={disabled ? undefined : "_blank"}
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (disabled) {
+                    e.preventDefault();
+                    return;
+                  }
+                  track("click", b.track);
+                }}
+                className={`flex items-center justify-between gap-4 rounded-2xl border p-5 transition-all ${
+                  disabled
+                    ? "border-white/5 bg-white/[0.02] cursor-not-allowed"
+                    : "border-white/8 bg-white/[0.02] hover:border-primary/30 hover:bg-white/[0.04]"
+                }`}
+              >
+                <div className="min-w-0">
+                  <div className="font-display text-lg truncate">{b.t}</div>
+                  <div className="text-sm text-muted-foreground truncate">{b.sub}</div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className={`text-xs px-2.5 py-1 rounded-full ${disabled ? "bg-white/5 text-muted-foreground" : "bg-primary/15 text-primary"}`}>
+                    {b.status}
+                  </span>
+                  {!disabled && <ArrowRight className="h-4 w-4 text-primary" />}
+                </div>
+              </a>
+            );
+          })}
+          <p className="text-xs text-muted-foreground">
+            All ebooks delivered instantly via Telegram. No signup, no email spam.
           </p>
         </div>
+      </div>
+    </Section>
+  );
+}
 
-        <div className="relative mx-auto mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center max-w-4xl">
-          {CTAS.map((c) => (
-            <CtaButton
-              key={c.label}
-              cta={c}
-              trackName={c.label.toLowerCase().replace(/\s+/g, "_")}
-            />
-          ))}
-
-          <TelegramAskButton />
+// ============== JACK BRAND ==============
+function JackBrand() {
+  return (
+    <section id="jack" className="relative overflow-hidden py-24 sm:py-32">
+      <div className="absolute inset-0 -z-10">
+        <img src={jackSilhouette.url} alt="" aria-hidden loading="lazy" className="h-full w-full object-cover object-center opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent" />
+      </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <div className="text-xs uppercase tracking-[0.25em] text-primary/90">Who runs PrintEzy</div>
+          <h2 className="mt-3 font-display text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight">
+            The trader is anonymous.<br />
+            <span className="text-gradient-gold">The results are not.</span>
+          </h2>
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
+            Jack has traded Gold, FX, and crypto for over a decade — full-time, private, no ego, no gurus.
+            PrintEzy exists because the tools that work at his desk shouldn't stay locked behind a $2,000
+            course. Zarif runs partnerships and onboarding. That's the whole team.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <PrimaryCta label="Read Weekly Analysis" href={LINKS.channel} tone="ghost" trackName="jack_channel" icon={LineChart} />
+            <PrimaryCta label="DM Zarif" href={LINKS.zarif} tone="gold" trackName="jack_zarif" icon={MessageCircle} />
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+// ============== RESULTS GALLERY ==============
+type ResultCase = {
+  id: string;
+  asset: "Gold" | "BTC";
+  outcome: "Win" | "Loss" | "Invalidated" | "No Entry";
+  title: string;
+  rr: string;
+  date: string;
+  note: string;
+};
+const CASES: ResultCase[] = [
+  { id: "1", asset: "Gold", outcome: "Win", title: "London demand tap", rr: "+3.2R", date: "12 Nov", note: "Mapped H4 demand, LIVE alert on M15 bullish shift." },
+  { id: "2", asset: "BTC", outcome: "Win", title: "Weekly supply rejection", rr: "+2.1R", date: "07 Nov", note: "Short from mapped supply, partial at first target." },
+  { id: "3", asset: "Gold", outcome: "Loss", title: "NFP volatility stop", rr: "-1R", date: "01 Nov", note: "Setup valid, news wick invalidated plan." },
+  { id: "4", asset: "BTC", outcome: "Invalidated", title: "Range break", rr: "0R", date: "28 Oct", note: "Zone broke pre-entry. Plan cancelled, no trade." },
+  { id: "5", asset: "Gold", outcome: "No Entry", title: "Pre-Asia gap", rr: "0R", date: "22 Oct", note: "Price never tapped mapped zone. Discipline > FOMO." },
+  { id: "6", asset: "BTC", outcome: "Win", title: "Intraday demand", rr: "+1.8R", date: "18 Oct", note: "Intraday mode, filled in London, closed NY." },
+];
+const FILTERS: Array<ResultCase["asset"] | ResultCase["outcome"] | "All"> = ["All", "Gold", "BTC", "Win", "Loss", "Invalidated", "No Entry"];
 
+function ResultsGallery() {
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
+  const visible = CASES.filter((c) => filter === "All" || c.asset === filter || c.outcome === filter);
+  return (
+    <Section
+      id="results"
+      eyebrow="Transparent results"
+      title={<>Wins. Losses. <span className="text-gradient-green">No-entries too.</span></>}
+      intro="We publish the misses along with the winners. A trading system that only shows greens is a marketing funnel, not an edge."
+    >
+      <div className="flex flex-wrap gap-2 mb-8">
+        {FILTERS.map((f) => (
+          <button
+            key={f}
+            onClick={() => {
+              setFilter(f);
+              track("click", `results_filter_${f}`);
+            }}
+            className={`text-xs px-3.5 py-1.5 rounded-full border transition-colors ${
+              filter === f ? "border-primary bg-primary/15 text-primary" : "border-white/10 text-muted-foreground hover:text-foreground hover:border-white/20"
+            }`}
+          >
+            {f}
+          </button>
+        ))}
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <AnimatePresence mode="popLayout">
+          {visible.map((c) => (
+            <motion.div
+              key={c.id}
+              layout
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{ duration: 0.3 }}
+              className="glass-card rounded-2xl p-5"
+            >
+              <div className="flex items-center justify-between text-xs">
+                <span className="px-2 py-1 rounded-full bg-white/5 text-muted-foreground">{c.asset}</span>
+                <span
+                  className={`px-2 py-1 rounded-full font-semibold ${
+                    c.outcome === "Win"
+                      ? "bg-primary/15 text-primary"
+                      : c.outcome === "Loss"
+                      ? "bg-destructive/15 text-destructive"
+                      : "bg-white/5 text-muted-foreground"
+                  }`}
+                >
+                  {c.outcome}
+                </span>
+              </div>
+              <div className="mt-4 font-display text-lg">{c.title}</div>
+              <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="font-mono">{c.rr}</span>
+                <span>·</span>
+                <span>{c.date}</span>
+              </div>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{c.note}</p>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+      <p className="mt-8 text-xs text-muted-foreground text-center max-w-2xl mx-auto">
+        Historical setups are shown for education. Past performance does not indicate future results. Trade at your own risk.
+      </p>
+    </Section>
+  );
+}
+
+// ============== TELEGRAM COMMUNITY ==============
+function TelegramCommunity() {
+  return (
+    <Section
+      id="telegram"
+      eyebrow="Community"
+      title={<>Ten thousand traders. <span className="text-gradient-green">One Telegram.</span></>}
+      intro="Daily maps, live commentary, and real conversations. No spam, no scam DMs — a moderated space for traders who take this seriously."
+    >
+      <div className="grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center">
+        <div className="order-2 lg:order-1 space-y-4">
+          {[
+            { t: "10,000+ members", d: "And growing weekly, organically." },
+            { t: "Moderated 24/7", d: "Zarif and the team keep the noise out." },
+            { t: "Daily bias posts", d: "Pre-Asia, pre-London, pre-New York." },
+            { t: "Zero paid signals", d: "Everything is transparent. Nothing hidden." },
+          ].map((f) => (
+            <div key={f.t} className="flex items-start gap-3">
+              <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <div className="font-semibold text-foreground">{f.t}</div>
+                <div className="text-sm text-muted-foreground">{f.d}</div>
+              </div>
+            </div>
+          ))}
+          <div className="pt-4">
+            <PrimaryCta label="Join Telegram Channel" href={LINKS.channel} tone="green" trackName="telegram_join" icon={ArrowUpRight} />
+          </div>
+        </div>
+        <div className="order-1 lg:order-2 relative">
+          <div aria-hidden className="absolute inset-0 blur-3xl opacity-40 -z-10" style={{ background: "var(--gradient-glow)" }} />
+          <img src={telegramPhone.url} alt="PrintEzy Telegram channel on mobile" loading="lazy" className="w-full max-w-md mx-auto h-auto" />
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+// ============== FAQ ==============
+const FAQS = [
+  { q: "What is EzyMap?", a: "EzyMap is a TradingView-based mapping system that plots supply and demand zones and gives you READY / LIVE signals across scalping, intraday, and swing timeframes." },
+  { q: "Is EzyMap a signal service?", a: "No. It's a workflow. You still make the final decision on every trade. We give you the map, the bias, and the alert — you decide if it fits your plan." },
+  { q: "Do I need Vantage to use EzyMap?", a: "Only for the Pro Partner tier. Lite is free on Telegram, and Pro Software works on any broker you connect to TradingView." },
+  { q: "How much does the software cost?", a: "$29/month or $69 lifetime. Free when you open a live account through our Vantage partner link." },
+  { q: "Do you take my broker password?", a: "Never. We never ask for passwords, OTPs, or banking details. All funds stay in your own broker account." },
+  { q: "What markets do you cover?", a: "Primary: Gold (XAUUSD) and BTC. Also FX majors and select indices in the private channel." },
+  { q: "What timeframes work best?", a: "All three modes are supported. Busy pros love Swing, day traders use Intraday, active desks use Scalping." },
+  { q: "Do you guarantee profits?", a: "No — and anyone who does is lying. Trading involves substantial risk. Our job is to give you a repeatable process, not a guaranteed outcome." },
+  { q: "Who is Jack?", a: "A private full-time trader with over a decade in Gold, FX, and crypto. Faceless by choice — the process speaks louder than the personality." },
+  { q: "Who is Zarif?", a: "Zarif runs partnerships, onboarding, and community. Every Vantage partner gets a direct onboarding chat with him." },
+  { q: "Is this course-based?", a: "No. There's no locked video library. Education is delivered continuously via ebooks, weekly analysis, and live channel breakdowns." },
+  { q: "How do I get the ebooks?", a: "Free on Telegram. No email, no funnel, no upsell." },
+  { q: "Can I cancel Pro Software?", a: "Yes. Monthly is cancel-anytime. Lifetime is a one-off." },
+  { q: "Is there a refund policy?", a: "Software: 7-day refund if the indicator doesn't install on your TradingView. Partner tier: free, so no refund needed." },
+  { q: "What if I'm a total beginner?", a: "Start with the free ebook + Lite channel for two weeks. Once the workflow clicks, upgrade." },
+  { q: "How much time do I need daily?", a: "Swing mode: 10–15 minutes. Intraday: 30–60 minutes around session open. Scalping: full attention during your session." },
+  { q: "What broker do you recommend?", a: "Vantage (our partner) — regulated, tight spreads, TradingView integration. Any decent broker works for the software though." },
+  { q: "Do you offer live sessions?", a: "Weekly recap and pre-session bias in the private partner channel. No fluffy webinars." },
+  { q: "How are alerts delivered?", a: "TradingView push notifications, browser, and Telegram forwards inside the private channel." },
+  { q: "Can I use my own strategy alongside?", a: "Absolutely. Many users combine EzyMap zones with their own confluence." },
+  { q: "Where are you based?", a: "The team operates across Southeast Asia. Vantage handles regulation and custody." },
+  { q: "How do I contact support?", a: "Direct-message Zarif on Telegram. Real human, usually within a few hours." },
+];
+
+function Faq() {
+  return (
+    <Section id="faq" eyebrow="Answers" title={<>Frequently asked, <span className="text-gradient-green">honestly answered</span>.</>}>
+      <div className="max-w-3xl mx-auto divide-y divide-white/5 rounded-2xl border border-white/8 bg-white/[0.02]">
+        {FAQS.map((f, i) => (
+          <details key={i} className="group px-5 py-4 open:bg-white/[0.02]">
+            <summary
+              className="flex items-center justify-between cursor-pointer list-none gap-4"
+              onClick={() => track("click", `faq_${i}`)}
+            >
+              <span className="font-medium text-foreground">{f.q}</span>
+              <ChevronDown className="h-4 w-4 text-muted-foreground group-open:rotate-180 transition-transform" />
+            </summary>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+// ============== FINAL CTA ==============
+function FinalCta() {
+  return (
+    <section id="final" className="relative py-24 sm:py-32 overflow-hidden">
+      <div aria-hidden className="absolute inset-0 -z-10 bg-hero" />
+      <div aria-hidden className="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/5 px-3.5 py-1.5 text-xs text-accent">
+          <Crown className="h-3.5 w-3.5" /> Your next session, mapped
+        </div>
+        <h2 className="mt-6 font-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight">
+          Stop guessing.<br />
+          <span className="text-gradient-gold">Start printing.</span>
+        </h2>
+        <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+          Pick your entry point. Free channel today, Pro software tomorrow, or unlock everything as a Vantage partner.
+        </p>
+        <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
+          <PrimaryCta label="Open Vantage Account" href={LINKS.vantage} tone="green" trackName="final_open" icon={ArrowUpRight} />
+          <PrimaryCta label="Get EzyMap Lite Free" href={LINKS.ezymapLite} tone="ghost" trackName="final_lite" icon={Sparkles} />
+          <PrimaryCta label="Chat With Zarif" href={LINKS.zarif} tone="gold" trackName="final_zarif" icon={MessageCircle} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============== FOOTER ==============
 function Footer() {
   return (
-    <footer className="border-t border-border/60 px-5 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-xs text-muted-foreground md:flex-row">
-        <div className="flex items-center gap-2 font-display font-semibold text-foreground">
-          <LogoMark className="h-12 w-auto" />
-          Print<span className="text-gradient-gold">Ezy</span>
+    <footer className="border-t border-white/5 bg-background/80 pt-16 pb-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-4">
+          <div className="md:col-span-2">
+            <img src={logo.url} alt="PrintEzy" className="h-10 w-auto" />
+            <p className="mt-4 text-sm text-muted-foreground max-w-sm">
+              PrintEzy is a trading education and analytics ecosystem. Map it. Plan it. Print it.
+            </p>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Product</div>
+            <ul className="space-y-2 text-sm">
+              <li><a href="#ezymap" className="hover:text-primary">EzyMap</a></li>
+              <li><a href="#ladder" className="hover:text-primary">Pricing</a></li>
+              <li><a href="#ebooks" className="hover:text-primary">Ebooks</a></li>
+              <li><a href="#results" className="hover:text-primary">Results</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
+            <ul className="space-y-2 text-sm">
+              <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
+              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM Zarif</a></li>
+              <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
+              <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
+            </ul>
+          </div>
         </div>
-        <p>© {new Date().getFullYear()} PrintEzy. Trade responsibly. Not financial advice.</p>
+        <div className="mt-12 pt-8 border-t border-white/5 text-xs text-muted-foreground space-y-3">
+          <p>
+            <strong className="text-foreground/80">Risk disclosure.</strong> Trading foreign exchange, commodities, and
+            cryptocurrencies carries a high level of risk and may not be suitable for all investors. Leverage can work
+            for and against you. Before deciding to trade, carefully consider your objectives, experience, and risk
+            appetite. Past performance is not indicative of future results.
+          </p>
+          <p>
+            PrintEzy provides education and analytics only. We are not a financial advisor, broker, or fund manager.
+            PrintEzy earns partner rebates on live accounts opened through our Vantage partner link at no additional
+            cost to you. Nothing on this site constitutes financial advice.
+          </p>
+          <p>© {new Date().getFullYear()} PrintEzy. All rights reserved.</p>
+        </div>
       </div>
     </footer>
   );
 }
 
-const EBOOK_TOC = [
-  { n: "01", title: "Why Use Technical Analysis", body: "The trader's edge, it's like reading the market's story." },
-  { n: "02", title: "Support & Resistance", body: "Spot demand zones, supply walls, and clean flip levels." },
-  { n: "03", title: "Trendlines", body: "Dynamic support & resistance the pros actually respect." },
-  { n: "04", title: "Chart Patterns", body: "Reversals & continuations spot" },
-  { n: "05", title: "Candlestick Patterns", body: "Single & multi-candle signals: Doji, Hammer, Engulfing, Stars." },
-  { n: "06", title: "Key Points & Pitfalls", body: "Context, confirmation, and how not to get faked out." },
-];
-
-function EbookSection() {
+// ============== FLOATING MOBILE CTA ==============
+function FloatingCta() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 600);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
-    <section id="ebook" className="relative scroll-mt-24 px-5 py-20 md:py-28">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 left-1/4 h-[380px] w-[380px] rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
-        <div className="absolute -bottom-40 right-1/4 h-[380px] w-[380px] rounded-full opacity-30 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
-      </div>
-      <div className="relative mx-auto max-w-6xl">
-        {/* Holo card wrapper */}
-        <div
-          className="relative overflow-hidden rounded-[2rem] border border-accent/25 bg-background/40 p-6 shadow-elevated backdrop-blur-xl md:p-10 lg:p-14"
-          style={{
-            background:
-              "linear-gradient(135deg, oklch(0.22 0.04 155 / 0.75) 0%, oklch(0.14 0.02 155 / 0.85) 100%)",
-          }}
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          className="fixed bottom-4 inset-x-4 z-40 sm:hidden"
         >
-          {/* Rotating conic aura */}
-          <div
-            className="pointer-events-none absolute -inset-40 opacity-25 animate-conic-spin"
-            style={{
-              background:
-                "conic-gradient(from 0deg, transparent 0deg, oklch(0.85 0.16 88 / 0.5) 60deg, transparent 120deg, oklch(0.72 0.20 150 / 0.5) 220deg, transparent 300deg)",
-              filter: "blur(60px)",
-            }}
-          />
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-
-          <div className="relative grid gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-14">
-            {/* Cover */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="relative mx-auto w-full max-w-xs md:max-w-sm"
-            >
-              <div className="absolute -inset-6 rounded-[2rem] opacity-70 blur-3xl" style={{ background: "var(--gradient-gold-glow)" }} />
-              <motion.div
-                whileHover={{ rotateY: -8, rotateX: 5, y: -6 }}
-                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-                className="group relative overflow-hidden rounded-[1.5rem] border border-accent/40 shadow-elevated"
-              >
-                <img
-                  src={ebookCover.url}
-                  alt="PrintEzy Technical Analysis — free trading ebook cover"
-                  className="block h-auto w-full object-cover"
-                  width={1200}
-                  height={1500}
-                  loading="lazy"
-                />
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/40 to-transparent" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 mix-blend-overlay" />
-                {/* Shimmer sweep */}
-                <div className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-              </motion.div>
-              <div className="absolute -bottom-3 -right-3 rotate-3 rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-accent-foreground shadow-gold font-display">
-                FREE · PDF
-              </div>
-            </motion.div>
-
-            {/* Content */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <p className="font-display text-xs font-bold tracking-[0.22em] text-accent">/ FREE EBOOK</p>
-              <h2 className="mt-3 text-3xl font-bold md:text-5xl">
-                The <span className="text-gradient-gold">Technical Analysis</span> playbook.
-              </h2>
-              <p className="mt-4 max-w-xl text-muted-foreground">
-                20 pages that take you from zero to reading charts like the pros.
-                Support & resistance, trendlines, chart patterns, and more distilled
-                into what actually moves your P&amp;L.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-2 text-xs">
-                {["20 pages", "Beginner → Pro", "Mobile-ready", "$0"].map((t) => (
-                  <span key={t} className="rounded-full border border-border/70 bg-background/40 px-3 py-1 text-muted-foreground backdrop-blur">
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* TOC preview */}
-              <div className="mt-8 rounded-3xl border border-border/60 bg-background/50 p-5 backdrop-blur-xl">
-                <div className="mb-4 flex items-center gap-2 text-xs font-bold tracking-[0.18em] text-muted-foreground font-display">
-                  <FileText className="h-3.5 w-3.5 text-accent" strokeWidth={2.5} />
-                  INSIDE THE EBOOK
-                </div>
-                <ul className="grid gap-2 sm:grid-cols-2">
-                  {EBOOK_TOC.map((item, i) => (
-                    <motion.li
-                      key={item.n}
-                      initial={{ opacity: 0, x: -8 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.35, delay: i * 0.05 }}
-                      whileHover={{ y: -2 }}
-                      className="group flex items-start gap-3 rounded-2xl border border-border/40 bg-background/30 p-3 transition-all hover:border-accent/40 hover:bg-accent/5 hover:shadow-[0_10px_30px_-15px_oklch(0.72_0.20_150/0.6)]"
-                    >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gold font-display text-xs font-bold text-accent-foreground shadow-gold">
-                        {item.n}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="text-sm font-semibold text-foreground">{item.title}</div>
-                        <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{item.body}</div>
-                      </div>
-                      <CheckCircle2 className="ml-auto h-4 w-4 shrink-0 text-primary opacity-0 transition-opacity group-hover:opacity-100" />
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Download CTA */}
-              <div className="relative mt-8 inline-block">
-                <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-70 blur-xl" style={{ background: "var(--gradient-gold-glow)" }} />
-                <motion.a
-                  href={EBOOK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => track("click", "get_ebook_now")}
-                  whileHover={{ y: -4 }}
-
-                  whileTap={{ y: -1 }}
-                  transition={{ type: "spring", stiffness: 320, damping: 22 }}
-                  className="group relative inline-flex items-center gap-4 overflow-hidden rounded-2xl bg-gold px-6 py-4 text-accent-foreground shadow-gold transition-shadow hover:shadow-[0_20px_55px_-12px_oklch(0.85_0.16_88/0.8)]"
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-black/15">
-                    <Download className="h-5 w-5" strokeWidth={2.5} />
-                  </span>
-                  <span>
-                    <span className="block text-sm font-bold tracking-[0.14em] font-display">GET EBOOK NOW</span>
-                    <span className="mt-0.5 block text-xs opacity-80">No deposit or payment needed</span>
-                  </span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-                </motion.a>
-              </div>
-
-              <p className="mt-4 text-xs text-muted-foreground">
-                Joined by 10,000+ traders. Not financial advice.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </section>
+          <a
+            href={LINKS.ezymapLite}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("click", "floating_lite")}
+            className="flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-3.5 text-sm font-semibold shadow-green"
+          >
+            <Sparkles className="h-4 w-4" /> Get EzyMap Lite Free
+          </a>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
-
+// ============== ROOT ==============
 export function Landing() {
   useEffect(() => {
     trackPageLoad();
-    return trackSectionVisibility(["top", "ebook", "features", "testimonials", "cta"]);
+    const cleanup = trackSectionVisibility([
+      "top",
+      "problem",
+      "ezymap",
+      "how",
+      "demo",
+      "ladder",
+      "partner",
+      "education",
+      "ebooks",
+      "jack",
+      "results",
+      "telegram",
+      "faq",
+      "final",
+    ]);
+    return cleanup;
   }, []);
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main>
         <Hero />
-        <EbookSection />
-        <Features />
-        <Testimonials />
+        <TrustBar />
+        <Problem />
+        <EzyMapIntro />
+        <HowItWorks />
+        <WorkflowDemo />
+        <ProductLadder />
+        <PartnerJourney />
+        <Education />
+        <EbookLibrary />
+        <JackBrand />
+        <ResultsGallery />
+        <TelegramCommunity />
+        <Faq />
         <FinalCta />
       </main>
       <Footer />
+      <FloatingCta />
     </div>
   );
 }
-
