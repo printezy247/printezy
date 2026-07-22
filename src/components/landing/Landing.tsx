@@ -1112,7 +1112,7 @@ const FAQS = [
   { q: "What timeframes work best?", a: "All three modes are supported. Busy pros love Swing, day traders use Intraday, active desks use Scalping." },
   { q: "Do you guarantee profits?", a: "No — and anyone who does is lying. Trading involves substantial risk. Our job is to give you a repeatable process, not a guaranteed outcome." },
   { q: "Who is Jack?", a: "A private full-time trader with over a decade in Gold, FX, and crypto. Faceless by choice — the process speaks louder than the personality." },
-  { q: "Who is Zarif?", a: "Zarif runs partnerships, onboarding, and community. Every Vantage partner gets a direct onboarding chat with him." },
+  
   { q: "Is this course-based?", a: "No. There's no locked video library. Education is delivered continuously via ebooks, weekly analysis, and live channel breakdowns." },
   { q: "How do I get the ebooks?", a: "Free on Telegram. No email, no funnel, no upsell." },
   { q: "Can I cancel Pro Software?", a: "Yes. Monthly is cancel-anytime. Lifetime is a one-off." },
