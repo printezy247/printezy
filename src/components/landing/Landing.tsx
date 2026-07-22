@@ -686,7 +686,7 @@ function ProductLadder() {
         "Educational breakdowns",
         "Community discussion",
       ],
-      cta: { label: "Join Free Channel", href: LINKS.ezymapLite, tone: "ghost" as const, track: "ladder_lite" },
+      cta: { label: "Join Free Channel", href: LINKS.channel, tone: "ghost" as const, track: "ladder_lite" },
       highlight: false,
     },
     {
