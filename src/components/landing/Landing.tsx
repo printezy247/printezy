@@ -23,7 +23,7 @@ import logoAsset from "@/assets/printezy-logo-transparent.png.asset.json";
 import heroMonitorUrl from "@/assets/ezymap-hero-monitor.jpg?url";
 import jackSilhouetteUrl from "@/assets/jack-silhouette.jpg?url";
 import ebooksPedestalUrl from "@/assets/ebooks-pedestal.jpg?url";
-import telegramPhoneUrl from "@/assets/telegram-phone.jpg?url";
+import telegramCommunityAsset from "@/assets/telegram-community.jpg.asset.json";
 import chart1Asset from "@/assets/chart-1.jpg.asset.json";
 import chart2Asset from "@/assets/chart-2.jpg.asset.json";
 import chart3Asset from "@/assets/chart-3.jpg.asset.json";
