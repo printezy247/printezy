@@ -223,7 +223,7 @@ function Hero() {
             />
             <PrimaryCta
               label="Chat With PrintEzy Support"
-              href={LINKS.zarif}
+              href={LINKS.support}
               tone="gold"
               trackName="hero_support"
               icon={MessageCircle}
@@ -716,7 +716,7 @@ function ProductLadder() {
       features: [
         "Everything in Pro Software",
         "Priority partner Telegram",
-        "Zarif onboarding call",
+        "Support onboarding call",
         "Trade reviews with Jack",
         "Ongoing plan refinement",
       ],
@@ -794,7 +794,7 @@ function PartnerJourney() {
     { n: 3, t: "Fund your account", d: "Any amount to start. We recommend a size you're comfortable losing." },
     { n: 4, t: "Send us your account #", d: "DM PrintEzy Support — we tag your account to the partner program." },
     { n: 5, t: "Unlock EzyMap Pro", d: "Full software + private partner channel activated within 24h." },
-    { n: 6, t: "Trade the plan", d: "Onboarding call with Zarif, ongoing reviews with Jack." },
+    { n: 6, t: "Trade the plan", d: "Onboarding call with PrintEzy Support, ongoing reviews with Jack." },
   ];
   return (
     <Section
@@ -837,7 +837,7 @@ function Education() {
     { icon: BookOpen, t: "Ebooks", d: "Structured PDFs on price action, risk, and psychology.", href: "#ebooks", track: "edu_ebooks" },
     { icon: LineChart, t: "Weekly Analysis", d: "Deep dives on Gold, FX, and BTC before session open.", href: LINKS.channel, track: "edu_analysis" },
     { icon: Target, t: "Trade Reviews", d: "Winners and losers broken down with what to repeat and what to cut.", href: LINKS.channel, track: "edu_reviews" },
-    { icon: MessageCircle, t: "Community Q&A", d: "Ask any question. Get answered by Jack or the partner desk.", href: LINKS.zarif, track: "edu_qa" },
+    { icon: MessageCircle, t: "Community Q&A", d: "Ask any question. Get answered by Jack or the partner desk.", href: LINKS.support, track: "edu_qa" },
   ];
   return (
     <Section
@@ -950,11 +950,11 @@ function JackBrand() {
           <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
             Jack has traded Gold, FX, and crypto for over a decade — full-time, private, no ego, no gurus.
             PrintEzy exists because the tools that work at his desk shouldn't stay locked behind a $2,000
-            course. Zarif runs partnerships and onboarding. That's the whole team.
+            course. PrintEzy Support runs partnerships and onboarding. That's the whole team.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PrimaryCta label="Read Weekly Analysis" href={LINKS.channel} tone="ghost" trackName="jack_channel" icon={LineChart} />
-            <PrimaryCta label="DM PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="jack_support" icon={MessageCircle} />
+            <PrimaryCta label="DM PrintEzy Support" href={LINKS.support} tone="gold" trackName="jack_support" icon={MessageCircle} />
           </div>
         </div>
       </div>
@@ -1076,7 +1076,7 @@ function TelegramCommunity() {
         <div className="order-2 lg:order-1 space-y-4">
           {[
             { t: "10,000+ members", d: "And growing weekly, organically." },
-            { t: "Moderated 24/7", d: "Zarif and the team keep the noise out." },
+            { t: "Moderated 24/7", d: "Support and the team keep the noise out." },
             { t: "Daily bias posts", d: "Pre-Asia, pre-London, pre-New York." },
             { t: "Zero paid signals", d: "Everything is transparent. Nothing hidden." },
           ].map((f) => (
@@ -1124,7 +1124,7 @@ const FAQS = [
   { q: "How are alerts delivered?", a: "TradingView push notifications, browser, and Telegram forwards inside the private channel." },
   { q: "Can I use my own strategy alongside?", a: "Absolutely. Many users combine EzyMap zones with their own confluence." },
   { q: "Where are you based?", a: "The team operates across Southeast Asia. Vantage handles regulation and custody." },
-  { q: "How do I contact support?", a: "Direct-message Zarif on Telegram. Real human, usually within a few hours." },
+  { q: "How do I contact support?", a: "Direct-message PrintEzy Support on Telegram. Real human, usually within a few hours." },
 ];
 
 function Faq() {
@@ -1168,7 +1168,7 @@ function FinalCta() {
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
           <PrimaryCta label="Open Vantage Account" href={LINKS.vantage} tone="green" trackName="final_open" icon={ArrowUpRight} />
           <PrimaryCta label="Get EzyMap Lite Free" href={LINKS.ezymapLite} tone="ghost" trackName="final_lite" icon={Sparkles} />
-          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="final_support" icon={MessageCircle} />
+          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.support} tone="gold" trackName="final_support" icon={MessageCircle} />
         </div>
       </div>
     </section>
@@ -1200,7 +1200,7 @@ function Footer() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
             <ul className="space-y-2 text-sm">
               <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
-              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
+              <li><a href={LINKS.support} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
               <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
               <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
             </ul>
