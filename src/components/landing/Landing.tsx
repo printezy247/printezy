@@ -490,8 +490,13 @@ function EzyMapIntro() {
           transition={{ duration: 0.4 }}
           className="glass-card rounded-3xl p-4 sm:p-6"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/5">
-            <img src={heroMonitor.url} alt="EzyMap live chart preview" loading="lazy" className="w-full h-auto" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black">
+            <img
+              src={active.img}
+              alt={`EzyMap ${active.label} mode live chart`}
+              loading="lazy"
+              className="w-full h-auto max-h-[520px] object-contain mx-auto"
+            />
             <div className="absolute top-4 left-4 rounded-full bg-background/70 backdrop-blur-md border border-white/10 px-3 py-1 text-xs">
               <span className={`font-semibold ${active.accent === "gold" ? "text-accent" : "text-primary"}`}>
                 {active.label} mode
@@ -499,6 +504,7 @@ function EzyMapIntro() {
               <span className="text-muted-foreground">· {active.tf}</span>
             </div>
           </div>
+
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">
             {[
               { k: "Bias", v: "Long" },
