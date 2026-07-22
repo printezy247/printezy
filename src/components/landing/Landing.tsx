@@ -938,15 +938,17 @@ type ResultCase = {
   rr: string;
   date: string;
   note: string;
+  img: string;
 };
 const CASES: ResultCase[] = [
-  { id: "1", asset: "Gold", outcome: "Win", title: "London demand tap", rr: "+3.2R", date: "12 Nov", note: "Mapped H4 demand, LIVE alert on M15 bullish shift." },
-  { id: "2", asset: "BTC", outcome: "Win", title: "Weekly supply rejection", rr: "+2.1R", date: "07 Nov", note: "Short from mapped supply, partial at first target." },
-  { id: "3", asset: "Gold", outcome: "Loss", title: "NFP volatility stop", rr: "-1R", date: "01 Nov", note: "Setup valid, news wick invalidated plan." },
-  { id: "4", asset: "BTC", outcome: "Invalidated", title: "Range break", rr: "0R", date: "28 Oct", note: "Zone broke pre-entry. Plan cancelled, no trade." },
-  { id: "5", asset: "Gold", outcome: "No Entry", title: "Pre-Asia gap", rr: "0R", date: "22 Oct", note: "Price never tapped mapped zone. Discipline > FOMO." },
-  { id: "6", asset: "BTC", outcome: "Win", title: "Intraday demand", rr: "+1.8R", date: "18 Oct", note: "Intraday mode, filled in London, closed NY." },
+  { id: "1", asset: "Gold", outcome: "Win", title: "Intraday M30 buy live", rr: "Live", date: "23 Jul", note: "Low-risk buy zone, EMA + Fibonacci confluence. LIVE alert fired at 4,131.90.", img: CHARTS.goldIntradayLive },
+  { id: "2", asset: "Gold", outcome: "Loss", title: "M1 scalp sell — micro stop", rr: "-2 pips", date: "23 Jul", note: "High-risk zone rejection, plan hit stop on wick. Sized small, damage minimal.", img: CHARTS.goldScalpLive },
+  { id: "3", asset: "Gold", outcome: "No Entry", title: "Scalp sell ready", rr: "Ready", date: "23 Jul", note: "Sell zone mapped at 4,130 — waiting for price to tap. Discipline > FOMO.", img: CHARTS.goldScalpReady },
+  { id: "4", asset: "Gold", outcome: "No Entry", title: "4H swing sell setup", rr: "Ready", date: "23 Jul", note: "Bearish bias, sell entry zone mapped above 4,128. Plan waits for the market.", img: CHARTS.goldSwingReady },
+  { id: "5", asset: "BTC", outcome: "No Entry", title: "4H swing buy setup", rr: "Ready", date: "23 Jul", note: "Bearish short-term bias, low-risk buy zone mapped below 65,600. Ready state.", img: CHARTS.btcSwingReady },
+  { id: "6", asset: "BTC", outcome: "Loss", title: "M1 scalp buy — tight stop", rr: "-8 pips", date: "23 Jul", note: "Entry zone rejection with CHoCH confluence. Stop hit on retest. Same map, next print.", img: CHARTS.btcScalpLive },
 ];
+
 const FILTERS: Array<ResultCase["asset"] | ResultCase["outcome"] | "All"> = ["All", "Gold", "BTC", "Win", "Loss", "Invalidated", "No Entry"];
 
 function ResultsGallery() {
