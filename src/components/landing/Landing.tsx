@@ -30,6 +30,9 @@ import chart3Asset from "@/assets/chart-3.jpg.asset.json";
 import chart4Asset from "@/assets/chart-4.jpg.asset.json";
 import chart5Asset from "@/assets/chart-5.jpg.asset.json";
 import chart6Asset from "@/assets/chart-6.jpg.asset.json";
+import blankChartAsset from "@/assets/blank-chart.jpg.asset.json";
+import ebookTAAsset from "@/assets/ebook-technical-analysis.png.asset.json";
+import ebookMapAsset from "@/assets/ebook-mapping-like-pro.png.asset.json";
 
 const logo = { url: logoAsset.url };
 const heroMonitor = { url: heroMonitorUrl };
@@ -43,20 +46,26 @@ const CHARTS = {
   goldSwingReady: chart4Asset.url,
   btcSwingReady: chart5Asset.url,
   btcScalpLive: chart6Asset.url,
+  blank: blankChartAsset.url,
+};
+const EBOOK_COVERS = {
+  technicalAnalysis: ebookTAAsset.url,
+  mappingLikePro: ebookMapAsset.url,
 };
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 // -------- Links --------
 const LINKS = {
   vantage: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
-  ezymapLite: "https://t.me/printezydollar",
-  proSoftware: "https://t.me/jackprintezy",
+  ezymapLite: "https://t.me/m/GnnwtgRyMDB",
+  proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
-  zarif: "https://t.me/jackprintezy",
-  channel: "https://t.me/printezydollar",
+  support: "https://t.me/jackprintezy",
+  channel: "https://t.me/printezybyjack",
   ebook: "https://telegram.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
+
 
 
 const NAV_ITEMS = [
@@ -206,14 +215,24 @@ function Hero() {
               icon={Sparkles}
             />
             <PrimaryCta
+              label="Free Pro Analysis"
+              href={LINKS.tradingview}
+              tone="ghost"
+              trackName="hero_tradingview"
+              icon={LineChart}
+            />
+            <PrimaryCta
               label="Chat With PrintEzy Support"
-              href={LINKS.zarif}
+              href={LINKS.support}
               tone="gold"
               trackName="hero_support"
-
               icon={MessageCircle}
             />
           </div>
+          <p className="mt-2 text-[11px] text-muted-foreground/70">
+            Free Pro Analysis uses our TradingView referral link — makes indicator install & usage easier.
+          </p>
+
           <p className="mt-4 text-xs text-muted-foreground/80">
             No signup walls. Education-first. Trading involves risk.
           </p>
@@ -408,6 +427,7 @@ const MODES = [
     desc: "Fast micro-structure zones for intraday scalpers. Alerts fire the second price taps a mapped level.",
     accent: "green" as const,
     img: CHARTS.goldScalpLive,
+    status: "LIVE" as const,
   },
   {
     key: "intraday",
@@ -416,6 +436,7 @@ const MODES = [
     desc: "Session-based bias with clear supply and demand mapped before New York open. Trade the plan, not the wick.",
     accent: "gold" as const,
     img: CHARTS.goldIntradayLive,
+    status: "LIVE" as const,
   },
   {
     key: "swing",
@@ -424,8 +445,10 @@ const MODES = [
     desc: "Higher-timeframe map for busy professionals. Check charts once a day, execute when zones align.",
     accent: "green" as const,
     img: CHARTS.goldSwingReady,
+    status: "READY" as const,
   },
 ];
+
 
 
 function EzyMapIntro() {
@@ -510,14 +533,15 @@ function EzyMapIntro() {
             {[
               { k: "Bias", v: "Long" },
               { k: "Zone", v: "Demand" },
-              { k: "Status", v: "READY" },
+              { k: "Status", v: active.status },
             ].map((s) => (
               <div key={s.k} className="rounded-xl border border-white/5 bg-white/[0.02] py-3">
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.k}</div>
-                <div className="mt-1 text-sm font-semibold text-foreground">{s.v}</div>
+                <div className={`mt-1 text-sm font-semibold ${s.k === "Status" && s.v === "LIVE" ? "text-primary" : "text-foreground"}`}>{s.v}</div>
               </div>
             ))}
           </div>
+
         </motion.div>
       </div>
     </Section>
@@ -610,13 +634,22 @@ function WorkflowDemo() {
         <div className="glass-card rounded-3xl p-5">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Before</div>
           <div className="mt-1 font-display text-xl">Blank chart. Blank plan.</div>
-          <div className="mt-5 aspect-[4/3] rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 grid place-items-center relative overflow-hidden">
-            <svg viewBox="0 0 300 200" className="w-full h-full opacity-40">
-              <path d="M0 140 L30 130 L60 150 L90 120 L120 135 L150 100 L180 115 L210 90 L240 110 L270 80 L300 95" stroke="oklch(0.7 0.02 155)" strokeWidth="1.5" fill="none" />
-            </svg>
-            <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">"Where do I even enter?"</div>
+          <div className="mt-5 relative rounded-2xl overflow-hidden border border-white/5 bg-black">
+            <img
+              src={CHARTS.blank}
+              alt="Blank chart before EzyMap mapping"
+              loading="lazy"
+              className="w-full h-auto max-h-[520px] object-contain mx-auto"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/30 to-transparent" />
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="px-4 py-2 rounded-full bg-background/70 backdrop-blur-md border border-white/10 text-sm text-foreground/90 font-medium">
+                "Where do I even enter?"
+              </div>
+            </div>
           </div>
         </div>
+
         <div className="glass-card rounded-3xl p-5 relative overflow-hidden">
           <div aria-hidden className="absolute -top-20 -right-20 h-60 w-60 rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
           <div className="text-xs uppercase tracking-widest text-primary">After</div>
@@ -683,7 +716,7 @@ function ProductLadder() {
       features: [
         "Everything in Pro Software",
         "Priority partner Telegram",
-        "Zarif onboarding call",
+        "Support onboarding call",
         "Trade reviews with Jack",
         "Ongoing plan refinement",
       ],
@@ -761,7 +794,7 @@ function PartnerJourney() {
     { n: 3, t: "Fund your account", d: "Any amount to start. We recommend a size you're comfortable losing." },
     { n: 4, t: "Send us your account #", d: "DM PrintEzy Support — we tag your account to the partner program." },
     { n: 5, t: "Unlock EzyMap Pro", d: "Full software + private partner channel activated within 24h." },
-    { n: 6, t: "Trade the plan", d: "Onboarding call with Zarif, ongoing reviews with Jack." },
+    { n: 6, t: "Trade the plan", d: "Onboarding call with PrintEzy Support, ongoing reviews with Jack." },
   ];
   return (
     <Section
@@ -804,7 +837,7 @@ function Education() {
     { icon: BookOpen, t: "Ebooks", d: "Structured PDFs on price action, risk, and psychology.", href: "#ebooks", track: "edu_ebooks" },
     { icon: LineChart, t: "Weekly Analysis", d: "Deep dives on Gold, FX, and BTC before session open.", href: LINKS.channel, track: "edu_analysis" },
     { icon: Target, t: "Trade Reviews", d: "Winners and losers broken down with what to repeat and what to cut.", href: LINKS.channel, track: "edu_reviews" },
-    { icon: MessageCircle, t: "Community Q&A", d: "Ask any question. Get answered by Jack or the partner desk.", href: LINKS.zarif, track: "edu_qa" },
+    { icon: MessageCircle, t: "Community Q&A", d: "Ask any question. Get answered by Jack or the partner desk.", href: LINKS.support, track: "edu_qa" },
   ];
   return (
     <Section
@@ -852,9 +885,16 @@ function EbookLibrary() {
       title={<>Books that <span className="text-gradient-gold">actually change</span> how you trade.</>}
     >
       <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
-        <div className="relative rounded-3xl overflow-hidden border border-white/5">
-          <img src={ebooksPedestal.url} alt="PrintEzy premium ebook covers" loading="lazy" className="w-full h-auto" />
+        <div className="relative grid grid-cols-2 gap-5">
+          <div aria-hidden className="absolute -inset-8 rounded-[3rem] opacity-40 blur-3xl pointer-events-none" style={{ background: "var(--gradient-glow)" }} />
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1">
+            <img src={EBOOK_COVERS.technicalAnalysis} alt="PrintEzy Technical Analysis ebook cover" loading="lazy" className="w-full h-auto" />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1 mt-8">
+            <img src={EBOOK_COVERS.mappingLikePro} alt="Mapping Like A Pro ebook cover" loading="lazy" className="w-full h-auto" />
+          </div>
         </div>
+
         <div className="space-y-4">
           {books.map((b) => {
             const disabled = b.status === "Coming soon";
@@ -917,11 +957,11 @@ function JackBrand() {
           <p className="mt-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
             Jack has traded Gold, FX, and crypto for over a decade — full-time, private, no ego, no gurus.
             PrintEzy exists because the tools that work at his desk shouldn't stay locked behind a $2,000
-            course. Zarif runs partnerships and onboarding. That's the whole team.
+            course. PrintEzy Support runs partnerships and onboarding. That's the whole team.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PrimaryCta label="Read Weekly Analysis" href={LINKS.channel} tone="ghost" trackName="jack_channel" icon={LineChart} />
-            <PrimaryCta label="DM PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="jack_support" icon={MessageCircle} />
+            <PrimaryCta label="DM PrintEzy Support" href={LINKS.support} tone="gold" trackName="jack_support" icon={MessageCircle} />
           </div>
         </div>
       </div>
@@ -1043,7 +1083,7 @@ function TelegramCommunity() {
         <div className="order-2 lg:order-1 space-y-4">
           {[
             { t: "10,000+ members", d: "And growing weekly, organically." },
-            { t: "Moderated 24/7", d: "Zarif and the team keep the noise out." },
+            { t: "Moderated 24/7", d: "Support and the team keep the noise out." },
             { t: "Daily bias posts", d: "Pre-Asia, pre-London, pre-New York." },
             { t: "Zero paid signals", d: "Everything is transparent. Nothing hidden." },
           ].map((f) => (
@@ -1079,7 +1119,7 @@ const FAQS = [
   { q: "What timeframes work best?", a: "All three modes are supported. Busy pros love Swing, day traders use Intraday, active desks use Scalping." },
   { q: "Do you guarantee profits?", a: "No — and anyone who does is lying. Trading involves substantial risk. Our job is to give you a repeatable process, not a guaranteed outcome." },
   { q: "Who is Jack?", a: "A private full-time trader with over a decade in Gold, FX, and crypto. Faceless by choice — the process speaks louder than the personality." },
-  { q: "Who is Zarif?", a: "Zarif runs partnerships, onboarding, and community. Every Vantage partner gets a direct onboarding chat with him." },
+  
   { q: "Is this course-based?", a: "No. There's no locked video library. Education is delivered continuously via ebooks, weekly analysis, and live channel breakdowns." },
   { q: "How do I get the ebooks?", a: "Free on Telegram. No email, no funnel, no upsell." },
   { q: "Can I cancel Pro Software?", a: "Yes. Monthly is cancel-anytime. Lifetime is a one-off." },
@@ -1091,7 +1131,7 @@ const FAQS = [
   { q: "How are alerts delivered?", a: "TradingView push notifications, browser, and Telegram forwards inside the private channel." },
   { q: "Can I use my own strategy alongside?", a: "Absolutely. Many users combine EzyMap zones with their own confluence." },
   { q: "Where are you based?", a: "The team operates across Southeast Asia. Vantage handles regulation and custody." },
-  { q: "How do I contact support?", a: "Direct-message Zarif on Telegram. Real human, usually within a few hours." },
+  { q: "How do I contact support?", a: "Direct-message PrintEzy Support on Telegram. Real human, usually within a few hours." },
 ];
 
 function Faq() {
@@ -1135,7 +1175,7 @@ function FinalCta() {
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
           <PrimaryCta label="Open Vantage Account" href={LINKS.vantage} tone="green" trackName="final_open" icon={ArrowUpRight} />
           <PrimaryCta label="Get EzyMap Lite Free" href={LINKS.ezymapLite} tone="ghost" trackName="final_lite" icon={Sparkles} />
-          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="final_support" icon={MessageCircle} />
+          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.support} tone="gold" trackName="final_support" icon={MessageCircle} />
         </div>
       </div>
     </section>
@@ -1167,7 +1207,7 @@ function Footer() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
             <ul className="space-y-2 text-sm">
               <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
-              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
+              <li><a href={LINKS.support} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
               <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
               <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
             </ul>
