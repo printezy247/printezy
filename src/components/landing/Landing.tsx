@@ -1339,6 +1339,7 @@ export function Landing() {
       "jack",
       "results",
       "telegram",
+      "testimonials",
       "faq",
       "final",
     ]);
