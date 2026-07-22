@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Play,
   Sparkles,
+  Star,
   Target,
   TrendingUp,
   Zap,
