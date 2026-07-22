@@ -19,11 +19,17 @@ import {
   TrendingUp,
   Zap,
 } from "lucide-react";
-import logo from "@/assets/printezy-logo-transparent.png.asset.json";
-import heroMonitor from "@/assets/ezymap-hero-monitor.jpg.asset.json";
-import jackSilhouette from "@/assets/jack-silhouette.jpg.asset.json";
-import ebooksPedestal from "@/assets/ebooks-pedestal.jpg.asset.json";
-import telegramPhone from "@/assets/telegram-phone.jpg.asset.json";
+import logoAsset from "@/assets/printezy-logo-transparent.png.asset.json";
+import heroMonitorUrl from "@/assets/ezymap-hero-monitor.jpg?url";
+import jackSilhouetteUrl from "@/assets/jack-silhouette.jpg?url";
+import ebooksPedestalUrl from "@/assets/ebooks-pedestal.jpg?url";
+import telegramPhoneUrl from "@/assets/telegram-phone.jpg?url";
+
+const logo = { url: logoAsset.url };
+const heroMonitor = { url: heroMonitorUrl };
+const jackSilhouette = { url: jackSilhouetteUrl };
+const ebooksPedestal = { url: ebooksPedestalUrl };
+const telegramPhone = { url: telegramPhoneUrl };
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 // -------- Links (placeholder — Vantage IB / Zarif to be confirmed) --------
