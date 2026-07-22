@@ -60,7 +60,7 @@ const LINKS = {
   ezymapLite: "https://t.me/m/GnnwtgRyMDB",
   proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
-  zarif: "https://t.me/jackprintezy",
+  support: "https://t.me/jackprintezy",
   channel: "https://t.me/printezybyjack",
   ebook: "https://telegram.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
