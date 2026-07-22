@@ -1156,7 +1156,7 @@ function Footer() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
             <ul className="space-y-2 text-sm">
               <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
-              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM Zarif</a></li>
+              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
               <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
               <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
             </ul>
