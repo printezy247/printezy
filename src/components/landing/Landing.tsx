@@ -1095,9 +1095,9 @@ function TelegramCommunity() {
             <PrimaryCta label="Join Telegram Channel" href={LINKS.channel} tone="green" trackName="telegram_join" icon={ArrowUpRight} />
           </div>
         </div>
-        <div className="order-1 lg:order-2 relative">
+        <div className="order-1 lg:order-2 relative flex justify-center">
           <div aria-hidden className="absolute inset-0 blur-3xl opacity-40 -z-10" style={{ background: "var(--gradient-glow)" }} />
-          <img src={telegramPhone.url} alt="PrintEzy Telegram channel on mobile" loading="lazy" className="w-full max-w-md mx-auto h-auto" />
+          <IPhoneMockup src={telegramPhone.url} alt="PrintEzy Telegram channel on mobile" />
         </div>
       </div>
     </Section>
