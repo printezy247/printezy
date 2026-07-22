@@ -1124,7 +1124,7 @@ function FinalCta() {
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
           <PrimaryCta label="Open Vantage Account" href={LINKS.vantage} tone="green" trackName="final_open" icon={ArrowUpRight} />
           <PrimaryCta label="Get EzyMap Lite Free" href={LINKS.ezymapLite} tone="ghost" trackName="final_lite" icon={Sparkles} />
-          <PrimaryCta label="Chat With Zarif" href={LINKS.zarif} tone="gold" trackName="final_zarif" icon={MessageCircle} />
+          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="final_support" icon={MessageCircle} />
         </div>
       </div>
     </section>
