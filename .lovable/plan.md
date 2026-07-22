@@ -1,133 +1,84 @@
-Yes. Lovable already gives you page-level analytics for the published site (views, visitors, bounce rate, visit duration, traffic sources, devices). For granular metrics like "how many people clicked Free Ebook" or "which section was viewed," we need a small custom event tracker that stores data in your own backend.
 
-This plan adds a built-in, privacy-first analytics system using Lovable Cloud.
+# PrintEzy Premium Redesign — Phased Plan
 
-## Goals
+This is a large scope (18+ pages, CRM, forms, payments, admin, analytics). Shipping it all in one pass would produce shallow work on every surface. I'm proposing a phased build so each phase lands polished and production-ready before moving to the next. Please confirm the phasing (or reprioritize) and I'll start Phase 1.
 
-- Track clicks on all main CTAs: Free Ebook, Pro Analysis, Ask Me Anything, Get Ebook Now, and Get Started.
-- Track when key sections become visible: Hero, Ebook, Features, Testimonials, Final CTA.
-- Store events in a secure database table with anonymous fingerprints (no PII).
-- Expose a simple read-only summary so you can see totals without leaving the project.
+## Design direction (applies to all phases)
 
-## User-facing summary
+- **Palette**: black `#050706` / charcoal `#0B0F0D` base, emerald `#00C853` for action, gold `#D4AF37` reserved for premium/partner accents, cream `#F5F7F6` type.
+- **Typography**: Inter (body) + Manrope or Geist (display). Large, confident, left-aligned in long-form; centered only in hero moments.
+- **Motion**: Framer Motion — subtle fades, parallax, scroll-linked chart state changes (READY → LIVE). Respect `prefers-reduced-motion`.
+- **Chrome**: sticky glass nav that compacts on scroll; floating "Get EzyMap Lite" CTA on mobile.
+- **Tone**: calm, premium, educational. No hype, no fake urgency, no guaranteed-profit language anywhere.
 
-After this change, every important button and section will silently record anonymous interaction events. You will be able to query counts like "Free Ebook clicks today" or "Ebook section views this week" from a small dashboard or server function. Lovable's built-in page analytics will continue to show top-level traffic separately.
+---
 
-## Technical plan
+## Phase 1 — Foundation + Homepage (recommended first ship)
 
-### 1. Enable Lovable Cloud backend
+Rebuild the current landing as the new PrintEzy home, including all 15 homepage sections in the brief:
 
-- Call `supabase--enable` to activate the managed backend (required before any database work).
+1. Cinematic hero (animated headline sequence, chart-in-monitor visual, READY→LIVE scroll transition, three CTAs).
+2. Trust bar strip.
+3. "Trading should not feel random" — 4 problem cards.
+4. Introducing EzyMap — interactive Scalping / Intraday / Swing mode switcher.
+5. How EzyMap works — MAP → READY → LIVE → MANAGE workflow.
+6. Real workflow demo — before/after chart, video placeholder.
+7. Product ladder — Lite / Pro Software $29 / Pro Partner cards with correct disclaimers.
+8. Partner Access 6-step journey.
+9. Education ecosystem — 4 cards.
+10. Ebook library — 3D book mockups (Technical Analysis, Mapping Like a Pro, Small Account "Coming Soon").
+11. Jack brand section — faceless silhouette treatment.
+12. Transparent results gallery with filter tabs (Gold / BTC / Win / Loss / Invalidated / No Entry) — seeded with placeholder case studies.
+13. Telegram community — phone mockup.
+14. FAQ accordion (22 questions from brief).
+15. Final conversion section.
 
-### 2. Database schema
+Plus: sticky nav, mobile floating CTA, premium footer with full risk disclosure, SEO meta per section, analytics events wired to existing `analytics_events` table (button clicks, section views).
 
-Create a migration that adds `public.analytics_events`:
+Design assets I'll generate: chart-in-monitor hero mockup, before/after chart pair, 3D ebook covers, Jack silhouette, phone-with-Telegram mockup.
 
-```text
-id            uuid primary key default gen_random_uuid()
-event_type    text not null   -- 'click' | 'section_view' | 'page_load'
-event_name    text not null   -- 'free_ebook', 'pro_analysis', 'ask_me_anything', 'get_ebook_now', 'get_started', 'ebook_section', etc.
-path          text not null   -- current pathname, e.g. '/'
-referrer      text            -- document.referrer or null
-user_agent    text            -- browser/OS fingerprint hint
-session_id    text not null   -- anonymous session fingerprint (hash)
-created_at    timestamptz default now()
-```
+## Phase 2 — Product & content pages
 
-Include required grants:
+Separate routes with Apple-style storytelling:
 
-```text
-GRANT INSERT, SELECT ON public.analytics_events TO authenticated;
-GRANT ALL ON public.analytics_events TO service_role;
-```
+- `/ezymap` — sticky-chart product page (Gold/BTC, timeframes, modes, READY vs LIVE, alerts, trade card, Lite vs Pro comparison, TradingView install, limitations).
+- `/ezymap/lite`, `/ezymap/pro-software`, `/ezymap/pro-partner` — dedicated pages per tier.
+- `/education`, `/ebooks`, `/results`, `/about-jack`, `/faq`.
 
-Enable RLS and add policies:
+## Phase 3 — Conversion flows + Supabase backend
 
-```text
--- Anyone can insert an anonymous event (public landing page)
-CREATE POLICY "Allow public inserts"
-  ON public.analytics_events FOR INSERT TO anon, authenticated WITH CHECK (true);
+- `/register` — Vantage partner registration guide (steps, KYC checklist, security warning).
+- `/activate` — activation form (name, email, Telegram, Vantage account #, TradingView user, package). Never asks for passwords/OTP/banking.
+- `/contact-zarif` — support entry.
+- Supabase tables: `leads`, `activations`, `products`, `access_grants`, plus RLS + GRANTs. Consent + source tracking (UTM) captured on every submit.
+- Confirmation pages + Telegram deep-link follow-up.
 
--- Only service_role / authenticated reads; no public SELECT on raw rows
-CREATE POLICY "Restrict public reads"
-  ON public.analytics_events FOR SELECT TO authenticated USING (false);
-```
+## Phase 4 — Legal + admin
 
-Reads for the dashboard will go through a server function using the service role key.
+- Legal pages: Risk Disclosure, Terms of Access, Refund Policy, Privacy Policy, Cookie Policy.
+- Admin dashboard (auth-gated, role: `admin` via `user_roles` table) showing lead pipeline stages, filters, notes, next-follow-up. Jack + Zarif roles.
 
-### 3. Frontend tracking utilities
+## Phase 5 — Payments (only when you confirm provider)
 
-Add `src/lib/analytics.ts`:
+Checkout scaffolding for EzyMap Pro Software ($29 / $69). I will NOT wire a live provider until you confirm which one (HitPay / Xendit / Billplz / Stripe / PayPal) is approved for TradingView-analysis software in your region. USDT stays secondary.
 
-- `track(eventType, eventName)` sends a small POST to a server function.
-- `getSessionId()` generates a stable anonymous session id stored in `sessionStorage`.
-- `trackSectionVisibility(sections)` uses an IntersectionObserver to fire `section_view` once per section per session when it crosses 50% viewport.
+---
 
-### 4. Instrument the landing page
+## Technical notes
 
-Update `src/components/landing/Landing.tsx`:
+- Stack: existing TanStack Start + Tailwind v4 + Supabase (Lovable Cloud) — no framework changes needed.
+- Analytics: extend the existing `analytics_events` table with new event names; no schema change required for Phase 1.
+- Every new `public` table in Phase 3+ ships with GRANTs + RLS in the same migration.
+- Reduced-motion + keyboard nav + Core Web Vitals budget respected from Phase 1.
 
-- Wrap each CTA anchor with `onClick={() => track('click', '<name>')}` so the event fires before the browser navigates.
-- Add `useEffect` in `Landing` to attach section observers for `hero`, `ebook`, `features`, `testimonials`, `final_cta`.
-- Track one `page_load` event on mount.
+---
 
-### 5. Server function to record events
+## What I need from you before starting
 
-Create `src/lib/analytics.functions.ts`:
+1. **Confirm phasing** — start with Phase 1 (homepage) as a standalone ship, or bundle Phase 1+2?
+2. **Real assets** — do you have (a) a real EzyMap chart screenshot I can use in the hero/demo, (b) actual dated case-study screenshots for the Results gallery, (c) Jack silhouette photo? If not, I'll generate premium placeholders and mark them for replacement.
+3. **Vantage IB link** — the official partner registration URL to wire into "Open Account" CTAs.
+4. **Zarif contact** — Telegram username or link for the "Chat With Zarif" / "Contact Zarif" buttons.
+5. **Pro Software checkout** — for Phase 1 the "Get Software Access" button can either (a) open a Telegram DM to Zarif, or (b) link to a "coming soon" page until Phase 5. Which do you prefer?
 
-```text
-export const recordEvent = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ eventType: z.string(), eventName: z.string(), path: z.string(), referrer: z.string().optional(), userAgent: z.string().optional(), sessionId: z.string() }))
-  .handler(async ({ data }) => {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } });
-    await supabase.from('analytics_events').insert({ ...data });
-    return { ok: true };
-  });
-```
-
-Uses the publishable-key client because the landing page is public and anonymous; RLS allows anon inserts.
-
-### 6. Read-only analytics summary
-
-Create `src/lib/analytics.functions.ts` (same file) with a protected or service-role function:
-
-```text
-export const getEventSummary = createServerFn({ method: 'POST' })
-  .inputValidator(z.object({ days: z.number().min(1).max(90).default(7) }))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-    const { data: rows } = await supabaseAdmin.rpc('analytics_summary', { p_days: data.days });
-    return { summary: rows };
-  });
-```
-
-Add a Postgres function `analytics_summary(p_days int)` in the same migration that returns grouped counts by event_name and event_type.
-
-### 7. (Optional) Minimal dashboard route
-
-If you want to see the numbers inside the app, add a read-only route `src/routes/_authenticated/analytics.tsx` that renders a simple table/chart of event counts. Since reads are service-role, this route stays behind authentication so only you can open it. This step can be skipped initially; you can query the data directly via the server function or the built-in database tools.
-
-## Files to change
-
-```text
-- Enable Lovable Cloud (one-time project action)
-- supabase/migrations/... (new migration for analytics_events + summary function)
-- src/lib/analytics.ts (new)
-- src/lib/analytics.functions.ts (new)
-- src/components/landing/Landing.tsx (instrument CTAs and sections)
-- src/routes/_authenticated/analytics.tsx (optional dashboard)
-```
-
-## Privacy and security notes
-
-- No email, IP, or auth identity is stored. The session id is a random hash, not a login identifier.
-- The public insert policy lets anonymous visitors record events; raw reads are blocked from the public.
-- Dashboard reads use the service-role client inside a server function, and the route is authenticated-only.
-
-## Verification
-
-- Build passes.
-- Click each CTA in the preview and confirm rows appear in `analytics_events`.
-- Scroll through sections and confirm `section_view` events are recorded once per session.
-- If the dashboard route is added, open it and verify counts match inserted rows.
+Reply with answers (or just "start Phase 1, use placeholders") and I'll begin.
