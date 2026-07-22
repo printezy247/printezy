@@ -987,9 +987,17 @@ function ResultsGallery() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
               transition={{ duration: 0.3 }}
-              className="glass-card rounded-2xl p-5"
+              className="glass-card rounded-2xl p-4 flex flex-col"
             >
-              <div className="flex items-center justify-between text-xs">
+              <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black">
+                <img
+                  src={c.img}
+                  alt={`${c.asset} ${c.title}`}
+                  loading="lazy"
+                  className="w-full h-56 object-contain mx-auto"
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-between text-xs">
                 <span className="px-2 py-1 rounded-full bg-white/5 text-muted-foreground">{c.asset}</span>
                 <span
                   className={`px-2 py-1 rounded-full font-semibold ${
@@ -1003,7 +1011,7 @@ function ResultsGallery() {
                   {c.outcome}
                 </span>
               </div>
-              <div className="mt-4 font-display text-lg">{c.title}</div>
+              <div className="mt-3 font-display text-lg">{c.title}</div>
               <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="font-mono">{c.rr}</span>
                 <span>·</span>
@@ -1011,6 +1019,7 @@ function ResultsGallery() {
               </div>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{c.note}</p>
             </motion.div>
+
           ))}
         </AnimatePresence>
       </div>
