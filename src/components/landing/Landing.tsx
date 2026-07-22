@@ -634,13 +634,22 @@ function WorkflowDemo() {
         <div className="glass-card rounded-3xl p-5">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Before</div>
           <div className="mt-1 font-display text-xl">Blank chart. Blank plan.</div>
-          <div className="mt-5 aspect-[4/3] rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 grid place-items-center relative overflow-hidden">
-            <svg viewBox="0 0 300 200" className="w-full h-full opacity-40">
-              <path d="M0 140 L30 130 L60 150 L90 120 L120 135 L150 100 L180 115 L210 90 L240 110 L270 80 L300 95" stroke="oklch(0.7 0.02 155)" strokeWidth="1.5" fill="none" />
-            </svg>
-            <div className="absolute inset-0 grid place-items-center text-xs text-muted-foreground">"Where do I even enter?"</div>
+          <div className="mt-5 relative rounded-2xl overflow-hidden border border-white/5 bg-black">
+            <img
+              src={CHARTS.blank}
+              alt="Blank chart before EzyMap mapping"
+              loading="lazy"
+              className="w-full h-auto max-h-[520px] object-contain mx-auto"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/30 to-transparent" />
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="px-4 py-2 rounded-full bg-background/70 backdrop-blur-md border border-white/10 text-sm text-foreground/90 font-medium">
+                "Where do I even enter?"
+              </div>
+            </div>
           </div>
         </div>
+
         <div className="glass-card rounded-3xl p-5 relative overflow-hidden">
           <div aria-hidden className="absolute -top-20 -right-20 h-60 w-60 rounded-full opacity-40 blur-3xl" style={{ background: "var(--gradient-glow)" }} />
           <div className="text-xs uppercase tracking-widest text-primary">After</div>
