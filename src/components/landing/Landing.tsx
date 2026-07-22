@@ -759,7 +759,7 @@ function PartnerJourney() {
     { n: 1, t: "Open Vantage account", d: "Click our partner link. Standard account, 3-min form." },
     { n: 2, t: "Verify KYC", d: "Upload ID + proof of address inside Vantage's secure portal." },
     { n: 3, t: "Fund your account", d: "Any amount to start. We recommend a size you're comfortable losing." },
-    { n: 4, t: "Send us your account #", d: "DM Zarif — we tag your account to the partner program." },
+    { n: 4, t: "Send us your account #", d: "DM PrintEzy Support — we tag your account to the partner program." },
     { n: 5, t: "Unlock EzyMap Pro", d: "Full software + private partner channel activated within 24h." },
     { n: 6, t: "Trade the plan", d: "Onboarding call with Zarif, ongoing reviews with Jack." },
   ];
