@@ -1362,6 +1362,7 @@ export function Landing() {
         <JackBrand />
         <ResultsGallery />
         <TelegramCommunity />
+        <Testimonials />
         <Faq />
         <FinalCta />
       </main>
