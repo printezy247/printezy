@@ -921,7 +921,7 @@ function JackBrand() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PrimaryCta label="Read Weekly Analysis" href={LINKS.channel} tone="ghost" trackName="jack_channel" icon={LineChart} />
-            <PrimaryCta label="DM Zarif" href={LINKS.zarif} tone="gold" trackName="jack_zarif" icon={MessageCircle} />
+            <PrimaryCta label="DM PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="jack_support" icon={MessageCircle} />
           </div>
         </div>
       </div>
