@@ -30,6 +30,9 @@ import chart3Asset from "@/assets/chart-3.jpg.asset.json";
 import chart4Asset from "@/assets/chart-4.jpg.asset.json";
 import chart5Asset from "@/assets/chart-5.jpg.asset.json";
 import chart6Asset from "@/assets/chart-6.jpg.asset.json";
+import blankChartAsset from "@/assets/blank-chart.jpg.asset.json";
+import ebookTAAsset from "@/assets/ebook-technical-analysis.png.asset.json";
+import ebookMapAsset from "@/assets/ebook-mapping-like-pro.png.asset.json";
 
 const logo = { url: logoAsset.url };
 const heroMonitor = { url: heroMonitorUrl };
@@ -43,20 +46,26 @@ const CHARTS = {
   goldSwingReady: chart4Asset.url,
   btcSwingReady: chart5Asset.url,
   btcScalpLive: chart6Asset.url,
+  blank: blankChartAsset.url,
+};
+const EBOOK_COVERS = {
+  technicalAnalysis: ebookTAAsset.url,
+  mappingLikePro: ebookMapAsset.url,
 };
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 // -------- Links --------
 const LINKS = {
   vantage: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
-  ezymapLite: "https://t.me/printezydollar",
-  proSoftware: "https://t.me/jackprintezy",
+  ezymapLite: "https://t.me/m/GnnwtgRyMDB",
+  proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
   zarif: "https://t.me/jackprintezy",
-  channel: "https://t.me/printezydollar",
+  channel: "https://t.me/printezybyjack",
   ebook: "https://telegram.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
+
 
 
 const NAV_ITEMS = [
