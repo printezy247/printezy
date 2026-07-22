@@ -38,7 +38,7 @@ const logo = { url: logoAsset.url };
 const heroMonitor = { url: heroMonitorUrl };
 const jackSilhouette = { url: jackSilhouetteUrl };
 const ebooksPedestal = { url: ebooksPedestalUrl };
-const telegramPhone = { url: telegramPhoneUrl };
+const telegramPhone = { url: telegramCommunityAsset.url };
 const CHARTS = {
   goldIntradayLive: chart1Asset.url,
   goldScalpLive: chart2Asset.url,
