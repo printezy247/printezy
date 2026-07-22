@@ -206,10 +206,11 @@ function Hero() {
               icon={Sparkles}
             />
             <PrimaryCta
-              label="Chat With Zarif"
+              label="Chat With PrintEzy Support"
               href={LINKS.zarif}
               tone="gold"
-              trackName="hero_zarif"
+              trackName="hero_support"
+
               icon={MessageCircle}
             />
           </div>
