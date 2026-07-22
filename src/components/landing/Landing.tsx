@@ -74,6 +74,7 @@ const NAV_ITEMS = [
   { label: "Products", href: "#ladder" },
   { label: "Education", href: "#education" },
   { label: "Results", href: "#results" },
+  { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
 ];
 
