@@ -1067,6 +1067,56 @@ function ResultsGallery() {
 }
 
 // ============== TELEGRAM COMMUNITY ==============
+function IPhoneMockup({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative mx-auto w-full max-w-[320px]">
+      {/* Ambient green glow */}
+      <div
+        aria-hidden
+        className="absolute -inset-6 rounded-[3.5rem] blur-2xl opacity-60 -z-10"
+        style={{ background: "radial-gradient(60% 60% at 50% 40%, hsl(var(--primary) / 0.35), transparent 70%)" }}
+      />
+      {/* Device frame */}
+      <div
+        className="relative rounded-[2.75rem] p-[10px] shadow-2xl"
+        style={{
+          background: "linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 45%, #1a1a1a 100%)",
+          boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06), 0 0 40px hsl(var(--primary) / 0.25)",
+        }}
+      >
+        {/* Side buttons */}
+        <span aria-hidden className="absolute left-[-3px] top-[110px] h-8 w-[3px] rounded-l bg-neutral-800" />
+        <span aria-hidden className="absolute left-[-3px] top-[160px] h-14 w-[3px] rounded-l bg-neutral-800" />
+        <span aria-hidden className="absolute left-[-3px] top-[220px] h-14 w-[3px] rounded-l bg-neutral-800" />
+        <span aria-hidden className="absolute right-[-3px] top-[170px] h-20 w-[3px] rounded-r bg-neutral-800" />
+
+        {/* Inner bezel */}
+        <div className="relative rounded-[2.25rem] overflow-hidden bg-black">
+          {/* Dynamic Island */}
+          <div
+            aria-hidden
+            className="absolute left-1/2 -translate-x-1/2 top-2 z-20 h-[26px] w-[95px] rounded-full bg-black"
+            style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}
+          >
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-neutral-800 ring-1 ring-neutral-700" />
+          </div>
+          {/* Screen */}
+          <img src={src} alt={alt} loading="lazy" className="block w-full h-auto" />
+          {/* Subtle screen sheen */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "linear-gradient(115deg, rgba(255,255,255,0.06) 0%, transparent 30%, transparent 70%, rgba(16,185,129,0.05) 100%)" }}
+          />
+        </div>
+      </div>
+      {/* Floating tech accents */}
+      <div aria-hidden className="pointer-events-none absolute -top-3 -right-3 h-14 w-14 rounded-full border border-primary/30 opacity-60" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-4 -left-4 h-10 w-10 rounded-full border border-[hsl(var(--gold))]/30 opacity-60" />
+    </div>
+  );
+}
+
 function TelegramCommunity() {
   return (
     <Section
@@ -1095,9 +1145,9 @@ function TelegramCommunity() {
             <PrimaryCta label="Join Telegram Channel" href={LINKS.channel} tone="green" trackName="telegram_join" icon={ArrowUpRight} />
           </div>
         </div>
-        <div className="order-1 lg:order-2 relative">
+        <div className="order-1 lg:order-2 relative flex justify-center">
           <div aria-hidden className="absolute inset-0 blur-3xl opacity-40 -z-10" style={{ background: "var(--gradient-glow)" }} />
-          <img src={telegramPhone.url} alt="PrintEzy Telegram channel on mobile" loading="lazy" className="w-full max-w-md mx-auto h-auto" />
+          <IPhoneMockup src={telegramPhone.url} alt="PrintEzy Telegram channel on mobile" />
         </div>
       </div>
     </Section>
