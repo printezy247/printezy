@@ -215,14 +215,24 @@ function Hero() {
               icon={Sparkles}
             />
             <PrimaryCta
+              label="Free Pro Analysis"
+              href={LINKS.tradingview}
+              tone="ghost"
+              trackName="hero_tradingview"
+              icon={LineChart}
+            />
+            <PrimaryCta
               label="Chat With PrintEzy Support"
               href={LINKS.zarif}
               tone="gold"
               trackName="hero_support"
-
               icon={MessageCircle}
             />
           </div>
+          <p className="mt-2 text-[11px] text-muted-foreground/70">
+            Free Pro Analysis uses our TradingView referral link — makes indicator install & usage easier.
+          </p>
+
           <p className="mt-4 text-xs text-muted-foreground/80">
             No signup walls. Education-first. Trading involves risk.
           </p>
