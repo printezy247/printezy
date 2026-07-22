@@ -621,7 +621,7 @@ function WorkflowDemo() {
           <div className="text-xs uppercase tracking-widest text-primary">After</div>
           <div className="mt-1 font-display text-xl">Mapped. Ready. Executed.</div>
           <div className="mt-5 rounded-2xl overflow-hidden border border-primary/20">
-            <img src={heroMonitor.url} alt="EzyMap after view" loading="lazy" className="w-full h-auto" />
+            <img src={CHARTS.goldIntradayLive} alt="EzyMap after view — mapped intraday buy" loading="lazy" className="w-full h-auto max-h-[520px] object-contain mx-auto bg-black" />
           </div>
         </div>
       </div>
