@@ -885,9 +885,16 @@ function EbookLibrary() {
       title={<>Books that <span className="text-gradient-gold">actually change</span> how you trade.</>}
     >
       <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
-        <div className="relative rounded-3xl overflow-hidden border border-white/5">
-          <img src={ebooksPedestal.url} alt="PrintEzy premium ebook covers" loading="lazy" className="w-full h-auto" />
+        <div className="relative grid grid-cols-2 gap-5">
+          <div aria-hidden className="absolute -inset-8 rounded-[3rem] opacity-40 blur-3xl pointer-events-none" style={{ background: "var(--gradient-glow)" }} />
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1">
+            <img src={EBOOK_COVERS.technicalAnalysis} alt="PrintEzy Technical Analysis ebook cover" loading="lazy" className="w-full h-auto" />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1 mt-8">
+            <img src={EBOOK_COVERS.mappingLikePro} alt="Mapping Like A Pro ebook cover" loading="lazy" className="w-full h-auto" />
+          </div>
         </div>
+
         <div className="space-y-4">
           {books.map((b) => {
             const disabled = b.status === "Coming soon";
