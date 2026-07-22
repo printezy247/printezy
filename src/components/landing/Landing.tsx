@@ -533,14 +533,15 @@ function EzyMapIntro() {
             {[
               { k: "Bias", v: "Long" },
               { k: "Zone", v: "Demand" },
-              { k: "Status", v: "READY" },
+              { k: "Status", v: active.status },
             ].map((s) => (
               <div key={s.k} className="rounded-xl border border-white/5 bg-white/[0.02] py-3">
                 <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.k}</div>
-                <div className="mt-1 text-sm font-semibold text-foreground">{s.v}</div>
+                <div className={`mt-1 text-sm font-semibold ${s.k === "Status" && s.v === "LIVE" ? "text-primary" : "text-foreground"}`}>{s.v}</div>
               </div>
             ))}
           </div>
+
         </motion.div>
       </div>
     </Section>
