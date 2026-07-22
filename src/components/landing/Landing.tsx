@@ -24,25 +24,40 @@ import heroMonitorUrl from "@/assets/ezymap-hero-monitor.jpg?url";
 import jackSilhouetteUrl from "@/assets/jack-silhouette.jpg?url";
 import ebooksPedestalUrl from "@/assets/ebooks-pedestal.jpg?url";
 import telegramPhoneUrl from "@/assets/telegram-phone.jpg?url";
+import chart1Asset from "@/assets/chart-1.jpg.asset.json";
+import chart2Asset from "@/assets/chart-2.jpg.asset.json";
+import chart3Asset from "@/assets/chart-3.jpg.asset.json";
+import chart4Asset from "@/assets/chart-4.jpg.asset.json";
+import chart5Asset from "@/assets/chart-5.jpg.asset.json";
+import chart6Asset from "@/assets/chart-6.jpg.asset.json";
 
 const logo = { url: logoAsset.url };
 const heroMonitor = { url: heroMonitorUrl };
 const jackSilhouette = { url: jackSilhouetteUrl };
 const ebooksPedestal = { url: ebooksPedestalUrl };
 const telegramPhone = { url: telegramPhoneUrl };
+const CHARTS = {
+  goldIntradayLive: chart1Asset.url,
+  goldScalpLive: chart2Asset.url,
+  goldScalpReady: chart3Asset.url,
+  goldSwingReady: chart4Asset.url,
+  btcSwingReady: chart5Asset.url,
+  btcScalpLive: chart6Asset.url,
+};
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
-// -------- Links (placeholder — Vantage IB / Zarif to be confirmed) --------
+// -------- Links --------
 const LINKS = {
-  vantage: "https://www.vantagemarkets.com/en/open-live-account/?affid=printezy",
+  vantage: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
   ezymapLite: "https://t.me/printezydollar",
-  proSoftware: "https://telegram.me/m/JrLzPcStOTc9",
-  proPartner: "https://telegram.me/m/JrLzPcStOTc9",
-  zarif: "https://telegram.me/m/JrLzPcStOTc9",
+  proSoftware: "https://t.me/jackprintezy",
+  proPartner: "https://t.me/jackprintezy",
+  zarif: "https://t.me/jackprintezy",
   channel: "https://t.me/printezydollar",
   ebook: "https://telegram.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
+
 
 const NAV_ITEMS = [
   { label: "EzyMap", href: "#ezymap" },
