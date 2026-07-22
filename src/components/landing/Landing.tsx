@@ -56,13 +56,13 @@ import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
 // -------- Links --------
 const LINKS = {
-  vantage: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
+  vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg=&invitecode=oQQlQ8yM",
   ezymapLite: "https://t.me/m/GnnwtgRyMDB",
   proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
   support: "https://t.me/jackprintezy",
   channel: "https://t.me/printezybyjack",
-  ebook: "https://telegram.me/printezybyjack/2854",
+  ebook: "https://t.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
@@ -111,7 +111,6 @@ function Nav() {
         <div className="flex items-center gap-2 sm:gap-3">
           <a
             href={LINKS.ezymapLite}
-            target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("click", "nav_lite")}
             className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs sm:text-sm text-foreground/90 hover:bg-white/5 transition-colors"
@@ -120,7 +119,6 @@ function Nav() {
           </a>
           <a
             href={LINKS.vantage}
-            target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("click", "nav_open_account")}
             className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs sm:text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all shadow-green"
@@ -312,7 +310,6 @@ function PrimaryCta({
   return (
     <a
       href={href}
-      target="_blank"
       rel="noopener noreferrer"
       onClick={() => track("click", trackName)}
       className={`group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-all ${cls}`}
@@ -662,7 +659,6 @@ function WorkflowDemo() {
       <div className="mt-8 flex flex-wrap gap-3 justify-center">
         <a
           href={LINKS.ezymapLite}
-          target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("click", "demo_lite")}
           className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm hover:bg-white/5"
@@ -851,7 +847,6 @@ function Education() {
           <a
             key={c.t}
             href={c.href}
-            target={c.href.startsWith("#") ? undefined : "_blank"}
             rel="noopener noreferrer"
             onClick={() => track("click", c.track)}
             className="glass-card rounded-2xl p-6 group hover:border-primary/30 transition-colors"
@@ -902,7 +897,6 @@ function EbookLibrary() {
               <a
                 key={b.t}
                 href={disabled ? "#ebooks" : b.href}
-                target={disabled ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 onClick={(e) => {
                   if (disabled) {
@@ -1206,9 +1200,9 @@ function Footer() {
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
             <ul className="space-y-2 text-sm">
-              <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
-              <li><a href={LINKS.support} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
-              <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
+              <li><a href={LINKS.channel} rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
+              <li><a href={LINKS.support} rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
+              <li><a href={LINKS.vantage} rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
               <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
             </ul>
           </div>
@@ -1252,7 +1246,6 @@ function FloatingCta() {
         >
           <a
             href={LINKS.ezymapLite}
-            target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("click", "floating_lite")}
             className="flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground py-3.5 text-sm font-semibold shadow-green"
