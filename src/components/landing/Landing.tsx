@@ -57,7 +57,7 @@ import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 // -------- Links --------
 const LINKS = {
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
-  ezymapLite: "https://t.me/m/GnnwtgRyMDB",
+  ezymapLite: "https://t.me/m/GnnwtgRyMDBl",
   proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
   support: "https://t.me/jackprintezy",
