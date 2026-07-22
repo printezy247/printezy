@@ -427,6 +427,7 @@ const MODES = [
     desc: "Fast micro-structure zones for intraday scalpers. Alerts fire the second price taps a mapped level.",
     accent: "green" as const,
     img: CHARTS.goldScalpLive,
+    status: "LIVE" as const,
   },
   {
     key: "intraday",
@@ -435,6 +436,7 @@ const MODES = [
     desc: "Session-based bias with clear supply and demand mapped before New York open. Trade the plan, not the wick.",
     accent: "gold" as const,
     img: CHARTS.goldIntradayLive,
+    status: "LIVE" as const,
   },
   {
     key: "swing",
@@ -443,8 +445,10 @@ const MODES = [
     desc: "Higher-timeframe map for busy professionals. Check charts once a day, execute when zones align.",
     accent: "green" as const,
     img: CHARTS.goldSwingReady,
+    status: "READY" as const,
   },
 ];
+
 
 
 function EzyMapIntro() {
