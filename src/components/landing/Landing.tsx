@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Play,
   Sparkles,
+  Star,
   Target,
   TrendingUp,
   Zap,
@@ -57,7 +58,7 @@ import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 // -------- Links --------
 const LINKS = {
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
-  ezymapLite: "https://t.me/m/GnnwtgRyMDB",
+  ezymapLite: "https://t.me/m/GnnwtgRyMDBl",
   proSoftware: "https://t.me/m/BWf8zJWRMWQ1",
   proPartner: "https://t.me/jackprintezy",
   support: "https://t.me/jackprintezy",
@@ -74,6 +75,7 @@ const NAV_ITEMS = [
   { label: "Products", href: "#ladder" },
   { label: "Education", href: "#education" },
   { label: "Results", href: "#results" },
+  { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
 ];
 
@@ -1128,6 +1130,68 @@ const FAQS = [
   { q: "How do I contact support?", a: "Direct-message PrintEzy Support on Telegram. Real human, usually within a few hours." },
 ];
 
+// ============== TESTIMONIALS ==============
+const TESTIMONIALS = [
+  {
+    initials: "BD",
+    name: "Budi D.",
+    role: "Software Engineer · Side trader",
+    quote:
+      "The free ebook alone clarified more than three months of YouTube tutorials. Jack keeps me sharp without burning my evenings.",
+  },
+  {
+    initials: "PR",
+    name: "Priya R.",
+    role: "Full-time Trader",
+    quote:
+      "Jack's analysis is the first thing I read before the New York open. The bias calls are scary accurate and the risk framing feels institutional-grade.",
+  },
+  {
+    initials: "LR",
+    name: "Luqman R.",
+    role: "Consultant · Father of two",
+    quote:
+      "I only have 20 minutes a day for markets and PrintEzy fits that life. I'm finally green for the year without being glued to a screen.",
+  },
+];
+
+function Testimonials() {
+  return (
+    <Section
+      id="testimonials"
+      eyebrow="Traders talking"
+      title={<>Real results from <span className="text-gradient-green">real traders</span>.</>}
+    >
+      <div className="grid gap-6 md:grid-cols-3">
+        {TESTIMONIALS.map((t) => (
+          <figure
+            key={t.name}
+            className="relative rounded-2xl border border-white/8 bg-white/[0.02] p-6 sm:p-7 backdrop-blur-sm hover:border-primary/30 transition-colors"
+          >
+            <div className="flex gap-1 text-accent" aria-label="5 star rating">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="h-4 w-4 fill-current" />
+              ))}
+            </div>
+            <blockquote className="mt-4 text-sm sm:text-base text-foreground/90 leading-relaxed">
+              "{t.quote}"
+            </blockquote>
+            <figcaption className="mt-6 flex items-center gap-3 pt-5 border-t border-white/5">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/15 text-primary text-xs font-semibold">
+                {t.initials}
+              </div>
+              <div>
+                <div className="text-sm font-medium text-foreground">{t.name}</div>
+                <div className="text-xs text-muted-foreground">{t.role}</div>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 function Faq() {
   return (
     <Section id="faq" eyebrow="Answers" title={<>Frequently asked, <span className="text-gradient-green">honestly answered</span>.</>}>
@@ -1275,6 +1339,7 @@ export function Landing() {
       "jack",
       "results",
       "telegram",
+      "testimonials",
       "faq",
       "final",
     ]);
@@ -1297,6 +1362,7 @@ export function Landing() {
         <JackBrand />
         <ResultsGallery />
         <TelegramCommunity />
+        <Testimonials />
         <Faq />
         <FinalCta />
       </main>
