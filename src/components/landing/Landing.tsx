@@ -24,25 +24,40 @@ import heroMonitorUrl from "@/assets/ezymap-hero-monitor.jpg?url";
 import jackSilhouetteUrl from "@/assets/jack-silhouette.jpg?url";
 import ebooksPedestalUrl from "@/assets/ebooks-pedestal.jpg?url";
 import telegramPhoneUrl from "@/assets/telegram-phone.jpg?url";
+import chart1Asset from "@/assets/chart-1.jpg.asset.json";
+import chart2Asset from "@/assets/chart-2.jpg.asset.json";
+import chart3Asset from "@/assets/chart-3.jpg.asset.json";
+import chart4Asset from "@/assets/chart-4.jpg.asset.json";
+import chart5Asset from "@/assets/chart-5.jpg.asset.json";
+import chart6Asset from "@/assets/chart-6.jpg.asset.json";
 
 const logo = { url: logoAsset.url };
 const heroMonitor = { url: heroMonitorUrl };
 const jackSilhouette = { url: jackSilhouetteUrl };
 const ebooksPedestal = { url: ebooksPedestalUrl };
 const telegramPhone = { url: telegramPhoneUrl };
+const CHARTS = {
+  goldIntradayLive: chart1Asset.url,
+  goldScalpLive: chart2Asset.url,
+  goldScalpReady: chart3Asset.url,
+  goldSwingReady: chart4Asset.url,
+  btcSwingReady: chart5Asset.url,
+  btcScalpLive: chart6Asset.url,
+};
 import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
 
-// -------- Links (placeholder — Vantage IB / Zarif to be confirmed) --------
+// -------- Links --------
 const LINKS = {
-  vantage: "https://www.vantagemarkets.com/en/open-live-account/?affid=printezy",
+  vantage: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
   ezymapLite: "https://t.me/printezydollar",
-  proSoftware: "https://telegram.me/m/JrLzPcStOTc9",
-  proPartner: "https://telegram.me/m/JrLzPcStOTc9",
-  zarif: "https://telegram.me/m/JrLzPcStOTc9",
+  proSoftware: "https://t.me/jackprintezy",
+  proPartner: "https://t.me/jackprintezy",
+  zarif: "https://t.me/jackprintezy",
   channel: "https://t.me/printezydollar",
   ebook: "https://telegram.me/printezybyjack/2854",
   tradingview: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
+
 
 const NAV_ITEMS = [
   { label: "EzyMap", href: "#ezymap" },
@@ -191,10 +206,11 @@ function Hero() {
               icon={Sparkles}
             />
             <PrimaryCta
-              label="Chat With Zarif"
+              label="Chat With PrintEzy Support"
               href={LINKS.zarif}
               tone="gold"
-              trackName="hero_zarif"
+              trackName="hero_support"
+
               icon={MessageCircle}
             />
           </div>
@@ -391,6 +407,7 @@ const MODES = [
     tf: "1m · 5m · 15m",
     desc: "Fast micro-structure zones for intraday scalpers. Alerts fire the second price taps a mapped level.",
     accent: "green" as const,
+    img: CHARTS.goldScalpLive,
   },
   {
     key: "intraday",
@@ -398,6 +415,7 @@ const MODES = [
     tf: "15m · 1h · 4h",
     desc: "Session-based bias with clear supply and demand mapped before New York open. Trade the plan, not the wick.",
     accent: "gold" as const,
+    img: CHARTS.goldIntradayLive,
   },
   {
     key: "swing",
@@ -405,8 +423,10 @@ const MODES = [
     tf: "4h · 1D · 1W",
     desc: "Higher-timeframe map for busy professionals. Check charts once a day, execute when zones align.",
     accent: "green" as const,
+    img: CHARTS.goldSwingReady,
   },
 ];
+
 
 function EzyMapIntro() {
   const [mode, setMode] = useState(MODES[1].key);
@@ -471,8 +491,13 @@ function EzyMapIntro() {
           transition={{ duration: 0.4 }}
           className="glass-card rounded-3xl p-4 sm:p-6"
         >
-          <div className="relative overflow-hidden rounded-2xl border border-white/5">
-            <img src={heroMonitor.url} alt="EzyMap live chart preview" loading="lazy" className="w-full h-auto" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black">
+            <img
+              src={active.img}
+              alt={`EzyMap ${active.label} mode live chart`}
+              loading="lazy"
+              className="w-full h-auto max-h-[520px] object-contain mx-auto"
+            />
             <div className="absolute top-4 left-4 rounded-full bg-background/70 backdrop-blur-md border border-white/10 px-3 py-1 text-xs">
               <span className={`font-semibold ${active.accent === "gold" ? "text-accent" : "text-primary"}`}>
                 {active.label} mode
@@ -480,6 +505,7 @@ function EzyMapIntro() {
               <span className="text-muted-foreground">· {active.tf}</span>
             </div>
           </div>
+
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">
             {[
               { k: "Bias", v: "Long" },
@@ -596,7 +622,7 @@ function WorkflowDemo() {
           <div className="text-xs uppercase tracking-widest text-primary">After</div>
           <div className="mt-1 font-display text-xl">Mapped. Ready. Executed.</div>
           <div className="mt-5 rounded-2xl overflow-hidden border border-primary/20">
-            <img src={heroMonitor.url} alt="EzyMap after view" loading="lazy" className="w-full h-auto" />
+            <img src={CHARTS.goldIntradayLive} alt="EzyMap after view — mapped intraday buy" loading="lazy" className="w-full h-auto max-h-[520px] object-contain mx-auto bg-black" />
           </div>
         </div>
       </div>
@@ -733,7 +759,7 @@ function PartnerJourney() {
     { n: 1, t: "Open Vantage account", d: "Click our partner link. Standard account, 3-min form." },
     { n: 2, t: "Verify KYC", d: "Upload ID + proof of address inside Vantage's secure portal." },
     { n: 3, t: "Fund your account", d: "Any amount to start. We recommend a size you're comfortable losing." },
-    { n: 4, t: "Send us your account #", d: "DM Zarif — we tag your account to the partner program." },
+    { n: 4, t: "Send us your account #", d: "DM PrintEzy Support — we tag your account to the partner program." },
     { n: 5, t: "Unlock EzyMap Pro", d: "Full software + private partner channel activated within 24h." },
     { n: 6, t: "Trade the plan", d: "Onboarding call with Zarif, ongoing reviews with Jack." },
   ];
@@ -895,7 +921,7 @@ function JackBrand() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <PrimaryCta label="Read Weekly Analysis" href={LINKS.channel} tone="ghost" trackName="jack_channel" icon={LineChart} />
-            <PrimaryCta label="DM Zarif" href={LINKS.zarif} tone="gold" trackName="jack_zarif" icon={MessageCircle} />
+            <PrimaryCta label="DM PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="jack_support" icon={MessageCircle} />
           </div>
         </div>
       </div>
@@ -912,15 +938,17 @@ type ResultCase = {
   rr: string;
   date: string;
   note: string;
+  img: string;
 };
 const CASES: ResultCase[] = [
-  { id: "1", asset: "Gold", outcome: "Win", title: "London demand tap", rr: "+3.2R", date: "12 Nov", note: "Mapped H4 demand, LIVE alert on M15 bullish shift." },
-  { id: "2", asset: "BTC", outcome: "Win", title: "Weekly supply rejection", rr: "+2.1R", date: "07 Nov", note: "Short from mapped supply, partial at first target." },
-  { id: "3", asset: "Gold", outcome: "Loss", title: "NFP volatility stop", rr: "-1R", date: "01 Nov", note: "Setup valid, news wick invalidated plan." },
-  { id: "4", asset: "BTC", outcome: "Invalidated", title: "Range break", rr: "0R", date: "28 Oct", note: "Zone broke pre-entry. Plan cancelled, no trade." },
-  { id: "5", asset: "Gold", outcome: "No Entry", title: "Pre-Asia gap", rr: "0R", date: "22 Oct", note: "Price never tapped mapped zone. Discipline > FOMO." },
-  { id: "6", asset: "BTC", outcome: "Win", title: "Intraday demand", rr: "+1.8R", date: "18 Oct", note: "Intraday mode, filled in London, closed NY." },
+  { id: "1", asset: "Gold", outcome: "Win", title: "Intraday M30 buy live", rr: "Live", date: "23 Jul", note: "Low-risk buy zone, EMA + Fibonacci confluence. LIVE alert fired at 4,131.90.", img: CHARTS.goldIntradayLive },
+  { id: "2", asset: "Gold", outcome: "Loss", title: "M1 scalp sell — micro stop", rr: "-2 pips", date: "23 Jul", note: "High-risk zone rejection, plan hit stop on wick. Sized small, damage minimal.", img: CHARTS.goldScalpLive },
+  { id: "3", asset: "Gold", outcome: "No Entry", title: "Scalp sell ready", rr: "Ready", date: "23 Jul", note: "Sell zone mapped at 4,130 — waiting for price to tap. Discipline > FOMO.", img: CHARTS.goldScalpReady },
+  { id: "4", asset: "Gold", outcome: "No Entry", title: "4H swing sell setup", rr: "Ready", date: "23 Jul", note: "Bearish bias, sell entry zone mapped above 4,128. Plan waits for the market.", img: CHARTS.goldSwingReady },
+  { id: "5", asset: "BTC", outcome: "No Entry", title: "4H swing buy setup", rr: "Ready", date: "23 Jul", note: "Bearish short-term bias, low-risk buy zone mapped below 65,600. Ready state.", img: CHARTS.btcSwingReady },
+  { id: "6", asset: "BTC", outcome: "Loss", title: "M1 scalp buy — tight stop", rr: "-8 pips", date: "23 Jul", note: "Entry zone rejection with CHoCH confluence. Stop hit on retest. Same map, next print.", img: CHARTS.btcScalpLive },
 ];
+
 const FILTERS: Array<ResultCase["asset"] | ResultCase["outcome"] | "All"> = ["All", "Gold", "BTC", "Win", "Loss", "Invalidated", "No Entry"];
 
 function ResultsGallery() {
@@ -959,9 +987,17 @@ function ResultsGallery() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
               transition={{ duration: 0.3 }}
-              className="glass-card rounded-2xl p-5"
+              className="glass-card rounded-2xl p-4 flex flex-col"
             >
-              <div className="flex items-center justify-between text-xs">
+              <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black">
+                <img
+                  src={c.img}
+                  alt={`${c.asset} ${c.title}`}
+                  loading="lazy"
+                  className="w-full h-56 object-contain mx-auto"
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-between text-xs">
                 <span className="px-2 py-1 rounded-full bg-white/5 text-muted-foreground">{c.asset}</span>
                 <span
                   className={`px-2 py-1 rounded-full font-semibold ${
@@ -975,7 +1011,7 @@ function ResultsGallery() {
                   {c.outcome}
                 </span>
               </div>
-              <div className="mt-4 font-display text-lg">{c.title}</div>
+              <div className="mt-3 font-display text-lg">{c.title}</div>
               <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="font-mono">{c.rr}</span>
                 <span>·</span>
@@ -983,6 +1019,7 @@ function ResultsGallery() {
               </div>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{c.note}</p>
             </motion.div>
+
           ))}
         </AnimatePresence>
       </div>
@@ -1098,7 +1135,7 @@ function FinalCta() {
         <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center">
           <PrimaryCta label="Open Vantage Account" href={LINKS.vantage} tone="green" trackName="final_open" icon={ArrowUpRight} />
           <PrimaryCta label="Get EzyMap Lite Free" href={LINKS.ezymapLite} tone="ghost" trackName="final_lite" icon={Sparkles} />
-          <PrimaryCta label="Chat With Zarif" href={LINKS.zarif} tone="gold" trackName="final_zarif" icon={MessageCircle} />
+          <PrimaryCta label="Chat With PrintEzy Support" href={LINKS.zarif} tone="gold" trackName="final_support" icon={MessageCircle} />
         </div>
       </div>
     </section>
@@ -1130,7 +1167,7 @@ function Footer() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Community</div>
             <ul className="space-y-2 text-sm">
               <li><a href={LINKS.channel} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Telegram</a></li>
-              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM Zarif</a></li>
+              <li><a href={LINKS.zarif} target="_blank" rel="noopener noreferrer" className="hover:text-primary">DM PrintEzy Support</a></li>
               <li><a href={LINKS.vantage} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Open Vantage Account</a></li>
               <li><a href="#faq" className="hover:text-primary">FAQ</a></li>
             </ul>
