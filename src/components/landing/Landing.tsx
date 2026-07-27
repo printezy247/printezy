@@ -232,7 +232,7 @@ function Hero() {
               href={LINKS.support}
               rel="noopener noreferrer"
               onClick={() => track("click", "hero_support")}
-              className="inline-flex items-center gap-1.5 rounded-full border border-secondary/40 bg-secondary/5 px-3.5 py-1.5 text-[11px] sm:text-xs text-secondary hover:bg-secondary/10 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[oklch(0.80_0.14_88/0.5)] bg-[oklch(0.80_0.14_88/0.08)] px-3.5 py-1.5 text-[11px] sm:text-xs text-[oklch(0.85_0.15_88)] hover:bg-[oklch(0.80_0.14_88/0.15)] hover:border-[oklch(0.85_0.14_88/0.7)] transition-colors"
             >
               <MessageCircle className="h-3 w-3" />
               Chat with PrintEzy Support
