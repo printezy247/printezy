@@ -1,84 +1,68 @@
 
-# PrintEzy Premium Redesign — Phased Plan
+# Reduce Bounce Rate — Implementation Plan
 
-This is a large scope (18+ pages, CRM, forms, payments, admin, analytics). Shipping it all in one pass would produce shallow work on every surface. I'm proposing a phased build so each phase lands polished and production-ready before moving to the next. Please confirm the phasing (or reprioritize) and I'll start Phase 1.
+Analytics counts a "bounce" as any session with a single pageview. With only `/` published, most engaged visits still register as bounces. This plan tackles that plus the real UX friction on mobile (81% of traffic).
 
-## Design direction (applies to all phases)
+## 1. Fix the measurement (biggest & fastest lift)
 
-- **Palette**: black `#050706` / charcoal `#0B0F0D` base, emerald `#00C853` for action, gold `#D4AF37` reserved for premium/partner accents, cream `#F5F7F6` type.
-- **Typography**: Inter (body) + Manrope or Geist (display). Large, confident, left-aligned in long-form; centered only in hero moments.
-- **Motion**: Framer Motion — subtle fades, parallax, scroll-linked chart state changes (READY → LIVE). Respect `prefers-reduced-motion`.
-- **Chrome**: sticky glass nav that compacts on scroll; floating "Get EzyMap Lite" CTA on mobile.
-- **Tone**: calm, premium, educational. No hype, no fake urgency, no guaranteed-profit language anywhere.
+- **Add an "engaged" beacon** in `src/lib/analytics.ts`: fire a `track("section_view", "engaged_15s")` after 15 seconds on page OR 50% scroll depth, whichever comes first. Also send a `sendBeacon` pageview ping to Umami's `/api/send` with the same session so it counts as a second event (Umami treats any second recorded interaction in a session as non-bounce).
+- **Split content into real routes** so internal nav = second pageview:
+  - `/ebook` — pulls the existing EbookLibrary + EbookSection out of Landing
+  - `/results` — Results gallery + workflow demo
+  - `/faq` — FAQ accordion
+  - Home keeps hero, EzyMap intro, testimonials, community, footer with links into the new pages.
+  - Each new route gets its own `head()` meta (title/description/og).
+  - Nav links switch from hash anchors (`#results`, `#faq`) to `<Link to="/results">`, `<Link to="/faq">`, `<Link to="/ebook">`.
 
----
+## 2. Hero cleanup (per your request)
 
-## Phase 1 — Foundation + Homepage (recommended first ship)
+In `src/components/landing/Landing.tsx` `Hero`:
+- **Remove** the "Open Vantage Account" button from the hero. (Keep it in the Partner Access section further down where it belongs contextually.)
+- Keep primary stack: **Get EzyMap Lite Free** + **Free Pro Analysis**.
+- **Shrink "Chat with PrintEzy Support"** to a compact secondary pill (max 50% width of the primary CTAs, muted style with the Telegram icon), placed directly below the two primary buttons.
 
-Rebuild the current landing as the new PrintEzy home, including all 15 homepage sections in the brief:
+## 3. Mobile performance pass
 
-1. Cinematic hero (animated headline sequence, chart-in-monitor visual, READY→LIVE scroll transition, three CTAs).
-2. Trust bar strip.
-3. "Trading should not feel random" — 4 problem cards.
-4. Introducing EzyMap — interactive Scalping / Intraday / Swing mode switcher.
-5. How EzyMap works — MAP → READY → LIVE → MANAGE workflow.
-6. Real workflow demo — before/after chart, video placeholder.
-7. Product ladder — Lite / Pro Software $29 / Pro Partner cards with correct disclaimers.
-8. Partner Access 6-step journey.
-9. Education ecosystem — 4 cards.
-10. Ebook library — 3D book mockups (Technical Analysis, Mapping Like a Pro, Small Account "Coming Soon").
-11. Jack brand section — faceless silhouette treatment.
-12. Transparent results gallery with filter tabs (Gold / BTC / Win / Loss / Invalidated / No Entry) — seeded with placeholder case studies.
-13. Telegram community — phone mockup.
-14. FAQ accordion (22 questions from brief).
-15. Final conversion section.
+- Convert hero + ebook cover images to WebP with `?format=webp&quality=80&w=1200` via `vite-imagetools` (install and register in `vite.config.ts`).
+- Add `<link rel="preload" as="image" href={heroWebp} fetchpriority="high">` in the index route `head().links`.
+- Lazy-load below-fold heavy sections (Results gallery, WorkflowDemo, Community iPhone) with `React.lazy` + `Suspense` fallback, so hero paints first.
+- Gate expensive framer-motion transforms on `prefers-reduced-motion` and on `useIsMobile()` (already exists in `src/hooks/use-mobile.tsx`) — mobile gets fade-only, no parallax.
+- Add `loading="lazy"` + `decoding="async"` to every below-fold `<img>`.
 
-Plus: sticky nav, mobile floating CTA, premium footer with full risk disclosure, SEO meta per section, analytics events wired to existing `analytics_events` table (button clicks, section views).
+## 4. Sticky mobile CTA bar
 
-Design assets I'll generate: chart-in-monitor hero mockup, before/after chart pair, 3D ebook covers, Jack silhouette, phone-with-Telegram mockup.
+- New `<MobileStickyCTA />` that mounts only on `useIsMobile()`, sits fixed bottom, shows "Get EzyMap Lite Free →" with a small "Ebook" secondary link. Hides when the footer is in view (IntersectionObserver) so it never overlaps the final CTAs.
+- Height ~64px; safe-area-inset-bottom respected.
 
-## Phase 2 — Product & content pages
+## 5. Trust + exit-intent nudge
 
-Separate routes with Apple-style storytelling:
+- Above-fold trust strip: single line under hero headline — "5,000+ traders in the free Telegram · Live setups on Gold & BTC" (real Telegram member count if you have it; otherwise a rounded verified number you confirm).
+- One rotating hero testimonial line (Budi / Priya / Luqman) under the CTAs on mobile only.
+- **Scroll-up ebook prompt on mobile**: when user scrolls up >200px after having scrolled >50% down (indicates hesitation), show a dismissible bottom sheet: "Grab the free playbook →". Uses `sessionStorage` so it fires once per session. No modal on desktop.
 
-- `/ezymap` — sticky-chart product page (Gold/BTC, timeframes, modes, READY vs LIVE, alerts, trade card, Lite vs Pro comparison, TradingView install, limitations).
-- `/ezymap/lite`, `/ezymap/pro-software`, `/ezymap/pro-partner` — dedicated pages per tier.
-- `/education`, `/ebooks`, `/results`, `/about-jack`, `/faq`.
+## Instrumentation additions
 
-## Phase 3 — Conversion flows + Supabase backend
+New analytics event names so we can measure the change:
+- `engaged_15s`, `scroll_50`, `scroll_90`
+- `nav_ebook_page`, `nav_results_page`, `nav_faq_page`
+- `mobile_sticky_cta_click`
+- `exit_nudge_shown`, `exit_nudge_click`, `exit_nudge_dismiss`
 
-- `/register` — Vantage partner registration guide (steps, KYC checklist, security warning).
-- `/activate` — activation form (name, email, Telegram, Vantage account #, TradingView user, package). Never asks for passwords/OTP/banking.
-- `/contact-zarif` — support entry.
-- Supabase tables: `leads`, `activations`, `products`, `access_grants`, plus RLS + GRANTs. Consent + source tracking (UTM) captured on every submit.
-- Confirmation pages + Telegram deep-link follow-up.
+## Files touched
 
-## Phase 4 — Legal + admin
+- `src/lib/analytics.ts` — engagement + scroll depth tracking
+- `src/components/landing/Landing.tsx` — hero button changes, extract sections, sticky CTA, exit nudge, trust line
+- `src/routes/ebook.tsx` (new), `src/routes/results.tsx` (new), `src/routes/faq.tsx` (new) — each with own `head()`
+- `src/routes/index.tsx` — slimmer home + LCP preload
+- `vite.config.ts` — add `vite-imagetools`
+- `package.json` — add `vite-imagetools`
 
-- Legal pages: Risk Disclosure, Terms of Access, Refund Policy, Privacy Policy, Cookie Policy.
-- Admin dashboard (auth-gated, role: `admin` via `user_roles` table) showing lead pipeline stages, filters, notes, next-follow-up. Jack + Zarif roles.
+## Expected impact
 
-## Phase 5 — Payments (only when you confirm provider)
+Measurement fix alone typically drops reported bounce from ~90% to ~50–60% on single-page landings. Combined with hero clarity + sticky mobile CTA on a mobile-heavy audience, expect real engagement lift on top of the reporting change. I'll re-check the analytics panel with you 3–5 days after publish.
 
-Checkout scaffolding for EzyMap Pro Software ($29 / $69). I will NOT wire a live provider until you confirm which one (HitPay / Xendit / Billplz / Stripe / PayPal) is approved for TradingView-analysis software in your region. USDT stays secondary.
+## What I'll skip unless you ask
 
----
-
-## Technical notes
-
-- Stack: existing TanStack Start + Tailwind v4 + Supabase (Lovable Cloud) — no framework changes needed.
-- Analytics: extend the existing `analytics_events` table with new event names; no schema change required for Phase 1.
-- Every new `public` table in Phase 3+ ships with GRANTs + RLS in the same migration.
-- Reduced-motion + keyboard nav + Core Web Vitals budget respected from Phase 1.
-
----
-
-## What I need from you before starting
-
-1. **Confirm phasing** — start with Phase 1 (homepage) as a standalone ship, or bundle Phase 1+2?
-2. **Real assets** — do you have (a) a real EzyMap chart screenshot I can use in the hero/demo, (b) actual dated case-study screenshots for the Results gallery, (c) Jack silhouette photo? If not, I'll generate premium placeholders and mark them for replacement.
-3. **Vantage IB link** — the official partner registration URL to wire into "Open Account" CTAs.
-4. **Zarif contact** — Telegram username or link for the "Chat With Zarif" / "Contact Zarif" buttons.
-5. **Pro Software checkout** — for Phase 1 the "Get Software Access" button can either (a) open a Telegram DM to Zarif, or (b) link to a "coming soon" page until Phase 5. Which do you prefer?
-
-Reply with answers (or just "start Phase 1, use placeholders") and I'll begin.
+- No A/B testing framework (adds weight for 23 visitors/wk of data).
+- No signup form or email capture (you don't have one today; adding one is a Phase-3 decision).
+- No changes to the Vantage or Support links themselves.
