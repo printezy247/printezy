@@ -53,7 +53,8 @@ const EBOOK_COVERS = {
   technicalAnalysis: ebookTAAsset.url,
   mappingLikePro: ebookMapAsset.url,
 };
-import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
+import { track, trackPageLoad, trackSectionVisibility, trackEngagement } from "@/lib/analytics";
+import { Link } from "@tanstack/react-router";
 
 // -------- Links --------
 const LINKS = {
