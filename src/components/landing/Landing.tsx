@@ -101,15 +101,26 @@ function Nav() {
           <img src={logo.url} alt="PrintEzy" className="h-9 sm:h-11 w-auto" />
         </a>
         <nav className="hidden lg:flex items-center gap-8">
-          {NAV_ITEMS.map((i) => (
-            <a
-              key={i.href}
-              href={i.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {i.label}
-            </a>
-          ))}
+          {NAV_ITEMS.map((i) =>
+            i.kind === "route" ? (
+              <Link
+                key={i.to}
+                to={i.to}
+                onClick={() => track("click", i.trackName)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {i.label}
+              </Link>
+            ) : (
+              <a
+                key={i.href}
+                href={i.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {i.label}
+              </a>
+            ),
+          )}
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
           <a
