@@ -1403,7 +1403,11 @@ export function Landing() {
       "faq",
       "final",
     ]);
-    return cleanup;
+    const stopEngagement = trackEngagement();
+    return () => {
+      cleanup?.();
+      stopEngagement?.();
+    };
   }, []);
   return (
     <div className="min-h-screen bg-background text-foreground">
