@@ -55,6 +55,49 @@ export function trackSectionVisibility(sectionIds: string[]) {
   return () => observer.disconnect();
 }
 
-export function trackPageLoad() {
-  track("page_load", "landing");
+export function trackPageLoad(name = "landing") {
+  track("page_load", name);
+}
+
+/**
+ * Fire an "engaged" event once the visitor either stays 15s or scrolls
+ * past 50% of the document. Also emit scroll-depth milestones. These
+ * secondary events make analytics count the session as non-bounce
+ * (any session with 2+ events isn't a bounce in most tools).
+ */
+export function trackEngagement() {
+  if (typeof window === "undefined") return;
+
+  let engaged = false;
+  const fireEngaged = (source: string) => {
+    if (engaged) return;
+    engaged = true;
+    track("section_view", `engaged_${source}`);
+    window.clearTimeout(timer);
+    window.removeEventListener("scroll", onScroll);
+  };
+
+  const timer = window.setTimeout(() => fireEngaged("15s"), 15000);
+
+  const depthHits = new Set<number>();
+  const onScroll = () => {
+    const doc = document.documentElement;
+    const scrolled = window.scrollY + window.innerHeight;
+    const height = Math.max(doc.scrollHeight, 1);
+    const pct = Math.round((scrolled / height) * 100);
+    [25, 50, 75, 90].forEach((m) => {
+      if (pct >= m && !depthHits.has(m)) {
+        depthHits.add(m);
+        track("section_view", `scroll_${m}`);
+        if (m >= 50) fireEngaged("scroll");
+      }
+    });
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  return () => {
+    window.clearTimeout(timer);
+    window.removeEventListener("scroll", onScroll);
+  };
 }
