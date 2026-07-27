@@ -892,13 +892,13 @@ export function EbookLibrary() {
       title={<>Books that <span className="text-gradient-gold">actually change</span> how you trade.</>}
     >
       <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
-        <div className="relative grid grid-cols-2 gap-5">
+        <div className="relative grid grid-cols-2 gap-5 items-start">
           <div aria-hidden className="absolute -inset-8 rounded-[3rem] opacity-40 blur-3xl pointer-events-none" style={{ background: "var(--gradient-glow)" }} />
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1">
-            <img src={EBOOK_COVERS.technicalAnalysis} alt="PrintEzy Technical Analysis ebook cover" loading="lazy" className="w-full h-auto" />
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1 aspect-[2/3]">
+            <img src={EBOOK_COVERS.technicalAnalysis} alt="PrintEzy Technical Analysis ebook cover" loading="lazy" className="w-full h-full object-cover" />
           </div>
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1 mt-8">
-            <img src={EBOOK_COVERS.mappingLikePro} alt="Mapping Like A Pro ebook cover" loading="lazy" className="w-full h-auto" />
+          <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/40 shadow-green transition-transform hover:-translate-y-1 aspect-[2/3]">
+            <img src={EBOOK_COVERS.mappingLikePro} alt="Mapping Like A Pro ebook cover" loading="lazy" className="w-full h-full object-cover" />
           </div>
         </div>
 
