@@ -201,16 +201,9 @@ function Hero() {
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
             <PrimaryCta
-              label="Open Vantage Account"
-              href={LINKS.vantage}
-              tone="green"
-              trackName="hero_open_account"
-              icon={ArrowUpRight}
-            />
-            <PrimaryCta
               label="Get EzyMap Lite Free"
               href={LINKS.ezymapLite}
-              tone="ghost"
+              tone="green"
               trackName="hero_lite"
               icon={Sparkles}
             />
@@ -221,15 +214,19 @@ function Hero() {
               trackName="hero_tradingview"
               icon={LineChart}
             />
-            <PrimaryCta
-              label="Chat With PrintEzy Support"
-              href={LINKS.support}
-              tone="gold"
-              trackName="hero_support"
-              icon={MessageCircle}
-            />
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground/70">
+          <div className="mt-4 flex justify-center">
+            <a
+              href={LINKS.support}
+              rel="noopener noreferrer"
+              onClick={() => track("click", "hero_support")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-secondary/40 bg-secondary/5 px-3.5 py-1.5 text-[11px] sm:text-xs text-secondary hover:bg-secondary/10 transition-colors"
+            >
+              <MessageCircle className="h-3 w-3" />
+              Chat with PrintEzy Support
+            </a>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground/70">
             Free Pro Analysis uses our TradingView referral link — makes indicator install & usage easier.
           </p>
 
@@ -237,6 +234,7 @@ function Hero() {
             No signup walls. Education-first. Trading involves risk.
           </p>
         </motion.div>
+
 
         {/* Chart-in-monitor visual */}
         <motion.div
