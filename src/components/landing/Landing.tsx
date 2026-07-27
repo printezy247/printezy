@@ -81,7 +81,7 @@ const NAV_ITEMS = [
 ];
 
 // ============== NAV ==============
-function Nav() {
+export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -631,7 +631,7 @@ function HowItWorks() {
 }
 
 // ============== WORKFLOW DEMO ==============
-function WorkflowDemo() {
+export function WorkflowDemo() {
   return (
     <Section
       id="demo"
@@ -879,7 +879,7 @@ function Education() {
 }
 
 // ============== EBOOK LIBRARY ==============
-function EbookLibrary() {
+export function EbookLibrary() {
   const books = [
     { t: "Technical Analysis", sub: "20-page foundation", status: "Available", href: LINKS.ebook, track: "ebook_ta" },
     { t: "Mapping Like a Pro", sub: "Advanced EzyMap workflow", status: "Available", href: LINKS.ebook, track: "ebook_map" },
@@ -997,7 +997,7 @@ const CASES: ResultCase[] = [
 
 const FILTERS: Array<ResultCase["asset"] | ResultCase["outcome"] | "All"> = ["All", "Gold", "BTC", "Win", "Loss", "Invalidated", "No Entry"];
 
-function ResultsGallery() {
+export function ResultsGallery() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const visible = CASES.filter((c) => filter === "All" || c.asset === filter || c.outcome === filter);
   return (
@@ -1252,7 +1252,7 @@ function Testimonials() {
   );
 }
 
-function Faq() {
+export function Faq() {
   return (
     <Section id="faq" eyebrow="Answers" title={<>Frequently asked, <span className="text-gradient-green">honestly answered</span>.</>}>
       <div className="max-w-3xl mx-auto divide-y divide-white/5 rounded-2xl border border-white/8 bg-white/[0.02]">
@@ -1301,7 +1301,7 @@ function FinalCta() {
 }
 
 // ============== FOOTER ==============
-function Footer() {
+export function Footer() {
   return (
     <footer className="border-t border-white/5 bg-background/80 pt-16 pb-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
