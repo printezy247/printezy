@@ -71,13 +71,13 @@ const LINKS = {
 
 
 const NAV_ITEMS = [
-  { label: "EzyMap", href: "#ezymap" },
-  { label: "How it works", href: "#how" },
-  { label: "Products", href: "#ladder" },
-  { label: "Education", href: "#education" },
-  { label: "Results", href: "#results" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQ", href: "#faq" },
+  { label: "EzyMap", href: "/#ezymap", kind: "hash" as const },
+  { label: "How it works", href: "/#how", kind: "hash" as const },
+  { label: "Products", href: "/#ladder", kind: "hash" as const },
+  { label: "Ebook", to: "/ebook", kind: "route" as const, trackName: "nav_ebook_page" },
+  { label: "Results", to: "/results", kind: "route" as const, trackName: "nav_results_page" },
+  { label: "Testimonials", href: "/#testimonials", kind: "hash" as const },
+  { label: "FAQ", to: "/faq", kind: "route" as const, trackName: "nav_faq_page" },
 ];
 
 // ============== NAV ==============
