@@ -53,7 +53,8 @@ const EBOOK_COVERS = {
   technicalAnalysis: ebookTAAsset.url,
   mappingLikePro: ebookMapAsset.url,
 };
-import { track, trackPageLoad, trackSectionVisibility } from "@/lib/analytics";
+import { track, trackPageLoad, trackSectionVisibility, trackEngagement } from "@/lib/analytics";
+import { Link } from "@tanstack/react-router";
 
 // -------- Links --------
 const LINKS = {
@@ -70,17 +71,17 @@ const LINKS = {
 
 
 const NAV_ITEMS = [
-  { label: "EzyMap", href: "#ezymap" },
-  { label: "How it works", href: "#how" },
-  { label: "Products", href: "#ladder" },
-  { label: "Education", href: "#education" },
-  { label: "Results", href: "#results" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQ", href: "#faq" },
+  { label: "EzyMap", href: "/#ezymap", kind: "hash" as const },
+  { label: "How it works", href: "/#how", kind: "hash" as const },
+  { label: "Products", href: "/#ladder", kind: "hash" as const },
+  { label: "Ebook", to: "/ebook", kind: "route" as const, trackName: "nav_ebook_page" },
+  { label: "Results", to: "/results", kind: "route" as const, trackName: "nav_results_page" },
+  { label: "Testimonials", href: "/#testimonials", kind: "hash" as const },
+  { label: "FAQ", to: "/faq", kind: "route" as const, trackName: "nav_faq_page" },
 ];
 
 // ============== NAV ==============
-function Nav() {
+export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -100,15 +101,26 @@ function Nav() {
           <img src={logo.url} alt="PrintEzy" className="h-9 sm:h-11 w-auto" />
         </a>
         <nav className="hidden lg:flex items-center gap-8">
-          {NAV_ITEMS.map((i) => (
-            <a
-              key={i.href}
-              href={i.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {i.label}
-            </a>
-          ))}
+          {NAV_ITEMS.map((i) =>
+            i.kind === "route" ? (
+              <Link
+                key={i.to}
+                to={i.to}
+                onClick={() => track("click", i.trackName)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {i.label}
+              </Link>
+            ) : (
+              <a
+                key={i.href}
+                href={i.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {i.label}
+              </a>
+            ),
+          )}
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
           <a
@@ -201,16 +213,9 @@ function Hero() {
           </p>
           <div className="mt-9 flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center">
             <PrimaryCta
-              label="Open Vantage Account"
-              href={LINKS.vantage}
-              tone="green"
-              trackName="hero_open_account"
-              icon={ArrowUpRight}
-            />
-            <PrimaryCta
               label="Get EzyMap Lite Free"
               href={LINKS.ezymapLite}
-              tone="ghost"
+              tone="green"
               trackName="hero_lite"
               icon={Sparkles}
             />
@@ -221,15 +226,19 @@ function Hero() {
               trackName="hero_tradingview"
               icon={LineChart}
             />
-            <PrimaryCta
-              label="Chat With PrintEzy Support"
-              href={LINKS.support}
-              tone="gold"
-              trackName="hero_support"
-              icon={MessageCircle}
-            />
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground/70">
+          <div className="mt-4 flex justify-center">
+            <a
+              href={LINKS.support}
+              rel="noopener noreferrer"
+              onClick={() => track("click", "hero_support")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-secondary/40 bg-secondary/5 px-3.5 py-1.5 text-[11px] sm:text-xs text-secondary hover:bg-secondary/10 transition-colors"
+            >
+              <MessageCircle className="h-3 w-3" />
+              Chat with PrintEzy Support
+            </a>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground/70">
             Free Pro Analysis uses our TradingView referral link — makes indicator install & usage easier.
           </p>
 
@@ -237,6 +246,7 @@ function Hero() {
             No signup walls. Education-first. Trading involves risk.
           </p>
         </motion.div>
+
 
         {/* Chart-in-monitor visual */}
         <motion.div
@@ -621,7 +631,7 @@ function HowItWorks() {
 }
 
 // ============== WORKFLOW DEMO ==============
-function WorkflowDemo() {
+export function WorkflowDemo() {
   return (
     <Section
       id="demo"
@@ -869,7 +879,7 @@ function Education() {
 }
 
 // ============== EBOOK LIBRARY ==============
-function EbookLibrary() {
+export function EbookLibrary() {
   const books = [
     { t: "Technical Analysis", sub: "20-page foundation", status: "Available", href: LINKS.ebook, track: "ebook_ta" },
     { t: "Mapping Like a Pro", sub: "Advanced EzyMap workflow", status: "Available", href: LINKS.ebook, track: "ebook_map" },
@@ -987,7 +997,7 @@ const CASES: ResultCase[] = [
 
 const FILTERS: Array<ResultCase["asset"] | ResultCase["outcome"] | "All"> = ["All", "Gold", "BTC", "Win", "Loss", "Invalidated", "No Entry"];
 
-function ResultsGallery() {
+export function ResultsGallery() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
   const visible = CASES.filter((c) => filter === "All" || c.asset === filter || c.outcome === filter);
   return (
@@ -1242,7 +1252,7 @@ function Testimonials() {
   );
 }
 
-function Faq() {
+export function Faq() {
   return (
     <Section id="faq" eyebrow="Answers" title={<>Frequently asked, <span className="text-gradient-green">honestly answered</span>.</>}>
       <div className="max-w-3xl mx-auto divide-y divide-white/5 rounded-2xl border border-white/8 bg-white/[0.02]">
@@ -1291,7 +1301,7 @@ function FinalCta() {
 }
 
 // ============== FOOTER ==============
-function Footer() {
+export function Footer() {
   return (
     <footer className="border-t border-white/5 bg-background/80 pt-16 pb-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1393,7 +1403,11 @@ export function Landing() {
       "faq",
       "final",
     ]);
-    return cleanup;
+    const stopEngagement = trackEngagement();
+    return () => {
+      cleanup?.();
+      stopEngagement?.();
+    };
   }, []);
   return (
     <div className="min-h-screen bg-background text-foreground">
