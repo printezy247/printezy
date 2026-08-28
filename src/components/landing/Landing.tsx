@@ -16,8 +16,21 @@ import {
   ChevronDown,
   Menu,
   X,
+  BookOpen,
+  LineChart,
+  Bot,
+  Globe,
 } from "lucide-react";
 import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
+
+import jackPhoto from "@/assets/jack-silhouette.jpg";
+
+const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
+const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
+const ebookGuide = "/__l5e/assets-v1/ef16e076-19ed-4f99-b736-3bdd106b5db4/ebook-cover-v2.png";
+const tierPro = "/__l5e/assets-v1/32f96196-26ff-40e3-8e6c-3b63ff41421b/chart-1.jpg";
+const tierPremium = "/__l5e/assets-v1/689c0529-f672-4ddc-acec-c33013afedce/chart-2.jpg";
+const tierElite = "/__l5e/assets-v1/7a2ccd62-fcb5-4aeb-83fe-35d1eec12a83/chart-3.jpg";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
@@ -27,6 +40,7 @@ export const LINKS = {
   freeChannel: "https://t.me/ezymap",
   support: "https://t.me/ezysarah",
   bot: "https://t.me/ezyregisterbot",
+  macro: "https://t.me/xaubtcmacro_bot",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
@@ -136,9 +150,8 @@ function Logo() {
 
 const NAV_ITEMS = [
   { label: "Features", href: "#features" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "How to Enroll", href: "#how-to-enroll" },
+  { label: "Packages", href: "#packages" },
+  { label: "Products", href: "#products" },
   { label: "About Jack", href: "#ambassador" },
   { label: "FAQ", href: "#faq" },
 ];
@@ -167,7 +180,7 @@ export function Nav() {
         </ul>
 
         <div className="hidden md:block">
-          <TelegramCta label="Join Free Channel" event="nav_join_free" className="px-5 py-2" />
+          <SupportCta />
         </div>
 
         <button
@@ -195,7 +208,7 @@ export function Nav() {
               </li>
             ))}
             <li className="pt-2">
-              <TelegramCta label="Join Free Channel" event="nav_mobile_join" className="w-full" />
+              <SupportCta className="w-full" />
             </li>
           </ul>
         </div>
@@ -257,20 +270,20 @@ function Hero() {
             <Activity className="h-3.5 w-3.5" /> 640+ active traders
           </span>
           <h1 className="mt-5 text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
-            Professional Trading Signals{" "}
-            <span className="text-gradient-green">On Telegram</span>
+            Professional Trading Signals —{" "}
+            <span className="text-gradient-green">Join 640+ Traders</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            Join 640+ traders receiving live signals &amp; education. Real-time alerts powered by
-            TradingView indicators, delivered straight to your phone.
+            Live signals and daily education powered by TradingView indicators, delivered straight
+            to your phone on Telegram. Forex, crypto and commodities, 24/5.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <TelegramCta label="Join Free Channel" event="hero_join_free" className="px-7 py-3.5 text-base" />
             <a
-              href="#pricing"
+              href="#packages"
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition-colors hover:bg-surface"
             >
-              See plans <ArrowRight className="h-4 w-4" />
+              See packages <ArrowRight className="h-4 w-4" />
             </a>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
@@ -351,6 +364,290 @@ export function Features() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Packages                                                            */
+/* ------------------------------------------------------------------ */
+
+type Tier = {
+  name: string;
+  blurb: string;
+  features: string[];
+  cta: string;
+  href: string;
+  event: string;
+  highlight?: boolean;
+  image?: string;
+};
+
+const TIERS: Tier[] = [
+  {
+    name: "Free",
+    blurb: "No payment required",
+    features: [
+      "Join our 640+ trader community",
+      "Daily signals & education",
+      "Public channel access",
+    ],
+    cta: "Join Free Channel",
+    href: LINKS.freeChannel,
+    event: "pricing_free",
+  },
+  {
+    name: "Pro",
+    blurb: "Scalp Mastery Signals",
+    features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
+    cta: "Enroll Now",
+    href: LINKS.bot,
+    event: "pricing_pro",
+    image: tierPro,
+  },
+  {
+    name: "Premium",
+    blurb: "Alpha Edge Signals",
+    features: [
+      "M15-M30 Intraday",
+      "Advanced Analysis",
+      "Priority Support",
+      "Enroll through our bot",
+    ],
+    cta: "Enroll Now",
+    href: LINKS.bot,
+    event: "pricing_premium",
+    highlight: true,
+    image: tierPremium,
+  },
+  {
+    name: "Elite",
+    blurb: "Full Suite",
+    features: [
+      "All indicators included",
+      "1-on-1 Coaching with Jack",
+      "Custom Strategies",
+      "Premium Support",
+      "Enroll through our bot",
+    ],
+    cta: "Enroll Now",
+    href: LINKS.bot,
+    event: "pricing_elite",
+    image: tierElite,
+  },
+];
+
+export function Pricing() {
+  return (
+    <Section id="packages" className="bg-surface/40">
+      <SectionHeading
+        eyebrow="Packages"
+        title="Start free. Upgrade when you're ready."
+        subtitle="Paid tiers enroll through our bot — open a Vantage Markets IB account or deposit to activate."
+      />
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {TIERS.map((t) => (
+          <article
+            key={t.name}
+            className={`relative flex flex-col overflow-hidden rounded-2xl ${
+              t.highlight
+                ? "border border-accent/40 bg-surface-elevated shadow-gold"
+                : "glass-card"
+            }`}
+          >
+            {t.highlight ? (
+              <span className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-foreground">
+                Most popular
+              </span>
+            ) : null}
+            {t.image ? (
+              <div className="relative h-32 w-full overflow-hidden">
+                <img
+                  src={t.image}
+                  alt={`${t.name} package preview`}
+                  loading="lazy"
+                  className="h-full w-full object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-elevated to-transparent" />
+              </div>
+            ) : null}
+            <div className="flex flex-1 flex-col p-6">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {t.name}
+              </h3>
+              <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
+              <ul className="mt-5 flex-1 space-y-2.5">
+                {t.features.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span className="text-muted-foreground">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={t.href}
+                onClick={() => goTrack(t.event)}
+                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                  t.highlight
+                    ? "bg-accent text-accent-foreground hover:bg-accent-glow"
+                    : "bg-primary text-primary-foreground hover:bg-primary-glow"
+                }`}
+              >
+                {t.cta}
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Questions?{" "}
+        <a href={LINKS.support} onClick={() => goTrack("pricing_support")} className="text-primary hover:underline">
+          Ask Sarah
+        </a>{" "}
+        for help choosing the right tier.
+      </p>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Products                                                            */
+/* ------------------------------------------------------------------ */
+
+const EBOOKS = [
+  { title: "Mapping Like A Pro", image: ebookMapping },
+  { title: "Technical Analysis Ebook", image: ebookTechnical },
+  { title: "Trading Products Guide", image: ebookGuide },
+];
+
+const TV_FEATURES = [
+  "Real-time signal generation",
+  "Support/Resistance detection",
+  "Confluence analysis",
+];
+
+const MT5_FEATURES = [
+  "Built for Vantage Markets",
+  "Automated signals",
+  "Risk management tools",
+  "Available in Elite tier",
+];
+
+export function Products() {
+  return (
+    <Section id="products">
+      <SectionHeading
+        eyebrow="Products"
+        title="The full EzyMap toolkit"
+        subtitle="Ebooks, indicators and macro research — everything behind the signals."
+      />
+
+      {/* Ebooks */}
+      <div className="mb-14">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <BookOpen className="h-5 w-5" />
+          </span>
+          <h3 className="text-xl font-bold">Ebooks</h3>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-3">
+          {EBOOKS.map((b) => (
+            <a
+              key={b.title}
+              href={LINKS.freeChannel}
+              onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
+              className="glass-card group overflow-hidden rounded-2xl transition-transform hover:-translate-y-1"
+            >
+              <div className="aspect-[2/3] w-full overflow-hidden">
+                <img
+                  src={b.image}
+                  alt={`${b.title} cover`}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-4">
+                <p className="text-sm font-semibold">{b.title}</p>
+                <p className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-primary">
+                  Get it free <ArrowRight className="h-3 w-3" />
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* TradingView indicators */}
+        <article className="glass-card rounded-2xl p-6">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <LineChart className="h-5 w-5" />
+          </span>
+          <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
+          <ul className="mt-4 space-y-2.5">
+            {TV_FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-muted-foreground">{f}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={LINKS.bot}
+            onClick={() => goTrack("products_tv_enroll")}
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          >
+            Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+          </a>
+        </article>
+
+        {/* MT5 indicators */}
+        <article className="glass-card rounded-2xl p-6">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <Bot className="h-5 w-5" />
+          </span>
+          <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
+          <ul className="mt-4 space-y-2.5">
+            {MT5_FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-muted-foreground">{f}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={LINKS.bot}
+            onClick={() => goTrack("products_mt5_enroll")}
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          >
+            Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+          </a>
+        </article>
+
+        {/* Macro & Fundamentals */}
+        <article className="glass-card relative overflow-hidden rounded-2xl p-6">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
+            <Globe className="h-5 w-5" />
+          </span>
+          <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
+          <ul className="mt-4 space-y-2.5">
+            {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                <span className="text-muted-foreground">{f}</span>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={LINKS.macro}
+            onClick={() => goTrack("products_macro_join")}
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+          >
+            <Send className="h-4 w-4" /> Join Macro Bot
+          </a>
+        </article>
+      </div>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* How it works                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -381,216 +678,33 @@ export function HowItWorks() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Pricing                                                             */
-/* ------------------------------------------------------------------ */
-
-type Tier = {
-  name: string;
-  blurb: string;
-  features: string[];
-  cta: string;
-  href: string;
-  event: string;
-  highlight?: boolean;
-};
-
-const TIERS: Tier[] = [
-  {
-    name: "Free",
-    blurb: "No payment required",
-    features: [
-      "Join our 640+ trader community",
-      "Daily signals & education",
-      "Public channel access",
-    ],
-    cta: "Join Free Channel",
-    href: LINKS.freeChannel,
-    event: "pricing_free",
-  },
-  {
-    name: "Pro",
-    blurb: "Scalp Mastery Signals",
-    features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
-    cta: "Enroll Now",
-    href: LINKS.bot,
-    event: "pricing_pro",
-  },
-  {
-    name: "Premium",
-    blurb: "Alpha Edge Signals",
-    features: [
-      "M15-M30 Intraday",
-      "Advanced Analysis",
-      "Priority Support",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
-    href: LINKS.bot,
-    event: "pricing_premium",
-    highlight: true,
-  },
-  {
-    name: "Elite",
-    blurb: "Complete Indicator Suite",
-    features: [
-      "1-on-1 Coaching with Jack",
-      "Custom Strategies",
-      "Premium Support",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
-    href: LINKS.bot,
-    event: "pricing_elite",
-  },
-];
-
-export function Pricing() {
-  return (
-    <Section id="pricing">
-      <SectionHeading
-        eyebrow="Pricing"
-        title="Start free. Upgrade when you're ready."
-        subtitle="Every paid tier is covered by a 30-day money-back guarantee."
-      />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {TIERS.map((t) => (
-          <article
-            key={t.name}
-            className={`relative flex flex-col rounded-2xl p-6 ${
-              t.highlight
-                ? "border border-accent/40 bg-surface-elevated shadow-gold"
-                : "glass-card"
-            }`}
-          >
-            {t.highlight ? (
-              <span className="absolute -top-3 left-6 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-foreground">
-                Most popular
-              </span>
-            ) : null}
-            <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              {t.name}
-            </h3>
-            <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
-            <ul className="mt-5 flex-1 space-y-2.5">
-              {t.features.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-muted-foreground">{f}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href={t.href}
-              onClick={() => goTrack(t.event)}
-              className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
-                t.highlight
-                  ? "bg-accent text-accent-foreground hover:bg-accent-glow"
-                  : "bg-primary text-primary-foreground hover:bg-primary-glow"
-              }`}
-            >
-              {t.cta}
-            </a>
-          </article>
-        ))}
-      </div>
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Questions?{" "}
-        <a href={LINKS.support} onClick={() => goTrack("pricing_support")} className="text-primary hover:underline">
-          Ask Sarah
-        </a>{" "}
-        for help choosing the right tier.
-      </p>
-    </Section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* How to Enroll                                                     */
-/* ------------------------------------------------------------------ */
-
-const ENROLL_STEPS = [
-  {
-    step: "01",
-    title: "Free",
-    body: "Join t.me/ezymap instantly. No payment, no bot — just tap and you're in.",
-    href: LINKS.freeChannel,
-    event: "enroll_free",
-    cta: "Join Free Channel",
-  },
-  {
-    step: "02",
-    title: "Paid",
-    body: "Tap Enroll Now on Pro, Premium, or Elite. This opens our enrollment bot.",
-    href: LINKS.bot,
-    event: "enroll_bot",
-    cta: "Open Bot",
-  },
-  {
-    step: "03",
-    title: "Follow",
-    body: "Answer the bot's questions and select your package. Sarah will confirm your access.",
-    href: LINKS.support,
-    event: "enroll_support",
-    cta: "Ask Sarah",
-  },
-  {
-    step: "04",
-    title: "Fund",
-    body: "Open an account with Vantage Markets or deposit to activate your paid signals.",
-    href: LINKS.vantage,
-    event: "enroll_vantage",
-    cta: "Open Vantage",
-  },
-];
-
-export function HowToEnroll() {
-  return (
-    <Section id="how-to-enroll" className="bg-surface/40">
-      <SectionHeading
-        eyebrow="How to Enroll"
-        title="Four simple steps to start"
-        subtitle="Free members join instantly. Paid members enroll through our bot in under two minutes."
-      />
-      <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-        {ENROLL_STEPS.map((s) => (
-          <li key={s.step} className="glass-card relative rounded-2xl p-6">
-            <span className="font-display text-4xl font-bold text-accent/40">{s.step}</span>
-            <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
-            <a
-              href={s.href}
-              onClick={() => goTrack(s.event)}
-              className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-            >
-              {s.cta} <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          </li>
-        ))}
-      </ol>
-    </Section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* Ambassador                                                          */
 /* ------------------------------------------------------------------ */
 
 export function Ambassador() {
   return (
-    <Section id="ambassador" className="bg-surface/40">
+    <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="glass-card relative overflow-hidden rounded-2xl p-10 text-center">
-          <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-green text-primary-foreground">
-            <span className="font-display text-4xl font-bold">J</span>
+        <div className="glass-card relative overflow-hidden rounded-2xl p-8 text-center">
+          <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
+            <img
+              src={jackPhoto}
+              alt="Jack, founder of EzyMap ALGO"
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
           </div>
           <p className="mt-5 text-lg font-semibold">Jack</p>
           <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
+          <p className="mt-3 text-xs text-muted-foreground">
+            10+ year trading veteran · Vantage Markets Affiliate
+          </p>
           <a
             href={LINKS.support}
             onClick={() => goTrack("ambassador_contact_sarah")}
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
-            <Send className="h-4 w-4" /> Chat with Sarah
+            <Send className="h-4 w-4" /> Questions? Ask Sarah
           </a>
         </div>
 
@@ -598,17 +712,17 @@ export function Ambassador() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Ambassador</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Meet Jack</h2>
           <p className="mt-4 text-base text-muted-foreground">
-            10+ year trading veteran. Vantage Markets affiliate. Founder of EzyMap ALGO. Jack trades
-            facelessly and focuses on one thing: repeatable, mechanical execution.
+            10+ year trading veteran and Vantage Markets affiliate. Jack trades facelessly and
+            focuses on one thing: repeatable, mechanical execution.
           </p>
           <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
-            "Consistent wins come from consistent methodology, not luck."
+            "Consistent wins come from consistent methodology."
           </blockquote>
           <dl className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              ["640+", "Followers"],
+              ["640+", "Students"],
               ["10+ yrs", "Trading"],
-              ["99%", "Signal uptime"],
+              ["24/5", "Coverage"],
             ].map(([v, l]) => (
               <div key={l} className="rounded-xl border border-border bg-surface p-4">
                 <dt className="text-xl font-bold text-accent">{v}</dt>
@@ -651,7 +765,7 @@ const TESTIMONIALS = [
 
 export function SocialProof() {
   return (
-    <Section id="testimonials">
+    <Section id="testimonials" className="bg-surface/40">
       <SectionHeading
         eyebrow="Social proof"
         title="640+ active traders trust EzyMap"
@@ -719,13 +833,13 @@ const FAQS = [
     a: "We recommend Vantage Markets (our affiliate partner), but any broker you trust will work.",
   },
   { q: "Is there a free trial?", a: "Yes — join our free public channel. No payment required." },
-  { q: "What if I'm not satisfied?", a: "Paid tiers come with a 30-day money-back guarantee." },
+  { q: "How do I enroll in a paid tier?", a: "Tap Enroll Now on any package to open our enrollment bot, follow the steps, and activate via a Vantage Markets account or deposit." },
 ];
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <Section id="faq" className="bg-surface/40">
+    <Section id="faq">
       <SectionHeading eyebrow="FAQ" title="Questions, answered" />
       <div className="mx-auto max-w-3xl space-y-3">
         {FAQS.map((f, i) => (
@@ -752,52 +866,28 @@ export function Faq() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Final CTA + newsletter                                              */
+/* Final CTA                                                           */
 /* ------------------------------------------------------------------ */
 
 function FinalCta() {
-  const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
-
   return (
-    <Section id="get-started">
+    <Section id="get-started" className="bg-surface/40">
       <div className="glass-card rounded-3xl px-6 py-14 text-center sm:px-12">
         <h2 className="text-3xl font-bold sm:text-4xl">Start with the free channel today</h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          No payment, no commitment. See the signals and education for yourself, then upgrade when
-          it fits your trading.
+          No payment, no commitment. See the signals and education for yourself, then upgrade
+          through our bot when it fits your trading.
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <TelegramCta event="final_join_free" className="px-7 py-3.5 text-base" />
-        </div>
-
-        <form
-          className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!email) return;
-            goTrack("newsletter_signup");
-            setSent(true);
-            setEmail("");
-          }}
-        >
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Your email for weekly market notes"
-            aria-label="Email address"
-            className="flex-1 rounded-full border border-border bg-surface px-5 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          <TelegramCta
+            label="Enroll via Bot"
+            event="final_enroll_bot"
+            variant="gold"
+            href={LINKS.bot}
+            className="px-7 py-3.5 text-base"
           />
-          <button
-            type="submit"
-            className="rounded-full border border-accent/40 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-          >
-            Subscribe
-          </button>
-        </form>
-        {sent ? <p className="mt-3 text-xs text-primary">Thanks — you're on the list.</p> : null}
+        </div>
       </div>
     </Section>
   );
@@ -854,6 +944,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <a href={LINKS.macro} onClick={() => goTrack("footer_macro")} className="hover:text-foreground">
+                  Macro &amp; Fundamentals
+                </a>
+              </li>
+              <li>
                 <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
                   Vantage Markets
                 </a>
@@ -902,9 +997,9 @@ export function Landing() {
     const stopEngage = trackEngagement();
     const stopSections = trackSectionVisibility([
       "features",
+      "packages",
+      "products",
       "how-it-works",
-      "pricing",
-      "how-to-enroll",
       "ambassador",
       "testimonials",
       "faq",
@@ -922,9 +1017,9 @@ export function Landing() {
       <main>
         <Hero />
         <Features />
-        <HowItWorks />
         <Pricing />
-        <HowToEnroll />
+        <Products />
+        <HowItWorks />
         <Ambassador />
         <SocialProof />
         <Faq />
