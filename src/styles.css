@@ -131,6 +131,10 @@
   background: var(--gradient-gold);
 }
 
+@utility bg-glow {
+  background: var(--gradient-glow);
+}
+
 @utility bg-green {
   background: var(--gradient-green);
 }
