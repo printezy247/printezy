@@ -167,7 +167,7 @@ export function Nav() {
         </ul>
 
         <div className="hidden md:block">
-          <TelegramCta label="Join Free" event="nav_join_free" className="px-5 py-2" />
+          <TelegramCta label="Join Free Channel" event="nav_join_free" className="px-5 py-2" />
         </div>
 
         <button
