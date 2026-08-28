@@ -75,7 +75,7 @@ function SectionHeading({
 }
 
 function TelegramCta({
-  label = "Join Free Telegram Channel",
+  label = "Join Free Channel",
   event,
   variant = "primary",
   href = LINKS.freeChannel,
