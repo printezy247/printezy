@@ -743,7 +743,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
@@ -773,6 +773,27 @@ export function Footer() {
           </div>
 
           <div>
+            <h3 className="text-sm font-semibold">Links</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <li>
+                <a href={LINKS.bot} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
+                  Enrollment Bot
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.support} onClick={() => goTrack("footer_support")} className="hover:text-foreground">
+                  Support (Sarah)
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
+                  Vantage Markets
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
             <h3 className="text-sm font-semibold">Legal</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
@@ -786,7 +807,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href={LINKS.jack} className="hover:text-foreground">
+                <a href={LINKS.support} onClick={() => goTrack("footer_contact")} className="hover:text-foreground">
                   Contact
                 </a>
               </li>
