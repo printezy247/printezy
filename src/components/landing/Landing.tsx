@@ -354,7 +354,7 @@ export function Features() {
 /* ------------------------------------------------------------------ */
 
 const STEPS = [
-  { title: "Join the Telegram channel", body: "One tap. No payment, no forms — you're in the free channel instantly." },
+  { title: "Join t.me/ezymap", body: "One tap. No payment, no forms — you're in the free channel instantly." },
   { title: "Receive instant signal alerts", body: "Entry, stop loss and targets arrive as soon as a setup confirms." },
   { title: "Execute on Vantage Markets", body: "Place the trade with your own broker — we recommend Vantage Markets." },
 ];
