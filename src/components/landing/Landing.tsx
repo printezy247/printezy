@@ -25,7 +25,8 @@ import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@
 
 export const LINKS = {
   freeChannel: "https://t.me/ezymap",
-  jack: "https://t.me/EzySarah",
+  support: "https://t.me/ezysarah",
+  bot: "https://t.me/ezyregisterbot",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
@@ -74,14 +75,16 @@ function SectionHeading({
 }
 
 function TelegramCta({
-  label = "Join Free Telegram Channel",
+  label = "Join Free Channel",
   event,
   variant = "primary",
+  href = LINKS.freeChannel,
   className = "",
 }: {
   label?: string;
   event: string;
   variant?: "primary" | "gold" | "outline";
+  href?: string;
   className?: string;
 }) {
   const styles =
@@ -92,12 +95,24 @@ function TelegramCta({
         : "border border-border bg-surface text-foreground hover:bg-surface-elevated";
   return (
     <a
-      href={LINKS.freeChannel}
+      href={href}
       onClick={() => goTrack(event)}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors ${styles} ${className}`}
     >
       <Send className="h-4 w-4" />
       {label}
+    </a>
+  );
+}
+
+function SupportCta({ className = "" }: { className?: string }) {
+  return (
+    <a
+      href={LINKS.support}
+      onClick={() => goTrack("support_click")}
+      className={`inline-flex items-center justify-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
+    >
+      <Send className="h-4 w-4" /> Ask Sarah
     </a>
   );
 }
@@ -123,6 +138,7 @@ const NAV_ITEMS = [
   { label: "Features", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
+  { label: "How to Enroll", href: "#how-to-enroll" },
   { label: "About Jack", href: "#ambassador" },
   { label: "FAQ", href: "#faq" },
 ];
@@ -151,7 +167,7 @@ export function Nav() {
         </ul>
 
         <div className="hidden md:block">
-          <TelegramCta label="Join Free" event="nav_join_free" className="px-5 py-2" />
+          <TelegramCta label="Join Free Channel" event="nav_join_free" className="px-5 py-2" />
         </div>
 
         <button
@@ -249,7 +265,7 @@ function Hero() {
             TradingView indicators, delivered straight to your phone.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <TelegramCta event="hero_join_free" className="px-7 py-3.5 text-base" />
+            <TelegramCta label="Join Free Channel" event="hero_join_free" className="px-7 py-3.5 text-base" />
             <a
               href="#pricing"
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition-colors hover:bg-surface"
@@ -257,6 +273,13 @@ function Hero() {
               See plans <ArrowRight className="h-4 w-4" />
             </a>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Or upgrade to Pro, Premium, or Elite through{" "}
+            <a href={LINKS.bot} onClick={() => goTrack("hero_bot_link")} className="text-primary hover:underline">
+              our bot
+            </a>
+            .
+          </p>
           <dl className="mt-10 grid max-w-md grid-cols-3 gap-4">
             {[
               ["640+", "Subscribers"],
@@ -332,7 +355,7 @@ export function Features() {
 /* ------------------------------------------------------------------ */
 
 const STEPS = [
-  { title: "Join the Telegram channel", body: "One tap. No payment, no forms — you're in the free channel instantly." },
+  { title: "Join t.me/ezymap", body: "One tap. No payment, no forms — you're in the free channel instantly." },
   { title: "Receive instant signal alerts", body: "Entry, stop loss and targets arrive as soon as a setup confirms." },
   { title: "Execute on Vantage Markets", body: "Place the trade with your own broker — we recommend Vantage Markets." },
 ];
@@ -363,8 +386,6 @@ export function HowItWorks() {
 
 type Tier = {
   name: string;
-  price: string;
-  period?: string;
   blurb: string;
   features: string[];
   cta: string;
@@ -376,52 +397,49 @@ type Tier = {
 const TIERS: Tier[] = [
   {
     name: "Free",
-    price: "$0",
-    blurb: "Public signals and daily education.",
-    features: ["Daily public signals", "Educational content", "Community access"],
-    cta: "Join Free",
+    blurb: "No payment required",
+    features: [
+      "Join our 640+ trader community",
+      "Daily signals & education",
+      "Public channel access",
+    ],
+    cta: "Join Free Channel",
     href: LINKS.freeChannel,
     event: "pricing_free",
   },
   {
     name: "Pro",
-    price: "$99",
-    period: "/month",
-    blurb: "Scalp Mastery private channel.",
-    features: ["Scalp Mastery signals (M5)", "24/5 real-time alerts", "Telegram support"],
-    cta: "Choose Pro",
-    href: LINKS.jack,
+    blurb: "Scalp Mastery Signals",
+    features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_pro",
   },
   {
     name: "Premium",
-    price: "$199",
-    period: "/month",
-    blurb: "Alpha Edge intraday signals.",
+    blurb: "Alpha Edge Signals",
     features: [
-      "Everything in Pro",
-      "Alpha Edge signals (M15–M30)",
-      "Advanced analysis videos",
-      "Priority support",
+      "M15-M30 Intraday",
+      "Advanced Analysis",
+      "Priority Support",
+      "Enroll through our bot",
     ],
-    cta: "Choose Premium",
-    href: LINKS.jack,
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_premium",
     highlight: true,
   },
   {
     name: "Elite",
-    price: "$499",
-    period: "/month",
-    blurb: "Full suite plus 1-on-1 coaching.",
+    blurb: "Complete Indicator Suite",
     features: [
-      "Everything in Premium",
-      "Full indicator suite",
-      "1-on-1 coaching with Jack",
-      "Custom strategy consultation",
+      "1-on-1 Coaching with Jack",
+      "Custom Strategies",
+      "Premium Support",
+      "Enroll through our bot",
     ],
-    cta: "Choose Elite",
-    href: LINKS.jack,
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_elite",
   },
 ];
@@ -452,11 +470,7 @@ export function Pricing() {
             <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {t.name}
             </h3>
-            <p className="mt-3 flex items-baseline gap-1">
-              <span className="text-4xl font-bold">{t.price}</span>
-              {t.period ? <span className="text-sm text-muted-foreground">{t.period}</span> : null}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">{t.blurb}</p>
+            <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
             <ul className="mt-5 flex-1 space-y-2.5">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
@@ -479,9 +493,80 @@ export function Pricing() {
           </article>
         ))}
       </div>
-      <p className="mt-6 text-center text-xs text-muted-foreground">
-        Trading involves risk. Signals are educational and not financial advice.
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Questions?{" "}
+        <a href={LINKS.support} onClick={() => goTrack("pricing_support")} className="text-primary hover:underline">
+          Ask Sarah
+        </a>{" "}
+        for help choosing the right tier.
       </p>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* How to Enroll                                                     */
+/* ------------------------------------------------------------------ */
+
+const ENROLL_STEPS = [
+  {
+    step: "01",
+    title: "Free",
+    body: "Join t.me/ezymap instantly. No payment, no bot — just tap and you're in.",
+    href: LINKS.freeChannel,
+    event: "enroll_free",
+    cta: "Join Free Channel",
+  },
+  {
+    step: "02",
+    title: "Paid",
+    body: "Tap Enroll Now on Pro, Premium, or Elite. This opens our enrollment bot.",
+    href: LINKS.bot,
+    event: "enroll_bot",
+    cta: "Open Bot",
+  },
+  {
+    step: "03",
+    title: "Follow",
+    body: "Answer the bot's questions and select your package. Sarah will confirm your access.",
+    href: LINKS.support,
+    event: "enroll_support",
+    cta: "Ask Sarah",
+  },
+  {
+    step: "04",
+    title: "Fund",
+    body: "Open an account with Vantage Markets or deposit to activate your paid signals.",
+    href: LINKS.vantage,
+    event: "enroll_vantage",
+    cta: "Open Vantage",
+  },
+];
+
+export function HowToEnroll() {
+  return (
+    <Section id="how-to-enroll" className="bg-surface/40">
+      <SectionHeading
+        eyebrow="How to Enroll"
+        title="Four simple steps to start"
+        subtitle="Free members join instantly. Paid members enroll through our bot in under two minutes."
+      />
+      <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {ENROLL_STEPS.map((s) => (
+          <li key={s.step} className="glass-card relative rounded-2xl p-6">
+            <span className="font-display text-4xl font-bold text-accent/40">{s.step}</span>
+            <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+            <a
+              href={s.href}
+              onClick={() => goTrack(s.event)}
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              {s.cta} <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </li>
+        ))}
+      </ol>
     </Section>
   );
 }
@@ -501,11 +586,11 @@ export function Ambassador() {
           <p className="mt-5 text-lg font-semibold">Jack</p>
           <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
           <a
-            href={LINKS.jack}
-            onClick={() => goTrack("ambassador_dm_jack")}
+            href={LINKS.support}
+            onClick={() => goTrack("ambassador_contact_sarah")}
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
-            <Send className="h-4 w-4" /> @EzySarah
+            <Send className="h-4 w-4" /> Chat with Sarah
           </a>
         </div>
 
@@ -726,7 +811,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
@@ -756,6 +841,27 @@ export function Footer() {
           </div>
 
           <div>
+            <h3 className="text-sm font-semibold">Links</h3>
+            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+              <li>
+                <a href={LINKS.bot} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
+                  Enrollment Bot
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.support} onClick={() => goTrack("footer_support")} className="hover:text-foreground">
+                  Support (Sarah)
+                </a>
+              </li>
+              <li>
+                <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
+                  Vantage Markets
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
             <h3 className="text-sm font-semibold">Legal</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
@@ -769,7 +875,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href={LINKS.jack} className="hover:text-foreground">
+                <a href={LINKS.support} onClick={() => goTrack("footer_contact")} className="hover:text-foreground">
                   Contact
                 </a>
               </li>
@@ -798,6 +904,7 @@ export function Landing() {
       "features",
       "how-it-works",
       "pricing",
+      "how-to-enroll",
       "ambassador",
       "testimonials",
       "faq",
@@ -817,6 +924,7 @@ export function Landing() {
         <Features />
         <HowItWorks />
         <Pricing />
+        <HowToEnroll />
         <Ambassador />
         <SocialProof />
         <Faq />
