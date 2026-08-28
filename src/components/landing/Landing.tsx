@@ -717,7 +717,7 @@ export function Ambassador() {
           <p className="mt-5 text-lg font-semibold">Jack</p>
           <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
           <p className="mt-3 text-xs text-muted-foreground">
-            10+ year trading veteran · Vantage Markets Affiliate
+            10+ year trading veteran
           </p>
           <a
             href={LINKS.support}
@@ -732,8 +732,7 @@ export function Ambassador() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Ambassador</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Meet Jack</h2>
           <p className="mt-4 text-base text-muted-foreground">
-            10+ year trading veteran and Vantage Markets affiliate. Jack trades facelessly and
-            focuses on one thing: repeatable, mechanical execution.
+            Jack trades facelessly and focuses on one thing: repeatable, mechanical execution.
           </p>
           <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
             "Consistent wins come from consistent methodology."
