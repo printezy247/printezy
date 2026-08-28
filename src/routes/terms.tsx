@@ -1,0 +1,74 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Nav, Footer } from "@/components/landing/Landing";
+
+export const Route = createFileRoute("/terms")({
+  head: () => ({
+    meta: [
+      { title: "Terms of Service — EzyMap ALGO" },
+      {
+        name: "description",
+        content:
+          "Terms governing the use of EzyMap ALGO trading signals, education content, subscriptions and the 30-day money-back guarantee.",
+      },
+      { property: "og:title", content: "Terms of Service — EzyMap ALGO" },
+      { property: "og:description", content: "Terms for using EzyMap ALGO signals and subscriptions." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: TermsPage,
+});
+
+function TermsPage() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Nav />
+      <main className="mx-auto max-w-3xl px-4 pt-32 pb-20 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-bold sm:text-4xl">Terms of Service</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated: 2026</p>
+        <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Educational use only</h2>
+            <p className="mt-2">
+              EzyMap ALGO provides trading signals and education for informational purposes. Nothing
+              on this site or in our channels is financial advice. Trading carries substantial risk
+              of loss and you are solely responsible for your own decisions.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Subscriptions</h2>
+            <p className="mt-2">
+              Pro, Premium and Elite are billed monthly and can be cancelled at any time. Access
+              continues until the end of the paid period.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Money-back guarantee</h2>
+            <p className="mt-2">
+              Paid tiers include a 30-day money-back guarantee from the date of first purchase.
+              Request a refund by messaging us on Telegram.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Broker relationship</h2>
+            <p className="mt-2">
+              We are an Introducing Broker affiliate of Vantage Markets and may earn a commission if
+              you open an account through our link. You are free to use any broker.
+            </p>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Access</h2>
+            <p className="mt-2">
+              Sharing private channel content or credentials results in immediate removal without
+              refund.
+            </p>
+          </div>
+        </div>
+        <Link to="/" className="mt-10 inline-block text-sm text-primary hover:underline">
+          ← Back to home
+        </Link>
+      </main>
+      <Footer />
+    </div>
+  );
+}
