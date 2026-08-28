@@ -264,7 +264,7 @@ function Hero() {
             TradingView indicators, delivered straight to your phone.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <TelegramCta event="hero_join_free" className="px-7 py-3.5 text-base" />
+            <TelegramCta label="Join Free Channel" event="hero_join_free" className="px-7 py-3.5 text-base" />
             <a
               href="#pricing"
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition-colors hover:bg-surface"
@@ -272,6 +272,13 @@ function Hero() {
               See plans <ArrowRight className="h-4 w-4" />
             </a>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Or upgrade to Pro, Premium, or Elite through{" "}
+            <a href={LINKS.bot} onClick={() => goTrack("hero_bot_link")} className="text-primary hover:underline">
+              our bot
+            </a>
+            .
+          </p>
           <dl className="mt-10 grid max-w-md grid-cols-3 gap-4">
             {[
               ["640+", "Subscribers"],
