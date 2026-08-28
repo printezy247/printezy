@@ -504,6 +504,73 @@ export function Pricing() {
 }
 
 /* ------------------------------------------------------------------ */
+/* How to Enroll                                                     */
+/* ------------------------------------------------------------------ */
+
+const ENROLL_STEPS = [
+  {
+    step: "01",
+    title: "Free",
+    body: "Join t.me/ezymap instantly. No payment, no bot — just tap and you're in.",
+    href: LINKS.freeChannel,
+    event: "enroll_free",
+    cta: "Join Free Channel",
+  },
+  {
+    step: "02",
+    title: "Paid",
+    body: "Tap Enroll Now on Pro, Premium, or Elite. This opens our enrollment bot.",
+    href: LINKS.bot,
+    event: "enroll_bot",
+    cta: "Open Bot",
+  },
+  {
+    step: "03",
+    title: "Follow",
+    body: "Answer the bot's questions and select your package. Sarah will confirm your access.",
+    href: LINKS.support,
+    event: "enroll_support",
+    cta: "Ask Sarah",
+  },
+  {
+    step: "04",
+    title: "Fund",
+    body: "Open an account with Vantage Markets or deposit to activate your paid signals.",
+    href: LINKS.vantage,
+    event: "enroll_vantage",
+    cta: "Open Vantage",
+  },
+];
+
+export function HowToEnroll() {
+  return (
+    <Section id="how-to-enroll" className="bg-surface/40">
+      <SectionHeading
+        eyebrow="How to Enroll"
+        title="Four simple steps to start"
+        subtitle="Free members join instantly. Paid members enroll through our bot in under two minutes."
+      />
+      <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {ENROLL_STEPS.map((s) => (
+          <li key={s.step} className="glass-card relative rounded-2xl p-6">
+            <span className="font-display text-4xl font-bold text-accent/40">{s.step}</span>
+            <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+            <a
+              href={s.href}
+              onClick={() => goTrack(s.event)}
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              {s.cta} <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Ambassador                                                          */
 /* ------------------------------------------------------------------ */
 
