@@ -23,14 +23,17 @@ import {
 } from "lucide-react";
 import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
 
-import jackPhoto from "@/assets/jack-silhouette.jpg";
+const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
+const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
+const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 
 const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
 
-const tierPro = "/__l5e/assets-v1/32f96196-26ff-40e3-8e6c-3b63ff41421b/chart-1.jpg";
-const tierPremium = "/__l5e/assets-v1/689c0529-f672-4ddc-acec-c33013afedce/chart-2.jpg";
-const tierElite = "/__l5e/assets-v1/7a2ccd62-fcb5-4aeb-83fe-35d1eec12a83/chart-3.jpg";
+const tierFree = "/__l5e/assets-v1/174daaab-2584-456e-a536-500846c6e53a/tier-beginner.jpg";
+const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.jpg";
+const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
+const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
