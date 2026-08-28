@@ -385,8 +385,6 @@ export function HowItWorks() {
 
 type Tier = {
   name: string;
-  price: string;
-  period?: string;
   blurb: string;
   features: string[];
   cta: string;
@@ -398,52 +396,49 @@ type Tier = {
 const TIERS: Tier[] = [
   {
     name: "Free",
-    price: "$0",
-    blurb: "Public signals and daily education.",
-    features: ["Daily public signals", "Educational content", "Community access"],
-    cta: "Join Free",
+    blurb: "No payment required",
+    features: [
+      "Join our 640+ trader community",
+      "Daily signals & education",
+      "Public channel access",
+    ],
+    cta: "Join Free Channel",
     href: LINKS.freeChannel,
     event: "pricing_free",
   },
   {
     name: "Pro",
-    price: "$99",
-    period: "/month",
-    blurb: "Scalp Mastery private channel.",
-    features: ["Scalp Mastery signals (M5)", "24/5 real-time alerts", "Telegram support"],
-    cta: "Choose Pro",
-    href: LINKS.jack,
+    blurb: "Scalp Mastery Signals",
+    features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_pro",
   },
   {
     name: "Premium",
-    price: "$199",
-    period: "/month",
-    blurb: "Alpha Edge intraday signals.",
+    blurb: "Alpha Edge Signals",
     features: [
-      "Everything in Pro",
-      "Alpha Edge signals (M15–M30)",
-      "Advanced analysis videos",
-      "Priority support",
+      "M15-M30 Intraday",
+      "Advanced Analysis",
+      "Priority Support",
+      "Enroll through our bot",
     ],
-    cta: "Choose Premium",
-    href: LINKS.jack,
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_premium",
     highlight: true,
   },
   {
     name: "Elite",
-    price: "$499",
-    period: "/month",
-    blurb: "Full suite plus 1-on-1 coaching.",
+    blurb: "Complete Indicator Suite",
     features: [
-      "Everything in Premium",
-      "Full indicator suite",
-      "1-on-1 coaching with Jack",
-      "Custom strategy consultation",
+      "1-on-1 Coaching with Jack",
+      "Custom Strategies",
+      "Premium Support",
+      "Enroll through our bot",
     ],
-    cta: "Choose Elite",
-    href: LINKS.jack,
+    cta: "Enroll Now",
+    href: LINKS.bot,
     event: "pricing_elite",
   },
 ];
@@ -474,11 +469,7 @@ export function Pricing() {
             <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {t.name}
             </h3>
-            <p className="mt-3 flex items-baseline gap-1">
-              <span className="text-4xl font-bold">{t.price}</span>
-              {t.period ? <span className="text-sm text-muted-foreground">{t.period}</span> : null}
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">{t.blurb}</p>
+            <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
             <ul className="mt-5 flex-1 space-y-2.5">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm">
@@ -501,8 +492,12 @@ export function Pricing() {
           </article>
         ))}
       </div>
-      <p className="mt-6 text-center text-xs text-muted-foreground">
-        Trading involves risk. Signals are educational and not financial advice.
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Questions?{" "}
+        <a href={LINKS.support} onClick={() => goTrack("pricing_support")} className="text-primary hover:underline">
+          Ask Sarah
+        </a>{" "}
+        for help choosing the right tier.
       </p>
     </Section>
   );
