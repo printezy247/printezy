@@ -395,6 +395,7 @@ const TIERS: Tier[] = [
     cta: "Join Free Channel",
     href: LINKS.freeChannel,
     event: "pricing_free",
+    image: tierFree,
   },
   {
     name: "Pro",
@@ -461,14 +462,14 @@ export function Pricing() {
               </span>
             ) : null}
             {t.image ? (
-              <div className="relative h-32 w-full overflow-hidden">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#050806]">
                 <img
                   src={t.image}
                   alt={`${t.name} package preview`}
                   loading="lazy"
-                  className="h-full w-full object-cover opacity-80"
+                  className="h-full w-full object-contain"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-elevated to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-surface-elevated/90 to-transparent" />
               </div>
             ) : null}
             <div className="flex flex-1 flex-col p-6">
@@ -626,9 +627,19 @@ export function Products() {
         {/* Macro & Fundamentals */}
         <article className="glass-card relative overflow-hidden rounded-2xl p-6">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
-            <Globe className="h-5 w-5" />
-          </span>
+          <img
+            src={macroLogo}
+            alt="Gold, Forex & Crypto Macros"
+            loading="lazy"
+            className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 object-contain opacity-25"
+          />
+          <img
+            src={macroLogo}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="h-12 w-12 rounded-xl object-contain"
+          />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
           <ul className="mt-4 space-y-2.5">
             {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
