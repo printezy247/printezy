@@ -634,14 +634,14 @@ export function Products() {
             src={macroLogo}
             alt="Gold, Forex & Crypto Macros"
             loading="lazy"
-            className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 object-contain opacity-25"
+            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full object-contain opacity-15"
           />
           <img
             src={macroLogo}
             alt=""
             aria-hidden="true"
             loading="lazy"
-            className="h-12 w-12 rounded-xl object-contain"
+            className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
           />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
           <ul className="mt-4 space-y-2.5">
