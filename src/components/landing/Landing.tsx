@@ -42,6 +42,7 @@ export const LINKS = {
   support: "https://t.me/ezysarah",
   bot: "https://t.me/ezyregisterbot",
   macro: "https://t.me/xaubtcmacro_bot",
+  ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
@@ -557,7 +558,7 @@ export function Products() {
           {EBOOKS.map((b) => (
             <a
               key={b.title}
-              href={LINKS.freeChannel}
+              href={LINKS.ebook}
               onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
               className="glass-card group overflow-hidden rounded-2xl transition-transform hover:-translate-y-1"
             >
