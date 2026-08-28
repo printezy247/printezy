@@ -449,7 +449,7 @@ export function Pricing() {
       <SectionHeading
         eyebrow="Packages"
         title="Start free. Upgrade when you're ready."
-        subtitle="Paid tiers enroll through our bot — open a Vantage Markets IB account or deposit to activate."
+        subtitle="All tiers enroll through our bot — open a Vantage Markets IB account or deposit to activate."
       />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t) => (
