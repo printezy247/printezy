@@ -28,6 +28,9 @@ import jackPhoto from "@/assets/jack-silhouette.jpg";
 const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
 const ebookGuide = "/__l5e/assets-v1/ef16e076-19ed-4f99-b736-3bdd106b5db4/ebook-cover-v2.png";
+const tierPro = "/__l5e/assets-v1/32f96196-26ff-40e3-8e6c-3b63ff41421b/chart-1.jpg";
+const tierPremium = "/__l5e/assets-v1/689c0529-f672-4ddc-acec-c33013afedce/chart-2.jpg";
+const tierElite = "/__l5e/assets-v1/7a2ccd62-fcb5-4aeb-83fe-35d1eec12a83/chart-3.jpg";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
