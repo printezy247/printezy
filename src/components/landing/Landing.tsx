@@ -136,10 +136,12 @@ function SupportCta({ className = "" }: { className?: string }) {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green text-primary-foreground">
-        <TrendingUp className="h-4 w-4" />
-      </span>
+    <span className="inline-flex items-center gap-2.5">
+      <img
+        src={brandLogo}
+        alt="EzyMap ALGO logo"
+        className="h-9 w-9 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.35)]"
+      />
       <span className="font-display text-lg font-bold tracking-tight">
         EzyMap <span className="text-gradient-gold">ALGO</span>
       </span>
