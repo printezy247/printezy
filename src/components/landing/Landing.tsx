@@ -544,7 +544,7 @@ export function Products() {
           </span>
           <h3 className="text-xl font-bold">Ebooks</h3>
         </div>
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           {EBOOKS.map((b) => (
             <a
               key={b.title}
