@@ -12,25 +12,26 @@ import {
   ShieldCheck,
   Clock,
   Activity,
-  TrendingUp,
   ChevronDown,
   Menu,
   X,
   BookOpen,
   LineChart,
   Bot,
-  Globe,
 } from "lucide-react";
 import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
 
-import jackPhoto from "@/assets/jack-silhouette.jpg";
+const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
+const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
+const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 
 const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
 
-const tierPro = "/__l5e/assets-v1/32f96196-26ff-40e3-8e6c-3b63ff41421b/chart-1.jpg";
-const tierPremium = "/__l5e/assets-v1/689c0529-f672-4ddc-acec-c33013afedce/chart-2.jpg";
-const tierElite = "/__l5e/assets-v1/7a2ccd62-fcb5-4aeb-83fe-35d1eec12a83/chart-3.jpg";
+const tierFree = "/__l5e/assets-v1/174daaab-2584-456e-a536-500846c6e53a/tier-beginner.jpg";
+const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.jpg";
+const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
+const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
@@ -133,10 +134,12 @@ function SupportCta({ className = "" }: { className?: string }) {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green text-primary-foreground">
-        <TrendingUp className="h-4 w-4" />
-      </span>
+    <span className="inline-flex items-center gap-2.5">
+      <img
+        src={brandLogo}
+        alt="EzyMap ALGO logo"
+        className="h-9 w-9 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.35)]"
+      />
       <span className="font-display text-lg font-bold tracking-tight">
         EzyMap <span className="text-gradient-gold">ALGO</span>
       </span>
@@ -266,6 +269,11 @@ function Hero() {
       <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-glow opacity-40 blur-3xl" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div>
+          <img
+            src={brandLogo}
+            alt="EzyMap ALGO"
+            className="mb-6 h-20 w-20 object-contain drop-shadow-[0_0_28px_hsl(var(--primary)/0.45)] sm:h-24 sm:w-24"
+          />
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
             <Activity className="h-3.5 w-3.5" /> 640+ active traders
           </span>
@@ -390,6 +398,7 @@ const TIERS: Tier[] = [
     cta: "Join Free Channel",
     href: LINKS.freeChannel,
     event: "pricing_free",
+    image: tierFree,
   },
   {
     name: "Pro",
@@ -456,14 +465,14 @@ export function Pricing() {
               </span>
             ) : null}
             {t.image ? (
-              <div className="relative h-32 w-full overflow-hidden">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#050806]">
                 <img
                   src={t.image}
                   alt={`${t.name} package preview`}
                   loading="lazy"
-                  className="h-full w-full object-cover opacity-80"
+                  className="h-full w-full object-contain"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-surface-elevated to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-surface-elevated/90 to-transparent" />
               </div>
             ) : null}
             <div className="flex flex-1 flex-col p-6">
@@ -621,9 +630,19 @@ export function Products() {
         {/* Macro & Fundamentals */}
         <article className="glass-card relative overflow-hidden rounded-2xl p-6">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
-            <Globe className="h-5 w-5" />
-          </span>
+          <img
+            src={macroLogo}
+            alt="Gold, Forex & Crypto Macros"
+            loading="lazy"
+            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full object-contain opacity-15"
+          />
+          <img
+            src={macroLogo}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
+          />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
           <ul className="mt-4 space-y-2.5">
             {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
