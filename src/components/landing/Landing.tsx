@@ -78,11 +78,13 @@ function TelegramCta({
   label = "Join Free Telegram Channel",
   event,
   variant = "primary",
+  href = LINKS.freeChannel,
   className = "",
 }: {
   label?: string;
   event: string;
   variant?: "primary" | "gold" | "outline";
+  href?: string;
   className?: string;
 }) {
   const styles =
@@ -93,12 +95,24 @@ function TelegramCta({
         : "border border-border bg-surface text-foreground hover:bg-surface-elevated";
   return (
     <a
-      href={LINKS.freeChannel}
+      href={href}
       onClick={() => goTrack(event)}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors ${styles} ${className}`}
     >
       <Send className="h-4 w-4" />
       {label}
+    </a>
+  );
+}
+
+function SupportCta({ className = "" }: { className?: string }) {
+  return (
+    <a
+      href={LINKS.support}
+      onClick={() => goTrack("support_click")}
+      className={`inline-flex items-center justify-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
+    >
+      <Send className="h-4 w-4" /> Ask Sarah
     </a>
   );
 }
