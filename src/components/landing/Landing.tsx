@@ -25,7 +25,8 @@ import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@
 
 export const LINKS = {
   freeChannel: "https://t.me/ezymap",
-  jack: "https://t.me/EzySarah",
+  support: "https://t.me/ezysarah",
+  bot: "https://t.me/ezyregisterbot",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
