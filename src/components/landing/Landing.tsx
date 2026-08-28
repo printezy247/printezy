@@ -138,6 +138,7 @@ const NAV_ITEMS = [
   { label: "Features", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
+  { label: "How to Enroll", href: "#how-to-enroll" },
   { label: "About Jack", href: "#ambassador" },
   { label: "FAQ", href: "#faq" },
 ];
