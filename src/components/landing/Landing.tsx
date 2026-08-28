@@ -24,12 +24,10 @@ import {
 import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
 
 import jackPhoto from "@/assets/jack-silhouette.jpg";
-import ebookMapping from "@/assets/ebook-mapping-like-pro.png";
-import ebookTechnical from "@/assets/ebook-technical-analysis.png";
-import ebookGuide from "@/assets/ebook-cover-v2.png";
-import tierPro from "@/assets/chart-1.jpg";
-import tierPremium from "@/assets/chart-2.jpg";
-import tierElite from "@/assets/chart-3.jpg";
+
+const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
+const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
+const ebookGuide = "/__l5e/assets-v1/ef16e076-19ed-4f99-b736-3bdd106b5db4/ebook-cover-v2.png";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
