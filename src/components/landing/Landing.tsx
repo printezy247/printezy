@@ -904,6 +904,7 @@ export function Landing() {
       "features",
       "how-it-works",
       "pricing",
+      "how-to-enroll",
       "ambassador",
       "testimonials",
       "faq",
@@ -923,6 +924,7 @@ export function Landing() {
         <Features />
         <HowItWorks />
         <Pricing />
+        <HowToEnroll />
         <Ambassador />
         <SocialProof />
         <Faq />
