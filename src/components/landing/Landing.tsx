@@ -717,7 +717,7 @@ export function Ambassador() {
           <p className="mt-5 text-lg font-semibold">Jack</p>
           <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
           <p className="mt-3 text-xs text-muted-foreground">
-            10+ year trading veteran · Vantage Markets Affiliate
+            10+ year trading veteran
           </p>
           <a
             href={LINKS.support}
