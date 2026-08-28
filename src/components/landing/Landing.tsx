@@ -518,11 +518,11 @@ export function Ambassador() {
           <p className="mt-5 text-lg font-semibold">Jack</p>
           <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
           <a
-            href={LINKS.jack}
-            onClick={() => goTrack("ambassador_dm_jack")}
+            href={LINKS.support}
+            onClick={() => goTrack("ambassador_contact_sarah")}
             className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
-            <Send className="h-4 w-4" /> @EzySarah
+            <Send className="h-4 w-4" /> Chat with Sarah
           </a>
         </div>
 
