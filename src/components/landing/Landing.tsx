@@ -42,6 +42,7 @@ export const LINKS = {
   support: "https://t.me/ezysarah",
   bot: "https://t.me/ezyregisterbot",
   macro: "https://t.me/xaubtcmacro_bot",
+  ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
