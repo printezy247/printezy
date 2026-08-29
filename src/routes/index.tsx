@@ -17,6 +17,7 @@ export const Route = createFileRoute("/")({
           "Live signals and daily education for 640+ traders. Start free, upgrade to Pro, Premium or Elite.",
       },
       { property: "og:type", content: "website" },
+      { name: "facebook-domain-verification", content: "tbn6gbwzvnlav1zi9hbxkcc1jve6bn" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
