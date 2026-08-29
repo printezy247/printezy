@@ -270,11 +270,6 @@ function Hero() {
       <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-glow opacity-40 blur-3xl" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div>
-          <img
-            src={brandLogo}
-            alt="EzyMap ALGO"
-            className="mb-6 h-20 w-20 object-contain drop-shadow-[0_0_28px_hsl(var(--primary)/0.45)] sm:h-24 sm:w-24"
-          />
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
             <Activity className="h-3.5 w-3.5" /> 640+ active traders
           </span>
