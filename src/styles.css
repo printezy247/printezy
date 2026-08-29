@@ -155,7 +155,7 @@
 @utility glass-card {
   background: var(--gradient-card);
   backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid oklch(0.80 0.14 88 / 0.18);
+  border: 1px solid oklch(0.80 0.10 88 / 0.12);
 }
 
 @keyframes float-slow {
