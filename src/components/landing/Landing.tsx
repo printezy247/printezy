@@ -274,8 +274,7 @@ function Hero() {
             <Activity className="h-3.5 w-3.5" /> 640+ active traders
           </span>
           <h1 className="mt-5 text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
-            Professional Trading Signals —{" "}
-            <span className="text-gradient-green">Join 640+ Traders</span>
+            Professional Trading Signals
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">
             Live signals and daily education powered by TradingView indicators, delivered straight
