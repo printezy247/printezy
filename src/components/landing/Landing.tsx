@@ -304,9 +304,9 @@ function Hero() {
           </p>
           <dl className="mt-10 grid max-w-md grid-cols-3 gap-4">
             {[
-              ["640+", "Subscribers"],
-              ["24/5", "Coverage"],
-              ["0%", "Spam"],
+              ["1,500+", "Pips Weekly"],
+              ["85%", "Win Rate"],
+              ["3 Styles", "Scalp · Intraday · Swing"],
             ].map(([v, l]) => (
               <div key={l}>
                 <dt className="text-2xl font-bold text-accent">{v}</dt>
