@@ -233,16 +233,16 @@ const TICKER: { symbol: string; price: string; change: string; up: boolean }[] =
   { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
   { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
   { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+  { symbol: "USD/JPY", price: "152.36", change: "+0.21%", up: true },
+  { symbol: "USOIL", price: "71.84", change: "-0.63%", up: false },
 ];
 
 export function Ticker() {
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
       <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-          Indicative · static
-        </span>
         {TICKER.map((t) => (
+
           <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
             <span className="font-semibold text-body">{t.symbol}</span>
             <span className="tabular-nums text-foreground">{t.price}</span>
