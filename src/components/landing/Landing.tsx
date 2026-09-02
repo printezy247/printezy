@@ -801,11 +801,12 @@ export function Pricing() {
                 <a
                   href={t.openAccountHref}
                   onClick={() => goTrack(t.openAccountEvent!)}
-                  className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                  className="neon-free-btn neon-pearl mt-6"
                 >
-                  Open Your Account
+                  <span className="neon-free-btn-inner">Open Your Account</span>
                 </a>
               ) : null}
+
               <a
                 href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
