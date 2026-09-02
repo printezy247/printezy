@@ -244,3 +244,17 @@
   background: #1b1f1d;
 }
 
+/* Pearl-white neon variant */
+.neon-pearl::before {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    #f6f4ee 18%,
+    #ffffff 38%,
+    transparent 58%
+  );
+}
+.neon-pearl .neon-free-btn-inner {
+  color: #f6f4ee;
+}
+
