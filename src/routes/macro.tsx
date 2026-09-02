@@ -469,9 +469,14 @@ function MacroPage() {
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
               <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? "Loading"}</p>
-              <p className="mt-3">
-                <Gauge segments={fillGauge(fng?.value ?? 0)} color="#c9a13a" />
-              </p>
+              <div className="mt-3">
+                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} />
+                <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <span>Fear</span>
+                  <span>Greed</span>
+                </div>
+              </div>
+
             </Card>
 
             <Card title="Next Rate Decisions">
