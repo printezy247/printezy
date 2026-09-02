@@ -1185,7 +1185,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Is there a free option?",
-        a: "Yes, two. The Free tier gives you the public channel and starter education, forever free. The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required.",
+        a: "The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required. For a paid entry point, the Beginner tier at $29/month gives you daily signals, education and community access.",
       },
       {
         q: "What's included in Pro, Premium and Elite?",
