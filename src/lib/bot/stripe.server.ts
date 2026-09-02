@@ -76,3 +76,27 @@ export async function createCheckoutSession(args: {
 export async function retrieveCheckoutSession(id: string): Promise<CheckoutSession> {
   return stripeRequest<CheckoutSession>(`/checkout/sessions/${encodeURIComponent(id)}`);
 }
+
+/** Generic one-time checkout for a catalogue SKU bought directly on the site. */
+export async function createProductCheckoutSession(args: {
+  sku: string;
+  productName: string;
+  amountCents: number;
+  origin: string;
+  email?: string;
+}): Promise<CheckoutSession> {
+  const body = encodeForm({
+    mode: "payment",
+    "line_items[0][quantity]": 1,
+    "line_items[0][price_data][currency]": "usd",
+    "line_items[0][price_data][unit_amount]": args.amountCents,
+    "line_items[0][price_data][product_data][name]": `EzyMap ALGO — ${args.productName}`,
+    customer_email: args.email,
+    success_url: `${args.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${args.origin}/pricing?canceled=1`,
+    "metadata[sku]": args.sku,
+    "metadata[source]": "website",
+  });
+
+  return stripeRequest<CheckoutSession>("/checkout/sessions", { method: "POST", body });
+}
