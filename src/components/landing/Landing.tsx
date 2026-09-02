@@ -412,14 +412,16 @@ export function Features() {
         subtitle="Everything runs through Telegram, so you never miss a setup while you're away from the charts."
       />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f) => (
-          <article key={f.title} className="glass-card rounded-2xl p-6">
+        {FEATURES.map((f, i) => (
+          <Reveal key={f.title} delay={i * 0.08} className="h-full">
+          <article className="glass-card h-full rounded-2xl p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <f.icon className="h-5 w-5" />
             </span>
             <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
           </article>
+          </Reveal>
         ))}
       </div>
     </Section>
@@ -507,10 +509,10 @@ export function Pricing() {
         subtitle="All tiers enroll through our bot — open a Vantage Markets IB account or deposit to activate."
       />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {TIERS.map((t) => (
+        {TIERS.map((t, i) => (
+          <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
-            key={t.name}
-            className={`relative flex flex-col overflow-hidden rounded-2xl ${
+            className={`relative flex h-full flex-col overflow-hidden rounded-2xl ${
               t.highlight
                 ? "border border-accent/40 bg-surface-elevated shadow-gold"
                 : "glass-card"
@@ -558,6 +560,7 @@ export function Pricing() {
               </a>
             </div>
           </article>
+          </Reveal>
         ))}
       </div>
       <p className="mt-6 text-center text-sm text-muted-foreground">
@@ -612,9 +615,9 @@ export function Products() {
           <h3 className="text-xl font-bold">Ebooks</h3>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          {EBOOKS.map((b) => (
+          {EBOOKS.map((b, i) => (
+            <Reveal key={b.title} delay={i * 0.1}>
             <a
-              key={b.title}
               href={LINKS.ebook}
               onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
               className="glass-card group overflow-hidden rounded-2xl transition-transform hover:-translate-y-1"
@@ -634,13 +637,15 @@ export function Products() {
                 </p>
               </div>
             </a>
+            </Reveal>
           ))}
         </div>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-3">
         {/* TradingView indicators */}
-        <article className="glass-card rounded-2xl p-6">
+        <Reveal className="h-full">
+        <article className="glass-card h-full rounded-2xl p-6">
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
             <LineChart className="h-5 w-5" />
           </span>
@@ -661,9 +666,11 @@ export function Products() {
             Enroll Now <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </article>
+        </Reveal>
 
         {/* MT5 indicators */}
-        <article className="glass-card rounded-2xl p-6">
+        <Reveal className="h-full" delay={0.1}>
+        <article className="glass-card h-full rounded-2xl p-6">
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
             <Bot className="h-5 w-5" />
           </span>
@@ -684,9 +691,11 @@ export function Products() {
             Enroll Now <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </article>
+        </Reveal>
 
         {/* Macro & Fundamentals */}
-        <article className="glass-card relative overflow-hidden rounded-2xl p-6">
+        <Reveal className="h-full" delay={0.2}>
+        <article className="glass-card relative h-full overflow-hidden rounded-2xl p-6">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
           <img
             src={macroLogo}
@@ -718,6 +727,7 @@ export function Products() {
             <Send className="h-4 w-4" /> Join Macro Bot
           </a>
         </article>
+        </Reveal>
       </div>
     </Section>
   );
@@ -739,11 +749,18 @@ export function HowItWorks() {
       <SectionHeading eyebrow="How it works" title="Three steps to your first signal" />
       <ol className="grid gap-5 md:grid-cols-3">
         {STEPS.map((s, i) => (
-          <li key={s.title} className="glass-card relative rounded-2xl p-6">
+          <motion.li
+            key={s.title}
+            className="glass-card relative rounded-2xl p-6"
+            initial={{ opacity: 0, y: 32, scale: 0.985 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.9, delay: i * 0.12, ease: APPLE_EASE }}
+          >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
-          </li>
+          </motion.li>
         ))}
       </ol>
       <div className="mt-10 text-center">
@@ -761,6 +778,7 @@ export function Ambassador() {
   return (
     <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+        <Reveal>
         <div className="glass-card relative overflow-hidden rounded-2xl p-8 text-center">
           <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
             <img
@@ -783,7 +801,9 @@ export function Ambassador() {
             <Send className="h-4 w-4" /> Questions? Ask Sarah
           </a>
         </div>
+        </Reveal>
 
+        <Reveal delay={0.15}>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Ambassador</p>
           <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Meet Jack</h2>
@@ -806,6 +826,7 @@ export function Ambassador() {
             ))}
           </dl>
         </div>
+        </Reveal>
       </div>
     </Section>
   );
@@ -851,10 +872,11 @@ export function SocialProof() {
           [Activity, "3.2K+", "Signals delivered this month"],
           [Clock, "24/5", "Market coverage"],
           [ShieldCheck, "0%", "Spam, ever"],
-        ].map(([Icon, v, l]) => {
+        ].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
-            <div key={l as string} className="glass-card flex items-center gap-4 rounded-2xl p-5">
+            <Reveal key={l as string} delay={i * 0.08}>
+            <div className="glass-card flex h-full items-center gap-4 rounded-2xl p-5">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
                 <I className="h-5 w-5" />
               </span>
@@ -863,6 +885,7 @@ export function SocialProof() {
                 <p className="text-xs text-muted-foreground">{l as string}</p>
               </div>
             </div>
+            </Reveal>
           );
         })}
       </div>
