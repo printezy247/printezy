@@ -17,8 +17,6 @@ import {
   Menu,
   X,
   BookOpen,
-  LineChart,
-  Bot,
 } from "lucide-react";
 import {
   track,
