@@ -19,7 +19,14 @@ import {
   LineChart,
   Bot,
 } from "lucide-react";
-import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
+import {
+  track,
+  trackPageLoad,
+  trackEngagement,
+  trackSectionVisibility,
+  trackAdClick,
+  getSessionId,
+} from "@/lib/analytics";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
 const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
