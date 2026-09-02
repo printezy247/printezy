@@ -1,8 +1,9 @@
 import { recordEvent } from "./analytics.functions";
+import { recordAdClick } from "./adclick.functions";
 
 export type AnalyticsEventType = "click" | "section_view" | "page_load";
 
-function getSessionId(): string {
+export function getSessionId(): string {
   if (typeof window === "undefined") return "ssr";
   const key = "pe_analytics_session";
   let id = sessionStorage.getItem(key);
@@ -12,6 +13,32 @@ function getSessionId(): string {
   }
   return id;
 }
+
+/**
+ * Capture Meta ad-click attribution (fbclid + utm tags) from the current URL,
+ * keyed by the same sessionId used for every other analytics event so the
+ * Telegram bot can resolve the fbclid from the short `?start=<sessionId>` tag.
+ */
+export function trackAdClick() {
+  if (typeof window === "undefined") return;
+  const params = new URLSearchParams(window.location.search);
+  const fbclid = params.get("fbclid");
+  if (!fbclid) return;
+
+  recordAdClick({
+    data: {
+      sessionId: getSessionId(),
+      fbclid,
+      utmSource: params.get("utm_source"),
+      utmMedium: params.get("utm_medium"),
+      utmCampaign: params.get("utm_campaign"),
+      landingPath: window.location.pathname,
+    },
+  }).catch(() => {
+    // Silent fail: attribution should never break the landing page.
+  });
+}
+
 
 function getContext() {
   return {

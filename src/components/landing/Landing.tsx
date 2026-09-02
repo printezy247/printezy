@@ -19,7 +19,14 @@ import {
   LineChart,
   Bot,
 } from "lucide-react";
-import { track, trackPageLoad, trackEngagement, trackSectionVisibility } from "@/lib/analytics";
+import {
+  track,
+  trackPageLoad,
+  trackEngagement,
+  trackSectionVisibility,
+  trackAdClick,
+  getSessionId,
+} from "@/lib/analytics";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
 const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
@@ -48,6 +55,19 @@ export const LINKS = {
 
 function goTrack(name: string) {
   track("click", name);
+}
+
+/**
+ * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
+ * visitor's fbclid back up. sessionId only exists client-side, so render the
+ * plain href on first paint and swap it in after mount (no hydration mismatch).
+ */
+function useBotLink() {
+  const [href, setHref] = useState(LINKS.bot);
+  useEffect(() => {
+    setHref(`${LINKS.bot}?start=${encodeURIComponent(getSessionId())}`);
+  }, []);
+  return href;
 }
 
 /* ------------------------------------------------------------------ */
@@ -265,6 +285,7 @@ function ChartGraphic() {
 }
 
 function Hero() {
+  const botHref = useBotLink();
   return (
     <section className="relative overflow-hidden bg-hero pt-32 pb-20 sm:pt-40 sm:pb-24">
       <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-glow opacity-40 blur-3xl" />
@@ -291,7 +312,7 @@ function Hero() {
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
             Or upgrade to Pro, Premium, or Elite through{" "}
-            <a href={LINKS.bot} onClick={() => goTrack("hero_bot_link")} className="text-primary hover:underline">
+            <a href={botHref} onClick={() => goTrack("hero_bot_link")} className="text-primary hover:underline">
               our bot
             </a>
             .
@@ -438,6 +459,7 @@ const TIERS: Tier[] = [
 ];
 
 export function Pricing() {
+  const botHref = useBotLink();
   return (
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
@@ -485,7 +507,7 @@ export function Pricing() {
                 ))}
               </ul>
               <a
-                href={t.href}
+                href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
                 className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
                   t.highlight
@@ -533,6 +555,7 @@ const MT5_FEATURES = [
 ];
 
 export function Products() {
+  const botHref = useBotLink();
   return (
     <Section id="products">
       <SectionHeading
@@ -592,7 +615,7 @@ export function Products() {
             ))}
           </ul>
           <a
-            href={LINKS.bot}
+            href={botHref}
             onClick={() => goTrack("products_tv_enroll")}
             className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
           >
@@ -615,7 +638,7 @@ export function Products() {
             ))}
           </ul>
           <a
-            href={LINKS.bot}
+            href={botHref}
             onClick={() => goTrack("products_mt5_enroll")}
             className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
           >
@@ -883,6 +906,7 @@ export function Faq() {
 /* ------------------------------------------------------------------ */
 
 function FinalCta() {
+  const botHref = useBotLink();
   return (
     <Section id="get-started" className="bg-surface/40">
       <div className="glass-card rounded-3xl px-6 py-14 text-center sm:px-12">
@@ -897,7 +921,7 @@ function FinalCta() {
             label="Enroll via Bot"
             event="final_enroll_bot"
             variant="gold"
-            href={LINKS.bot}
+            href={botHref}
             className="px-7 py-3.5 text-base"
           />
         </div>
@@ -911,6 +935,7 @@ function FinalCta() {
 /* ------------------------------------------------------------------ */
 
 export function Footer() {
+  const botHref = useBotLink();
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -947,7 +972,7 @@ export function Footer() {
             <h3 className="text-sm font-semibold">Links</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href={LINKS.bot} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
+                <a href={botHref} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
                   Enrollment Bot
                 </a>
               </li>
@@ -1007,6 +1032,7 @@ export function Footer() {
 export function Landing() {
   useEffect(() => {
     trackPageLoad("landing");
+    trackAdClick();
     const stopEngage = trackEngagement();
     const stopSections = trackSectionVisibility([
       "features",
