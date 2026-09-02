@@ -18,6 +18,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
+import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
 
@@ -66,6 +67,12 @@ const AuthenticatedTrackRecordRoute =
     path: '/track-record',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAdsDashboardRoute =
+  AuthenticatedAdsDashboardRouteImport.update({
+    id: '/ads-dashboard',
+    path: '/ads-dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicTelegramWebhookRoute =
   ApiPublicTelegramWebhookRouteImport.update({
     id: '/api/public/telegram/webhook',
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -112,6 +121,7 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/ads-dashboard'
     | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/ads-dashboard'
     | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/_authenticated/ads-dashboard'
     | '/_authenticated/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ads-dashboard': {
+      id: '/_authenticated/ads-dashboard'
+      path: '/ads-dashboard'
+      fullPath: '/ads-dashboard'
+      preLoaderRoute: typeof AuthenticatedAdsDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/telegram/webhook': {
       id: '/api/public/telegram/webhook'
       path: '/api/public/telegram/webhook'
@@ -252,10 +272,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
   AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
   AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
 }
 
