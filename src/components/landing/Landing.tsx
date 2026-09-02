@@ -960,6 +960,7 @@ export function Faq() {
               <p className="px-5 pb-5 text-sm text-muted-foreground">{f.a}</p>
             ) : null}
           </div>
+          </Reveal>
         ))}
       </div>
     </Section>
@@ -992,6 +993,7 @@ function FinalCta() {
           />
         </div>
       </div>
+      </Reveal>
     </Section>
   );
 }
