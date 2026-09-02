@@ -456,7 +456,7 @@ function Hero() {
                 ["Stop", "4,596.70", "text-accent-glow"],
                 ["Target", "4,600.61", "text-primary"],
               ].map(([label, value, tone]) => (
-                <div key={label} className="bg-white px-3 py-3 text-center">
+                <div key={label} className="bg-secondary px-3 py-3 text-center">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
                     {label}
                   </p>
