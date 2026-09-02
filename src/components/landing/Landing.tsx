@@ -709,10 +709,10 @@ export function Pricing() {
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
         eyebrow="Packages"
-        title="Start free. Upgrade when you're ready."
-        subtitle="All tiers enroll through our bot. Want to test the desk first? Open a Vantage Markets account and get 30 days of Pro access free — no card required."
+        title="Start with clarity. Upgrade when you're ready."
+        subtitle="All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required."
       />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
