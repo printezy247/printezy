@@ -791,7 +791,7 @@ export function Pricing() {
                 <p className="mt-1 h-4" aria-hidden="true" />
               )}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
-              <ul className="mt-5 flex-1 space-y-2.5">
+              <ul className="mt-5 flex-1 min-h-[9rem] space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
