@@ -79,6 +79,7 @@ export type Database = {
       }
       bot_users: {
         Row: {
+          chat_with_sarah: boolean
           created_at: string
           first_name: string | null
           session_id: string | null
@@ -87,6 +88,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          chat_with_sarah?: boolean
           created_at?: string
           first_name?: string | null
           session_id?: string | null
@@ -95,6 +97,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          chat_with_sarah?: boolean
           created_at?: string
           first_name?: string | null
           session_id?: string | null
@@ -275,6 +278,51 @@ export type Database = {
           stop_price?: number | null
           symbol?: string
           target_price?: number | null
+        }
+        Relationships: []
+      }
+      support_config: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          created_at: string
+          direction: string
+          id: number
+          member_telegram_id: number
+          sarah_message_id: number | null
+          text: string | null
+        }
+        Insert: {
+          created_at?: string
+          direction: string
+          id?: never
+          member_telegram_id: number
+          sarah_message_id?: number | null
+          text?: string | null
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          id?: never
+          member_telegram_id?: number
+          sarah_message_id?: number | null
+          text?: string | null
         }
         Relationships: []
       }
