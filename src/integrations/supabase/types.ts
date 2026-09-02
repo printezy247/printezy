@@ -82,6 +82,8 @@ export type Database = {
           chat_with_sarah: boolean
           created_at: string
           first_name: string | null
+          lang: string | null
+          missed_alert_sent: boolean
           session_id: string | null
           telegram_id: number
           updated_at: string
@@ -91,6 +93,8 @@ export type Database = {
           chat_with_sarah?: boolean
           created_at?: string
           first_name?: string | null
+          lang?: string | null
+          missed_alert_sent?: boolean
           session_id?: string | null
           telegram_id: number
           updated_at?: string
@@ -100,6 +104,8 @@ export type Database = {
           chat_with_sarah?: boolean
           created_at?: string
           first_name?: string | null
+          lang?: string | null
+          missed_alert_sent?: boolean
           session_id?: string | null
           telegram_id?: number
           updated_at?: string
