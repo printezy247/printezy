@@ -962,13 +962,24 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <a
-            href={botHref}
-            onClick={() => goTrack("products_mt5_enroll")}
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-          >
-            Enroll Now <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          <div className="mt-5 flex flex-col gap-2">
+            <a
+              href={botHref}
+              onClick={() => goTrack("products_mt5_enroll")}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href="https://www.metatrader5.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => goTrack("products_mt5_download")}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+            >
+              Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </article>
         </Reveal>
 
