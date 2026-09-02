@@ -17,6 +17,7 @@ import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -65,6 +66,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout-success',
+  path: '/checkout-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -158,6 +167,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
@@ -279,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout-success': {
+      id: '/checkout-success'
+      path: '/checkout-success'
+      fullPath: '/checkout-success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
