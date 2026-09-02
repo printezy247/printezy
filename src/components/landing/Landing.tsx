@@ -975,7 +975,7 @@ export function Products() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => goTrack("products_mt5_download")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent transition hover:bg-accent/15"
             >
               Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
             </a>
@@ -1019,7 +1019,7 @@ export function Products() {
             <Link
               to="/macro"
               onClick={() => goTrack("products_macro_view")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent transition hover:bg-accent/15"
             >
               View It Here <ArrowRight className="h-3.5 w-3.5" />
             </Link>
