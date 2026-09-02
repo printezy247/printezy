@@ -127,6 +127,17 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
   } as never);
   if (error) console.error("[enrollment] pending insert failed", error);
 
+  await reportMetaEvent({
+    eventName: "InitiateCheckout",
+    sessionId,
+    telegramId,
+    eventId: `checkout_${checkout.id}`,
+    valueCents: tier.amountCents,
+    contentName: tier.name,
+    contentId: tier.id,
+  });
+
+
   await sendMessage(
     telegramId,
     `<b>${tier.name}</b> — ${formatPrice(tier.amountCents)}\n${tier.blurb}\n\n${tier.perks
