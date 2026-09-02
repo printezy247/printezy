@@ -248,17 +248,26 @@ function Logo() {
 
 const TICKER: { symbol: string; price: string; change: string; up: boolean }[] = [
   { symbol: "XAU/USD", price: "4,598.70", change: "+0.42%", up: true },
+  { symbol: "XAG/USD", price: "32.15", change: "+0.55%", up: true },
   { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
-  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
-  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+  { symbol: "GBP/USD", price: "1.2985", change: "+0.31%", up: true },
   { symbol: "USD/JPY", price: "152.36", change: "+0.21%", up: true },
+  { symbol: "AUD/USD", price: "0.6745", change: "-0.12%", up: false },
+  { symbol: "USD/CAD", price: "1.3560", change: "+0.08%", up: true },
+  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
+  { symbol: "ETH/USD", price: "3,512.80", change: "+2.14%", up: true },
+  { symbol: "SOL/USD", price: "142.35", change: "+3.42%", up: true },
+  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+  { symbol: "US500", price: "5,980.25", change: "-0.11%", up: false },
+  { symbol: "NAS100", price: "21,245", change: "+0.38%", up: true },
   { symbol: "USOIL", price: "71.84", change: "-0.63%", up: false },
+  { symbol: "UKOIL", price: "75.20", change: "-0.45%", up: false },
 ];
 
 export function Ticker() {
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
-      <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
         {TICKER.map((t) => (
 
           <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
