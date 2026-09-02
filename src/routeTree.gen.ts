@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as MacroRouteImport } from './routes/macro'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AdsDashboardRouteImport } from './routes/ads-dashboard'
 import { Route as AccountRouteImport } from './routes/account'
@@ -26,6 +27,11 @@ const TermsRoute = TermsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MacroRoute = MacroRouteImport.update({
+  id: '/macro',
+  path: '/macro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
+  '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
+  '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
+  '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/ads-dashboard'
     | '/faq'
+    | '/macro'
     | '/privacy'
     | '/terms'
     | '/api/public/stripe/webhook'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/ads-dashboard'
     | '/faq'
+    | '/macro'
     | '/privacy'
     | '/terms'
     | '/api/public/stripe/webhook'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/ads-dashboard'
     | '/faq'
+    | '/macro'
     | '/privacy'
     | '/terms'
     | '/api/public/stripe/webhook'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AdsDashboardRoute: typeof AdsDashboardRoute
   FaqRoute: typeof FaqRoute
+  MacroRoute: typeof MacroRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
@@ -149,6 +162,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/macro': {
+      id: '/macro'
+      path: '/macro'
+      fullPath: '/macro'
+      preLoaderRoute: typeof MacroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AdsDashboardRoute: AdsDashboardRoute,
   FaqRoute: FaqRoute,
+  MacroRoute: MacroRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,

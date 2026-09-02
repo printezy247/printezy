@@ -34,7 +34,7 @@ function FaqPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
-      <main className="pt-24">
+      <main className="pt-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-4">
           <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> Back to home

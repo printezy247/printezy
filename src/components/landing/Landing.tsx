@@ -181,15 +181,15 @@ function TelegramCta({
 }) {
   const styles =
     variant === "primary"
-      ? "bg-primary text-primary-foreground hover:bg-primary-glow shadow-green"
+      ? "bg-primary text-primary-foreground hover:bg-primary-glow"
       : variant === "gold"
-        ? "bg-accent text-accent-foreground hover:bg-accent-glow shadow-gold"
-        : "border border-border bg-surface text-foreground hover:bg-surface-elevated";
+        ? "border border-accent bg-white text-accent-glow hover:bg-accent-tint"
+        : "border border-border bg-white text-foreground hover:bg-surface";
   return (
     <a
       href={href}
       onClick={() => goTrack(event)}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors ${styles} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors ${styles} ${className}`}
     >
       <Send className="h-4 w-4" />
       {label}
@@ -211,16 +211,49 @@ function SupportCta({ className = "" }: { className?: string }) {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <img
-        src={brandLogo}
-        alt="EzyMap ALGO logo"
-        className="h-9 w-9 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.35)]"
-      />
-      <span className="font-display text-lg font-bold tracking-tight">
-        EzyMap <span className="text-gradient-gold">ALGO</span>
+    <span className="inline-flex items-center gap-2">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-black text-primary-foreground">
+        E
+      </span>
+      <span className="font-display text-[17px] font-extrabold tracking-tight text-foreground">
+        EzyMap<span className="text-accent-glow">Algo</span>
       </span>
     </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Market ticker (static reference quotes)                             */
+/* ------------------------------------------------------------------ */
+
+const TICKER: { symbol: string; price: string; change: string; up: boolean }[] = [
+  { symbol: "XAU/USD", price: "4,598.70", change: "+0.42%", up: true },
+  { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
+  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
+  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+];
+
+export function Ticker() {
+  return (
+    <div className="w-full bg-[#0b0f0c] text-white">
+      <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/40">
+          Indicative · static
+        </span>
+        {TICKER.map((t) => (
+          <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
+            <span className="font-semibold text-white/80">{t.symbol}</span>
+            <span className="tabular-nums text-white">{t.price}</span>
+            <span
+              className="tabular-nums font-semibold"
+              style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+            >
+              {t.change}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -229,66 +262,77 @@ function Logo() {
 /* ------------------------------------------------------------------ */
 
 const NAV_ITEMS = [
-  { label: "Features", href: "#features" },
-  { label: "Packages", href: "#packages" },
-  { label: "Products", href: "#products" },
-  { label: "About Jack", href: "#ambassador" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Signals", href: "/#features" },
+  { label: "Packages", href: "/#packages" },
+  { label: "Education", href: "/#products" },
+  { label: "Track Record", href: "/#track-record" },
+  { label: "Macro & Crypto", href: "/macro" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" aria-label="EzyMap ALGO home">
-          <Logo />
-        </Link>
+    <header className="sticky top-0 z-50 bg-background">
+      <Ticker />
+      <nav className="border-b border-border">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link to="/" aria-label="EzyMap Algo home">
+            <Logo />
+          </Link>
 
-        <ul className="hidden items-center gap-7 md:flex">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+          <ul className="hidden items-center gap-6 md:flex">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="text-sm font-medium text-body transition-colors hover:text-primary"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="hidden md:block">
-          <SupportCta />
+          <div className="hidden items-center gap-4 md:flex">
+            <a
+              href={LINKS.support}
+              onClick={() => goTrack("support_click")}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Ask Sarah
+            </a>
+            <TelegramCta label="Join Free Channel" event="nav_join_free" />
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            className="rounded-md p-2 text-foreground md:hidden"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          className="rounded-md p-2 text-foreground md:hidden"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </nav>
 
       {open ? (
-        <div className="border-t border-border/60 bg-background md:hidden">
+        <div className="border-b border-border bg-background md:hidden">
           <ul className="space-y-1 px-4 py-4">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-surface hover:text-foreground"
+                  className="block rounded-md px-2 py-2 text-sm font-medium text-body hover:bg-surface"
                 >
                   {item.label}
                 </a>
               </li>
             ))}
             <li className="pt-2">
-              <SupportCta className="w-full" />
+              <TelegramCta label="Join Free Channel" event="nav_join_free_mobile" className="w-full" />
             </li>
           </ul>
         </div>
@@ -343,78 +387,166 @@ function ChartGraphic() {
 function Hero() {
   const botHref = useBotLink();
   return (
-    <section className="relative overflow-hidden bg-hero pt-32 pb-20 sm:pt-40 sm:pb-24">
-      <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-glow opacity-40 blur-3xl" />
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+    <section className="bg-hero border-b border-border">
+      <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
         <motion.div
-          initial={{ opacity: 0, y: 36 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: APPLE_EASE }}
+          transition={{ duration: 0.8, ease: APPLE_EASE }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-            <Activity className="h-3.5 w-3.5" /> 640+ active traders
+          <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
+            640+ Active Members · Est. 2021
           </span>
-          <h1 className="mt-5 text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
-            Professional Trading Routines
+          <h1 className="mt-4 max-w-2xl text-[34px] font-black leading-[1.08] text-foreground sm:text-[44px]">
+            Professional trading signals, delivered live to your phone.
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            Live signals and daily education powered by TradingView indicators, delivered straight
-            to your phone on Telegram. Forex, crypto and commodities, 24/5.
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-body">
+            Forex, commodities and crypto analysis from a 10-year veteran trader, delivered on
+            Telegram with full entry, stop and target transparency.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <TelegramCta label="Join Free Channel" event="hero_join_free" className="px-7 py-3.5 text-base" />
-            <a
-              href="#packages"
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3.5 text-sm font-semibold transition-colors hover:bg-surface"
-            >
-              See packages <ArrowRight className="h-4 w-4" />
-            </a>
+
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <TelegramCta label="Join Free Channel" event="hero_join_free" />
+            <TelegramCta label="Free Ebook" event="hero_free_ebook" variant="gold" href={LINKS.ebook} />
+            <TelegramCta label="Free Analysis" event="hero_free_analysis" variant="gold" href={LINKS.macro} />
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">
+
+          <p className="mt-3 text-sm text-muted-foreground">
             Or upgrade to Pro, Premium, or Elite through{" "}
-            <a href={botHref} onClick={() => goTrack("hero_bot_link")} className="text-primary hover:underline">
+            <a href={botHref} onClick={() => goTrack("hero_bot_link")} className="font-medium text-primary hover:underline">
               our bot
             </a>
             .
           </p>
-          <dl className="mt-10 grid max-w-md grid-cols-3 gap-4">
+
+          <dl className="mt-9 grid max-w-lg grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
             {[
-              ["1,500+", "Pips Weekly"],
-              ["85%", "Win Rate"],
+              ["640+", "Active members"],
+              ["24/5", "Market coverage"],
               ["3 Styles", "Scalp · Intraday · Swing"],
             ].map(([v, l]) => (
-              <div key={l}>
-                <dt className="text-2xl font-bold text-accent">{v}</dt>
-                <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
+              <div key={l} className="bg-white px-4 py-3.5">
+                <dt className="text-xl font-extrabold text-foreground">{v}</dt>
+                <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {l}
+                </dd>
               </div>
             ))}
           </dl>
         </motion.div>
 
         <motion.div
-          className="glass-card rounded-2xl p-5 shadow-elevated"
-          initial={{ opacity: 0, y: 36, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: APPLE_EASE }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: APPLE_EASE }}
         >
-          <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">XAUUSD · M5</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2 py-0.5 font-semibold text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" /> LIVE
-            </span>
+          <div className="rounded-md border border-border bg-white shadow-elevated">
+            <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
+              <span className="text-sm font-bold text-foreground">XAU/USD · Gold Spot</span>
+              <span className="rounded bg-accent-tint px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent-glow">
+                Sample signal
+              </span>
+            </div>
+            <div className="h-40 px-2 py-3 sm:h-48">
+              <ChartGraphic />
+            </div>
+            <div className="grid grid-cols-3 gap-px border-t border-border bg-border">
+              {[
+                ["Entry", "4,598.70", "text-foreground"],
+                ["Stop", "4,596.70", "text-accent-glow"],
+                ["Target", "4,600.61", "text-primary"],
+              ].map(([label, value, tone]) => (
+                <div key={label} className="bg-white px-3 py-3 text-center">
+                  <p className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+                    {label}
+                  </p>
+                  <p className={`mt-1 text-sm font-extrabold tabular-nums ${tone}`}>{value}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="h-44 sm:h-56">
-            <ChartGraphic />
-          </div>
-          <div className="mt-4 rounded-xl border border-border bg-surface p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">Signal alert</p>
-            <p className="mt-1 text-sm text-foreground">
-              BUY setup confirmed — entry, stop and targets pushed to Telegram in real time.
-            </p>
-          </div>
+          <p className="mt-2.5 text-[11.5px] leading-relaxed text-muted-foreground">
+            Illustrative example of signal format. Trading carries risk of loss. Signals are for
+            education only and are not personalized financial advice.
+          </p>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Trust strip                                                         */
+/* ------------------------------------------------------------------ */
+
+const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "MyFxBook"];
+
+export function TrustStrip() {
+  return (
+    <div className="border-b border-border bg-surface">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-4 sm:px-6 lg:px-8">
+        <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+          Trusted platforms we operate on
+        </span>
+        {PLATFORMS.map((p) => (
+          <span key={p} className="text-[12.5px] font-bold uppercase tracking-wide text-body">
+            {p}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Track record                                                        */
+/* ------------------------------------------------------------------ */
+
+export function TrackRecord() {
+  return (
+    <Section id="track-record" className="bg-surface">
+      <SectionHeading
+        eyebrow="Track record"
+        title="Check the history yourself"
+        subtitle="We publish every call in the channel with timestamps. Verify our history before you pay for anything."
+      />
+      <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
+        <a
+          href={LINKS.freeChannel}
+          onClick={() => goTrack("track_record_telegram")}
+          className="rounded-md border border-border bg-white p-5 transition-colors hover:border-primary"
+        >
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">Telegram history</p>
+          <h3 className="mt-2 text-lg font-bold">Full signal archive</h3>
+          <p className="mt-2 text-sm text-body">
+            Scroll back through every published signal, entry, stop and target in the free channel.
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+            Open channel <ArrowRight className="h-3.5 w-3.5" />
+          </span>
+        </a>
+        <a
+          href="https://www.myfxbook.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => goTrack("track_record_myfxbook")}
+          className="rounded-md border border-border bg-white p-5 transition-colors hover:border-accent"
+        >
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent-glow">Third party</p>
+          <h3 className="mt-2 text-lg font-bold">MyFxBook verification</h3>
+          <p className="mt-2 text-sm text-body">
+            Independent performance tracking. Ask Sarah for the current verified account link.
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-glow">
+            View MyFxBook <ArrowRight className="h-3.5 w-3.5" />
+          </span>
+        </a>
+      </div>
+      <p className="mx-auto mt-5 max-w-4xl text-xs leading-relaxed text-muted-foreground">
+        Past performance is not indicative of future results. We do not publish win-rate or pip
+        totals that cannot be independently verified.
+      </p>
+    </Section>
   );
 }
 
@@ -601,6 +733,21 @@ export function Pricing() {
           </article>
           </Reveal>
         ))}
+      </div>
+      <div className="mt-8 rounded-md border border-border bg-white p-5">
+        <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent-glow">
+          Risk &amp; affiliate disclosure
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-body">
+          Trading forex, commodities and crypto carries a high level of risk and can result in the
+          loss of all your capital. Signals and education provided by EzyMap Algo are for
+          informational and educational purposes only and are not personalized financial advice.
+          Past performance is not indicative of future results.
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-body">
+          Vantage Markets is our affiliate partner. We may earn a commission if you open an account
+          through this link.
+        </p>
       </div>
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Questions?{" "}
@@ -1029,7 +1176,9 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
 ];
 
 export function Faq() {
-  const [open, setOpen] = useState<string | null>("0-0");
+  const [openIds, setOpenIds] = useState<string[]>([]);
+  const toggle = (id: string) =>
+    setOpenIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   return (
     <Section id="faq">
       <SectionHeading eyebrow="FAQ" title="Questions, answered" />
@@ -1047,17 +1196,19 @@ export function Faq() {
                   <div className="glass-card overflow-hidden rounded-xl">
                     <button
                       type="button"
-                      onClick={() => setOpen(open === id ? null : id)}
-                      aria-expanded={open === id}
+                      onClick={() => toggle(id)}
+                      aria-expanded={openIds.includes(id)}
                       className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                     >
                       <span className="text-sm font-semibold">{f.q}</span>
                       <ChevronDown
-                        className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open === id ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${openIds.includes(id) ? "rotate-180" : ""}`}
                       />
                     </button>
-                    {open === id ? (
-                      <p className="px-5 pb-5 text-sm text-muted-foreground">{f.a}</p>
+                    {openIds.includes(id) ? (
+                      <p className="border-t border-border px-5 py-4 text-sm leading-relaxed text-body">
+                        {f.a}
+                      </p>
                     ) : null}
                   </div>
                   </Reveal>
@@ -1132,15 +1283,9 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {NAV_ITEMS.map((i) => (
                 <li key={i.href}>
-                  {i.href === "#faq" ? (
-                    <Link to="/faq" className="hover:text-foreground">
-                      {i.label}
-                    </Link>
-                  ) : (
-                    <a href={`/${i.href}`} className="hover:text-foreground">
-                      {i.label}
-                    </a>
-                  )}
+                  <a href={i.href} className="hover:text-foreground">
+                    {i.label}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -1221,6 +1366,7 @@ export function Landing() {
       "products",
       "how-it-works",
       "ambassador",
+      "track-record",
       "testimonials",
       "faq",
       "get-started",
@@ -1236,11 +1382,13 @@ export function Landing() {
       <Nav />
       <main>
         <Hero />
+        <TrustStrip />
         <Features />
         <Pricing />
         <Products />
         <HowItWorks />
         <Ambassador />
+        <TrackRecord />
         <SocialProof />
         <Faq />
         <FinalCta />

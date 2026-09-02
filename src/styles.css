@@ -36,60 +36,71 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-primary-tint: var(--primary-tint);
+  --color-accent-tint: var(--accent-tint);
+  --color-market-up: var(--market-up);
+  --color-market-down: var(--market-down);
+  --color-body: var(--body-text);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 0.5rem;
 
-  /* Core palette: true black graphite, uptrend green, gold */
-  --background: oklch(0.14 0.004 260);
-  --foreground: oklch(0.97 0.002 260);
+  /* Investing.com-style institutional palette: green, gold, black, white */
+  --background: #ffffff;
+  --foreground: #0b0f0c;
 
-  --surface: oklch(0.18 0.005 260);
-  --surface-elevated: oklch(0.22 0.006 260);
+  --surface: #f7f8f6;
+  --surface-elevated: #ffffff;
 
-  --card: oklch(0.18 0.005 260);
-  --card-foreground: oklch(0.97 0.002 260);
-  --popover: oklch(0.17 0.005 260);
-  --popover-foreground: oklch(0.97 0.002 260);
+  --card: #ffffff;
+  --card-foreground: #0b0f0c;
+  --popover: #ffffff;
+  --popover-foreground: #0b0f0c;
 
-  --primary: oklch(0.76 0.17 162);
-  --primary-foreground: oklch(0.14 0.004 260);
-  --primary-glow: oklch(0.84 0.16 160);
+  --primary: #0f7a4a;
+  --primary-foreground: #ffffff;
+  --primary-glow: #0a5c37;
+  --primary-tint: #eaf6ee;
 
-  --accent: oklch(0.88 0.16 96);
-  --accent-foreground: oklch(0.14 0.004 260);
-  --accent-glow: oklch(0.93 0.15 98);
+  --accent: #b9902e;
+  --accent-foreground: #ffffff;
+  --accent-glow: #8a6d24;
+  --accent-tint: #f7f0da;
 
-  --secondary: oklch(0.24 0.006 260);
-  --secondary-foreground: oklch(0.97 0.002 260);
-  --muted: oklch(0.22 0.005 260);
-  --muted-foreground: oklch(0.72 0.006 260);
+  --secondary: #f7f8f6;
+  --secondary-foreground: #0b0f0c;
+  --muted: #f7f8f6;
+  --muted-foreground: #8a8e86;
+  --body-text: #3a3d38;
 
-  --destructive: oklch(0.62 0.22 27);
-  --destructive-foreground: oklch(0.98 0.01 90);
+  --destructive: #c9a13a;
+  --destructive-foreground: #ffffff;
 
-  --border: oklch(0.34 0.006 260 / 60%);
-  --input: oklch(0.34 0.006 260 / 60%);
-  --ring: oklch(0.76 0.17 162);
+  --border: #e8e8e6;
+  --input: #e8e8e6;
+  --ring: #0f7a4a;
 
-  /* Gradients */
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.40 0.09 162 / 0.28) 0%, transparent 70%), linear-gradient(180deg, oklch(0.17 0.005 260) 0%, oklch(0.11 0.003 260) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.86 0.15 96) 0%, oklch(0.94 0.15 100) 50%, oklch(0.76 0.14 88) 100%);
-  --gradient-green: linear-gradient(135deg, oklch(0.62 0.16 162) 0%, oklch(0.80 0.18 160) 100%);
-  --gradient-glow: radial-gradient(circle, oklch(0.76 0.17 162 / 0.35) 0%, transparent 65%);
-  --gradient-gold-glow: radial-gradient(circle, oklch(0.88 0.16 96 / 0.32) 0%, transparent 65%);
-  --gradient-card: linear-gradient(160deg, oklch(0.22 0.006 260 / 0.9) 0%, oklch(0.16 0.004 260 / 0.7) 100%);
+  --market-up: #2fbf71;
+  --market-down: #c9a13a;
 
-  /* Shadows */
-  --shadow-gold: 0 10px 40px -14px oklch(0.88 0.16 96 / 0.32), 0 0 0 1px oklch(0.88 0.16 96 / 0.16);
-  --shadow-green: 0 10px 40px -14px oklch(0.76 0.17 162 / 0.35);
-  --shadow-elevated: 0 24px 60px -24px oklch(0 0 0 / 0.75), 0 8px 24px -14px oklch(0 0 0 / 0.5);
-  --shadow-inset-gold: inset 0 1px 0 oklch(0.93 0.15 98 / 0.25);
+  /* Gradients kept flat and institutional */
+  --gradient-hero: linear-gradient(180deg, #ffffff 0%, #f7f8f6 100%);
+  --gradient-gold: linear-gradient(135deg, #b9902e 0%, #d7b354 100%);
+  --gradient-green: linear-gradient(135deg, #0f7a4a 0%, #2fbf71 100%);
+  --gradient-glow: radial-gradient(circle, rgba(15, 122, 74, 0.10) 0%, transparent 65%);
+  --gradient-gold-glow: radial-gradient(circle, rgba(185, 144, 46, 0.12) 0%, transparent 65%);
+  --gradient-card: #ffffff;
 
+  /* Shadows: subtle, data-dense feel */
+  --shadow-gold: 0 1px 2px rgba(11, 15, 12, 0.06);
+  --shadow-green: 0 1px 2px rgba(11, 15, 12, 0.06);
+  --shadow-elevated: 0 1px 3px rgba(11, 15, 12, 0.08), 0 6px 20px -12px rgba(11, 15, 12, 0.12);
+  --shadow-inset-gold: none;
 }
+
 
 @layer base {
   * {
@@ -111,10 +122,7 @@
 }
 
 @utility text-gradient-gold {
-  background: var(--gradient-gold);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #8a6d24;
 }
 
 @utility text-gradient-green {
@@ -153,9 +161,8 @@
 }
 
 @utility glass-card {
-  background: var(--gradient-card);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid oklch(0.80 0.10 88 / 0.12);
+  background: #ffffff;
+  border: 1px solid var(--border);
 }
 
 @keyframes float-slow {
