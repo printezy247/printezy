@@ -44,6 +44,9 @@ const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
+const tradingViewLogo = "/__l5e/assets-v1/d1c76292-abab-458f-bf37-ebd5d4846fa5/tradingview-logo.png";
+const mt5Logo = "/__l5e/assets-v1/d39c8138-3291-4b21-be4e-7cdc56d7f2cd/mt5-logo.png";
+
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
 /* ------------------------------------------------------------------ */
