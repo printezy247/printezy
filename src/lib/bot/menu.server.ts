@@ -8,7 +8,8 @@ import { createMemberSession, accountLink, type EnrollmentRow } from "./member.s
 export const SUPPORT = "https://t.me/ezysarah";
 export const FREE_CHANNEL = "https://t.me/ezymap";
 
-const BTN_ASK_SARAH: InlineButton = { text: "💬 Ask Sarah", url: SUPPORT };
+/** Opens the in-bot live chat with Sarah (relay), not just a profile link. */
+const BTN_ASK_SARAH: InlineButton = { text: "💬 Ask Sarah", callback_data: "sarah:start" };
 
 /** Persistent slash-command list shown by Telegram's menu button. */
 export async function registerBotCommands() {
