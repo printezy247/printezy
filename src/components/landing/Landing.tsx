@@ -202,7 +202,7 @@ function SupportCta({ className = "" }: { className?: string }) {
     <a
       href={LINKS.support}
       onClick={() => goTrack("support_click")}
-      className={`inline-flex items-center justify-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
     >
       <Send className="h-4 w-4" /> Ask Sarah
     </a>
@@ -695,7 +695,7 @@ export function Pricing() {
               </span>
             ) : null}
             {t.image ? (
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#050806]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
                 <img
                   src={t.image}
                   alt={`${t.name} package preview`}
@@ -721,7 +721,7 @@ export function Pricing() {
               <a
                 href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
-                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
                   t.highlight
                     ? "bg-accent text-accent-foreground hover:bg-accent-glow"
                     : "bg-primary text-primary-foreground hover:bg-primary-glow"
@@ -882,7 +882,6 @@ export function Products() {
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
         <article className="glass-card relative h-full overflow-hidden rounded-xl p-6">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
           <img
             src={macroLogo}
             alt="Gold, Forex & Crypto Macros"
@@ -908,7 +907,7 @@ export function Products() {
           <a
             href={LINKS.macro}
             onClick={() => goTrack("products_macro_join")}
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
             <Send className="h-4 w-4" /> Join Macro Bot
           </a>
@@ -982,7 +981,7 @@ export function Ambassador() {
           <a
             href={LINKS.support}
             onClick={() => goTrack("ambassador_contact_sarah")}
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
             <Send className="h-4 w-4" /> Questions? Ask Sarah
           </a>
