@@ -925,13 +925,25 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <a
-            href={botHref}
-            onClick={() => goTrack("products_tv_enroll")}
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-          >
-            Enroll Now <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          <div className="mt-5 flex flex-col gap-2">
+            <a
+              href={botHref}
+              onClick={() => goTrack("products_tv_enroll")}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href={LINKS.tradingView}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => goTrack("products_tv_open_free_account")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            >
+              <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
+              Open Free Account
+            </a>
+          </div>
         </article>
         </Reveal>
 
