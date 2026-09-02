@@ -62,7 +62,7 @@ const META_CLICK_EVENTS: Record<
   string,
   { event: SiteMetaEvent; contentId?: string; valueCents?: number }
 > = {
-  pricing_free: { event: "Lead", contentId: "free" },
+  pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
   pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
