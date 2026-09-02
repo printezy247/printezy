@@ -10,6 +10,7 @@ const MAX_CODE_ATTEMPTS = 5;
 
 export const TIER_RANK: Record<string, number> = {
   free: 0,
+  vantage: 2,
   beginner: 1,
   pro: 2,
   premium: 3,
