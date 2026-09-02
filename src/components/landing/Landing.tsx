@@ -58,6 +58,7 @@ export const LINKS = {
   macro: "https://t.me/xaubtcmacro_bot",
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
+  vantageOpenAccount: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
@@ -68,6 +69,7 @@ const META_CLICK_EVENTS: Record<
 > = {
   pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
   pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
+  pricing_vantage_open_account: { event: "Lead", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
   pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
@@ -631,6 +633,9 @@ type Tier = {
   priceNote?: string;
   /** Paid tiers also offer the no-card Vantage activation route. */
   freeAlt?: boolean;
+  /** Optional "Open Your Account" affiliate link shown above the main CTA. */
+  openAccountHref?: string;
+  openAccountEvent?: string;
 };
 
 const TIERS: Tier[] = [
@@ -649,6 +654,8 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_vantage_trial",
     image: tierVantage,
+    openAccountHref: LINKS.vantageOpenAccount,
+    openAccountEvent: "pricing_vantage_open_account",
   },
   {
     name: "Beginner",
@@ -790,10 +797,21 @@ export function Pricing() {
                   </li>
                 ))}
               </ul>
+              {t.openAccountHref ? (
+                <a
+                  href={t.openAccountHref}
+                  onClick={() => goTrack(t.openAccountEvent!)}
+                  className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                >
+                  Open Your Account
+                </a>
+              ) : null}
               <a
                 href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
-                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                  t.openAccountHref ? "mt-2" : "mt-6"
+                } ${
                   t.highlight
                     ? "bg-accent text-accent-foreground hover:bg-accent-glow"
                     : "bg-primary text-primary-foreground hover:bg-primary-glow"
