@@ -267,7 +267,7 @@ const TICKER: { symbol: string; price: string; change: string; up: boolean }[] =
 export function Ticker() {
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
-      <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl items-center justify-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
         {TICKER.map((t) => (
 
           <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
