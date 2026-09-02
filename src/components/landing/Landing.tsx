@@ -643,6 +643,7 @@ const TIERS: Tier[] = [
     cta: "Get Free Access",
     href: LINKS.bot,
     event: "pricing_vantage_trial",
+    image: tierVantage,
   },
   {
     name: "Pro",
