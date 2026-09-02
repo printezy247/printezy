@@ -178,34 +178,34 @@ export const getDashboard = createServerFn({ method: "POST" })
       .order("published_at", { ascending: false })
       .limit(100);
 
-    const trades = ((tradeRes.data ?? []) as Array<Record<string, never>>).map((t) => ({
-      id: t["id"] as unknown as string,
-      symbol: t["symbol"] as unknown as string,
-      direction: t["direction"] as unknown as string,
-      entryPrice: (t["entry_price"] as unknown as number | null) ?? null,
-      exitPrice: (t["exit_price"] as unknown as number | null) ?? null,
-      size: (t["size"] as unknown as number | null) ?? null,
-      pips: (t["pips"] as unknown as number | null) ?? null,
-      pnl: (t["pnl"] as unknown as number | null) ?? null,
-      status: t["status"] as unknown as string,
-      notes: (t["notes"] as unknown as string | null) ?? null,
-      openedAt: t["opened_at"] as unknown as string,
-      closedAt: (t["closed_at"] as unknown as string | null) ?? null,
-    })) as MemberTrade[];
+    const trades: MemberTrade[] = (tradeRes.data ?? []).map((t) => ({
+      id: t.id,
+      symbol: t.symbol,
+      direction: t.direction,
+      entryPrice: t.entry_price,
+      exitPrice: t.exit_price,
+      size: t.size,
+      pips: t.pips,
+      pnl: t.pnl,
+      status: t.status,
+      notes: t.notes,
+      openedAt: t.opened_at,
+      closedAt: t.closed_at,
+    }));
 
-    const signals = ((signalRes.data ?? []) as Array<Record<string, never>>).map((s) => ({
-      id: s["id"] as unknown as string,
-      symbol: s["symbol"] as unknown as string,
-      direction: s["direction"] as unknown as string,
-      minTier: s["min_tier"] as unknown as string,
-      entryPrice: (s["entry_price"] as unknown as number | null) ?? null,
-      stopPrice: (s["stop_price"] as unknown as number | null) ?? null,
-      targetPrice: (s["target_price"] as unknown as number | null) ?? null,
-      status: s["status"] as unknown as string,
-      resultPips: (s["result_pips"] as unknown as number | null) ?? null,
-      note: (s["note"] as unknown as string | null) ?? null,
-      publishedAt: s["published_at"] as unknown as string,
-    })) as MemberSignal[];
+    const signals: MemberSignal[] = (signalRes.data ?? []).map((s) => ({
+      id: s.id,
+      symbol: s.symbol,
+      direction: s.direction,
+      minTier: s.min_tier,
+      entryPrice: s.entry_price,
+      stopPrice: s.stop_price,
+      targetPrice: s.target_price,
+      status: s.status,
+      resultPips: s.result_pips,
+      note: s.note,
+      publishedAt: s.published_at,
+    }));
 
     const closed = trades.filter((t) => t.status === "closed");
     const wins = closed.filter((t) => (t.pnl ?? t.pips ?? 0) > 0).length;
