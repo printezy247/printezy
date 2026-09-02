@@ -42,8 +42,10 @@ const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
-import tradingViewLogo from "@/assets/tradingview-logo.png";
-import mt5Logo from "@/assets/mt5-logo.png";
+const tradingViewLogo =
+  "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
+const mt5Logo =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMoTO9YOOgIMz_cgSTOlhxSH_tW8LwZBwFaTrpWahk6A&s=10";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
