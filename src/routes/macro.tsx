@@ -203,9 +203,9 @@ function MacroPage() {
           ))}
         </div>
 
-        <div className="grid gap-7 lg:grid-cols-[1fr_340px]">
+        <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
           {/* Main column */}
-          <div className="space-y-7">
+          <div className="min-w-0 space-y-7">
             {shows("Calendar") ? (
               <Card
                 title="Today's Economic Calendar"
