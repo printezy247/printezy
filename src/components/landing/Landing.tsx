@@ -611,25 +611,11 @@ type Tier = {
   image?: string;
   price: string;
   priceNote?: string;
+  /** Paid tiers also offer the no-card Vantage activation route. */
+  freeAlt?: boolean;
 };
 
 const TIERS: Tier[] = [
-  {
-    name: "Free",
-    price: "Free",
-    priceNote: "Forever",
-    blurb: "No payment required",
-    features: [
-      "Join our 640+ trader community",
-      "Daily signals & education",
-      "Public channel access",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
-    href: LINKS.bot,
-    event: "pricing_free",
-    image: tierFree,
-  },
   {
     name: "Vantage Trial",
     price: "Free for 30 days",
@@ -647,6 +633,22 @@ const TIERS: Tier[] = [
     image: tierVantage,
   },
   {
+    name: "Free",
+    price: "Free",
+    priceNote: "Forever",
+    blurb: "No payment required",
+    features: [
+      "Join our 640+ trader community",
+      "Daily signals & education",
+      "Public channel access",
+      "Enroll through our bot",
+    ],
+    cta: "Enroll Now",
+    href: LINKS.bot,
+    event: "pricing_free",
+    image: tierFree,
+  },
+  {
     name: "Pro",
     price: "$49",
     priceNote: "per month",
@@ -656,6 +658,7 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_pro",
     image: tierPro,
+    freeAlt: true,
   },
   {
     name: "Premium",
@@ -673,6 +676,7 @@ const TIERS: Tier[] = [
     event: "pricing_premium",
     highlight: true,
     image: tierPremium,
+    freeAlt: true,
   },
   {
     name: "Elite",
@@ -690,6 +694,7 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_elite",
     image: tierElite,
+    freeAlt: true,
   },
 ];
 
