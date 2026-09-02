@@ -42,8 +42,10 @@ const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
-import tradingViewLogo from "@/assets/tradingview-logo.png";
-import mt5Logo from "@/assets/mt5-logo.png";
+const tradingViewLogo =
+  "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
+const mt5Logo =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMoTO9YOOgIMz_cgSTOlhxSH_tW8LwZBwFaTrpWahk6A&s=10";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
@@ -56,6 +58,7 @@ export const LINKS = {
   macro: "https://t.me/xaubtcmacro_bot",
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
+  tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
 /** Site clicks that are also Meta conversions, with the tier value where known. */
@@ -207,6 +210,20 @@ function SupportCta({ className = "" }: { className?: string }) {
       className={`inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
     >
       <Send className="h-4 w-4" /> Ask Sarah
+    </a>
+  );
+}
+
+function NeonFreeAccessButton({
+  href,
+  event,
+}: {
+  href: string;
+  event: string;
+}) {
+  return (
+    <a href={href} onClick={() => goTrack(event)} className="neon-free-btn">
+      <span className="neon-free-btn-inner">Get Free Access</span>
     </a>
   );
 }
@@ -776,13 +793,22 @@ export function Pricing() {
                 {t.cta}
               </a>
               {t.freeAlt ? (
-                <a
-                  href={botHref}
-                  onClick={() => goTrack(`${t.event}_free_access`)}
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-                >
-                  Get Free Access
-                </a>
+                t.name === "Premium" ? (
+                  <div className="mt-2">
+                    <NeonFreeAccessButton
+                      href={botHref}
+                      event={`${t.event}_free_access`}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    href={botHref}
+                    onClick={() => goTrack(`${t.event}_free_access`)}
+                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                  >
+                    Get Free Access
+                  </a>
+                )
               ) : null}
             </div>
           </article>
@@ -899,13 +925,25 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <a
-            href={botHref}
-            onClick={() => goTrack("products_tv_enroll")}
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-          >
-            Enroll Now <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          <div className="mt-5 flex flex-col gap-2">
+            <a
+              href={botHref}
+              onClick={() => goTrack("products_tv_enroll")}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href={LINKS.tradingView}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => goTrack("products_tv_open_free_account")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            >
+              <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
+              Open Free Account
+            </a>
+          </div>
         </article>
         </Reveal>
 
