@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SITE_URL, getTier, formatPrice } from "./tiers";
 import { sendMessage } from "./telegram.server";
 import { createCheckoutSession, retrieveCheckoutSession } from "./stripe.server";
+import { reportMetaEvent } from "./meta.server";
 
 export const FREE_CHANNEL = "https://t.me/ezymap";
 export const SUPPORT = "https://t.me/ezysarah";
