@@ -47,6 +47,20 @@ export async function getSessionTag(telegramId: number): Promise<string | null> 
   return (data as { session_id: string | null } | null)?.session_id ?? null;
 }
 
+/**
+ * A member opening the bot from an ad click is a Lead. Fired once per member
+ * (the event_id is stable, so Meta de-duplicates repeat /start commands).
+ */
+export async function reportLead(telegramId: number, sessionId: string | null) {
+  await reportMetaEvent({
+    eventName: "Lead",
+    sessionId,
+    telegramId,
+    eventId: `lead_${telegramId}`,
+    contentName: "Telegram enrollment bot start",
+  });
+}
+
 /** Free tier: activate immediately, no payment. */
 export async function activateFreeTier(telegramId: number) {
   const existing = await supabaseAdmin
