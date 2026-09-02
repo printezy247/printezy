@@ -300,12 +300,11 @@ export function Nav() {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href={LINKS.support}
-              onClick={() => goTrack("support_click")}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              onClick={() => goTrack("nav_ask_sarah")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
             >
-              Ask Sarah
+              <Send className="h-4 w-4" /> Ask Sarah
             </a>
-            <TelegramCta label="Join Free Channel" event="nav_join_free" />
           </div>
 
           <button
@@ -334,7 +333,13 @@ export function Nav() {
               </li>
             ))}
             <li className="pt-2">
-              <TelegramCta label="Join Free Channel" event="nav_join_free_mobile" className="w-full" />
+              <a
+                href={LINKS.support}
+                onClick={() => goTrack("nav_ask_sarah_mobile")}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+              >
+                <Send className="h-4 w-4" /> Ask Sarah
+              </a>
             </li>
           </ul>
         </div>
@@ -481,7 +486,7 @@ function Hero() {
 /* Trust strip                                                         */
 /* ------------------------------------------------------------------ */
 
-const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "MyFxBook"];
+const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "ForexFactory"];
 
 export function TrustStrip() {
   return (
@@ -528,19 +533,20 @@ export function TrackRecord() {
           </span>
         </a>
         <a
-          href="https://www.myfxbook.com/"
+          href="https://www.forexfactory.com/calendar"
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => goTrack("track_record_myfxbook")}
+          onClick={() => goTrack("track_record_forexfactory")}
           className="rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Third party</p>
-          <h3 className="mt-2 text-lg font-bold">MyFxBook verification</h3>
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Reference</p>
+          <h3 className="mt-2 text-lg font-bold">ForexFactory calendar</h3>
           <p className="mt-2 text-sm text-body">
-            Independent performance tracking. Ask Sarah for the current verified account link.
+            Cross-check every event we trade against the public economic calendar. This is a data
+            reference, not a performance record.
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
-            View MyFxBook <ArrowRight className="h-3.5 w-3.5" />
+            Open ForexFactory <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </a>
       </div>

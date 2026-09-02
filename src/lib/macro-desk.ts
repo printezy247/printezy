@@ -1,0 +1,275 @@
+/**
+ * Typed data layer for the /macro "Macro & Crypto" desk.
+ *
+ * NOTE: the MacroTrader bot has no public read API for this content —
+ * webhook_server.py only exposes POST /webhook/stripe and heatmap messages are
+ * built in-process and pushed straight to Telegram by scheduler/tasks.py.
+ * So this module is seeded with the bot's real content and every read goes
+ * through fetchMacroDesk(), a single swappable client function. Wiring it to
+ * live data needs a new JSON endpoint on the bot's Flask app
+ * (e.g. GET /api/heatmaps/<key>) plus a subscription check — a bot-side task.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Pricing (mirrors the bot's config exactly)                          */
+/* ------------------------------------------------------------------ */
+
+export const MACRO_PRICES = {
+  /** FREE_TIER_HEATMAP — the economic calendar is the only ungated card. */
+  calendar: "FREE",
+  /** The four premium heatmaps ship as one product. */
+  heatmaps: "$19/mo",
+  addon: "$9/mo",
+  yieldOptimizer: "$12/mo",
+} as const;
+
+/* ------------------------------------------------------------------ */
+/* Types                                                               */
+/* ------------------------------------------------------------------ */
+
+export type MacroFilter =
+  | "All"
+  | "Calendar"
+  | "Central Banks"
+  | "Recession"
+  | "Crypto"
+  | "Sentiment";
+
+export const MACRO_FILTERS: MacroFilter[] = [
+  "All",
+  "Calendar",
+  "Central Banks",
+  "Recession",
+  "Crypto",
+  "Sentiment",
+];
+
+export type Impact = "high" | "medium" | "low";
+
+export type CalendarRow = {
+  /** New York wall-clock "HH:MM" — converted to the visitor's timezone in the UI. */
+  nyTime: string;
+  currency: string;
+  event: string;
+  impact: Impact;
+  forecast: string;
+  previous: string;
+};
+
+export type Stance = "hawkish" | "neutral" | "dovish";
+
+export type CentralBankRow = {
+  bank: string;
+  rate: string;
+  stance: Stance;
+  nextMeeting: string;
+};
+
+export type RecessionRow = {
+  country: string;
+  probability: number;
+  driver: string;
+};
+
+export type TrendCard = {
+  key: "fed-tone" | "news-sentiment";
+  title: string;
+  description: string;
+  price: string;
+  /** 0-7 indices into the sparkline ramp. */
+  trend: number[];
+  readout: string;
+};
+
+export type CryptoAddon = {
+  name: string;
+  description: string;
+  price: string;
+};
+
+export type RateDecision = { bank: string; date: string };
+
+export type FearGreed = {
+  value: number;
+  label: string;
+  source: string;
+};
+
+export type MacroDesk = {
+  calendar: CalendarRow[];
+  centralBanks: CentralBankRow[];
+  recession: RecessionRow[];
+  trends: TrendCard[];
+  cryptoAddons: CryptoAddon[];
+  rateDecisions: RateDecision[];
+  fearGreed: FearGreed;
+};
+
+/* ------------------------------------------------------------------ */
+/* Seed content (the bot's actual copy)                                */
+/* ------------------------------------------------------------------ */
+
+const SEED: MacroDesk = {
+  calendar: [
+    {
+      nyTime: "08:30",
+      currency: "USD",
+      event: "Initial Jobless Claims",
+      impact: "medium",
+      forecast: "230K",
+      previous: "227K",
+    },
+    {
+      nyTime: "08:30",
+      currency: "USD",
+      event: "Core CPI m/m",
+      impact: "high",
+      forecast: "0.3%",
+      previous: "0.2%",
+    },
+    {
+      nyTime: "10:00",
+      currency: "EUR",
+      event: "ECB President Speech",
+      impact: "medium",
+      forecast: "—",
+      previous: "—",
+    },
+    {
+      nyTime: "14:00",
+      currency: "GBP",
+      event: "BoE Interest Rate Decision",
+      impact: "high",
+      forecast: "4.75%",
+      previous: "5.00%",
+    },
+  ],
+  centralBanks: [
+    { bank: "Federal Reserve", rate: "4.50%", stance: "hawkish", nextMeeting: "Sep 17" },
+    { bank: "European Central Bank", rate: "3.25%", stance: "dovish", nextMeeting: "Sep 12" },
+    { bank: "Bank of England", rate: "4.75%", stance: "neutral", nextMeeting: "Sep 19" },
+    { bank: "Bank of Japan", rate: "0.50%", stance: "hawkish", nextMeeting: "Sep 20" },
+    { bank: "Swiss National Bank", rate: "1.00%", stance: "dovish", nextMeeting: "Sep 26" },
+  ],
+  recession: [
+    { country: "United States", probability: 35, driver: "10Y-2Y yield curve inverted" },
+    { country: "Eurozone", probability: 42, driver: "Manufacturing PMI in contraction" },
+    { country: "United Kingdom", probability: 28, driver: "Retail sales declining" },
+    { country: "China", probability: 20, driver: "Property sector stress" },
+    { country: "Japan", probability: 15, driver: "Stable industrial production" },
+  ],
+  trends: [
+    {
+      key: "fed-tone",
+      title: "Fed Tone Tracker",
+      description:
+        "Speech-by-speech hawkish and dovish scoring taken from the Fed's own releases, tracked as a 7-day tone trend.",
+      price: MACRO_PRICES.addon,
+      trend: [3, 4, 4, 5, 6, 6, 7],
+      readout: "7-day tone: drifting hawkish",
+    },
+    {
+      key: "news-sentiment",
+      title: "News Sentiment",
+      description:
+        "Aggregated macro and crypto headline sentiment, scored daily and tracked as a trend.",
+      price: MACRO_PRICES.addon,
+      trend: [5, 4, 4, 3, 4, 5, 4],
+      readout: "7-day sentiment: mildly negative",
+    },
+  ],
+  cryptoAddons: [
+    {
+      name: "Options Flow Analyzer",
+      description: "Deribit BTC and ETH options positioning",
+      price: MACRO_PRICES.addon,
+    },
+    {
+      name: "Whale Wallet Alerts",
+      description:
+        "Watch up to 5 wallets; large ETH and BTC transfers flagged within 20 minutes",
+      price: MACRO_PRICES.addon,
+    },
+    {
+      name: "Gold Futures Roll Calendar",
+      description: "Contract roll dates and expiry alerts",
+      price: MACRO_PRICES.addon,
+    },
+    {
+      name: "Yield Optimizer & Risk Scorer",
+      description:
+        "DeFi yields with risk scoring, TVL trend and an impermanent-loss calculator",
+      price: MACRO_PRICES.yieldOptimizer,
+    },
+  ],
+  rateDecisions: [
+    { bank: "European Central Bank", date: "Sep 12" },
+    { bank: "Federal Reserve", date: "Sep 17" },
+    { bank: "Bank of England", date: "Sep 19" },
+    { bank: "Bank of Japan", date: "Sep 20" },
+    { bank: "Swiss National Bank", date: "Sep 26" },
+  ],
+  fearGreed: { value: 54, label: "Neutral", source: "alternative.me" },
+};
+
+/** Single swappable read. Replace the body with a fetch once the bot exposes JSON. */
+export async function fetchMacroDesk(): Promise<MacroDesk> {
+  return SEED;
+}
+
+/** Live, keyless Crypto Fear & Greed read. Falls back to the seeded value. */
+export async function fetchFearGreed(): Promise<FearGreed> {
+  try {
+    const res = await fetch("https://api.alternative.me/fng/?limit=1");
+    if (!res.ok) throw new Error("bad status");
+    const json = (await res.json()) as {
+      data?: { value?: string; value_classification?: string }[];
+    };
+    const row = json.data?.[0];
+    const value = Number(row?.value);
+    if (!Number.isFinite(value)) throw new Error("bad payload");
+    return {
+      value,
+      label: row?.value_classification ?? SEED.fearGreed.label,
+      source: "alternative.me",
+    };
+  } catch {
+    return SEED.fearGreed;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Monospace gauges (ports of the bot's gauge.py)                      */
+/* ------------------------------------------------------------------ */
+
+const SPARK_RAMP = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"];
+
+/** 10-char dovish→hawkish track with a ● marker, as in gauge.py. */
+export function sliderGauge(stance: Stance): string {
+  const position = stance === "hawkish" ? 9 : stance === "neutral" ? 4 : 0;
+  return Array.from({ length: 10 }, (_, i) => (i === position ? "●" : "░")).join("");
+}
+
+/** 10-char filled bar for a 0-100 percentage. */
+export function fillGauge(percent: number): string {
+  const filled = Math.max(0, Math.min(10, Math.round(percent / 10)));
+  return "█".repeat(filled) + "░".repeat(10 - filled);
+}
+
+export function sparkline(points: number[]): string {
+  return points.map((p) => SPARK_RAMP[Math.max(0, Math.min(7, p))]).join("");
+}
+
+export const IMPACT_COLOR: Record<Impact, string> = {
+  high: "#d9534f",
+  medium: "#c9a13a",
+  low: "#2fbf71",
+};
+
+export function stanceColor(stance: Stance): string {
+  return stance === "hawkish" ? "#d9534f" : stance === "neutral" ? "#c9a13a" : "#2fbf71";
+}
+
+export function recessionColor(percent: number): string {
+  return percent >= 50 ? "#d9534f" : percent >= 25 ? "#c9a13a" : "#2fbf71";
+}

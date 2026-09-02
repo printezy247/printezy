@@ -1,214 +1,459 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Nav, Footer } from "@/components/landing/Landing";
-import { trackPageLoad, trackEngagement } from "@/lib/analytics";
+import { ArrowRight, Send } from "lucide-react";
+import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
+import { useLocalClock } from "@/lib/local-time";
 import {
-  CALENDAR_EVENTS,
-  CRYPTO_MOVERS,
-  MACRO_CATEGORIES,
-  MACRO_UPDATES,
-  formatUpdateTime,
-  type MacroCategory,
-} from "@/lib/macro-data";
+  MACRO_FILTERS,
+  MACRO_PRICES,
+  fetchFearGreed,
+  fetchMacroDesk,
+  fillGauge,
+  IMPACT_COLOR,
+  recessionColor,
+  sliderGauge,
+  sparkline,
+  stanceColor,
+  type FearGreed,
+  type MacroDesk,
+  type MacroFilter,
+} from "@/lib/macro-desk";
+
+const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
+const FOREXFACTORY = "https://www.forexfactory.com/calendar";
 
 export const Route = createFileRoute("/macro")({
   head: () => ({
     meta: [
-      { title: "Macro & Crypto Updates — EzyMap Algo" },
+      { title: "Macro & Crypto Desk — EzyMap Algo" },
       {
         name: "description",
         content:
-          "Daily macro, fundamentals and crypto updates for gold, forex and digital assets, with an economic calendar and crypto movers board.",
+          "MacroTrader desk: economic calendar, central bank policy divergence, recession odds, Fed tone, news sentiment and crypto add-ons — times in your own timezone.",
       },
-      { property: "og:title", content: "Macro & Crypto Updates — EzyMap Algo" },
+      { property: "og:title", content: "Macro & Crypto Desk — EzyMap Algo" },
       {
         property: "og:description",
         content:
-          "Macro, fundamentals and crypto briefings with affected instruments, an economic calendar and crypto movers.",
+          "Economic calendar, central bank divergence, recession odds and crypto desk add-ons from the MacroTrader Telegram desk.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Macro & Crypto Updates — EzyMap Algo" },
+      { name: "twitter:title", content: "Macro & Crypto Desk — EzyMap Algo" },
       {
         name: "twitter:description",
-        content: "Macro, fundamentals and crypto briefings for gold, forex and digital assets.",
+        content: "Macro heatmaps, economic calendar and crypto add-ons, in your own timezone.",
       },
     ],
   }),
   component: MacroPage,
 });
 
-const FILTERS: ("All" | MacroCategory)[] = ["All", ...MACRO_CATEGORIES];
+/* ------------------------------------------------------------------ */
+/* Small primitives                                                    */
+/* ------------------------------------------------------------------ */
 
-function categoryTone(category: MacroCategory) {
-  return category === "Crypto"
-    ? "bg-primary-tint text-primary"
-    : "bg-accent-tint text-accent";
+function Badge({ tone, children }: { tone: "free" | "paid"; children: React.ReactNode }) {
+  return (
+    <span
+      className={`rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.12em] ${
+        tone === "free"
+          ? "bg-primary/15 text-primary"
+          : "border border-accent/40 text-accent"
+      }`}
+    >
+      {children}
+    </span>
+  );
 }
 
+function Card({
+  title,
+  subtitle,
+  badge,
+  note,
+  children,
+  footer,
+  className = "",
+}: {
+  title: string;
+  subtitle?: string;
+  badge?: React.ReactNode;
+  note?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`rounded-xl border border-border bg-card p-5 ${className}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 className="text-base font-bold">{title}</h2>
+          {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
+        </div>
+        {badge}
+      </div>
+      {note ? <p className="mt-1 text-[11.5px] text-muted-foreground">{note}</p> : null}
+      <div className="mt-4">{children}</div>
+      {footer ? <div className="mt-4 border-t border-border pt-3">{footer}</div> : null}
+    </section>
+  );
+}
+
+const mono = "font-mono text-[13px] tracking-tight";
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
+
 function MacroPage() {
-  const [filter, setFilter] = useState<"All" | MacroCategory>("All");
+  const [filter, setFilter] = useState<MacroFilter>("All");
+  const [desk, setDesk] = useState<MacroDesk | null>(null);
+  const [fng, setFng] = useState<FearGreed | null>(null);
+  const clock = useLocalClock();
 
   useEffect(() => {
     trackPageLoad("macro");
     const stop = trackEngagement();
-    return () => stop?.();
+    let alive = true;
+    fetchMacroDesk().then((d) => alive && setDesk(d));
+    fetchFearGreed().then((f) => alive && setFng(f));
+    return () => {
+      alive = false;
+      stop?.();
+    };
   }, []);
 
-  const updates = useMemo(
-    () => (filter === "All" ? MACRO_UPDATES : MACRO_UPDATES.filter((u) => u.category === filter)),
-    [filter],
-  );
+  const digest = useMemo(() => clock.toLocal("08:00"), [clock]);
+  const shows = (f: MacroFilter) => filter === "All" || filter === f;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background">
       <Nav />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="flex items-start gap-4 border-b border-border pb-6">
-          <img
-            src="/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png"
-            alt="Macro and fundamentals"
-            className="hidden h-14 w-14 shrink-0 rounded-md border border-border bg-[#0a0c0b] object-contain sm:block"
-          />
-          <div>
-            <h1 className="text-[30px] font-black leading-tight sm:text-[36px]">
-              Macro &amp; Crypto Updates
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-body">
-              Fundamentals, central-bank flow and digital-asset briefings that shape our gold, forex
-              and crypto signals.
-            </p>
+        {/* Header */}
+        <header className="flex flex-col gap-6 border-b border-border pb-7 md:flex-row md:items-end md:justify-between">
+          <div className="flex items-start gap-4">
+            <img
+              src={macroLogo}
+              alt="MacroTrader desk"
+              className="h-14 w-14 rounded-xl border border-border bg-[#0a0c0b] object-contain p-1.5"
+              loading="lazy"
+            />
+            <div>
+              <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-accent">
+                MacroTrader desk
+              </p>
+              <h1 className="mt-1 text-3xl font-black sm:text-4xl">Macro & Crypto</h1>
+              <p className="mt-2 max-w-xl text-sm text-body">
+                The desk that reads the calendar, the central banks and the crypto tape overnight,
+                then posts the briefing to Telegram every morning.
+              </p>
+            </div>
           </div>
+
+          <dl className="shrink-0 space-y-1.5 text-sm md:text-right">
+            <div>
+              <dt className="inline text-muted-foreground">Daily digest · </dt>
+              <dd className="inline font-semibold">
+                {digest} {clock.ready ? clock.tzLabel : "EST"}
+              </dd>
+            </div>
+            <div>
+              <dt className="inline text-muted-foreground">Whale polling · </dt>
+              <dd className="inline font-semibold">every 20 min</dd>
+            </div>
+            <div>
+              <dt className="inline text-muted-foreground">Your timezone · </dt>
+              <dd className="inline font-semibold">{clock.ready ? clock.tzLabel : "EST"}</dd>
+            </div>
+          </dl>
         </header>
 
-        <div className="mt-6 grid gap-8 lg:grid-cols-[1.6fr_0.9fr]">
-          {/* Feed */}
-          <div>
-            <div className="flex flex-wrap gap-2">
-              {FILTERS.map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFilter(f)}
-                  aria-pressed={filter === f}
-                  className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors ${
-                    filter === f
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-body hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 py-6">
+          {MACRO_FILTERS.map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => setFilter(f)}
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                filter === f
+                  ? "border-primary bg-primary/15 text-primary"
+                  : "border-border text-body hover:border-accent/50 hover:text-foreground"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
 
-            <div className="mt-5 space-y-3">
-              {updates.map((u) => (
-                <article key={u.id} className="rounded-md border border-border bg-card p-5">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span
-                      className={`rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${categoryTone(u.category)}`}
+        <div className="grid gap-7 lg:grid-cols-[1fr_340px]">
+          {/* Main column */}
+          <div className="space-y-7">
+            {shows("Calendar") ? (
+              <Card
+                title="Today's Economic Calendar"
+                badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+                note={`Times shown in ${clock.ready ? clock.tzLabel : "EST"}`}
+                footer={
+                  <div className="flex flex-wrap items-center justify-between gap-3 text-[11.5px]">
+                    <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
+                      {(["high", "medium", "low"] as const).map((i) => (
+                        <span key={i} className="inline-flex items-center gap-1.5 capitalize">
+                          <span
+                            className="h-2 w-2 rounded-full"
+                            style={{ background: IMPACT_COLOR[i] }}
+                          />
+                          {i} impact
+                        </span>
+                      ))}
+                    </div>
+                    <a
+                      href={FOREXFACTORY}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => track("click", "macro_forexfactory")}
+                      className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                     >
-                      {u.category}
-                    </span>
-                    <span className="text-[11.5px] font-medium text-muted-foreground">
-                      {formatUpdateTime(u.publishedAt)}
-                    </span>
+                      Cross-check on ForexFactory <ArrowRight className="h-3 w-3" />
+                    </a>
                   </div>
-                  <h2 className="mt-2.5 text-lg font-bold leading-snug">{u.headline}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-body">{u.summary}</p>
-                  <div className="mt-3.5 flex flex-wrap gap-1.5">
-                    {u.instruments.map((i) => (
-                      <span
-                        key={i}
-                        className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11.5px] font-semibold text-body"
-                      >
-                        {i}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              ))}
-              {updates.length === 0 ? (
-                <p className="rounded-md border border-border bg-card p-5 text-sm text-muted-foreground">
-                  No updates in this category yet.
-                </p>
-              ) : null}
-            </div>
+                }
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
+                        <th className="pb-2 font-bold">Time</th>
+                        <th className="pb-2 font-bold">Ccy</th>
+                        <th className="pb-2 font-bold">Event</th>
+                        <th className="pb-2 text-right font-bold">Forecast</th>
+                        <th className="pb-2 text-right font-bold">Previous</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {desk?.calendar.map((r) => (
+                        <tr key={`${r.nyTime}-${r.event}`} className="border-t border-border">
+                          <td className={`py-2.5 pr-3 ${mono}`}>{clock.toLocal(r.nyTime)}</td>
+                          <td className="py-2.5 pr-3 font-semibold">{r.currency}</td>
+                          <td className="py-2.5 pr-3">
+                            <span className="inline-flex items-center gap-2">
+                              <span
+                                className="h-2 w-2 shrink-0 rounded-full"
+                                style={{ background: IMPACT_COLOR[r.impact] }}
+                                title={`${r.impact} impact`}
+                              />
+                              {r.event}
+                            </span>
+                          </td>
+                          <td className={`py-2.5 text-right ${mono}`}>{r.forecast}</td>
+                          <td className={`py-2.5 text-right text-muted-foreground ${mono}`}>
+                            {r.previous}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            ) : null}
+
+            {shows("Central Banks") ? (
+              <Card
+                title="Central Bank Policy Divergence"
+                badge={<Badge tone="paid">Heatmaps · {MACRO_PRICES.heatmaps}</Badge>}
+                footer={
+                  <p className="text-[11.5px] text-muted-foreground">
+                    The bigger the divergence between two banks' stances, the stronger the trend
+                    tends to be in their currency pair.
+                  </p>
+                }
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
+                        <th className="pb-2 font-bold">Central bank</th>
+                        <th className="pb-2 font-bold">Rate</th>
+                        <th className="pb-2 font-bold">Stance</th>
+                        <th className="pb-2 text-right font-bold">Next meeting</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {desk?.centralBanks.map((b) => (
+                        <tr key={b.bank} className="border-t border-border">
+                          <td className="py-2.5 pr-3 font-semibold">{b.bank}</td>
+                          <td className={`py-2.5 pr-3 ${mono}`}>{b.rate}</td>
+                          <td className="py-2.5 pr-3">
+                            <span className={mono} style={{ color: stanceColor(b.stance) }}>
+                              {sliderGauge(b.stance)}
+                            </span>
+                            <span
+                              className="ml-2 text-xs font-semibold capitalize"
+                              style={{ color: stanceColor(b.stance) }}
+                            >
+                              {b.stance}
+                            </span>
+                          </td>
+                          <td className="py-2.5 text-right text-muted-foreground">
+                            {b.nextMeeting}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="mt-2 text-[11px] text-muted-foreground">
+                    Track reads dovish (left) → hawkish (right).
+                  </p>
+                </div>
+              </Card>
+            ) : null}
+
+            {shows("Recession") ? (
+              <Card
+                title="Recession Probability"
+                subtitle="Next 12 months"
+                badge={<Badge tone="paid">Heatmaps · {MACRO_PRICES.heatmaps}</Badge>}
+                footer={
+                  <p className="text-[11.5px] text-muted-foreground">
+                    Higher recession odds typically favour safe-haven assets (gold, USD, JPY) over
+                    risk assets.
+                  </p>
+                }
+              >
+                <ul className="space-y-3">
+                  {desk?.recession.map((r) => (
+                    <li key={r.country} className="border-t border-border pt-3 first:border-0 first:pt-0">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-sm font-semibold">{r.country}</span>
+                        <span className="flex items-center gap-2">
+                          <span className={mono} style={{ color: recessionColor(r.probability) }}>
+                            {fillGauge(r.probability)}
+                          </span>
+                          <span
+                            className="text-sm font-bold"
+                            style={{ color: recessionColor(r.probability) }}
+                          >
+                            {r.probability}%
+                          </span>
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">{r.driver}</p>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            ) : null}
+
+            {shows("Sentiment") ? (
+              <div className="grid gap-7 sm:grid-cols-2">
+                {desk?.trends.map((t) => (
+                  <Card
+                    key={t.key}
+                    title={t.title}
+                    badge={<Badge tone="paid">{t.price}</Badge>}
+                  >
+                    <p className="text-sm text-body">{t.description}</p>
+                    <p className={`mt-4 text-lg text-accent ${mono}`}>{sparkline(t.trend)}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{t.readout}</p>
+                  </Card>
+                ))}
+              </div>
+            ) : null}
+
+            {shows("Crypto") ? (
+              <Card title="Crypto Desk" note="Add-ons, billed separately">
+                <ul className="divide-y divide-border">
+                  {desk?.cryptoAddons.map((a) => (
+                    <li
+                      key={a.name}
+                      className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                    >
+                      <div className="max-w-md">
+                        <p className="text-sm font-semibold">{a.name}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
+                      </div>
+                      <span className="text-sm font-bold text-accent">{a.price}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            ) : null}
           </div>
 
           {/* Sidebar */}
-          <aside className="space-y-6">
-            <section className="rounded-md border border-border bg-card">
-              <h2 className="border-b border-border px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Economic calendar · today (UTC)
-              </h2>
-              <ul>
-                {CALENDAR_EVENTS.map((e) => (
-                  <li
-                    key={e.id}
-                    className="flex items-center gap-3 border-b border-border px-4 py-2.5 last:border-b-0"
-                  >
-                    <span className="w-11 shrink-0 text-[12.5px] font-bold tabular-nums text-foreground">
-                      {e.time}
-                    </span>
-                    <span className="w-9 shrink-0 text-[11px] font-bold uppercase text-muted-foreground">
-                      {e.country}
-                    </span>
-                    <span className="flex-1 text-[12.5px] text-body">{e.event}</span>
-                    <span className="flex shrink-0 gap-0.5" aria-label={`Impact ${e.impact} of 3`}>
-                      {[1, 2, 3].map((d) => (
-                        <span
-                          key={d}
-                          className="h-1.5 w-1.5 rounded-full"
-                          style={{
-                            backgroundColor:
-                              d <= e.impact ? "var(--market-down)" : "var(--border)",
-                          }}
-                        />
-                      ))}
-                    </span>
+          <aside className="space-y-7">
+            <Card
+              title="Crypto Fear & Greed"
+              badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+              footer={
+                <p className="text-[11.5px] text-muted-foreground">
+                  Updated daily · {fng?.source ?? "alternative.me"}
+                </p>
+              }
+            >
+              <p className="text-4xl font-black">
+                {fng?.value ?? "—"}
+                <span className="text-base font-semibold text-muted-foreground">/100</span>
+              </p>
+              <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? "Loading"}</p>
+              <p className={`mt-3 text-accent ${mono}`}>{fillGauge(fng?.value ?? 0)}</p>
+            </Card>
+
+            <Card title="Next Rate Decisions">
+              <ul className="space-y-2.5 text-sm">
+                {desk?.rateDecisions.map((d) => (
+                  <li key={d.bank} className="flex items-center justify-between gap-3">
+                    <span className="text-body">{d.bank}</span>
+                    <span className="font-semibold">{d.date}</span>
                   </li>
                 ))}
               </ul>
+            </Card>
+
+            <section className="rounded-xl border border-accent/45 bg-card p-5">
+              <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
+                Full macro desk
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                $19<span className="text-sm font-semibold text-muted-foreground">/month</span>
+              </p>
+              <p className="mt-2 text-sm text-body">
+                Unlocks all four premium heatmaps — central bank divergence, recession probability,
+                asset correlation and geopolitical risk — delivered daily at{" "}
+                {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
+              </p>
+              <a
+                href={LINKS.macro}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("click", "macro_subscribe")}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+              >
+                <Send className="h-4 w-4" /> Subscribe via Telegram
+              </a>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                Card, Telegram Stars or USDT · cancel anytime
+              </p>
             </section>
 
-            <section className="rounded-md border border-border bg-card">
-              <h2 className="border-b border-border px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Crypto movers · indicative
-              </h2>
-              <ul>
-                {CRYPTO_MOVERS.map((m) => (
-                  <li
-                    key={m.symbol}
-                    className="flex items-center gap-3 border-b border-border px-4 py-2.5 last:border-b-0"
-                  >
-                    <span className="w-11 shrink-0 text-[12.5px] font-bold text-foreground">
-                      {m.symbol}
-                    </span>
-                    <span className="flex-1 text-[12.5px] text-muted-foreground">{m.name}</span>
-                    <span className="text-[12.5px] font-semibold tabular-nums text-foreground">
-                      {m.price}
-                    </span>
-                    <span
-                      className="w-16 shrink-0 text-right text-[12.5px] font-bold tabular-nums"
-                      style={{
-                        color: m.changePct >= 0 ? "var(--market-up)" : "var(--market-down)",
-                      }}
-                    >
-                      {m.changePct >= 0 ? "+" : ""}
-                      {m.changePct.toFixed(2)}%
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <p className="text-[11.5px] leading-relaxed text-muted-foreground">
-              Content shown is illustrative placeholder data pending the automated feed. Nothing
-              here is personalized financial advice; trading carries risk of loss.
-            </p>
+            <div className="rounded-xl border border-border bg-surface p-5 text-[11.5px] leading-relaxed text-muted-foreground">
+              Macro data is provided for education and research only and is not personalized
+              investment advice. Figures come from third-party sources and may be delayed or
+              revised — cross-check against{" "}
+              <a
+                href={FOREXFACTORY}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                ForexFactory
+              </a>{" "}
+              before acting. Trading carries a risk of loss.
+            </div>
           </aside>
         </div>
       </main>
