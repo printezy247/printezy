@@ -50,6 +50,19 @@ function goTrack(name: string) {
   track("click", name);
 }
 
+/**
+ * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
+ * visitor's fbclid back up. sessionId only exists client-side, so render the
+ * plain href on first paint and swap it in after mount (no hydration mismatch).
+ */
+function useBotLink() {
+  const [href, setHref] = useState(LINKS.bot);
+  useEffect(() => {
+    setHref(`${LINKS.bot}?start=${encodeURIComponent(getSessionId())}`);
+  }, []);
+  return href;
+}
+
 /* ------------------------------------------------------------------ */
 /* Primitives                                                          */
 /* ------------------------------------------------------------------ */
