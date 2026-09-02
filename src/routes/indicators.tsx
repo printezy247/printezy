@@ -4,6 +4,7 @@ import { ArrowRight, Check, Send, ShieldCheck, Zap } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { track, trackPageLoad, trackEngagement } from "@/lib/analytics";
+import { BuyButton } from "@/components/BuyButton";
 
 const tradingViewLogo = "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
 const mt5Logo = mt5LogoAsset;
@@ -110,6 +111,17 @@ const MT5_PRODUCTS: Product[] = [
   },
 ];
 
+const TERM_SUFFIX: Record<string, string> = {
+  "1 Month": "_1m",
+  "6 Months": "_6m",
+  "1 Year": "_1y",
+  "One-time": "",
+};
+
+function skuFor(productId: string, planLabel: string): string {
+  return `${productId}${TERM_SUFFIX[planLabel] ?? ""}`;
+}
+
 function goTrack(name: string) {
   track("click", name);
 }
@@ -136,12 +148,12 @@ function ProductCard({ product }: { product: Product }) {
 
       <div className="mt-5 flex-1 space-y-2">
         {product.plans.map((p) => (
-          <div
-            key={p.label}
-            className="flex items-center justify-between rounded-lg border border-border bg-[#0a0c0b] px-3 py-2"
-          >
-            <span className="text-xs uppercase tracking-wide text-muted-foreground">{p.label}</span>
-            <span className="text-sm font-semibold text-foreground">{p.price}</span>
+          <div key={p.label} className="flex items-center gap-2">
+            <div className="flex flex-1 items-center justify-between rounded-lg border border-border bg-[#0a0c0b] px-3 py-2">
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">{p.label}</span>
+              <span className="text-sm font-semibold text-foreground">{p.price}</span>
+            </div>
+            <BuyButton sku={skuFor(product.id, p.label)} label="Buy" className="w-24 shrink-0" />
           </div>
         ))}
       </div>
