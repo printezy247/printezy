@@ -958,7 +958,7 @@ export function Products() {
                   </span>
                   <p className="mt-2 text-[11px] text-muted-foreground">PDF delivered via Telegram</p>
                 </div>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </div>
