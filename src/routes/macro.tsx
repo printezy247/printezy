@@ -302,12 +302,9 @@ function TrendCard({ trend }: { trend: TrendCard }) {
       <div className="mt-4">
         {isFed ? (
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Dovish</span>
-              <span className="font-semibold" style={{ color }}>
-                {current >= 5 ? "Hawkish" : current <= 2 ? "Dovish" : "Neutral"}
-              </span>
-              <span className="text-muted-foreground">Hawkish</span>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Dovish</span>
+              <span>Hawkish</span>
             </div>
             <StanceBar
               stance={current >= 5 ? "hawkish" : current <= 2 ? "dovish" : "neutral"}
