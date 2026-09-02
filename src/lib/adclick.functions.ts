@@ -29,17 +29,14 @@ export const recordAdClick = createServerFn({ method: "POST" })
       },
     });
 
-    const { error } = await supabase.from("ad_clicks").upsert(
-      {
-        session_id: data.sessionId,
-        fbclid: data.fbclid,
-        utm_source: data.utmSource ?? null,
-        utm_medium: data.utmMedium ?? null,
-        utm_campaign: data.utmCampaign ?? null,
-        landing_path: data.landingPath ?? null,
-      },
-      { onConflict: "session_id" },
-    );
+    const { error } = await supabase.rpc("record_ad_click", {
+      p_session_id: data.sessionId,
+      p_fbclid: data.fbclid,
+      p_utm_source: data.utmSource ?? null,
+      p_utm_medium: data.utmMedium ?? null,
+      p_utm_campaign: data.utmCampaign ?? null,
+      p_landing_path: data.landingPath ?? null,
+    });
 
     if (error) {
       console.error("[adclick] upsert failed", error);
