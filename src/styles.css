@@ -288,3 +288,26 @@
   color: #f6f4ee;
 }
 
+/* Ticker marquee */
+@keyframes ticker-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@utility animate-ticker {
+  animation: ticker-marquee 45s linear infinite;
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+.ticker-wrap {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+
