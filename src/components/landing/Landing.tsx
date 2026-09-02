@@ -300,12 +300,11 @@ export function Nav() {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href={LINKS.support}
-              onClick={() => goTrack("support_click")}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              onClick={() => goTrack("nav_ask_sarah")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
             >
-              Ask Sarah
+              <Send className="h-4 w-4" /> Ask Sarah
             </a>
-            <TelegramCta label="Join Free Channel" event="nav_join_free" />
           </div>
 
           <button
