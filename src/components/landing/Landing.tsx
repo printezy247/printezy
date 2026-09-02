@@ -481,7 +481,7 @@ function Hero() {
 /* Trust strip                                                         */
 /* ------------------------------------------------------------------ */
 
-const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "MyFxBook"];
+const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "ForexFactory"];
 
 export function TrustStrip() {
   return (
