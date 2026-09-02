@@ -267,7 +267,7 @@ const NAV_ITEMS = [
   { label: "Signals", href: "/#features" },
   { label: "Packages", href: "/#packages" },
   { label: "Education", href: "/#products" },
-  { label: "Track Record", href: "/#track-record" },
+  
   { label: "Macro & Crypto", href: "/macro" },
   { label: "FAQ", href: "/faq" },
 ];
@@ -1419,7 +1419,7 @@ export function Landing() {
         <Products />
         <HowItWorks />
         <Ambassador />
-        <TrackRecord />
+        
         <SocialProof />
         <Faq />
         <FinalCta />
