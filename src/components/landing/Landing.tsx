@@ -599,11 +599,15 @@ type Tier = {
   event: string;
   highlight?: boolean;
   image?: string;
+  price: string;
+  priceNote?: string;
 };
 
 const TIERS: Tier[] = [
   {
     name: "Free",
+    price: "Free",
+    priceNote: "Forever",
     blurb: "No payment required",
     features: [
       "Join our 640+ trader community",
@@ -618,6 +622,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Vantage Trial",
+    price: "Free for 30 days",
+    priceNote: "No card required",
     blurb: "Pro access free for 30 days",
     features: [
       "No card required",
@@ -631,6 +637,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Pro",
+    price: "$49",
+    priceNote: "per month",
     blurb: "Scalp Mastery Signals",
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
@@ -640,6 +648,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Premium",
+    price: "$99",
+    priceNote: "per month",
     blurb: "Alpha Edge Signals",
     features: [
       "M15-M30 Intraday",
@@ -655,6 +665,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Elite",
+    price: "$299",
+    priceNote: "per month",
     blurb: "Full Suite",
     features: [
       "All indicators included",
@@ -704,12 +716,24 @@ export function Pricing() {
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
               </div>
-            ) : null}
+            ) : (
+              <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border" />
+            )}
             <div className="flex flex-1 flex-col p-6">
               <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 {t.name}
               </h3>
-              <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
+              <p className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-2xl font-extrabold tracking-tight text-foreground">
+                  {t.price}
+                </span>
+                {t.priceNote ? (
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t.priceNote}
+                  </span>
+                ) : null}
+              </p>
+              <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
