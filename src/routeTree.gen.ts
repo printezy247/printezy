@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MacroRouteImport } from './routes/macro'
+import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -36,6 +37,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const MacroRoute = MacroRouteImport.update({
   id: '/macro',
   path: '/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndicatorsRoute = IndicatorsRouteImport.update({
+  id: '/indicators',
+  path: '/indicators',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FreeEbookRoute = FreeEbookRouteImport.update({
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/indicators'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/indicators'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/indicators'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
+  IndicatorsRoute: typeof IndicatorsRoute
   MacroRoute: typeof MacroRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/macro'
       fullPath: '/macro'
       preLoaderRoute: typeof MacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indicators': {
+      id: '/indicators'
+      path: '/indicators'
+      fullPath: '/indicators'
+      preLoaderRoute: typeof IndicatorsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/free-ebook': {
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
+  IndicatorsRoute: IndicatorsRoute,
   MacroRoute: MacroRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
