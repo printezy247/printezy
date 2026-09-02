@@ -14,6 +14,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
+import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -41,12 +42,18 @@ const ApiPublicTelegramWebhookRoute =
     path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
+  id: '/api/public/stripe/webhook',
+  path: '/api/public/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
@@ -62,6 +70,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
@@ -71,15 +80,23 @@ export interface FileRouteTypes {
     | '/faq'
     | '/privacy'
     | '/terms'
+    | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/faq' | '/privacy' | '/terms' | '/api/public/telegram/webhook'
+  to:
+    | '/'
+    | '/faq'
+    | '/privacy'
+    | '/terms'
+    | '/api/public/stripe/webhook'
+    | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
     | '/faq'
     | '/privacy'
     | '/terms'
+    | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -88,6 +105,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
@@ -128,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/stripe/webhook': {
+      id: '/api/public/stripe/webhook'
+      path: '/api/public/stripe/webhook'
+      fullPath: '/api/public/stripe/webhook'
+      preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -136,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport
