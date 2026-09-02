@@ -62,7 +62,7 @@ const META_CLICK_EVENTS: Record<
   string,
   { event: SiteMetaEvent; contentId?: string; valueCents?: number }
 > = {
-  pricing_free: { event: "Lead", contentId: "free" },
+  pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
   pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
@@ -633,10 +633,10 @@ const TIERS: Tier[] = [
     image: tierVantage,
   },
   {
-    name: "Free",
-    price: "Free",
-    priceNote: "Forever",
-    blurb: "No payment required",
+    name: "Beginner",
+    price: "$29",
+    priceNote: "per month",
+    blurb: "Start with essential signals",
     features: [
       "Join our 640+ trader community",
       "Daily signals & education",
@@ -645,7 +645,7 @@ const TIERS: Tier[] = [
     ],
     cta: "Enroll Now",
     href: LINKS.bot,
-    event: "pricing_free",
+    event: "pricing_beginner",
     image: tierFree,
   },
   {
@@ -1185,7 +1185,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Is there a free option?",
-        a: "Yes, two. The Free tier gives you the public channel and starter education, forever free. The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required.",
+        a: "The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required. For a paid entry point, the Beginner tier at $29/month gives you daily signals, education and community access.",
       },
       {
         q: "What's included in Pro, Premium and Elite?",
