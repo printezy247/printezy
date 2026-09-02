@@ -56,7 +56,13 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             const data = cq.data ?? "";
             const tierId = data.startsWith("tier:") ? data.slice(5) : null;
 
-            if (data === "vantage:confirm") {
+            if (data === "sarah:start") {
+              const { openSarahChat } = await import("@/lib/bot/sarah.server");
+              await openSarahChat(telegramId);
+            } else if (data === "sarah:end") {
+              const { closeSarahChat } = await import("@/lib/bot/sarah.server");
+              await closeSarahChat(telegramId);
+            } else if (data === "vantage:confirm") {
               await activateVantageTrial(telegramId);
             } else if (tierId === "vantage") {
               await offerVantageTrial(telegramId);
