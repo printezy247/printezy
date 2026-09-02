@@ -913,7 +913,7 @@ export function Products() {
         {/* TradingView indicators */}
         <Reveal className="h-full">
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
+          <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
             <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
@@ -950,7 +950,7 @@ export function Products() {
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
+          <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
             <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
