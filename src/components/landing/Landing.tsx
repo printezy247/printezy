@@ -899,6 +899,20 @@ const MT5_FEATURES = [
   "Available in Elite tier",
 ];
 
+function Book3D({ image, title }: { image: string; title: string }) {
+  return (
+    <div className="book-3d aspect-[2/3] w-28 shrink-0 sm:w-32">
+      <div className="book-back" aria-hidden="true" />
+      <img
+        src={image}
+        alt={`${title} cover`}
+        loading="lazy"
+        className="book-cover"
+      />
+    </div>
+  );
+}
+
 export function Products() {
   const botHref = useBotLink();
   return (
