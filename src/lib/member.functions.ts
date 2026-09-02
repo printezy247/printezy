@@ -137,7 +137,7 @@ export const getDashboard = createServerFn({ method: "POST" })
         .maybeSingle(),
       supabaseAdmin
         .from("enrollments")
-        .select("id, tier, amount_cents, currency, status, created_at, activated_at")
+        .select("id, tier, amount_cents, currency, status, created_at, activated_at, expires_at")
         .eq("telegram_id", telegramId)
         .order("created_at", { ascending: false }),
       supabaseAdmin
@@ -162,6 +162,7 @@ export const getDashboard = createServerFn({ method: "POST" })
       status: string;
       created_at: string;
       activated_at: string | null;
+      expires_at: string | null;
     }>;
 
     const tierId = highestActiveTier(enrollments);
@@ -226,6 +227,7 @@ export const getDashboard = createServerFn({ method: "POST" })
         status: e.status,
         createdAt: e.created_at,
         activatedAt: e.activated_at,
+        expiresAt: e.expires_at,
       })),
       stats: {
         trades: trades.length,
