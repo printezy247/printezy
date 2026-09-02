@@ -9,22 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrackRecordRouteImport } from './routes/track-record'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as AdsDashboardRouteImport } from './routes/ads-dashboard'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
+import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
 
-const TrackRecordRoute = TrackRecordRouteImport.update({
-  id: '/track-record',
-  path: '/track-record',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -45,9 +42,9 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdsDashboardRoute = AdsDashboardRouteImport.update({
-  id: '/ads-dashboard',
-  path: '/ads-dashboard',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
@@ -55,11 +52,27 @@ const AccountRoute = AccountRouteImport.update({
   path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTrackRecordRoute =
+  AuthenticatedTrackRecordRouteImport.update({
+    id: '/track-record',
+    path: '/track-record',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdsDashboardRoute =
+  AuthenticatedAdsDashboardRouteImport.update({
+    id: '/ads-dashboard',
+    path: '/ads-dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicTelegramWebhookRoute =
   ApiPublicTelegramWebhookRouteImport.update({
     id: '/api/public/telegram/webhook',
@@ -75,37 +88,41 @@ const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
+  '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
+  '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
+  '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
+  '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
+  '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
+  '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -114,11 +131,12 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
-    | '/ads-dashboard'
+    | '/auth'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/ads-dashboard'
     | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
@@ -126,50 +144,46 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/account'
-    | '/ads-dashboard'
+    | '/auth'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/ads-dashboard'
     | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/account'
-    | '/ads-dashboard'
+    | '/auth'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
-    | '/track-record'
+    | '/_authenticated/ads-dashboard'
+    | '/_authenticated/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccountRoute: typeof AccountRoute
-  AdsDashboardRoute: typeof AdsDashboardRoute
+  AuthRoute: typeof AuthRoute
   FaqRoute: typeof FaqRoute
   MacroRoute: typeof MacroRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
-  TrackRecordRoute: typeof TrackRecordRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/track-record': {
-      id: '/track-record'
-      path: '/track-record'
-      fullPath: '/track-record'
-      preLoaderRoute: typeof TrackRecordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -198,11 +212,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ads-dashboard': {
-      id: '/ads-dashboard'
-      path: '/ads-dashboard'
-      fullPath: '/ads-dashboard'
-      preLoaderRoute: typeof AdsDashboardRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account': {
@@ -212,12 +226,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/track-record': {
+      id: '/_authenticated/track-record'
+      path: '/track-record'
+      fullPath: '/track-record'
+      preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ads-dashboard': {
+      id: '/_authenticated/ads-dashboard'
+      path: '/ads-dashboard'
+      fullPath: '/ads-dashboard'
+      preLoaderRoute: typeof AuthenticatedAdsDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/telegram/webhook': {
       id: '/api/public/telegram/webhook'
@@ -236,15 +271,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
+  AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
+  AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccountRoute: AccountRoute,
-  AdsDashboardRoute: AdsDashboardRoute,
+  AuthRoute: AuthRoute,
   FaqRoute: FaqRoute,
   MacroRoute: MacroRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
-  TrackRecordRoute: TrackRecordRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }

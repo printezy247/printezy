@@ -1,9 +1,7 @@
 // Ad attribution dashboard: joins ad_clicks to enrollments on session_id so we
 // can see which Meta campaigns actually drive paid enrollments.
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-
-const schema = z.object({ key: z.string().min(1).max(200) });
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type AdClickRow = {
   sessionId: string;
@@ -37,11 +35,14 @@ export type AdDashboard = {
 };
 
 export const getAdDashboard = createServerFn({ method: "POST" })
-  .inputValidator(schema)
-  .handler(async ({ data }): Promise<AdDashboard> => {
-    const expected = process.env["ADMIN_DASHBOARD_KEY"];
-    if (!expected) throw new Error("Dashboard key is not configured yet.");
-    if (data.key !== expected) throw new Error("Wrong passphrase.");
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<AdDashboard> => {
+    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (roleError) throw new Error("Could not verify admin access.");
+    if (isAdmin !== true) throw new Error("Admin access required.");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

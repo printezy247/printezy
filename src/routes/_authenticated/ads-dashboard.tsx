@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAdDashboard, type AdDashboard } from "@/lib/ads.functions";
+import { AdminGate } from "@/components/AdminGate";
 
-export const Route = createFileRoute("/ads-dashboard")({
+export const Route = createFileRoute("/_authenticated/ads-dashboard")({
   head: () => ({
     meta: [
       { title: "Ad Performance Dashboard | PrintEzy" },
@@ -22,7 +23,11 @@ export const Route = createFileRoute("/ads-dashboard")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: AdsDashboardPage,
+  component: () => (
+    <AdminGate>
+      <AdsDashboardPage />
+    </AdminGate>
+  ),
 });
 
 const money = (cents: number, currency: string) =>
@@ -33,24 +38,22 @@ const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString() : "�
 
 function AdsDashboardPage() {
   const load = useServerFn(getAdDashboard);
-  const [key, setKey] = useState("");
   const [data, setData] = useState<AdDashboard | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    try {
-      setData(await load({ data: { key } }));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load the dashboard.");
-      setData(null);
-    } finally {
-      setBusy(false);
-    }
-  }
+  useEffect(() => {
+    let active = true;
+    void load({ data: undefined })
+      .then((d) => {
+        if (active) setData(d);
+      })
+      .catch((err: unknown) => {
+        if (active) setError(err instanceof Error ? err.message : "Could not load the dashboard.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [load]);
 
   return (
     <main className="min-h-screen bg-background px-4 py-16 text-foreground">
@@ -62,29 +65,8 @@ function AdsDashboardPage() {
           </p>
         </header>
 
-        {!data && (
-          <form onSubmit={submit} className="flex max-w-md flex-col gap-3">
-            <label htmlFor="key" className="text-sm text-muted-foreground">
-              Dashboard passphrase
-            </label>
-            <input
-              id="key"
-              type="password"
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              className="rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-              placeholder="Enter passphrase"
-            />
-            <button
-              type="submit"
-              disabled={busy || key.length === 0}
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
-            >
-              {busy ? "Loading…" : "Open dashboard"}
-            </button>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-          </form>
-        )}
+        {error && <p className="text-sm text-[#d9534f]">{error}</p>}
+        {!data && !error && <p className="text-sm text-muted-foreground">Loading…</p>}
 
         {data && (
           <div className="space-y-10">
