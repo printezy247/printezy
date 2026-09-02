@@ -797,10 +797,21 @@ export function Pricing() {
                   </li>
                 ))}
               </ul>
+              {t.openAccountHref ? (
+                <a
+                  href={t.openAccountHref}
+                  onClick={() => goTrack(t.openAccountEvent!)}
+                  className="mt-6 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                >
+                  Open Your Account
+                </a>
+              ) : null}
               <a
                 href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
-                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                  t.openAccountHref ? "mt-2" : "mt-6"
+                } ${
                   t.highlight
                     ? "bg-accent text-accent-foreground hover:bg-accent-glow"
                     : "bg-primary text-primary-foreground hover:bg-primary-glow"
