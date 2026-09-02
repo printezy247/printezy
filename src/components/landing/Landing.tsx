@@ -1012,9 +1012,9 @@ export function Products() {
             <a
               href={LINKS.macro}
               onClick={() => goTrack("products_macro_join")}
-              className="inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
             >
-              <Send className="h-4 w-4" /> Join Macro Bot
+              Join Macro Bot <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <Link
               to="/macro"
