@@ -175,7 +175,7 @@ const SEED: MacroDesk = {
         "Aggregated macro and crypto headline sentiment, scored daily and tracked as a trend.",
       price: MACRO_PRICES.addon,
       trend: [5, 4, 4, 3, 4, 5, 4],
-      readout: "7-day sentiment: mildly negative",
+      readout: "7-day sentiment: neutral",
     },
   ],
   cryptoAddons: [

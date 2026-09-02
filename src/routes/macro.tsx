@@ -12,12 +12,12 @@ import {
   GAUGE_TRACK,
   IMPACT_COLOR,
   recessionColor,
-  sparkline,
   stanceColor,
   type FearGreed,
   type MacroDesk,
   type MacroFilter,
   type Stance,
+  type TrendCard,
 } from "@/lib/macro-desk";
 
 
@@ -170,6 +170,157 @@ function StanceBar({ stance, color }: { stance: Stance; color: string }) {
         }}
       />
     </div>
+  );
+}
+
+/** Smooth SVG sparkline with a gradient area under the line. */
+function SparklineChart({
+  points,
+  color,
+  height = 48,
+}: {
+  points: number[];
+  color: string;
+  height?: number;
+}) {
+  const width = 100;
+  const max = Math.max(...points, 7);
+  const min = Math.min(...points, 0);
+  const range = max - min || 1;
+  const coords = points.map((p, i) => ({
+    x: (i / (points.length - 1)) * width,
+    y: height - ((p - min) / range) * (height - 8) - 4,
+  }));
+  const line = coords
+    .map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`)
+    .join(" ");
+  const area = `${line} L ${width} ${height} L 0 ${height} Z`;
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="none"
+      className="w-full"
+      style={{ height }}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id={`area-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#area-${color.replace("#", "")})`} />
+      <path
+        d={line}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx={coords[coords.length - 1].x} cy={coords[coords.length - 1].y} r="3" fill={color} />
+    </svg>
+  );
+}
+
+/** A labelled spectrum bar from negative/bearish (left) to positive/bullish (right). */
+function SpectrumBar({
+  percent,
+  color,
+  leftLabel,
+  rightLabel,
+}: {
+  percent: number;
+  color: string;
+  leftLabel: string;
+  rightLabel: string;
+}) {
+  const pct = Math.max(0, Math.min(100, percent));
+  return (
+    <div>
+      <div
+        className="relative w-full overflow-hidden rounded-full"
+        style={{ height: 6, backgroundColor: GAUGE_TRACK }}
+      >
+        <div
+          className="absolute top-0 h-full rounded-full transition-[width] duration-500 ease-out"
+          style={{ width: `${pct}%`, backgroundColor: color }}
+        />
+      </div>
+      <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <span>{leftLabel}</span>
+        <span>{rightLabel}</span>
+      </div>
+    </div>
+  );
+}
+
+function TrendCard({ trend }: { trend: TrendCard }) {
+  const isFed = trend.key === "fed-tone";
+  const current = trend.trend[trend.trend.length - 1] ?? 4;
+  const prev = trend.trend[trend.trend.length - 2] ?? current;
+  const delta = current - prev;
+  const pct = (current / 7) * 100;
+  const color = isFed
+    ? stanceColor(current >= 5 ? "hawkish" : current <= 2 ? "dovish" : "neutral")
+    : current >= 5
+      ? "#2fbf71"
+      : current <= 2
+        ? "#d9534f"
+        : "#c9a13a";
+
+  return (
+    <Card
+      title={trend.title}
+      badge={<Badge tone="paid">{trend.price}</Badge>}
+      className="flex flex-col"
+    >
+      <p className="text-sm text-body">{trend.description}</p>
+
+      <div className="mt-4 rounded-lg border border-border bg-surface/50 p-3">
+        <SparklineChart points={trend.trend} color={color} />
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <div>
+          <p className={`text-2xl font-black ${mono}`} style={{ color }}>
+            {current}/7
+          </p>
+          <p className="text-xs text-muted-foreground">{trend.readout}</p>
+        </div>
+        <span
+          className={`rounded px-2 py-1 text-[11px] font-bold ${mono} ${
+            delta > 0 ? "bg-primary/15 text-primary" : delta < 0 ? "bg-red-500/15 text-red-400" : "bg-accent/15 text-accent"
+          }`}
+        >
+          {delta > 0 ? "+" : ""}
+          {delta} today
+        </span>
+      </div>
+
+      <div className="mt-4">
+        {isFed ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Dovish</span>
+              <span>Hawkish</span>
+            </div>
+            <StanceBar
+              stance={current >= 5 ? "hawkish" : current <= 2 ? "dovish" : "neutral"}
+              color={color}
+            />
+          </div>
+        ) : (
+          <SpectrumBar
+            percent={pct}
+            color={color}
+            leftLabel="Bearish"
+            rightLabel="Bullish"
+          />
+        )}
+      </div>
+    </Card>
   );
 }
 
@@ -420,15 +571,7 @@ function MacroPage() {
             {shows("Sentiment") ? (
               <div className="grid gap-7 sm:grid-cols-2">
                 {desk?.trends.map((t) => (
-                  <Card
-                    key={t.key}
-                    title={t.title}
-                    badge={<Badge tone="paid">{t.price}</Badge>}
-                  >
-                    <p className="text-sm text-body">{t.description}</p>
-                    <p className={`mt-4 text-lg text-accent ${mono}`}>{sparkline(t.trend)}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{t.readout}</p>
-                  </Card>
+                  <TrendCard key={t.key} trend={t} />
                 ))}
               </div>
             ) : null}
