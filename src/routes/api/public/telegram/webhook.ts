@@ -8,7 +8,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
       POST: async ({ request }) => {
         const { deriveWebhookSecret, safeEqual, sendMessage, answerCallbackQuery } =
           await import("@/lib/bot/telegram.server");
-        const { upsertBotUser, activateFreeTier, startPaidEnrollment, SUPPORT } =
+        const { upsertBotUser, activateFreeTier, startPaidEnrollment, reportLead, SUPPORT } =
           await import("@/lib/bot/enrollment.server");
 
         const expected = await deriveWebhookSecret();
@@ -64,6 +64,11 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             firstName: message?.from?.first_name ?? null,
             sessionId: startPayload,
           });
+
+          if (startPayload) {
+            // Ad click -> bot start: this is the Lead conversion for Meta.
+            await reportLead(telegramId, startPayload);
+          }
 
           if (text.startsWith("/start") || text.startsWith("/enroll") || text === "") {
             const keyboard = TIER_CATALOG.map((t) => [

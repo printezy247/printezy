@@ -4,6 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SITE_URL, getTier, formatPrice } from "./tiers";
 import { sendMessage } from "./telegram.server";
 import { createCheckoutSession, retrieveCheckoutSession } from "./stripe.server";
+import { reportMetaEvent } from "./meta.server";
 
 export const FREE_CHANNEL = "https://t.me/ezymap";
 export const SUPPORT = "https://t.me/ezysarah";
@@ -44,6 +45,20 @@ export async function getSessionTag(telegramId: number): Promise<string | null> 
     .eq("telegram_id", telegramId)
     .maybeSingle();
   return (data as { session_id: string | null } | null)?.session_id ?? null;
+}
+
+/**
+ * A member opening the bot from an ad click is a Lead. Fired once per member
+ * (the event_id is stable, so Meta de-duplicates repeat /start commands).
+ */
+export async function reportLead(telegramId: number, sessionId: string | null) {
+  await reportMetaEvent({
+    eventName: "Lead",
+    sessionId,
+    telegramId,
+    eventId: `lead_${telegramId}`,
+    contentName: "Telegram enrollment bot start",
+  });
 }
 
 /** Free tier: activate immediately, no payment. */
@@ -112,6 +127,17 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
   } as never);
   if (error) console.error("[enrollment] pending insert failed", error);
 
+  await reportMetaEvent({
+    eventName: "InitiateCheckout",
+    sessionId,
+    telegramId,
+    eventId: `checkout_${checkout.id}`,
+    valueCents: tier.amountCents,
+    contentName: tier.name,
+    contentId: tier.id,
+  });
+
+
   await sendMessage(
     telegramId,
     `<b>${tier.name}</b> — ${formatPrice(tier.amountCents)}\n${tier.blurb}\n\n${tier.perks
@@ -142,7 +168,7 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
     } as never)
     .eq("stripe_session_id", stripeSessionId)
     .neq("status", "active")
-    .select("telegram_id, tier, portal_token")
+    .select("telegram_id, tier, portal_token, amount_cents, currency, session_id")
     .maybeSingle();
 
   if (error) {
@@ -151,7 +177,14 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
   }
   if (!data) return true; // already active
 
-  const row = data as { telegram_id: number; tier: string; portal_token: string };
+  const row = data as {
+    telegram_id: number;
+    tier: string;
+    portal_token: string;
+    amount_cents: number;
+    currency: string;
+    session_id: string | null;
+  };
   const tier = getTier(row.tier);
   await sendMessage(
     row.telegram_id,
@@ -161,5 +194,18 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
       [{ text: "Join the channel", url: FREE_CHANNEL }],
     ],
   );
+
+  // Purchase fires only here — after Stripe confirmed the money, once per
+  // checkout session, so Meta's ROAS numbers match real revenue.
+  await reportMetaEvent({
+    eventName: "Purchase",
+    sessionId: row.session_id,
+    telegramId: row.telegram_id,
+    eventId: `purchase_${stripeSessionId}`,
+    valueCents: row.amount_cents,
+    currency: row.currency,
+    contentName: tier?.name ?? row.tier,
+    contentId: row.tier,
+  });
   return true;
 }
