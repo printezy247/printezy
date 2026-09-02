@@ -1,17 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-
-const schema = (data: unknown) => z.object({ key: z.string().min(1) }).parse(data);
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /**
- * Verifies the shared admin passphrase (ADMIN_DASHBOARD_KEY project secret).
- * Used to gate private pages such as the Track Record archive.
+ * Returns whether the signed-in account holds the admin role.
+ * Used to gate private pages such as Track Record and the ads dashboard.
  */
-export const verifyAdminKey = createServerFn({ method: "POST" })
-  .inputValidator(schema)
-  .handler(async ({ data }): Promise<{ ok: true }> => {
-    const expected = process.env["ADMIN_DASHBOARD_KEY"];
-    if (!expected) throw new Error("Admin passphrase is not configured yet.");
-    if (data.key !== expected) throw new Error("Wrong passphrase.");
-    return { ok: true };
+export const getAdminStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{ isAdmin: boolean; email: string | null }> => {
+    const { data, error } = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (error) throw new Error("Could not verify admin access.");
+    const email = (context.claims as { email?: string } | null)?.email ?? null;
+    return { isAdmin: data === true, email };
   });
