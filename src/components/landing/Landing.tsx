@@ -864,7 +864,7 @@ export function Pricing() {
 /* Products                                                            */
 /* ------------------------------------------------------------------ */
 
-const EBOOKS = [
+export const EBOOKS = [
   {
     title: "Mapping Like A Pro",
     image: ebookMapping,
