@@ -803,7 +803,7 @@ export function Pricing() {
                   onClick={() => goTrack(t.openAccountEvent!)}
                   className="neon-free-btn neon-pearl mt-6"
                 >
-                  <span className="neon-free-btn-inner">Open Yours Today!</span>
+                  <span className="neon-free-btn-inner">Open Account</span>
                 </a>
               ) : null}
 
