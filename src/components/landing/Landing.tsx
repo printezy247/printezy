@@ -874,8 +874,16 @@ export function Pricing() {
 /* ------------------------------------------------------------------ */
 
 const EBOOKS = [
-  { title: "Mapping Like A Pro", image: ebookMapping },
-  { title: "Technical Analysis Ebook", image: ebookTechnical },
+  {
+    title: "Mapping Like A Pro",
+    image: ebookMapping,
+    bullets: ["Master support & resistance zones", "Spot high-probability setups", "Step-by-step PDF guide"],
+  },
+  {
+    title: "Technical Analysis Ebook",
+    image: ebookTechnical,
+    bullets: ["Price action fundamentals", "Indicator confluence framework", "Risk management rules"],
+  },
 ];
 
 const TV_FEATURES = [
