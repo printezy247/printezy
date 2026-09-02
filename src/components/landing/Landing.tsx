@@ -793,13 +793,22 @@ export function Pricing() {
                 {t.cta}
               </a>
               {t.freeAlt ? (
-                <a
-                  href={botHref}
-                  onClick={() => goTrack(`${t.event}_free_access`)}
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-                >
-                  Get Free Access
-                </a>
+                t.name === "Premium" ? (
+                  <div className="mt-2">
+                    <NeonFreeAccessButton
+                      href={botHref}
+                      event={`${t.event}_free_access`}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    href={botHref}
+                    onClick={() => goTrack(`${t.event}_free_access`)}
+                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                  >
+                    Get Free Access
+                  </a>
+                )
               ) : null}
             </div>
           </article>
