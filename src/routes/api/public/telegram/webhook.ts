@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { TIER_CATALOG, formatPrice, getTier } from "@/lib/bot/tiers";
+import { getTier } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/api/public/telegram/webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const { deriveWebhookSecret, safeEqual, sendMessage, answerCallbackQuery } =
+        const { deriveWebhookSecret, safeEqual, answerCallbackQuery } =
           await import("@/lib/bot/telegram.server");
         const {
           upsertBotUser,
@@ -15,8 +15,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           offerVantageTrial,
           activateVantageTrial,
           reportLead,
-          SUPPORT,
         } = await import("@/lib/bot/enrollment.server");
+        const {
+          sendMainMenu,
+          sendPackages,
+          sendPaymentStatus,
+          sendAccountLink,
+          sendAskSarah,
+          sendFallback,
+        } = await import("@/lib/bot/menu.server");
 
         const expected = await deriveWebhookSecret();
         const provided = request.headers.get("X-Telegram-Bot-Api-Secret-Token") ?? "";
@@ -44,11 +51,10 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             if (!telegramId) return Response.json({ ok: true });
 
             await answerCallbackQuery(cq.id);
-            const tierId = (cq.data ?? "").startsWith("tier:")
-              ? (cq.data as string).slice(5)
-              : null;
+            const data = cq.data ?? "";
+            const tierId = data.startsWith("tier:") ? data.slice(5) : null;
 
-            if (cq.data === "vantage:confirm") {
+            if (data === "vantage:confirm") {
               await activateVantageTrial(telegramId);
             } else if (tierId === "vantage") {
               await offerVantageTrial(telegramId);
@@ -56,6 +62,12 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
               await activateFreeTier(telegramId);
             } else if (tierId && getTier(tierId)) {
               await startPaidEnrollment(telegramId, tierId);
+            } else if (data === "menu:packages" || data === "menu:home") {
+              await sendPackages(telegramId);
+            } else if (data === "menu:status") {
+              await sendPaymentStatus(telegramId, telegramId);
+            } else if (data === "menu:account") {
+              await sendAccountLink(telegramId, telegramId);
             }
             return Response.json({ ok: true });
           }
@@ -81,42 +93,21 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             await reportLead(telegramId, startPayload);
           }
 
-          if (text.startsWith("/start") || text.startsWith("/enroll") || text === "") {
-            const keyboard = TIER_CATALOG.map((t) => [
-              {
-                text:
-                  t.id === "vantage"
-                    ? `${t.name} — free via Vantage`
-                    : `${t.name} — ${formatPrice(t.amountCents)}`,
-                callback_data: `tier:${t.id}`,
-              },
-            ]);
-            keyboard.push([{ text: "Talk to a human", callback_data: "noop" }]);
-
-            await sendMessage(
-              telegramId,
-              `👋 <b>Welcome to EzyMap ALGO${message?.from?.first_name ? `, ${message.from.first_name}` : ""}.</b>\n\nPick the package you want and I'll set your account up right here. Paid packages activate automatically the moment payment clears.\n\nNeed help? ${SUPPORT}`,
-              keyboard,
-            );
+          if (text.startsWith("/start") || text === "") {
+            await sendMainMenu(telegramId, message?.from?.first_name);
+          } else if (text.startsWith("/packages") || text.startsWith("/enroll")) {
+            await sendPackages(telegramId);
+          } else if (text.startsWith("/status")) {
+            await sendPaymentStatus(telegramId, telegramId);
           } else if (text.startsWith("/account") || text.startsWith("/dashboard")) {
-            const { createMemberSession, accountLink } = await import(
-              "@/lib/bot/member.server"
-            );
-            const sessionToken = await createMemberSession(telegramId);
-            await sendMessage(
-              telegramId,
-              sessionToken
-                ? `🔑 <b>Your trading account</b>\n\nThis link signs you in for 30 days — your signals, your trade log, your stats and your billing history.`
-                : `Something went wrong opening your account. Try again in a moment.`,
-              sessionToken
-                ? [[{ text: "Open my account", url: accountLink(sessionToken) }]]
-                : undefined,
-            );
+            await sendAccountLink(telegramId, telegramId);
+          } else if (text.startsWith("/ask") || text.startsWith("/sarah")) {
+            await sendAskSarah(telegramId);
           } else if (text.startsWith("/help")) {
-            await sendMessage(
-              telegramId,
-              `Send /start to see the packages, /account to open your trading account, or reach us directly: ${SUPPORT}`,
-            );
+            await sendMessageHelp(telegramId);
+          } else {
+            // Free text: the bot is menu-driven, so guide back to it.
+            await sendFallback(telegramId);
           }
 
           return Response.json({ ok: true });
@@ -129,3 +120,12 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
     },
   },
 });
+
+async function sendMessageHelp(chatId: number) {
+  const { sendMessage } = await import("@/lib/bot/telegram.server");
+  const { SUPPORT } = await import("@/lib/bot/menu.server");
+  await sendMessage(
+    chatId,
+    `<b>What I can do</b>\n\n/packages — browse packages and prices\n/status — check your payment & access\n/account — open your trading account\n/ask — message Sarah (human support)\n\nAnything else, reach us directly: ${SUPPORT}`,
+  );
+}
