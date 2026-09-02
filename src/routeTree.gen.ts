@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
@@ -32,6 +33,11 @@ const TermsRoute = TermsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MacroRoute = MacroRouteImport.update({
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
@@ -169,6 +179,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
@@ -185,6 +196,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/_authenticated/ads-dashboard'
@@ -202,6 +214,7 @@ export interface RootRouteChildren {
   FreeEbookRoute: typeof FreeEbookRoute
   IndicatorsRoute: typeof IndicatorsRoute
   MacroRoute: typeof MacroRoute
+  PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
@@ -222,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/macro': {
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   FreeEbookRoute: FreeEbookRoute,
   IndicatorsRoute: IndicatorsRoute,
   MacroRoute: MacroRoute,
+  PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
