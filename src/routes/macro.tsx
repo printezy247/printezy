@@ -65,14 +65,21 @@ function MacroPage() {
       <Nav />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <header className="border-b border-border pb-6">
-          <h1 className="text-[30px] font-black leading-tight sm:text-[36px]">
-            Macro &amp; Crypto Updates
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-body">
-            Fundamentals, central-bank flow and digital-asset briefings that shape our gold, forex
-            and crypto signals.
-          </p>
+        <header className="flex items-start gap-4 border-b border-border pb-6">
+          <img
+            src="/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png"
+            alt="Macro and fundamentals"
+            className="hidden h-14 w-14 shrink-0 rounded-md border border-border bg-[#0a0c0b] object-contain sm:block"
+          />
+          <div>
+            <h1 className="text-[30px] font-black leading-tight sm:text-[36px]">
+              Macro &amp; Crypto Updates
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm text-body">
+              Fundamentals, central-bank flow and digital-asset briefings that shape our gold, forex
+              and crypto signals.
+            </p>
+          </div>
         </header>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.6fr_0.9fr]">
