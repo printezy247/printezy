@@ -17,8 +17,6 @@ import {
   Menu,
   X,
   BookOpen,
-  LineChart,
-  Bot,
 } from "lucide-react";
 import {
   track,
@@ -43,6 +41,9 @@ const tierVantage = "/__l5e/assets-v1/3def8af3-222a-4817-ab9e-c0e036718ba6/tier-
 const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.jpg";
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
+
+import tradingViewLogo from "@/assets/tradingview-logo.png";
+import mt5Logo from "@/assets/mt5-logo.png";
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
@@ -886,8 +887,8 @@ export function Products() {
         {/* TradingView indicators */}
         <Reveal className="h-full">
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-            <LineChart className="h-5 w-5" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
+            <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
           <ul className="mt-4 space-y-2.5">
@@ -911,8 +912,8 @@ export function Products() {
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-            <Bot className="h-5 w-5" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
+            <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
           <ul className="mt-4 space-y-2.5">
