@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -32,6 +34,11 @@ const TermsRoute = TermsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MacroRoute = MacroRouteImport.update({
@@ -57,6 +64,11 @@ const FreeChannelRoute = FreeChannelRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout-success',
+  path: '/checkout-success',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -100,11 +112,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -115,11 +129,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -132,11 +148,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
+  '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
@@ -149,11 +167,13 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
@@ -164,11 +184,13 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
@@ -180,11 +202,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
     | '/indicators'
     | '/macro'
+    | '/pricing'
     | '/privacy'
     | '/terms'
     | '/_authenticated/ads-dashboard'
@@ -197,11 +221,13 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
   IndicatorsRoute: typeof IndicatorsRoute
   MacroRoute: typeof MacroRoute
+  PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
@@ -222,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/macro': {
@@ -257,6 +290,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout-success': {
+      id: '/checkout-success'
+      path: '/checkout-success'
+      fullPath: '/checkout-success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -327,11 +367,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
   IndicatorsRoute: IndicatorsRoute,
   MacroRoute: MacroRoute,
+  PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
