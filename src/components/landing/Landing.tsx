@@ -890,8 +890,9 @@ export function SocialProof() {
         })}
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {TESTIMONIALS.map((t) => (
-          <figure key={t.name} className="glass-card flex flex-col rounded-2xl p-6">
+        {TESTIMONIALS.map((t, i) => (
+          <Reveal key={t.name} delay={i * 0.08} className="h-full">
+          <figure className="glass-card flex h-full flex-col rounded-2xl p-6">
             <div className="flex gap-0.5 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-current" />
@@ -903,6 +904,7 @@ export function SocialProof() {
               <span className="block text-xs text-muted-foreground">{t.role}</span>
             </figcaption>
           </figure>
+          </Reveal>
         ))}
       </div>
     </Section>
@@ -941,7 +943,8 @@ export function Faq() {
       <SectionHeading eyebrow="FAQ" title="Questions, answered" />
       <div className="mx-auto max-w-3xl space-y-3">
         {FAQS.map((f, i) => (
-          <div key={f.q} className="glass-card overflow-hidden rounded-xl">
+          <Reveal key={f.q} delay={i * 0.06} y={20}>
+          <div className="glass-card overflow-hidden rounded-xl">
             <button
               type="button"
               onClick={() => setOpen(open === i ? null : i)}
@@ -971,6 +974,7 @@ function FinalCta() {
   const botHref = useBotLink();
   return (
     <Section id="get-started" className="bg-surface/40">
+      <Reveal>
       <div className="glass-card rounded-3xl px-6 py-14 text-center sm:px-12">
         <h2 className="text-3xl font-bold sm:text-4xl">Start with the free channel today</h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
