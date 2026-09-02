@@ -665,6 +665,7 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_beginner",
     image: tierFree,
+    freeAlt: true,
   },
   {
     name: "Pro",
