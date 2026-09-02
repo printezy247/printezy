@@ -244,16 +244,25 @@ export async function fetchFearGreed(): Promise<FearGreed> {
 
 const SPARK_RAMP = ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"];
 
+/** Muted track colour — empty gauge characters never carry the data colour. */
+export const GAUGE_TRACK = "#3a403c";
+
+export type GaugeSegments = { before: string; marker: string; after: string };
+
 /** 10-char dovish→hawkish track with a ● marker, as in gauge.py. */
-export function sliderGauge(stance: Stance): string {
+export function sliderGauge(stance: Stance): GaugeSegments {
   const position = stance === "hawkish" ? 9 : stance === "neutral" ? 4 : 0;
-  return Array.from({ length: 10 }, (_, i) => (i === position ? "●" : "░")).join("");
+  return {
+    before: "░".repeat(position),
+    marker: "●",
+    after: "░".repeat(9 - position),
+  };
 }
 
 /** 10-char filled bar for a 0-100 percentage. */
-export function fillGauge(percent: number): string {
+export function fillGauge(percent: number): GaugeSegments {
   const filled = Math.max(0, Math.min(10, Math.round(percent / 10)));
-  return "█".repeat(filled) + "░".repeat(10 - filled);
+  return { before: "", marker: "█".repeat(filled), after: "░".repeat(10 - filled) };
 }
 
 export function sparkline(points: number[]): string {
@@ -267,7 +276,7 @@ export const IMPACT_COLOR: Record<Impact, string> = {
 };
 
 export function stanceColor(stance: Stance): string {
-  return stance === "hawkish" ? "#d9534f" : stance === "neutral" ? "#c9a13a" : "#2fbf71";
+  return stance === "hawkish" ? "#2fbf71" : stance === "neutral" ? "#c9a13a" : "#d9534f";
 }
 
 export function recessionColor(percent: number): string {
