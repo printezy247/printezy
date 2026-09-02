@@ -633,10 +633,10 @@ const TIERS: Tier[] = [
     image: tierVantage,
   },
   {
-    name: "Free",
-    price: "Free",
-    priceNote: "Forever",
-    blurb: "No payment required",
+    name: "Beginner",
+    price: "$29",
+    priceNote: "per month",
+    blurb: "Start with essential signals",
     features: [
       "Join our 640+ trader community",
       "Daily signals & education",
@@ -645,7 +645,7 @@ const TIERS: Tier[] = [
     ],
     cta: "Enroll Now",
     href: LINKS.bot,
-    event: "pricing_free",
+    event: "pricing_beginner",
     image: tierFree,
   },
   {
