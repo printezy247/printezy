@@ -77,6 +77,86 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_users: {
+        Row: {
+          created_at: string
+          first_name: string | null
+          session_id: string | null
+          telegram_id: number
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_name?: string | null
+          session_id?: string | null
+          telegram_id: number
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_name?: string | null
+          session_id?: string | null
+          telegram_id?: number
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      enrollments: {
+        Row: {
+          activated_at: string | null
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          portal_token: string
+          session_id: string | null
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          telegram_id: number
+          tier: string
+        }
+        Insert: {
+          activated_at?: string | null
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          portal_token: string
+          session_id?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          telegram_id: number
+          tier: string
+        }
+        Update: {
+          activated_at?: string | null
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          portal_token?: string
+          session_id?: string | null
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          telegram_id?: number
+          tier?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
