@@ -56,7 +56,33 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             const data = cq.data ?? "";
             const tierId = data.startsWith("tier:") ? data.slice(5) : null;
 
-            if (data === "sarah:start") {
+            if (data.startsWith("kw:")) {
+              const { sendEntry, getLang } = await import("@/lib/bot/replies.server");
+              const lang = (await getLang(telegramId)) ?? "en";
+              await sendEntry(telegramId, data.slice(3), lang);
+            } else if (data.startsWith("trial:")) {
+              const { requestTrial } = await import("@/lib/bot/sarah.server");
+              await requestTrial(
+                {
+                  telegramId,
+                  username: cq.from?.username ?? null,
+                  firstName: cq.from?.first_name ?? null,
+                },
+                data.slice(6),
+              );
+            } else if (data.startsWith("buy:")) {
+              const [, product, plan] = data.split(":");
+              const { requestPurchase } = await import("@/lib/bot/sarah.server");
+              await requestPurchase(
+                {
+                  telegramId,
+                  username: cq.from?.username ?? null,
+                  firstName: cq.from?.first_name ?? null,
+                },
+                product ?? "",
+                plan ?? "",
+              );
+            } else if (data === "sarah:start") {
               const { openSarahChat } = await import("@/lib/bot/sarah.server");
               await openSarahChat(telegramId);
             } else if (data === "sarah:end") {
@@ -151,6 +177,17 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           } else if (text.startsWith("/end")) {
             const { closeSarahChat } = await import("@/lib/bot/sarah.server");
             await closeSarahChat(telegramId);
+          } else if (text.startsWith("/language") || text.startsWith("/bahasa")) {
+            const { setLang, sendEntry } = await import("@/lib/bot/replies.server");
+            const wanted = text.toLowerCase().includes("ms") ? "ms" : "en";
+            await setLang(telegramId, wanted);
+            await sendEntry(telegramId, "greeting", wanted);
+          } else if (text.startsWith("/faq")) {
+            const { sendEntry, getLang } = await import("@/lib/bot/replies.server");
+            await sendEntry(telegramId, "faq", (await getLang(telegramId)) ?? "en");
+          } else if (text.startsWith("/products")) {
+            const { sendEntry, getLang } = await import("@/lib/bot/replies.server");
+            await sendEntry(telegramId, "products", (await getLang(telegramId)) ?? "en");
           } else if (text.startsWith("/help")) {
             await sendMessageHelp(telegramId);
           } else {
@@ -172,8 +209,30 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                   : `Couldn't reach Sarah just now — try again in a moment.`,
               );
             } else {
-              // The bot is menu-driven, so guide back to it.
-              await sendFallback(telegramId);
+              // Sarah's keyword reply book answers first; anything she has no
+              // answer for gets forwarded to her once so nobody hits silence.
+              const { handleKeywordMessage, getLang } = await import(
+                "@/lib/bot/replies.server"
+              );
+              const member = {
+                telegramId,
+                username: message?.from?.username ?? null,
+                firstName: message?.from?.first_name ?? null,
+              };
+              const answered = await handleKeywordMessage(
+                telegramId,
+                text,
+                await getLang(telegramId),
+              );
+              const { alertMissedMessage, clearMissedFlag } = await import(
+                "@/lib/bot/sarah.server"
+              );
+              if (answered) {
+                await clearMissedFlag(telegramId);
+              } else {
+                await alertMissedMessage(member, text);
+                await sendFallback(telegramId);
+              }
             }
           }
 

@@ -1,0 +1,3 @@
+ALTER TABLE public.bot_users
+  ADD COLUMN IF NOT EXISTS lang TEXT,
+  ADD COLUMN IF NOT EXISTS missed_alert_sent BOOLEAN NOT NULL DEFAULT false;
