@@ -104,16 +104,75 @@ function Card({
 
 const mono = "font-mono text-[13px] tracking-tight";
 
-/** Only the marker / filled run carries colour; the empty track stays muted. */
-function Gauge({ segments, color }: { segments: GaugeSegments; color: string }) {
+/**
+ * Rendered bars replace the monospace gauges: only the fill / marker carries
+ * colour, the empty track stays muted.
+ */
+function FillBar({
+  percent,
+  color,
+  height = 6,
+}: {
+  percent: number;
+  color: string;
+  height?: number;
+}) {
+  const pct = Math.max(0, Math.min(100, percent));
   return (
-    <span className={mono}>
-      {segments.before ? <span style={{ color: GAUGE_TRACK }}>{segments.before}</span> : null}
-      <span style={{ color }}>{segments.marker}</span>
-      {segments.after ? <span style={{ color: GAUGE_TRACK }}>{segments.after}</span> : null}
-    </span>
+    <div
+      role="meter"
+      aria-valuenow={Math.round(pct)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      className="w-full min-w-[80px] overflow-hidden rounded-full"
+      style={{ height, backgroundColor: GAUGE_TRACK }}
+    >
+      <div
+        className="h-full rounded-full transition-[width] duration-500 ease-out"
+        style={{
+          width: `${pct}%`,
+          backgroundColor: color,
+          boxShadow: `0 0 0 1px ${color}33`,
+        }}
+      />
+    </div>
   );
 }
+
+/** Dovish (left) → hawkish (right) track with a dot marker and centre tick. */
+function StanceBar({ stance, color }: { stance: Stance; color: string }) {
+  const pct = stance === "hawkish" ? 100 : stance === "neutral" ? 50 : 0;
+  return (
+    <div className="relative w-full min-w-[80px]" style={{ height: 10 }}>
+      <div
+        className="absolute left-0 right-0 top-1/2 -translate-y-1/2 rounded-full"
+        style={{ height: 4, backgroundColor: GAUGE_TRACK }}
+      />
+      <div
+        className="absolute top-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          height: 8,
+          width: 2,
+          left: "50%",
+          marginLeft: -1,
+          backgroundColor: "rgba(255,255,255,0.16)",
+        }}
+      />
+      <div
+        className="absolute top-1/2 rounded-full transition-[left] duration-500 ease-out"
+        style={{
+          height: 10,
+          width: 10,
+          left: `calc(${pct}% - 5px)`,
+          marginTop: -5,
+          backgroundColor: color,
+          boxShadow: `0 0 0 3px ${color}22`,
+        }}
+      />
+    </div>
+  );
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Page                                                                */
