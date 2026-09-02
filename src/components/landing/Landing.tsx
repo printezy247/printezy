@@ -44,8 +44,7 @@ const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-el
 
 const tradingViewLogo =
   "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
-const mt5Logo =
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMoTO9YOOgIMz_cgSTOlhxSH_tW8LwZBwFaTrpWahk6A&s=10";
+const mt5Logo = mt5LogoAsset;
 
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
