@@ -950,7 +950,7 @@ export function Products() {
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
+          <span className="inline-flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
             <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
@@ -1008,13 +1008,22 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <a
-            href={LINKS.macro}
-            onClick={() => goTrack("products_macro_join")}
-            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-          >
-            <Send className="h-4 w-4" /> Join Macro Bot
-          </a>
+          <div className="mt-5 flex flex-col gap-2">
+            <a
+              href={LINKS.macro}
+              onClick={() => goTrack("products_macro_join")}
+              className="inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            >
+              <Send className="h-4 w-4" /> Join Macro Bot
+            </a>
+            <Link
+              to="/macro"
+              onClick={() => goTrack("products_macro_view")}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary transition hover:bg-primary/15"
+            >
+              View It Here <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </article>
         </Reveal>
       </div>
