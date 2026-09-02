@@ -134,6 +134,21 @@ export async function resolveSession(token: string): Promise<number | null> {
   return row.telegram_id;
 }
 
+/** Mints a browser session for a known member. */
+export async function createMemberSession(telegramId: number): Promise<string | null> {
+  const token = randomToken();
+  const { error } = await supabaseAdmin.from("member_sessions").insert({
+    token,
+    telegram_id: telegramId,
+    expires_at: new Date(Date.now() + SESSION_TTL_DAYS * 86_400_000).toISOString(),
+  } as never);
+  if (error) {
+    console.error("[member] session insert failed", error);
+    return null;
+  }
+  return token;
+}
+
 /** Exchanges a bot portal link token for a full member session. */
 export async function sessionFromPortalToken(portalToken: string): Promise<string | null> {
   const { data } = await supabaseAdmin
