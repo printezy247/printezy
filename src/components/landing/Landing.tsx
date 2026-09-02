@@ -214,6 +214,20 @@ function SupportCta({ className = "" }: { className?: string }) {
   );
 }
 
+function NeonFreeAccessButton({
+  href,
+  event,
+}: {
+  href: string;
+  event: string;
+}) {
+  return (
+    <a href={href} onClick={() => goTrack(event)} className="neon-free-btn">
+      <span className="neon-free-btn-inner">Get Free Access</span>
+    </a>
+  );
+}
+
 function Logo() {
   return (
     <span className="inline-flex items-center gap-2">
