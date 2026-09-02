@@ -637,24 +637,6 @@ type Tier = {
 
 const TIERS: Tier[] = [
   {
-    name: "Vantage Trial",
-    price: "Free for 30 days",
-    priceNote: "No card required",
-    blurb: "Pro access free for 30 days",
-    features: [
-      "No card required",
-      "Open a Vantage Markets account to unlock",
-      "Pro signal feed, trade log & stats",
-      "Activate through our bot",
-    ],
-    cta: "Get Free Access",
-    href: LINKS.bot,
-    event: "pricing_vantage_trial",
-    image: tierVantage,
-    openAccountHref: LINKS.vantageOpenAccount,
-    openAccountEvent: "pricing_vantage_open_account",
-  },
-  {
     name: "Beginner",
     price: "$29",
     priceNote: "per month",
