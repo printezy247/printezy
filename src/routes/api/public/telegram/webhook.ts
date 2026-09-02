@@ -8,8 +8,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
       POST: async ({ request }) => {
         const { deriveWebhookSecret, safeEqual, sendMessage, answerCallbackQuery } =
           await import("@/lib/bot/telegram.server");
-        const { upsertBotUser, activateFreeTier, startPaidEnrollment, reportLead, SUPPORT } =
-          await import("@/lib/bot/enrollment.server");
+        const {
+          upsertBotUser,
+          activateFreeTier,
+          startPaidEnrollment,
+          offerVantageTrial,
+          activateVantageTrial,
+          reportLead,
+          SUPPORT,
+        } = await import("@/lib/bot/enrollment.server");
 
         const expected = await deriveWebhookSecret();
         const provided = request.headers.get("X-Telegram-Bot-Api-Secret-Token") ?? "";
@@ -41,7 +48,11 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
               ? (cq.data as string).slice(5)
               : null;
 
-            if (tierId === "free") {
+            if (cq.data === "vantage:confirm") {
+              await activateVantageTrial(telegramId);
+            } else if (tierId === "vantage") {
+              await offerVantageTrial(telegramId);
+            } else if (tierId === "free") {
               await activateFreeTier(telegramId);
             } else if (tierId && getTier(tierId)) {
               await startPaidEnrollment(telegramId, tierId);
@@ -73,7 +84,10 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           if (text.startsWith("/start") || text.startsWith("/enroll") || text === "") {
             const keyboard = TIER_CATALOG.map((t) => [
               {
-                text: `${t.name} — ${formatPrice(t.amountCents)}`,
+                text:
+                  t.id === "vantage"
+                    ? `${t.name} — free via Vantage`
+                    : `${t.name} — ${formatPrice(t.amountCents)}`,
                 callback_data: `tier:${t.id}`,
               },
             ]);
