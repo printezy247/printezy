@@ -9,22 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrackRecordRouteImport } from './routes/track-record'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as AdsDashboardRouteImport } from './routes/ads-dashboard'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
 
-const TrackRecordRoute = TrackRecordRouteImport.update({
-  id: '/track-record',
-  path: '/track-record',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -43,11 +36,6 @@ const MacroRoute = MacroRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdsDashboardRoute = AdsDashboardRouteImport.update({
-  id: '/ads-dashboard',
-  path: '/ads-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
@@ -75,24 +63,20 @@ const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -100,12 +84,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
-  '/ads-dashboard': typeof AdsDashboardRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
-  '/track-record': typeof TrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -114,36 +96,30 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/account'
-    | '/ads-dashboard'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
-    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account'
-    | '/ads-dashboard'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
-    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
     | '/account'
-    | '/ads-dashboard'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
-    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -151,25 +127,16 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
-  AdsDashboardRoute: typeof AdsDashboardRoute
   FaqRoute: typeof FaqRoute
   MacroRoute: typeof MacroRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
-  TrackRecordRoute: typeof TrackRecordRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/track-record': {
-      id: '/track-record'
-      path: '/track-record'
-      fullPath: '/track-record'
-      preLoaderRoute: typeof TrackRecordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -196,13 +163,6 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ads-dashboard': {
-      id: '/ads-dashboard'
-      path: '/ads-dashboard'
-      fullPath: '/ads-dashboard'
-      preLoaderRoute: typeof AdsDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account': {
@@ -239,12 +199,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
-  AdsDashboardRoute: AdsDashboardRoute,
   FaqRoute: FaqRoute,
   MacroRoute: MacroRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
-  TrackRecordRoute: TrackRecordRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
