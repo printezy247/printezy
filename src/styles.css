@@ -36,6 +36,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-primary-tint: var(--primary-tint);
+  --color-accent-tint: var(--accent-tint);
+  --color-market-up: var(--market-up);
+  --color-market-down: var(--market-down);
+  --color-body: var(--body-text);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 }
@@ -117,10 +122,7 @@
 }
 
 @utility text-gradient-gold {
-  background: var(--gradient-gold);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #8a6d24;
 }
 
 @utility text-gradient-green {
@@ -159,9 +161,8 @@
 }
 
 @utility glass-card {
-  background: var(--gradient-card);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid oklch(0.80 0.10 88 / 0.12);
+  background: #ffffff;
+  border: 1px solid var(--border);
 }
 
 @keyframes float-slow {
