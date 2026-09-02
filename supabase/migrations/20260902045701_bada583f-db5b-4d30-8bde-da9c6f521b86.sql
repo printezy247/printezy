@@ -1,0 +1,1 @@
+ALTER TABLE public.enrollments ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ, ADD COLUMN IF NOT EXISTS activation_source TEXT;

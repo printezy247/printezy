@@ -11,7 +11,12 @@ import { SITE_URL } from "./tiers";
 
 const GRAPH_VERSION = "v21.0";
 
-export type MetaEventName = "Lead" | "InitiateCheckout" | "Purchase";
+export type MetaEventName =
+  | "Lead"
+  | "InitiateCheckout"
+  | "Purchase"
+  | "StartTrial"
+  | "CompleteRegistration";
 
 type AdClick = {
   session_id: string;

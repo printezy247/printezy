@@ -411,7 +411,7 @@ export function Features() {
         title="Built for traders who want clarity"
         subtitle="Everything runs through Telegram, so you never miss a setup while you're away from the charts."
       />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {FEATURES.map((f, i) => (
           <Reveal key={f.title} delay={i * 0.08} className="h-full">
           <article className="glass-card h-full rounded-2xl p-6">
@@ -457,6 +457,19 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_free",
     image: tierFree,
+  },
+  {
+    name: "Vantage Trial",
+    blurb: "Pro access free for 30 days",
+    features: [
+      "No card required",
+      "Open a Vantage Markets account to unlock",
+      "Pro signal feed, trade log & stats",
+      "Activate through our bot",
+    ],
+    cta: "Get Free Access",
+    href: LINKS.bot,
+    event: "pricing_vantage_trial",
   },
   {
     name: "Pro",
@@ -506,9 +519,9 @@ export function Pricing() {
       <SectionHeading
         eyebrow="Packages"
         title="Start free. Upgrade when you're ready."
-        subtitle="All tiers enroll through our bot — open a Vantage Markets IB account or deposit to activate."
+        subtitle="All tiers enroll through our bot. Want to test the desk first? Open a Vantage Markets account and get 30 days of Pro access free — no card required."
       />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
@@ -889,7 +902,7 @@ export function SocialProof() {
           );
         })}
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {TESTIMONIALS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.08} className="h-full">
           <figure className="glass-card flex h-full flex-col rounded-2xl p-6">

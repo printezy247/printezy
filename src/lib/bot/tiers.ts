@@ -3,7 +3,14 @@
 
 export const SITE_URL = "https://printezy.money";
 
-export type TierId = "free" | "beginner" | "pro" | "premium" | "elite";
+export type TierId = "free" | "vantage" | "beginner" | "pro" | "premium" | "elite";
+
+/** Broker partner link that unlocks the no-payment trial tier. */
+export const VANTAGE_LINK =
+  "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM";
+
+/** Days of Pro-level access granted after a Vantage activation. */
+export const VANTAGE_TRIAL_DAYS = 30;
 
 export type TierConfig = {
   id: TierId;
@@ -20,6 +27,17 @@ export const TIER_CATALOG: TierConfig[] = [
     blurb: "Community access, no payment required",
     amountCents: 0,
     perks: ["Public channel access", "Daily education", "Weekly market recap"],
+  },
+  {
+    id: "vantage",
+    name: "Vantage Trial",
+    blurb: `Pro-level access free for ${VANTAGE_TRIAL_DAYS} days via a Vantage Markets account`,
+    amountCents: 0,
+    perks: [
+      "Pro signal feed for 30 days",
+      "Trade log, stats and history",
+      "No card required — activate with a Vantage account",
+    ],
   },
   {
     id: "beginner",

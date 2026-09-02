@@ -10,6 +10,7 @@ const MAX_CODE_ATTEMPTS = 5;
 
 export const TIER_RANK: Record<string, number> = {
   free: 0,
+  vantage: 2,
   beginner: 1,
   pro: 2,
   premium: 3,
@@ -183,11 +184,17 @@ export type EnrollmentRow = {
   status: string;
   created_at: string;
   activated_at: string | null;
+  expires_at?: string | null;
 };
 
 /** Highest active package the member holds (free when they hold none). */
 export function highestActiveTier(rows: EnrollmentRow[]): TierId {
-  const active = rows.filter((r) => r.status === "active");
+  const now = Date.now();
+  const active = rows.filter(
+    (r) =>
+      r.status === "active" &&
+      (!r.expires_at || new Date(r.expires_at).getTime() > now),
+  );
   let best: TierId = "free";
   for (const r of active) {
     if ((TIER_RANK[r.tier] ?? 0) > (TIER_RANK[best] ?? 0)) best = r.tier as TierId;
