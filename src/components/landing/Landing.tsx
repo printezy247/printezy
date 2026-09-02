@@ -58,6 +58,7 @@ export const LINKS = {
   macro: "https://t.me/xaubtcmacro_bot",
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
+  vantageOpenAccount: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
