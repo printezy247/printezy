@@ -181,15 +181,15 @@ function TelegramCta({
 }) {
   const styles =
     variant === "primary"
-      ? "bg-primary text-primary-foreground hover:bg-primary-glow shadow-green"
+      ? "bg-primary text-primary-foreground hover:bg-primary-glow"
       : variant === "gold"
-        ? "bg-accent text-accent-foreground hover:bg-accent-glow shadow-gold"
-        : "border border-border bg-surface text-foreground hover:bg-surface-elevated";
+        ? "border border-accent bg-white text-accent-glow hover:bg-accent-tint"
+        : "border border-border bg-white text-foreground hover:bg-surface";
   return (
     <a
       href={href}
       onClick={() => goTrack(event)}
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors ${styles} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors ${styles} ${className}`}
     >
       <Send className="h-4 w-4" />
       {label}
@@ -211,16 +211,49 @@ function SupportCta({ className = "" }: { className?: string }) {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2.5">
-      <img
-        src={brandLogo}
-        alt="EzyMap ALGO logo"
-        className="h-9 w-9 object-contain drop-shadow-[0_0_12px_hsl(var(--primary)/0.35)]"
-      />
-      <span className="font-display text-lg font-bold tracking-tight">
-        EzyMap <span className="text-gradient-gold">ALGO</span>
+    <span className="inline-flex items-center gap-2">
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-black text-primary-foreground">
+        E
+      </span>
+      <span className="font-display text-[17px] font-extrabold tracking-tight text-foreground">
+        EzyMap<span className="text-accent-glow">Algo</span>
       </span>
     </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Market ticker (static reference quotes)                             */
+/* ------------------------------------------------------------------ */
+
+const TICKER: { symbol: string; price: string; change: string; up: boolean }[] = [
+  { symbol: "XAU/USD", price: "4,598.70", change: "+0.42%", up: true },
+  { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
+  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
+  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+];
+
+export function Ticker() {
+  return (
+    <div className="w-full bg-[#0b0f0c] text-white">
+      <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/40">
+          Indicative · static
+        </span>
+        {TICKER.map((t) => (
+          <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
+            <span className="font-semibold text-white/80">{t.symbol}</span>
+            <span className="tabular-nums text-white">{t.price}</span>
+            <span
+              className="tabular-nums font-semibold"
+              style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+            >
+              {t.change}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -229,66 +262,77 @@ function Logo() {
 /* ------------------------------------------------------------------ */
 
 const NAV_ITEMS = [
-  { label: "Features", href: "#features" },
-  { label: "Packages", href: "#packages" },
-  { label: "Products", href: "#products" },
-  { label: "About Jack", href: "#ambassador" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Signals", href: "/#features" },
+  { label: "Packages", href: "/#packages" },
+  { label: "Education", href: "/#products" },
+  { label: "Track Record", href: "/#track-record" },
+  { label: "Macro & Crypto", href: "/macro" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" aria-label="EzyMap ALGO home">
-          <Logo />
-        </Link>
+    <header className="sticky top-0 z-50 bg-background">
+      <Ticker />
+      <nav className="border-b border-border">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link to="/" aria-label="EzyMap Algo home">
+            <Logo />
+          </Link>
 
-        <ul className="hidden items-center gap-7 md:flex">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+          <ul className="hidden items-center gap-6 md:flex">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className="text-sm font-medium text-body transition-colors hover:text-primary"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="hidden md:block">
-          <SupportCta />
+          <div className="hidden items-center gap-4 md:flex">
+            <a
+              href={LINKS.support}
+              onClick={() => goTrack("support_click")}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Ask Sarah
+            </a>
+            <TelegramCta label="Join Free Channel" event="nav_join_free" />
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            className="rounded-md p-2 text-foreground md:hidden"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          className="rounded-md p-2 text-foreground md:hidden"
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
       </nav>
 
       {open ? (
-        <div className="border-t border-border/60 bg-background md:hidden">
+        <div className="border-b border-border bg-background md:hidden">
           <ul className="space-y-1 px-4 py-4">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm text-muted-foreground hover:bg-surface hover:text-foreground"
+                  className="block rounded-md px-2 py-2 text-sm font-medium text-body hover:bg-surface"
                 >
                   {item.label}
                 </a>
               </li>
             ))}
             <li className="pt-2">
-              <SupportCta className="w-full" />
+              <TelegramCta label="Join Free Channel" event="nav_join_free_mobile" className="w-full" />
             </li>
           </ul>
         </div>
