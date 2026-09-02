@@ -3,7 +3,14 @@
 
 export const SITE_URL = "https://printezy.money";
 
-export type TierId = "free" | "beginner" | "pro" | "premium" | "elite";
+export type TierId = "free" | "vantage" | "beginner" | "pro" | "premium" | "elite";
+
+/** Broker partner link that unlocks the no-payment trial tier. */
+export const VANTAGE_LINK =
+  "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM";
+
+/** Days of Pro-level access granted after a Vantage activation. */
+export const VANTAGE_TRIAL_DAYS = 30;
 
 export type TierConfig = {
   id: TierId;
