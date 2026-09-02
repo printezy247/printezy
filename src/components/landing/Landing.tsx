@@ -437,7 +437,6 @@ function Hero() {
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <TelegramCta label="Join Free Channel" event="hero_join_free" />
             <TelegramCta label="Free Ebook" event="hero_free_ebook" variant="gold" href={LINKS.ebook} />
-            <TelegramCta label="Free Analysis" event="hero_free_analysis" variant="gold" href={LINKS.macro} />
           </div>
 
           <p className="mt-3 text-sm text-muted-foreground">
