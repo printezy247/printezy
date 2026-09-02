@@ -168,7 +168,7 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
     } as never)
     .eq("stripe_session_id", stripeSessionId)
     .neq("status", "active")
-    .select("telegram_id, tier, portal_token")
+    .select("telegram_id, tier, portal_token, amount_cents, currency, session_id")
     .maybeSingle();
 
   if (error) {
@@ -177,7 +177,14 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
   }
   if (!data) return true; // already active
 
-  const row = data as { telegram_id: number; tier: string; portal_token: string };
+  const row = data as {
+    telegram_id: number;
+    tier: string;
+    portal_token: string;
+    amount_cents: number;
+    currency: string;
+    session_id: string | null;
+  };
   const tier = getTier(row.tier);
   await sendMessage(
     row.telegram_id,
@@ -187,5 +194,18 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
       [{ text: "Join the channel", url: FREE_CHANNEL }],
     ],
   );
+
+  // Purchase fires only here — after Stripe confirmed the money, once per
+  // checkout session, so Meta's ROAS numbers match real revenue.
+  await reportMetaEvent({
+    eventName: "Purchase",
+    sessionId: row.session_id,
+    telegramId: row.telegram_id,
+    eventId: `purchase_${stripeSessionId}`,
+    valueCents: row.amount_cents,
+    currency: row.currency,
+    contentName: tier?.name ?? row.tier,
+    contentId: row.tier,
+  });
   return true;
 }
