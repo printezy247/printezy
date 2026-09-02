@@ -110,3 +110,54 @@ export async function handleKeywordMessage(
   await sendEntry(chatId, found.entry.id, preferred ?? found.lang);
   return true;
 }
+
+// ---------------------------------------------------------------------------
+// Website widget: the same reply book, rendered as plain text + links so the
+// site chat answers exactly like the bot does.
+// ---------------------------------------------------------------------------
+export type WebAnswer = {
+  text: string;
+  links: { label: string; url: string }[];
+  quick: { label: string; entryId: string }[];
+};
+
+function stripHtml(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .trim();
+}
+
+function toWeb(entry: Entry, lang: Lang): WebAnswer {
+  const text = stripHtml(pick(entry.replies[lang] ?? entry.replies[DEFAULT_LANG]));
+  const rows = entry.buttons?.[lang] ?? entry.buttons?.[DEFAULT_LANG] ?? [];
+  const links: WebAnswer["links"] = [];
+  const quick: WebAnswer["quick"] = [];
+  for (const row of rows) {
+    for (const b of row) {
+      if ("url" in b) links.push({ label: b.text, url: b.url });
+      else if ("keyword" in b) quick.push({ label: b.text, entryId: b.keyword });
+    }
+  }
+  if (!quick.length) {
+    quick.push({ label: "🛍 Products", entryId: "products" }, { label: "❓ FAQ", entryId: "faq" });
+  }
+  return { text, links, quick };
+}
+
+/** Answer a website message from the reply book, or null when nothing matches. */
+export function answerFor(text: string, preferred: Lang | null): WebAnswer | null {
+  const found = matchEntry(text);
+  if (!found) return null;
+  return toWeb(found.entry, preferred ?? found.lang);
+}
+
+/** Answer a quick-reply tap by entry id. */
+export function entryAnswer(id: string, lang: Lang): WebAnswer | null {
+  const entry = ENTRY_BY_ID.get(id);
+  return entry ? toWeb(entry, lang) : null;
+}

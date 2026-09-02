@@ -309,26 +309,32 @@ export type Database = {
         Row: {
           created_at: string
           direction: string
+          display_name: string | null
           id: number
-          member_telegram_id: number
+          member_telegram_id: number | null
           sarah_message_id: number | null
           text: string | null
+          web_session_id: string | null
         }
         Insert: {
           created_at?: string
           direction: string
+          display_name?: string | null
           id?: never
-          member_telegram_id: number
+          member_telegram_id?: number | null
           sarah_message_id?: number | null
           text?: string | null
+          web_session_id?: string | null
         }
         Update: {
           created_at?: string
           direction?: string
+          display_name?: string | null
           id?: never
-          member_telegram_id?: number
+          member_telegram_id?: number | null
           sarah_message_id?: number | null
           text?: string | null
+          web_session_id?: string | null
         }
         Relationships: []
       }

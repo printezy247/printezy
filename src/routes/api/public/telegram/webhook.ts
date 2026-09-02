@@ -113,19 +113,18 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           const text = (message?.text ?? "").trim();
 
           // --- Sarah's side of the relay -------------------------------
-          // /support_login <code> registers this chat as Sarah's inbox.
-          if (text.startsWith("/support_login")) {
-            const { registerSupportChat } = await import("@/lib/bot/sarah.server");
-            const code = text.slice("/support_login".length).trim();
-            const ok = await registerSupportChat(telegramId, code);
-            await sendMessageHelpText(
-              telegramId,
-              ok
-                ? `✅ This chat is now Sarah's inbox. Member messages arrive here — reply to any of them (Telegram "reply") and it goes straight back to that member.`
-                : `Invalid code.`,
-            );
-            return Response.json({ ok: true });
+          // Her chat registers itself the first time she writes from her handle.
+          {
+            const { autoRegisterSarah } = await import("@/lib/bot/sarah.server");
+            if (await autoRegisterSarah(telegramId, message?.from?.username)) {
+              await sendMessageHelpText(
+                telegramId,
+                `✅ Hi Sarah — this chat is now the support inbox. Member and website messages arrive here; reply to any of them (Telegram "reply") and it goes straight back to that person.`,
+              );
+              return Response.json({ ok: true });
+            }
           }
+
 
           // A reply from Sarah to a forwarded message goes back to the member.
           {
@@ -191,9 +190,20 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           } else if (text.startsWith("/help")) {
             await sendMessageHelp(telegramId);
           } else {
-            // Free text: relay it to Sarah when the member is in chat mode.
+            // Free text: even in chat mode, Sarah's own answers come first —
+            // she is only pinged for questions the reply book can't handle.
             const { isInChatMode, relayToSarah } = await import("@/lib/bot/sarah.server");
             if (await isInChatMode(telegramId)) {
+              const { handleKeywordMessage, getLang } = await import(
+                "@/lib/bot/replies.server"
+              );
+              const answered = await handleKeywordMessage(
+                telegramId,
+                text,
+                await getLang(telegramId),
+              );
+              if (answered) return Response.json({ ok: true });
+
               const relayed = await relayToSarah(
                 {
                   telegramId,
@@ -208,6 +218,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                   ? `✅ Sent to Sarah — her reply will land right here.`
                   : `Couldn't reach Sarah just now — try again in a moment.`,
               );
+
             } else {
               // Sarah's keyword reply book answers first; anything she has no
               // answer for gets forwarded to her once so nobody hits silence.
