@@ -352,14 +352,17 @@ function MacroPage() {
                         <div key={`${b.bank}-bank`} className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
                         <div key={`${b.bank}-rate`} className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
                         <div key={`${b.bank}-stance`} className="border-t border-border py-2.5 pr-3">
-                          <Gauge segments={sliderGauge(b.stance)} color={stanceColor(b.stance)} />
-                          <span
-                            className="ml-2 text-xs font-semibold capitalize"
-                            style={{ color: stanceColor(b.stance) }}
-                          >
-                            {b.stance}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <StanceBar stance={b.stance} color={stanceColor(b.stance)} />
+                            <span
+                              className="shrink-0 text-[11px] font-semibold capitalize"
+                              style={{ color: stanceColor(b.stance) }}
+                            >
+                              {b.stance}
+                            </span>
+                          </div>
                         </div>
+
                         <div key={`${b.bank}-meeting`} className="border-t border-border py-2.5 text-right text-muted-foreground">
                           {b.nextMeeting}
                         </div>
