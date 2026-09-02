@@ -559,11 +559,11 @@ export function TrackRecord() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => goTrack("track_record_forexfactory")}
-          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
+          className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
           <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Reference</p>
           <h3 className="mt-2 text-lg font-bold">ForexFactory calendar</h3>
-          <p className="mt-2 text-sm text-body">
+          <p className="mt-2 flex-1 text-sm text-body">
             Cross-check every event we trade against the public economic calendar. This is a data
             reference, not a performance record.
           </p>
