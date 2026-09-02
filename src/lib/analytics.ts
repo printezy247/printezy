@@ -1,5 +1,7 @@
 import { recordEvent } from "./analytics.functions";
 import { recordAdClick } from "./adclick.functions";
+import { reportSiteMetaEvent } from "./metaevent.functions";
+import { hasAdConsent, onConsentChange } from "./consent";
 
 export type AnalyticsEventType = "click" | "section_view" | "page_load";
 
@@ -127,4 +129,85 @@ export function trackEngagement() {
     window.clearTimeout(timer);
     window.removeEventListener("scroll", onScroll);
   };
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Meta conversions fired from the site itself                         */
+/* ------------------------------------------------------------------ */
+
+export type SiteMetaEvent =
+  | "PageView"
+  | "ViewContent"
+  | "Lead"
+  | "InitiateCheckout"
+  | "StartTrial";
+
+type QueuedEvent = {
+  eventName: SiteMetaEvent;
+  eventId: string;
+  contentName?: string;
+  contentId?: string;
+  valueCents?: number;
+};
+
+// Events raised before a regulated-region visitor has decided are held here,
+// then flushed if (and only if) they accept.
+const pending: QueuedEvent[] = [];
+let listening = false;
+
+function readFbp(): string | null {
+  if (typeof document === "undefined") return null;
+  return document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/)?.[1] ?? null;
+}
+
+function send(event: QueuedEvent) {
+  reportSiteMetaEvent({
+    data: {
+      eventName: event.eventName,
+      sessionId: getSessionId(),
+      eventId: event.eventId,
+      path: typeof window !== "undefined" ? window.location.pathname : "/",
+      contentName: event.contentName ?? null,
+      contentId: event.contentId ?? null,
+      valueCents: event.valueCents ?? null,
+      fbp: readFbp(),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : null,
+    },
+  }).catch(() => {
+    // Silent fail: ad reporting must never break the page.
+  });
+}
+
+/** Report a conversion, gated on consent in the regions that require it. */
+export function metaTrack(
+  eventName: SiteMetaEvent,
+  opts: { id?: string; contentName?: string; contentId?: string; valueCents?: number } = {},
+) {
+  if (typeof window === "undefined") return;
+  const event: QueuedEvent = {
+    eventName,
+    eventId: `site_${eventName}_${getSessionId()}_${opts.id ?? "1"}`,
+    contentName: opts.contentName,
+    contentId: opts.contentId,
+    valueCents: opts.valueCents,
+  };
+
+  hasAdConsent().then((allowed) => {
+    if (allowed) {
+      send(event);
+      return;
+    }
+    pending.push(event);
+    if (!listening) {
+      listening = true;
+      onConsentChange((value) => {
+        if (value === "granted") {
+          while (pending.length) send(pending.shift()!);
+        } else if (value === "denied") {
+          pending.length = 0;
+        }
+      });
+    }
+  });
 }

@@ -16,7 +16,9 @@ export type MetaEventName =
   | "InitiateCheckout"
   | "Purchase"
   | "StartTrial"
-  | "CompleteRegistration";
+  | "CompleteRegistration"
+  | "PageView"
+  | "ViewContent";
 
 type AdClick = {
   session_id: string;
@@ -138,6 +140,86 @@ export async function reportMetaEvent(args: {
     return true;
   } catch (error) {
     console.error("[meta] request error", error);
+    return false;
+  }
+}
+
+
+/**
+ * Site-side conversion (browser origin). Same pixel, same de-duplicating
+ * event_id scheme as the bot events, but keyed on the analytics sessionId
+ * instead of a Telegram id. Unlike the bot events this one still reports when
+ * there is no stored ad click — organic page views are useful signal and Meta
+ * matches them on fbp / user agent when it can.
+ */
+export async function reportSiteEvent(args: {
+  eventName: MetaEventName;
+  sessionId: string;
+  eventId: string;
+  path?: string;
+  contentName?: string;
+  contentId?: string;
+  valueCents?: number;
+  currency?: string;
+  fbp?: string;
+  userAgent?: string;
+}): Promise<boolean> {
+  const config = metaConfig();
+  if (!config) return false;
+
+  const click = await findAdClick(args.sessionId);
+  const fbc = click ? buildFbc(click) : null;
+
+  const userData: Record<string, unknown> = {
+    external_id: await sha256Hex(args.sessionId),
+  };
+  if (fbc) userData.fbc = fbc;
+  if (args.fbp) userData.fbp = args.fbp;
+  if (args.userAgent) userData.client_user_agent = args.userAgent;
+
+  const customData: Record<string, unknown> = {};
+  if (args.valueCents !== undefined) {
+    customData.value = args.valueCents / 100;
+    customData.currency = (args.currency ?? "usd").toUpperCase();
+  }
+  if (args.contentName) customData.content_name = args.contentName;
+  if (args.contentId) {
+    customData.content_ids = [args.contentId];
+    customData.content_type = "product";
+  }
+  if (click?.utm_campaign) customData.campaign = click.utm_campaign;
+
+  const payload: Record<string, unknown> = {
+    data: [
+      {
+        event_name: args.eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: args.eventId,
+        action_source: "website",
+        event_source_url: `${SITE_URL}${args.path ?? click?.landing_path ?? "/"}`,
+        user_data: userData,
+        ...(Object.keys(customData).length ? { custom_data: customData } : {}),
+      },
+    ],
+  };
+  if (config.testEventCode) payload.test_event_code = config.testEventCode;
+
+  try {
+    const response = await fetch(
+      `https://graph.facebook.com/${GRAPH_VERSION}/${config.pixelId}/events?access_token=${encodeURIComponent(config.accessToken)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+    );
+    if (!response.ok) {
+      console.error(`[meta] site ${args.eventName} failed [${response.status}]: ${await response.text()}`);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("[meta] site request error", error);
     return false;
   }
 }
