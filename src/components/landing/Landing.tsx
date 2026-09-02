@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
   Zap,
@@ -74,6 +75,33 @@ function useBotLink() {
 /* Primitives                                                          */
 /* ------------------------------------------------------------------ */
 
+/* Apple-style easing: slow, buttery, settles gently */
+const APPLE_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+function Reveal({
+  children,
+  delay = 0,
+  y = 32,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.9, delay, ease: APPLE_EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 function Section({
   id,
   className = "",
@@ -100,13 +128,15 @@ function SectionHeading({
   subtitle?: string;
 }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
-      ) : null}
-      <h2 className="text-3xl font-bold sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-4 text-base text-muted-foreground">{subtitle}</p> : null}
-    </div>
+    <Reveal>
+      <div className="mx-auto mb-12 max-w-2xl text-center">
+        {eyebrow ? (
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
+        ) : null}
+        <h2 className="text-3xl font-bold sm:text-4xl">{title}</h2>
+        {subtitle ? <p className="mt-4 text-base text-muted-foreground">{subtitle}</p> : null}
+      </div>
+    </Reveal>
   );
 }
 
@@ -290,7 +320,11 @@ function Hero() {
     <section className="relative overflow-hidden bg-hero pt-32 pb-20 sm:pt-40 sm:pb-24">
       <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-glow opacity-40 blur-3xl" />
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: APPLE_EASE }}
+        >
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
             <Activity className="h-3.5 w-3.5" /> 640+ active traders
           </span>
@@ -329,9 +363,14 @@ function Hero() {
               </div>
             ))}
           </dl>
-        </div>
+        </motion.div>
 
-        <div className="glass-card rounded-2xl p-5 shadow-elevated">
+        <motion.div
+          className="glass-card rounded-2xl p-5 shadow-elevated"
+          initial={{ opacity: 0, y: 36, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2, ease: APPLE_EASE }}
+        >
           <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
             <span className="font-medium text-foreground">XAUUSD · M5</span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-2 py-0.5 font-semibold text-primary">
@@ -347,7 +386,7 @@ function Hero() {
               BUY setup confirmed — entry, stop and targets pushed to Telegram in real time.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
