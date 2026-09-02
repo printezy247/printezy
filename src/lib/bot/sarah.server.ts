@@ -43,10 +43,11 @@ export async function registerSupportChat(chatId: number, code: string): Promise
 }
 
 async function setChatMode(telegramId: number, on: boolean) {
+  // Upsert: the member may reach this from a button tap before any message,
+  // so their bot_users row might not exist yet.
   const { error } = await supabaseAdmin
     .from("bot_users")
-    .update({ chat_with_sarah: on, updated_at: new Date().toISOString() })
-    .eq("telegram_id", telegramId);
+    .upsert({ telegram_id: telegramId, chat_with_sarah: on, updated_at: new Date().toISOString() });
   if (error) console.error("[sarah] chat mode update failed", error);
 }
 
