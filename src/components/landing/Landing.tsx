@@ -183,8 +183,8 @@ function TelegramCta({
     variant === "primary"
       ? "bg-primary text-primary-foreground hover:bg-primary-glow"
       : variant === "gold"
-        ? "border border-accent bg-white text-accent-glow hover:bg-accent-tint"
-        : "border border-border bg-white text-foreground hover:bg-surface";
+        ? "border border-accent bg-card text-accent hover:bg-accent-tint"
+        : "border border-border bg-card text-foreground hover:bg-surface";
   return (
     <a
       href={href}
@@ -202,7 +202,7 @@ function SupportCta({ className = "" }: { className?: string }) {
     <a
       href={LINKS.support}
       onClick={() => goTrack("support_click")}
-      className={`inline-flex items-center justify-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
     >
       <Send className="h-4 w-4" /> Ask Sarah
     </a>
@@ -212,11 +212,13 @@ function SupportCta({ className = "" }: { className?: string }) {
 function Logo() {
   return (
     <span className="inline-flex items-center gap-2">
-      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary text-sm font-black text-primary-foreground">
-        E
-      </span>
+      <img
+        src={brandLogo}
+        alt="EzyMap Algo logo"
+        className="h-8 w-8 rounded-md object-contain"
+      />
       <span className="font-display text-[17px] font-extrabold tracking-tight text-foreground">
-        EzyMap<span className="text-accent-glow">Algo</span>
+        EzyMap<span className="text-accent">Algo</span>
       </span>
     </span>
   );
@@ -235,15 +237,15 @@ const TICKER: { symbol: string; price: string; change: string; up: boolean }[] =
 
 export function Ticker() {
   return (
-    <div className="w-full bg-[#0b0f0c] text-white">
+    <div className="w-full border-b border-border bg-surface-elevated text-foreground">
       <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/40">
+        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
           Indicative · static
         </span>
         {TICKER.map((t) => (
           <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
-            <span className="font-semibold text-white/80">{t.symbol}</span>
-            <span className="tabular-nums text-white">{t.price}</span>
+            <span className="font-semibold text-body">{t.symbol}</span>
+            <span className="tabular-nums text-foreground">{t.price}</span>
             <span
               className="tabular-nums font-semibold"
               style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
@@ -425,7 +427,7 @@ function Hero() {
               ["24/5", "Market coverage"],
               ["3 Styles", "Scalp · Intraday · Swing"],
             ].map(([v, l]) => (
-              <div key={l} className="bg-white px-4 py-3.5">
+              <div key={l} className="bg-card px-4 py-3.5">
                 <dt className="text-xl font-extrabold text-foreground">{v}</dt>
                 <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {l}
@@ -440,10 +442,10 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: APPLE_EASE }}
         >
-          <div className="rounded-md border border-border bg-white shadow-elevated">
+          <div className="rounded-md border border-border bg-card shadow-elevated">
             <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
               <span className="text-sm font-bold text-foreground">XAU/USD · Gold Spot</span>
-              <span className="rounded bg-accent-tint px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent-glow">
+              <span className="rounded bg-accent-tint px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent">
                 Sample signal
               </span>
             </div>
@@ -453,7 +455,7 @@ function Hero() {
             <div className="grid grid-cols-3 gap-px border-t border-border bg-border">
               {[
                 ["Entry", "4,598.70", "text-foreground"],
-                ["Stop", "4,596.70", "text-accent-glow"],
+                ["Stop", "4,596.70", "text-accent"],
                 ["Target", "4,600.61", "text-primary"],
               ].map(([label, value, tone]) => (
                 <div key={label} className="bg-secondary px-3 py-3 text-center">
@@ -514,7 +516,7 @@ export function TrackRecord() {
         <a
           href={LINKS.freeChannel}
           onClick={() => goTrack("track_record_telegram")}
-          className="rounded-md border border-border bg-white p-5 transition-colors hover:border-primary"
+          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
         >
           <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">Telegram history</p>
           <h3 className="mt-2 text-lg font-bold">Full signal archive</h3>
@@ -530,14 +532,14 @@ export function TrackRecord() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => goTrack("track_record_myfxbook")}
-          className="rounded-md border border-border bg-white p-5 transition-colors hover:border-accent"
+          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent-glow">Third party</p>
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Third party</p>
           <h3 className="mt-2 text-lg font-bold">MyFxBook verification</h3>
           <p className="mt-2 text-sm text-body">
             Independent performance tracking. Ask Sarah for the current verified account link.
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-glow">
+          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
             View MyFxBook <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </a>
@@ -572,7 +574,7 @@ export function Features() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {FEATURES.map((f, i) => (
           <Reveal key={f.title} delay={i * 0.08} className="h-full">
-          <article className="glass-card h-full rounded-2xl p-6">
+          <article className="glass-card h-full rounded-xl p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <f.icon className="h-5 w-5" />
             </span>
@@ -599,11 +601,15 @@ type Tier = {
   event: string;
   highlight?: boolean;
   image?: string;
+  price: string;
+  priceNote?: string;
 };
 
 const TIERS: Tier[] = [
   {
     name: "Free",
+    price: "Free",
+    priceNote: "Forever",
     blurb: "No payment required",
     features: [
       "Join our 640+ trader community",
@@ -618,6 +624,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Vantage Trial",
+    price: "Free for 30 days",
+    priceNote: "No card required",
     blurb: "Pro access free for 30 days",
     features: [
       "No card required",
@@ -631,6 +639,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Pro",
+    price: "$49",
+    priceNote: "per month",
     blurb: "Scalp Mastery Signals",
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
@@ -640,6 +650,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Premium",
+    price: "$99",
+    priceNote: "per month",
     blurb: "Alpha Edge Signals",
     features: [
       "M15-M30 Intraday",
@@ -655,6 +667,8 @@ const TIERS: Tier[] = [
   },
   {
     name: "Elite",
+    price: "$299",
+    priceNote: "per month",
     blurb: "Full Suite",
     features: [
       "All indicators included",
@@ -683,7 +697,7 @@ export function Pricing() {
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
-            className={`relative flex h-full flex-col overflow-hidden rounded-2xl ${
+            className={`relative flex h-full flex-col overflow-hidden rounded-xl ${
               t.highlight
                 ? "border border-accent/40 bg-surface-elevated shadow-gold"
                 : "glass-card"
@@ -695,21 +709,33 @@ export function Pricing() {
               </span>
             ) : null}
             {t.image ? (
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#050806]">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
                 <img
                   src={t.image}
                   alt={`${t.name} package preview`}
                   loading="lazy"
                   className="h-full w-full object-contain"
                 />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-surface-elevated/90 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
               </div>
-            ) : null}
+            ) : (
+              <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border" />
+            )}
             <div className="flex flex-1 flex-col p-6">
               <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 {t.name}
               </h3>
-              <p className="mt-3 text-lg font-semibold text-foreground">{t.blurb}</p>
+              <p className="mt-2 flex items-baseline gap-1.5">
+                <span className="text-2xl font-extrabold tracking-tight text-foreground">
+                  {t.price}
+                </span>
+                {t.priceNote ? (
+                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t.priceNote}
+                  </span>
+                ) : null}
+              </p>
+              <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
@@ -721,7 +747,7 @@ export function Pricing() {
               <a
                 href={t.href === LINKS.bot ? botHref : t.href}
                 onClick={() => goTrack(t.event)}
-                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`mt-6 inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
                   t.highlight
                     ? "bg-accent text-accent-foreground hover:bg-accent-glow"
                     : "bg-primary text-primary-foreground hover:bg-primary-glow"
@@ -734,8 +760,8 @@ export function Pricing() {
           </Reveal>
         ))}
       </div>
-      <div className="mt-8 rounded-md border border-border bg-white p-5">
-        <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent-glow">
+      <div className="mt-8 rounded-md border border-border bg-card p-5">
+        <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
           Risk &amp; affiliate disclosure
         </p>
         <p className="mt-2 text-sm leading-relaxed text-body">
@@ -806,7 +832,7 @@ export function Products() {
             <a
               href={LINKS.ebook}
               onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
-              className="glass-card group overflow-hidden rounded-2xl transition-transform hover:-translate-y-1"
+              className="glass-card group overflow-hidden rounded-xl transition-transform hover:-translate-y-1"
             >
               <div className="aspect-[2/3] w-full overflow-hidden">
                 <img
@@ -831,7 +857,7 @@ export function Products() {
       <div className="grid gap-5 lg:grid-cols-3">
         {/* TradingView indicators */}
         <Reveal className="h-full">
-        <article className="glass-card h-full rounded-2xl p-6">
+        <article className="glass-card h-full rounded-xl p-6">
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
             <LineChart className="h-5 w-5" />
           </span>
@@ -856,7 +882,7 @@ export function Products() {
 
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
-        <article className="glass-card h-full rounded-2xl p-6">
+        <article className="glass-card h-full rounded-xl p-6">
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
             <Bot className="h-5 w-5" />
           </span>
@@ -881,8 +907,7 @@ export function Products() {
 
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
-        <article className="glass-card relative h-full overflow-hidden rounded-2xl p-6">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-glow opacity-30 blur-2xl" />
+        <article className="glass-card relative h-full overflow-hidden rounded-xl p-6">
           <img
             src={macroLogo}
             alt="Gold, Forex & Crypto Macros"
@@ -908,7 +933,7 @@ export function Products() {
           <a
             href={LINKS.macro}
             onClick={() => goTrack("products_macro_join")}
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
             <Send className="h-4 w-4" /> Join Macro Bot
           </a>
@@ -937,7 +962,7 @@ export function HowItWorks() {
         {STEPS.map((s, i) => (
           <motion.li
             key={s.title}
-            className="glass-card relative rounded-2xl p-6"
+            className="glass-card relative rounded-xl p-6"
             initial={{ opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -965,7 +990,7 @@ export function Ambassador() {
     <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
-        <div className="glass-card relative overflow-hidden rounded-2xl p-8 text-center">
+        <div className="glass-card relative overflow-hidden rounded-xl p-8 text-center">
           <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
             <img
               src={jackPhoto}
@@ -982,7 +1007,7 @@ export function Ambassador() {
           <a
             href={LINKS.support}
             onClick={() => goTrack("ambassador_contact_sarah")}
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
           >
             <Send className="h-4 w-4" /> Questions? Ask Sarah
           </a>
@@ -1062,7 +1087,7 @@ export function SocialProof() {
           const I = Icon as typeof Activity;
           return (
             <Reveal key={l as string} delay={i * 0.08}>
-            <div className="glass-card flex h-full items-center gap-4 rounded-2xl p-5">
+            <div className="glass-card flex h-full items-center gap-4 rounded-xl p-5">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
                 <I className="h-5 w-5" />
               </span>
@@ -1078,7 +1103,7 @@ export function SocialProof() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {TESTIMONIALS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.08} className="h-full">
-          <figure className="glass-card flex h-full flex-col rounded-2xl p-6">
+          <figure className="glass-card flex h-full flex-col rounded-xl p-6">
             <div className="flex gap-0.5 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-current" />
@@ -1231,7 +1256,7 @@ function FinalCta() {
   return (
     <Section id="get-started" className="bg-surface/40">
       <Reveal>
-      <div className="glass-card rounded-3xl px-6 py-14 text-center sm:px-12">
+      <div className="glass-card rounded-xl px-6 py-14 text-center sm:px-12">
         <h2 className="text-3xl font-bold sm:text-4xl">Start with the free channel today</h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
           No payment, no commitment. See the signals and education for yourself, then upgrade
