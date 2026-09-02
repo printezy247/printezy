@@ -203,9 +203,9 @@ function MacroPage() {
           ))}
         </div>
 
-        <div className="grid gap-7 lg:grid-cols-[1fr_340px]">
+        <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
           {/* Main column */}
-          <div className="space-y-7">
+          <div className="min-w-0 space-y-7">
             {shows("Calendar") ? (
               <Card
                 title="Today's Economic Calendar"
@@ -237,39 +237,34 @@ function MacroPage() {
                 }
               >
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead>
-                      <tr className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
-                        <th className="pb-2 font-bold">Time</th>
-                        <th className="pb-2 font-bold">Ccy</th>
-                        <th className="pb-2 font-bold">Event</th>
-                        <th className="pb-2 text-right font-bold">Forecast</th>
-                        <th className="pb-2 text-right font-bold">Previous</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {desk?.calendar.map((r) => (
-                        <tr key={`${r.nyTime}-${r.event}`} className="border-t border-border">
-                          <td className={`py-2.5 pr-3 ${mono}`}>{clock.toLocal(r.nyTime)}</td>
-                          <td className="py-2.5 pr-3 font-semibold">{r.currency}</td>
-                          <td className="py-2.5 pr-3">
-                            <span className="inline-flex items-center gap-2">
-                              <span
-                                className="h-2 w-2 shrink-0 rounded-full"
-                                style={{ background: IMPACT_COLOR[r.impact] }}
-                                title={`${r.impact} impact`}
-                              />
-                              {r.event}
-                            </span>
-                          </td>
-                          <td className={`py-2.5 text-right ${mono}`}>{r.forecast}</td>
-                          <td className={`py-2.5 text-right text-muted-foreground ${mono}`}>
-                            {r.previous}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div
+                    className="grid gap-x-3 text-left text-sm"
+                    style={{ gridTemplateColumns: "56px 52px minmax(0, 1fr) 78px 78px" }}
+                  >
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Time</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Ccy</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Event</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Forecast</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Previous</div>
+                    {desk?.calendar.map((r) => (
+                      <>
+                        <div key={`${r.nyTime}-${r.event}-time`} className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
+                        <div key={`${r.nyTime}-${r.event}-ccy`} className="border-t border-border py-2.5 font-semibold">{r.currency}</div>
+                        <div key={`${r.nyTime}-${r.event}-event`} className="border-t border-border py-2.5 pr-3">
+                          <span className="inline-flex items-center gap-2">
+                            <span
+                              className="h-2 w-2 shrink-0 rounded-full"
+                              style={{ background: IMPACT_COLOR[r.impact] }}
+                              title={`${r.impact} impact`}
+                            />
+                            {r.event}
+                          </span>
+                        </div>
+                        <div key={`${r.nyTime}-${r.event}-forecast`} className={`border-t border-border py-2.5 text-right ${mono}`}>{r.forecast}</div>
+                        <div key={`${r.nyTime}-${r.event}-previous`} className={`border-t border-border py-2.5 text-right text-muted-foreground ${mono}`}>{r.previous}</div>
+                      </>
+                    ))}
+                  </div>
                 </div>
               </Card>
             ) : null}
@@ -286,36 +281,33 @@ function MacroPage() {
                 }
               >
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead>
-                      <tr className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground">
-                        <th className="pb-2 font-bold">Central bank</th>
-                        <th className="pb-2 font-bold">Rate</th>
-                        <th className="pb-2 font-bold">Stance</th>
-                        <th className="pb-2 text-right font-bold">Next meeting</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {desk?.centralBanks.map((b) => (
-                        <tr key={b.bank} className="border-t border-border">
-                          <td className="py-2.5 pr-3 font-semibold">{b.bank}</td>
-                          <td className={`py-2.5 pr-3 ${mono}`}>{b.rate}</td>
-                          <td className="py-2.5 pr-3">
-                            <Gauge segments={sliderGauge(b.stance)} color={stanceColor(b.stance)} />
-                            <span
-                              className="ml-2 text-xs font-semibold capitalize"
-                              style={{ color: stanceColor(b.stance) }}
-                            >
-                              {b.stance}
-                            </span>
-                          </td>
-                          <td className="py-2.5 text-right text-muted-foreground">
-                            {b.nextMeeting}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <div
+                    className="grid gap-x-3 text-left text-sm"
+                    style={{ gridTemplateColumns: "minmax(0, 1fr) 72px minmax(90px, 150px) 86px" }}
+                  >
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Central bank</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Rate</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Stance</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Next meeting</div>
+                    {desk?.centralBanks.map((b) => (
+                      <>
+                        <div key={`${b.bank}-bank`} className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
+                        <div key={`${b.bank}-rate`} className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
+                        <div key={`${b.bank}-stance`} className="border-t border-border py-2.5 pr-3">
+                          <Gauge segments={sliderGauge(b.stance)} color={stanceColor(b.stance)} />
+                          <span
+                            className="ml-2 text-xs font-semibold capitalize"
+                            style={{ color: stanceColor(b.stance) }}
+                          >
+                            {b.stance}
+                          </span>
+                        </div>
+                        <div key={`${b.bank}-meeting`} className="border-t border-border py-2.5 text-right text-muted-foreground">
+                          {b.nextMeeting}
+                        </div>
+                      </>
+                    ))}
+                  </div>
                   <p className="mt-2 text-[11px] text-muted-foreground">
                     Track reads dovish (left) → hawkish (right).
                   </p>
@@ -335,28 +327,31 @@ function MacroPage() {
                   </p>
                 }
               >
-                <ul className="space-y-3">
+                <div
+                  className="grid gap-x-3 text-left text-sm"
+                  style={{ gridTemplateColumns: "minmax(0, 150px) 52px minmax(80px, 140px) minmax(0, 1fr)" }}
+                >
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Country</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Prob</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Gauge</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Driver</div>
                   {desk?.recession.map((r) => (
-                    <li key={r.country} className="border-t border-border pt-3 first:border-0 first:pt-0">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-sm font-semibold">{r.country}</span>
-                        <span className="flex items-center gap-2">
-                          <Gauge
-                            segments={fillGauge(r.probability)}
-                            color={recessionColor(r.probability)}
-                          />
-                          <span
-                            className="text-sm font-bold"
-                            style={{ color: recessionColor(r.probability) }}
-                          >
-                            {r.probability}%
-                          </span>
-                        </span>
+                    <>
+                      <div key={`${r.country}-country`} className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
+                      <div
+                        key={`${r.country}-prob`}
+                        className="border-t border-border py-2.5 text-right text-sm font-bold"
+                        style={{ color: recessionColor(r.probability) }}
+                      >
+                        {r.probability}%
                       </div>
-                      <p className="mt-1 text-xs text-muted-foreground">{r.driver}</p>
-                    </li>
+                      <div key={`${r.country}-gauge`} className="border-t border-border py-2.5">
+                        <Gauge segments={fillGauge(r.probability)} color={recessionColor(r.probability)} />
+                      </div>
+                      <div key={`${r.country}-driver`} className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
+                    </>
                   ))}
-                </ul>
+                </div>
               </Card>
             ) : null}
 
