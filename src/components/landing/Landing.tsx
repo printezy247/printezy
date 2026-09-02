@@ -966,12 +966,12 @@ export function Products() {
       <div className="grid gap-5 lg:grid-cols-3">
         {/* TradingView indicators */}
         <Reveal className="h-full">
-        <article className="glass-card h-full rounded-xl p-6">
+        <article className="glass-card flex h-full flex-col rounded-xl p-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
             <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
             {TV_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -979,7 +979,7 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-auto flex flex-col gap-2 pt-5">
             <a
               href={botHref}
               onClick={() => goTrack("products_tv_enroll")}
