@@ -915,7 +915,7 @@ export function Products() {
         <Reveal className="h-full" delay={0.1}>
         <article className="glass-card h-full rounded-xl p-6">
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
-            <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full w-full object-contain" />
+            <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
           <ul className="mt-4 space-y-2.5">
