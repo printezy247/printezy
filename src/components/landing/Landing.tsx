@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
