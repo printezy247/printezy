@@ -1103,7 +1103,7 @@ export function HowItWorks() {
         {STEPS.map((s, i) => (
           <motion.li
             key={s.title}
-            className="glass-card relative rounded-xl p-6"
+            className="glass-card relative flex h-full flex-col rounded-xl p-6"
             initial={{ opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -1111,7 +1111,7 @@ export function HowItWorks() {
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+            <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.body}</p>
           </motion.li>
         ))}
       </ol>
