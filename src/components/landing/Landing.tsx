@@ -735,13 +735,14 @@ export function Pricing() {
                 : "glass-card"
             }`}
           >
-            {t.highlight ? (
-              <span className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent-foreground">
-                Most popular
-              </span>
-            ) : null}
             {t.image ? (
               <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
+                {t.highlight ? (
+                  <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    Most popular
+                  </span>
+                ) : null}
                 <img
                   src={t.image}
                   alt={`${t.name} package preview`}
@@ -751,7 +752,14 @@ export function Pricing() {
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
               </div>
             ) : (
-              <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border" />
+              <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border">
+                {t.highlight ? (
+                  <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    Most popular
+                  </span>
+                ) : null}
+              </div>
             )}
             <div className="flex flex-1 flex-col p-6">
               <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
