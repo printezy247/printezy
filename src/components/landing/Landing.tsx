@@ -1397,7 +1397,7 @@ export function Landing() {
       "products",
       "how-it-works",
       "ambassador",
-      "track-record",
+      
       "testimonials",
       "faq",
       "get-started",
