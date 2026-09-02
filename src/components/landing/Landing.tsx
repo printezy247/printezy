@@ -939,12 +939,12 @@ export function Products() {
               <a
                 href={LINKS.ebook}
                 onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
-                className="glass-card group flex items-center gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
+                className="glass-card group flex h-full items-stretch gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
               >
                 <Book3D image={b.image} title={b.title} />
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-base font-semibold sm:text-lg">{b.title}</h4>
-                  <ul className="mt-2 space-y-1">
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <h4 className="min-h-[2.5rem] text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
+                  <ul className="mt-2 flex-1 space-y-1 min-h-[5rem]">
                     {b.bullets.map((bullet) => (
                       <li key={bullet} className="flex items-start gap-2 text-xs text-muted-foreground sm:text-sm">
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
