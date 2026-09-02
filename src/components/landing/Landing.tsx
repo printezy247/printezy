@@ -1132,16 +1132,17 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {NAV_ITEMS.map((i) => (
                 <li key={i.href}>
-                  <a href={`/${i.href}`} className="hover:text-foreground">
-                    {i.label}
-                  </a>
+                  {i.href === "#faq" ? (
+                    <Link to="/faq" className="hover:text-foreground">
+                      {i.label}
+                    </Link>
+                  ) : (
+                    <a href={`/${i.href}`} className="hover:text-foreground">
+                      {i.label}
+                    </a>
+                  )}
                 </li>
               ))}
-              <li>
-                <Link to="/faq" className="hover:text-foreground">
-                  FAQ
-                </Link>
-              </li>
             </ul>
           </div>
 
