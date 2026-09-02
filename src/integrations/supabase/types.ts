@@ -107,9 +107,11 @@ export type Database = {
       enrollments: {
         Row: {
           activated_at: string | null
+          activation_source: string | null
           amount_cents: number
           created_at: string
           currency: string
+          expires_at: string | null
           id: string
           portal_token: string
           session_id: string | null
@@ -121,9 +123,11 @@ export type Database = {
         }
         Insert: {
           activated_at?: string | null
+          activation_source?: string | null
           amount_cents?: number
           created_at?: string
           currency?: string
+          expires_at?: string | null
           id?: string
           portal_token: string
           session_id?: string | null
@@ -135,9 +139,11 @@ export type Database = {
         }
         Update: {
           activated_at?: string | null
+          activation_source?: string | null
           amount_cents?: number
           created_at?: string
           currency?: string
+          expires_at?: string | null
           id?: string
           portal_token?: string
           session_id?: string | null
