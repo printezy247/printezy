@@ -459,6 +459,19 @@ const TIERS: Tier[] = [
     image: tierFree,
   },
   {
+    name: "Vantage Trial",
+    blurb: "Pro access free for 30 days",
+    features: [
+      "No card required",
+      "Open a Vantage Markets account to unlock",
+      "Pro signal feed, trade log & stats",
+      "Activate through our bot",
+    ],
+    cta: "Get Free Access",
+    href: LINKS.bot,
+    event: "pricing_vantage_trial",
+  },
+  {
     name: "Pro",
     blurb: "Scalp Mastery Signals",
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
