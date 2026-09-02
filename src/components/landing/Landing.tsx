@@ -1171,7 +1171,7 @@ export function Ambassador() {
               ["10+ yrs", "Trading"],
               ["24/5", "Coverage"],
             ].map(([v, l]) => (
-              <div key={l} className="rounded-xl border border-border bg-surface p-4">
+              <div key={l} className="flex h-full flex-col rounded-xl border border-border bg-surface p-4">
                 <dt className="text-xl font-bold text-accent">{v}</dt>
                 <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
               </div>
