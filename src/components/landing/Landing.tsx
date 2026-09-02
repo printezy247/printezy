@@ -333,7 +333,13 @@ export function Nav() {
               </li>
             ))}
             <li className="pt-2">
-              <TelegramCta label="Join Free Channel" event="nav_join_free_mobile" className="w-full" />
+              <a
+                href={LINKS.support}
+                onClick={() => goTrack("nav_ask_sarah_mobile")}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+              >
+                <Send className="h-4 w-4" /> Ask Sarah
+              </a>
             </li>
           </ul>
         </div>
