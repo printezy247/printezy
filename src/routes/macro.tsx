@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
-import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
+import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
 import {
   MACRO_FILTERS,
@@ -20,7 +20,7 @@ import {
   type MacroFilter,
 } from "@/lib/macro-desk";
 
-const macroLogo = "/__l5e/assets-v1/0d9dc80c-58b1-4a3a-9d5b-8c1e5cbcc0d0/macro-logo.png";
+const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
 
 export const Route = createFileRoute("/macro")({
@@ -215,7 +215,7 @@ function MacroPage() {
                       href={FOREXFACTORY}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={() => goTrack("macro_forexfactory")}
+                      onClick={() => track("click", "macro_forexfactory")}
                       className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                     >
                       Cross-check on ForexFactory <ArrowRight className="h-3 w-3" />
@@ -430,7 +430,7 @@ function MacroPage() {
                 href={LINKS.macro}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => goTrack("macro_subscribe")}
+                onClick={() => track("click", "macro_subscribe")}
                 className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
               >
                 <Send className="h-4 w-4" /> Subscribe via Telegram
