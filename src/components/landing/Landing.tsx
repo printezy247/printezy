@@ -543,11 +543,11 @@ export function TrackRecord() {
         <a
           href={LINKS.freeChannel}
           onClick={() => goTrack("track_record_telegram")}
-          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
+          className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
         >
           <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">Telegram history</p>
           <h3 className="mt-2 text-lg font-bold">Full signal archive</h3>
-          <p className="mt-2 text-sm text-body">
+          <p className="mt-2 flex-1 text-sm text-body">
             Scroll back through every published signal, entry, stop and target in the free channel.
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
