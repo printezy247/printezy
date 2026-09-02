@@ -172,6 +172,36 @@ export type Database = {
           },
         ]
       }
+      leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          session_id: string | null
+          source: string
+          telegram_username: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          session_id?: string | null
+          source: string
+          telegram_username?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          session_id?: string | null
+          source?: string
+          telegram_username?: string | null
+        }
+        Relationships: []
+      }
       login_codes: {
         Row: {
           attempts: number

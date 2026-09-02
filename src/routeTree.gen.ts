@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MacroRouteImport } from './routes/macro'
+import { Route as FreeEbookRouteImport } from './routes/free-ebook'
+import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
@@ -34,6 +36,16 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const MacroRoute = MacroRouteImport.update({
   id: '/macro',
   path: '/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeEbookRoute = FreeEbookRouteImport.update({
+  id: '/free-ebook',
+  path: '/free-ebook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeChannelRoute = FreeChannelRouteImport.update({
+  id: '/free-channel',
+  path: '/free-channel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -83,6 +95,8 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
+  '/free-channel': typeof FreeChannelRoute
+  '/free-ebook': typeof FreeEbookRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -95,6 +109,8 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
+  '/free-channel': typeof FreeChannelRoute
+  '/free-ebook': typeof FreeEbookRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -109,6 +125,8 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
+  '/free-channel': typeof FreeChannelRoute
+  '/free-ebook': typeof FreeEbookRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -123,6 +141,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/faq'
+    | '/free-channel'
+    | '/free-ebook'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -135,6 +155,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/faq'
+    | '/free-channel'
+    | '/free-ebook'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -148,6 +170,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/faq'
+    | '/free-channel'
+    | '/free-ebook'
     | '/macro'
     | '/privacy'
     | '/terms'
@@ -162,6 +186,8 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   FaqRoute: typeof FaqRoute
+  FreeChannelRoute: typeof FreeChannelRoute
+  FreeEbookRoute: typeof FreeEbookRoute
   MacroRoute: typeof MacroRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -190,6 +216,20 @@ declare module '@tanstack/react-router' {
       path: '/macro'
       fullPath: '/macro'
       preLoaderRoute: typeof MacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-ebook': {
+      id: '/free-ebook'
+      path: '/free-ebook'
+      fullPath: '/free-ebook'
+      preLoaderRoute: typeof FreeEbookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-channel': {
+      id: '/free-channel'
+      path: '/free-channel'
+      fullPath: '/free-channel'
+      preLoaderRoute: typeof FreeChannelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -268,6 +308,8 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   FaqRoute: FaqRoute,
+  FreeChannelRoute: FreeChannelRoute,
+  FreeEbookRoute: FreeEbookRoute,
   MacroRoute: MacroRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
