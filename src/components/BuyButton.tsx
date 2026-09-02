@@ -25,7 +25,7 @@ export function BuyButton({ sku, label = "Checkout", variant = "primary", classN
     setLoading(true);
     setError(null);
     try {
-      track("checkout_start", { sku });
+      track("click", `checkout_${sku}`);
       const res = await startCheckout({ data: { sku, origin: window.location.origin } });
       if (res?.url) window.location.href = res.url;
       else setError("Checkout unavailable, please try again.");
