@@ -9,18 +9,17 @@ import {
   MACRO_PRICES,
   fetchFearGreed,
   fetchMacroDesk,
-  fillGauge,
   GAUGE_TRACK,
   IMPACT_COLOR,
   recessionColor,
-  sliderGauge,
   sparkline,
   stanceColor,
   type FearGreed,
-  type GaugeSegments,
   type MacroDesk,
   type MacroFilter,
+  type Stance,
 } from "@/lib/macro-desk";
+
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
