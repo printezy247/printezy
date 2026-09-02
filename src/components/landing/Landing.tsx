@@ -69,6 +69,7 @@ const META_CLICK_EVENTS: Record<
 > = {
   pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
   pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
+  pricing_vantage_open_account: { event: "Lead", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
   pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
@@ -632,6 +633,9 @@ type Tier = {
   priceNote?: string;
   /** Paid tiers also offer the no-card Vantage activation route. */
   freeAlt?: boolean;
+  /** Optional "Open Your Account" affiliate link shown above the main CTA. */
+  openAccountHref?: string;
+  openAccountEvent?: string;
 };
 
 const TIERS: Tier[] = [
@@ -650,6 +654,8 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_vantage_trial",
     image: tierVantage,
+    openAccountHref: LINKS.vantageOpenAccount,
+    openAccountEvent: "pricing_vantage_open_account",
   },
   {
     name: "Beginner",
