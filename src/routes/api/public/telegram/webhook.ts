@@ -188,6 +188,11 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
   },
 });
 
+async function sendMessageHelpText(chatId: number, text: string) {
+  const { sendMessage } = await import("@/lib/bot/telegram.server");
+  await sendMessage(chatId, text);
+}
+
 async function sendMessageHelp(chatId: number) {
   const { sendMessage } = await import("@/lib/bot/telegram.server");
   const { SUPPORT } = await import("@/lib/bot/menu.server");
