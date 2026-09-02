@@ -611,25 +611,11 @@ type Tier = {
   image?: string;
   price: string;
   priceNote?: string;
+  /** Paid tiers also offer the no-card Vantage activation route. */
+  freeAlt?: boolean;
 };
 
 const TIERS: Tier[] = [
-  {
-    name: "Free",
-    price: "Free",
-    priceNote: "Forever",
-    blurb: "No payment required",
-    features: [
-      "Join our 640+ trader community",
-      "Daily signals & education",
-      "Public channel access",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
-    href: LINKS.bot,
-    event: "pricing_free",
-    image: tierFree,
-  },
   {
     name: "Vantage Trial",
     price: "Free for 30 days",
@@ -647,6 +633,22 @@ const TIERS: Tier[] = [
     image: tierVantage,
   },
   {
+    name: "Free",
+    price: "Free",
+    priceNote: "Forever",
+    blurb: "No payment required",
+    features: [
+      "Join our 640+ trader community",
+      "Daily signals & education",
+      "Public channel access",
+      "Enroll through our bot",
+    ],
+    cta: "Enroll Now",
+    href: LINKS.bot,
+    event: "pricing_free",
+    image: tierFree,
+  },
+  {
     name: "Pro",
     price: "$49",
     priceNote: "per month",
@@ -656,6 +658,7 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_pro",
     image: tierPro,
+    freeAlt: true,
   },
   {
     name: "Premium",
@@ -673,6 +676,7 @@ const TIERS: Tier[] = [
     event: "pricing_premium",
     highlight: true,
     image: tierPremium,
+    freeAlt: true,
   },
   {
     name: "Elite",
@@ -690,6 +694,7 @@ const TIERS: Tier[] = [
     href: LINKS.bot,
     event: "pricing_elite",
     image: tierElite,
+    freeAlt: true,
   },
 ];
 
@@ -744,6 +749,11 @@ export function Pricing() {
                   </span>
                 ) : null}
               </p>
+              {t.freeAlt ? (
+                <p className="mt-1 text-[11px] font-medium leading-snug text-accent">
+                  or free access by Vantage activation
+                </p>
+              ) : null}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
                 {t.features.map((f) => (
@@ -764,6 +774,15 @@ export function Pricing() {
               >
                 {t.cta}
               </a>
+              {t.freeAlt ? (
+                <a
+                  href={botHref}
+                  onClick={() => goTrack(`${t.event}_free_access`)}
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                >
+                  Get Free Access
+                </a>
+              ) : null}
             </div>
           </article>
           </Reveal>
