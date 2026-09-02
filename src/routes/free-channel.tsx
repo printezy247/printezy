@@ -40,11 +40,13 @@ function FreeChannelPage() {
     setError("");
     try {
       await saveLead({
-        email,
-        name: name || undefined,
-        source: "free-channel",
-        telegramUsername: telegram || undefined,
-        sessionId: getSessionId(),
+        data: {
+          email,
+          name: name || undefined,
+          source: "free-channel",
+          telegramUsername: telegram || undefined,
+          sessionId: getSessionId(),
+        },
       });
       setStatus("success");
     } catch (err) {
