@@ -90,6 +90,17 @@ export type Database = {
           total: number
         }[]
       }
+      record_ad_click: {
+        Args: {
+          p_fbclid: string
+          p_landing_path?: string
+          p_session_id: string
+          p_utm_campaign?: string
+          p_utm_medium?: string
+          p_utm_source?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
