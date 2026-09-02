@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 const safePath = (value: string | undefined) =>
-  value && value.startsWith("/") && !value.startsWith("//") ? value : "/track-record";
+  value && value.startsWith("/") && !value.startsWith("//") ? value : "/ads-dashboard";
 
 function AuthPage() {
   const navigate = useNavigate();

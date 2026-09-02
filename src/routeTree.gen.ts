@@ -17,7 +17,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
@@ -61,12 +60,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedTrackRecordRoute =
-  AuthenticatedTrackRecordRouteImport.update({
-    id: '/track-record',
-    path: '/track-record',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
@@ -94,7 +87,6 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -107,7 +99,6 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -122,7 +113,6 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -137,7 +127,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
-    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -150,7 +139,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
-    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   id:
@@ -164,7 +152,6 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/_authenticated/ads-dashboard'
-    | '/_authenticated/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -240,13 +227,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/track-record': {
-      id: '/_authenticated/track-record'
-      path: '/track-record'
-      fullPath: '/track-record'
-      preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/ads-dashboard': {
       id: '/_authenticated/ads-dashboard'
       path: '/ads-dashboard'
@@ -273,12 +253,10 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
-  AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
-  AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
