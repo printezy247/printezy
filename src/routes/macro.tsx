@@ -43,7 +43,7 @@ const FILTERS: ("All" | MacroCategory)[] = ["All", ...MACRO_CATEGORIES];
 function categoryTone(category: MacroCategory) {
   return category === "Crypto"
     ? "bg-primary-tint text-primary"
-    : "bg-accent-tint text-accent-glow";
+    : "bg-accent-tint text-accent";
 }
 
 function MacroPage() {
@@ -88,7 +88,7 @@ function MacroPage() {
                   className={`rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors ${
                     filter === f
                       ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-white text-body hover:border-primary hover:text-primary"
+                      : "border-border bg-card text-body hover:border-primary hover:text-primary"
                   }`}
                 >
                   {f}
@@ -98,7 +98,7 @@ function MacroPage() {
 
             <div className="mt-5 space-y-3">
               {updates.map((u) => (
-                <article key={u.id} className="rounded-md border border-border bg-white p-5">
+                <article key={u.id} className="rounded-md border border-border bg-card p-5">
                   <div className="flex flex-wrap items-center gap-3">
                     <span
                       className={`rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide ${categoryTone(u.category)}`}
@@ -124,7 +124,7 @@ function MacroPage() {
                 </article>
               ))}
               {updates.length === 0 ? (
-                <p className="rounded-md border border-border bg-white p-5 text-sm text-muted-foreground">
+                <p className="rounded-md border border-border bg-card p-5 text-sm text-muted-foreground">
                   No updates in this category yet.
                 </p>
               ) : null}
@@ -133,7 +133,7 @@ function MacroPage() {
 
           {/* Sidebar */}
           <aside className="space-y-6">
-            <section className="rounded-md border border-border bg-white">
+            <section className="rounded-md border border-border bg-card">
               <h2 className="border-b border-border px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 Economic calendar · today (UTC)
               </h2>
@@ -167,7 +167,7 @@ function MacroPage() {
               </ul>
             </section>
 
-            <section className="rounded-md border border-border bg-white">
+            <section className="rounded-md border border-border bg-card">
               <h2 className="border-b border-border px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 Crypto movers · indicative
               </h2>
