@@ -184,7 +184,7 @@ export const Route = createFileRoute("/indicators")({
 function IndicatorsPage() {
   useEffect(() => {
     trackPageLoad("indicators");
-    const stop = trackEngagement("indicators");
+    const stop = trackEngagement();
     return stop;
   }, []);
 
