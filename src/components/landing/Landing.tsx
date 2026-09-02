@@ -889,8 +889,8 @@ export function Products() {
         {/* TradingView indicators */}
         <Reveal className="h-full">
         <article className="glass-card h-full rounded-xl p-6">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-            <LineChart className="h-5 w-5" />
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 p-1.5">
+            <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
           <ul className="mt-4 space-y-2.5">
