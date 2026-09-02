@@ -1419,8 +1419,9 @@ export function Landing() {
         <Products />
         <HowItWorks />
         <Ambassador />
-        
+        <TrackRecord />
         <SocialProof />
+
         <Faq />
         <FinalCta />
       </main>
