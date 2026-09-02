@@ -11,7 +11,7 @@ export const Route = createFileRoute("/faq")({
       {
         name: "description",
         content:
-          "Answers about EzyMap ALGO signal frequency, markets covered, broker choice, free access and the 30-day money-back guarantee.",
+          "Answers about EzyMap ALGO trading routines, pricing tiers, the 30-day Vantage trial, enrollment, your account and refunds.",
       },
       { property: "og:title", content: "FAQ — EzyMap ALGO Trading Signals" },
       {
