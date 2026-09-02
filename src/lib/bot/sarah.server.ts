@@ -163,3 +163,73 @@ export async function relayFromSarah(
   });
   return true;
 }
+
+/**
+ * Missed-message alert (mirrors the tg-ezy-chatbot behaviour): when Sarah's
+ * reply book has no answer, notify her once with the member's exact words.
+ * It only fires again for that member after they've had a successful reply,
+ * so a stuck client can't spam the inbox.
+ */
+export async function alertMissedMessage(
+  member: { telegramId: number; username?: string | null; firstName?: string | null },
+  text: string,
+): Promise<void> {
+  const { data } = await supabaseAdmin
+    .from("bot_users")
+    .select("missed_alert_sent")
+    .eq("telegram_id", member.telegramId)
+    .maybeSingle();
+  if (data?.missed_alert_sent) return;
+
+  const relayed = await relayToSarah(member, `❓ <i>No keyword matched:</i>\n\n${text}`);
+  if (!relayed) return;
+
+  const { error } = await supabaseAdmin
+    .from("bot_users")
+    .upsert({
+      telegram_id: member.telegramId,
+      missed_alert_sent: true,
+      updated_at: new Date().toISOString(),
+    });
+  if (error) console.error("[sarah] missed alert flag failed", error);
+}
+
+/** A keyword answered them — arm the missed-message alert again. */
+export async function clearMissedFlag(telegramId: number): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from("bot_users")
+    .update({ missed_alert_sent: false, updated_at: new Date().toISOString() })
+    .eq("telegram_id", telegramId)
+    .eq("missed_alert_sent", true);
+  if (error) console.error("[sarah] missed flag reset failed", error);
+}
+
+/** 3-day trial request for an MT5 tool — notify Sarah, confirm to the member. */
+export async function requestTrial(
+  member: { telegramId: number; username?: string | null; firstName?: string | null },
+  product: string,
+): Promise<void> {
+  await relayToSarah(member, `🎁 <b>3-day trial request</b> — <code>${product}</code>`);
+  await sendMessage(
+    member.telegramId,
+    `🎁 Trial requested for <b>${product.replace(/^mt5_/, "").replace(/_/g, " ")}</b>. Sarah builds the time-limited file by hand and sends it here — usually the same day.`,
+    [[{ text: "💬 Ask Sarah", callback_data: "sarah:start" }]],
+  );
+}
+
+/** Paid EzyMap item — Sarah arranges payment in chat. */
+export async function requestPurchase(
+  member: { telegramId: number; username?: string | null; firstName?: string | null },
+  product: string,
+  plan: string,
+): Promise<void> {
+  await relayToSarah(member, `🛒 <b>Purchase request</b> — <code>${product}</code> · ${plan}`);
+  await sendMessage(
+    member.telegramId,
+    `🛒 Noted: <b>${product.replace(/_/g, " ")}</b> (${plan}). Sarah will send you the payment details right here — tap below if you'd like to add anything.`,
+    [
+      [{ text: "💬 Ask Sarah", callback_data: "sarah:start" }],
+      [{ text: "📦 Packages", callback_data: "menu:packages" }],
+    ],
+  );
+}
