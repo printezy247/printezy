@@ -84,10 +84,24 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
               `👋 <b>Welcome to EzyMap ALGO${message?.from?.first_name ? `, ${message.from.first_name}` : ""}.</b>\n\nPick the package you want and I'll set your account up right here. Paid packages activate automatically the moment payment clears.\n\nNeed help? ${SUPPORT}`,
               keyboard,
             );
+          } else if (text.startsWith("/account") || text.startsWith("/dashboard")) {
+            const { createMemberSession, accountLink } = await import(
+              "@/lib/bot/member.server"
+            );
+            const sessionToken = await createMemberSession(telegramId);
+            await sendMessage(
+              telegramId,
+              sessionToken
+                ? `🔑 <b>Your trading account</b>\n\nThis link signs you in for 30 days — your signals, your trade log, your stats and your billing history.`
+                : `Something went wrong opening your account. Try again in a moment.`,
+              sessionToken
+                ? [[{ text: "Open my account", url: accountLink(sessionToken) }]]
+                : undefined,
+            );
           } else if (text.startsWith("/help")) {
             await sendMessage(
               telegramId,
-              `Send /start to see the packages, or reach us directly: ${SUPPORT}`,
+              `Send /start to see the packages, /account to open your trading account, or reach us directly: ${SUPPORT}`,
             );
           }
 

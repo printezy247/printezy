@@ -157,6 +157,180 @@ export type Database = {
           },
         ]
       }
+      login_codes: {
+        Row: {
+          attempts: number
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          telegram_id: number
+          used_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          telegram_id: number
+          used_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          telegram_id?: number
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_codes_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
+      member_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          last_seen_at: string
+          telegram_id: number
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          last_seen_at?: string
+          telegram_id: number
+          token: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          last_seen_at?: string
+          telegram_id?: number
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_sessions_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
+      signals: {
+        Row: {
+          created_at: string
+          direction: string
+          entry_price: number | null
+          id: string
+          min_tier: string
+          note: string | null
+          published_at: string
+          result_pips: number | null
+          status: string
+          stop_price: number | null
+          symbol: string
+          target_price: number | null
+        }
+        Insert: {
+          created_at?: string
+          direction?: string
+          entry_price?: number | null
+          id?: string
+          min_tier?: string
+          note?: string | null
+          published_at?: string
+          result_pips?: number | null
+          status?: string
+          stop_price?: number | null
+          symbol: string
+          target_price?: number | null
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          entry_price?: number | null
+          id?: string
+          min_tier?: string
+          note?: string | null
+          published_at?: string
+          result_pips?: number | null
+          status?: string
+          stop_price?: number | null
+          symbol?: string
+          target_price?: number | null
+        }
+        Relationships: []
+      }
+      trades: {
+        Row: {
+          closed_at: string | null
+          created_at: string
+          direction: string
+          entry_price: number | null
+          exit_price: number | null
+          id: string
+          notes: string | null
+          opened_at: string
+          pips: number | null
+          pnl: number | null
+          size: number | null
+          status: string
+          symbol: string
+          telegram_id: number
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string
+          direction?: string
+          entry_price?: number | null
+          exit_price?: number | null
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          pips?: number | null
+          pnl?: number | null
+          size?: number | null
+          status?: string
+          symbol: string
+          telegram_id: number
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string
+          direction?: string
+          entry_price?: number | null
+          exit_price?: number | null
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          pips?: number | null
+          pnl?: number | null
+          size?: number | null
+          status?: string
+          symbol?: string
+          telegram_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trades_telegram_id_fkey"
+            columns: ["telegram_id"]
+            isOneToOne: false
+            referencedRelation: "bot_users"
+            referencedColumns: ["telegram_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
