@@ -10,12 +10,14 @@ import {
   fetchFearGreed,
   fetchMacroDesk,
   fillGauge,
+  GAUGE_TRACK,
   IMPACT_COLOR,
   recessionColor,
   sliderGauge,
   sparkline,
   stanceColor,
   type FearGreed,
+  type GaugeSegments,
   type MacroDesk,
   type MacroFilter,
 } from "@/lib/macro-desk";
@@ -102,6 +104,17 @@ function Card({
 }
 
 const mono = "font-mono text-[13px] tracking-tight";
+
+/** Only the marker / filled run carries colour; the empty track stays muted. */
+function Gauge({ segments, color }: { segments: GaugeSegments; color: string }) {
+  return (
+    <span className={mono}>
+      {segments.before ? <span style={{ color: GAUGE_TRACK }}>{segments.before}</span> : null}
+      <span style={{ color }}>{segments.marker}</span>
+      {segments.after ? <span style={{ color: GAUGE_TRACK }}>{segments.after}</span> : null}
+    </span>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Page                                                                */
@@ -288,9 +301,7 @@ function MacroPage() {
                           <td className="py-2.5 pr-3 font-semibold">{b.bank}</td>
                           <td className={`py-2.5 pr-3 ${mono}`}>{b.rate}</td>
                           <td className="py-2.5 pr-3">
-                            <span className={mono} style={{ color: stanceColor(b.stance) }}>
-                              {sliderGauge(b.stance)}
-                            </span>
+                            <Gauge segments={sliderGauge(b.stance)} color={stanceColor(b.stance)} />
                             <span
                               className="ml-2 text-xs font-semibold capitalize"
                               style={{ color: stanceColor(b.stance) }}
@@ -330,9 +341,10 @@ function MacroPage() {
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="text-sm font-semibold">{r.country}</span>
                         <span className="flex items-center gap-2">
-                          <span className={mono} style={{ color: recessionColor(r.probability) }}>
-                            {fillGauge(r.probability)}
-                          </span>
+                          <Gauge
+                            segments={fillGauge(r.probability)}
+                            color={recessionColor(r.probability)}
+                          />
                           <span
                             className="text-sm font-bold"
                             style={{ color: recessionColor(r.probability) }}
@@ -400,7 +412,9 @@ function MacroPage() {
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
               <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? "Loading"}</p>
-              <p className={`mt-3 text-accent ${mono}`}>{fillGauge(fng?.value ?? 0)}</p>
+              <p className="mt-3">
+                <Gauge segments={fillGauge(fng?.value ?? 0)} color="#c9a13a" />
+              </p>
             </Card>
 
             <Card title="Next Rate Decisions">
