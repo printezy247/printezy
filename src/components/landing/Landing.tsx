@@ -1277,7 +1277,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Is there a free option?",
-        a: "The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required. For a paid entry point, the Beginner tier at $29/month gives you daily signals, education and community access.",
+        a: "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29/month is the paid entry point.",
       },
       {
         q: "What's included in Pro, Premium and Elite?",
@@ -1307,10 +1307,6 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
       {
         q: "What happens after I pay?",
         a: "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
-      },
-      {
-        q: "How does the Vantage Trial work?",
-        a: "Choose the Vantage Trial in the bot, open your Vantage Markets account through the provided link, then tap “I've activated”. Your Pro-level access unlocks immediately and expires automatically after 30 days.",
       },
       {
         q: "Who do I contact for help?",
