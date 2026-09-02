@@ -29,6 +29,17 @@ export const TIER_CATALOG: TierConfig[] = [
     perks: ["Public channel access", "Daily education", "Weekly market recap"],
   },
   {
+    id: "vantage",
+    name: "Vantage Trial",
+    blurb: `Pro-level access free for ${VANTAGE_TRIAL_DAYS} days via a Vantage Markets account`,
+    amountCents: 0,
+    perks: [
+      "Pro signal feed for 30 days",
+      "Trade log, stats and history",
+      "No card required — activate with a Vantage account",
+    ],
+  },
+  {
     id: "beginner",
     name: "Beginner",
     blurb: "Foundations + guided routines",
