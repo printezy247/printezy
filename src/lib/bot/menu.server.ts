@@ -19,6 +19,9 @@ export async function registerBotCommands() {
       { command: "packages", description: "Browse packages and prices" },
       { command: "status", description: "Check your payment & access status" },
       { command: "account", description: "Open your trading account" },
+      { command: "products", description: "Products, indicators and prices" },
+      { command: "faq", description: "Common questions, answered" },
+      { command: "language", description: "Switch language (en / ms)" },
       { command: "ask", description: "Message Sarah (human support)" },
       { command: "help", description: "What this bot can do" },
     ],
@@ -173,11 +176,18 @@ export async function sendAskSarah(chatId: number) {
   await openSarahChat(chatId);
 }
 
-/** Fallback for free-text messages: point back to the menu. */
+/** Nothing in the reply book matched — nudge, don't leave them in silence. */
 export async function sendFallback(chatId: number) {
   await sendMessage(
     chatId,
-    `I'm a menu bot — tap a button or command and I'll handle the rest. For anything else, Sarah is one tap away.`,
-    [navRow(), [BTN_ASK_SARAH]],
+    `Hmm, I don't have a ready answer for that one — I've passed it to Sarah and she'll come back to you personally. Meanwhile, here's what I can show you 👇`,
+    [
+      [
+        { text: "🛍 Products", callback_data: "kw:products" },
+        { text: "❓ FAQ", callback_data: "kw:faq" },
+      ],
+      navRow(),
+      [BTN_ASK_SARAH],
+    ],
   );
 }
