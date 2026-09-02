@@ -33,9 +33,11 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
 
         const update = (await request.json()) as {
           message?: {
+            message_id?: number;
             chat?: { id?: number };
             from?: { id?: number; username?: string; first_name?: string };
             text?: string;
+            reply_to_message?: { message_id?: number };
           };
           callback_query?: {
             id: string;
@@ -54,7 +56,13 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             const data = cq.data ?? "";
             const tierId = data.startsWith("tier:") ? data.slice(5) : null;
 
-            if (data === "vantage:confirm") {
+            if (data === "sarah:start") {
+              const { openSarahChat } = await import("@/lib/bot/sarah.server");
+              await openSarahChat(telegramId);
+            } else if (data === "sarah:end") {
+              const { closeSarahChat } = await import("@/lib/bot/sarah.server");
+              await closeSarahChat(telegramId);
+            } else if (data === "vantage:confirm") {
               await activateVantageTrial(telegramId);
             } else if (tierId === "vantage") {
               await offerVantageTrial(telegramId);
@@ -77,6 +85,43 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           if (!telegramId) return Response.json({ ok: true, ignored: true });
 
           const text = (message?.text ?? "").trim();
+
+          // --- Sarah's side of the relay -------------------------------
+          // /support_login <code> registers this chat as Sarah's inbox.
+          if (text.startsWith("/support_login")) {
+            const { registerSupportChat } = await import("@/lib/bot/sarah.server");
+            const code = text.slice("/support_login".length).trim();
+            const ok = await registerSupportChat(telegramId, code);
+            await sendMessageHelpText(
+              telegramId,
+              ok
+                ? `✅ This chat is now Sarah's inbox. Member messages arrive here — reply to any of them (Telegram "reply") and it goes straight back to that member.`
+                : `Invalid code.`,
+            );
+            return Response.json({ ok: true });
+          }
+
+          // A reply from Sarah to a forwarded message goes back to the member.
+          {
+            const { getSarahChatId, relayFromSarah } = await import("@/lib/bot/sarah.server");
+            const sarahChatId = await getSarahChatId();
+            if (sarahChatId && telegramId === sarahChatId) {
+              const delivered = await relayFromSarah(
+                sarahChatId,
+                message?.reply_to_message?.message_id,
+                text,
+              );
+              if (!delivered) {
+                await sendMessageHelpText(
+                  telegramId,
+                  `Reply directly to a member's message (Telegram "reply") and I'll deliver it to them.`,
+                );
+              }
+              return Response.json({ ok: true });
+            }
+          }
+
+          // --- Member side ----------------------------------------------
           const startPayload = text.startsWith("/start")
             ? text.slice(6).trim().slice(0, 64) || null
             : null;
@@ -103,11 +148,33 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             await sendAccountLink(telegramId, telegramId);
           } else if (text.startsWith("/ask") || text.startsWith("/sarah")) {
             await sendAskSarah(telegramId);
+          } else if (text.startsWith("/end")) {
+            const { closeSarahChat } = await import("@/lib/bot/sarah.server");
+            await closeSarahChat(telegramId);
           } else if (text.startsWith("/help")) {
             await sendMessageHelp(telegramId);
           } else {
-            // Free text: the bot is menu-driven, so guide back to it.
-            await sendFallback(telegramId);
+            // Free text: relay it to Sarah when the member is in chat mode.
+            const { isInChatMode, relayToSarah } = await import("@/lib/bot/sarah.server");
+            if (await isInChatMode(telegramId)) {
+              const relayed = await relayToSarah(
+                {
+                  telegramId,
+                  username: message?.from?.username ?? null,
+                  firstName: message?.from?.first_name ?? null,
+                },
+                text,
+              );
+              await sendMessageHelpText(
+                telegramId,
+                relayed
+                  ? `✅ Sent to Sarah — her reply will land right here.`
+                  : `Couldn't reach Sarah just now — try again in a moment.`,
+              );
+            } else {
+              // The bot is menu-driven, so guide back to it.
+              await sendFallback(telegramId);
+            }
           }
 
           return Response.json({ ok: true });
@@ -120,6 +187,11 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
     },
   },
 });
+
+async function sendMessageHelpText(chatId: number, text: string) {
+  const { sendMessage } = await import("@/lib/bot/telegram.server");
+  await sendMessage(chatId, text);
+}
 
 async function sendMessageHelp(chatId: number) {
   const { sendMessage } = await import("@/lib/bot/telegram.server");
