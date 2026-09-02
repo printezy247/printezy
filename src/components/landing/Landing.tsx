@@ -237,13 +237,13 @@ export function Ticker() {
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
       <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/40">
+        <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
           Indicative · static
         </span>
         {TICKER.map((t) => (
           <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
-            <span className="font-semibold text-white/80">{t.symbol}</span>
-            <span className="tabular-nums text-white">{t.price}</span>
+            <span className="font-semibold text-body">{t.symbol}</span>
+            <span className="tabular-nums text-foreground">{t.price}</span>
             <span
               className="tabular-nums font-semibold"
               style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
@@ -702,7 +702,7 @@ export function Pricing() {
                   loading="lazy"
                   className="h-full w-full object-contain"
                 />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-surface-elevated/90 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
               </div>
             ) : null}
             <div className="flex flex-1 flex-col p-6">
