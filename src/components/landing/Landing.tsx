@@ -265,22 +265,24 @@ const TICKER: { symbol: string; price: string; change: string; up: boolean }[] =
 ];
 
 export function Ticker() {
+  const items = [...TICKER, ...TICKER];
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
-      <div className="mx-auto flex max-w-6xl items-center justify-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        {TICKER.map((t) => (
-
-          <span key={t.symbol} className="flex shrink-0 items-baseline gap-1.5">
-            <span className="font-semibold text-body">{t.symbol}</span>
-            <span className="tabular-nums text-foreground">{t.price}</span>
-            <span
-              className="tabular-nums font-semibold"
-              style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
-            >
-              {t.change}
+      <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+        <div className="ticker-track animate-ticker gap-8">
+          {items.map((t, i) => (
+            <span key={`${t.symbol}-${i}`} className="flex shrink-0 items-baseline gap-1.5">
+              <span className="font-semibold text-body">{t.symbol}</span>
+              <span className="tabular-nums text-foreground">{t.price}</span>
+              <span
+                className="tabular-nums font-semibold"
+                style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+              >
+                {t.change}
+              </span>
             </span>
-          </span>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
