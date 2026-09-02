@@ -38,7 +38,7 @@ const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/eboo
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
 
 const tierFree = "/__l5e/assets-v1/174daaab-2584-456e-a536-500846c6e53a/tier-beginner.jpg";
-const tierVantage = "/__l5e/assets-v1/3def8af3-222a-4817-ab9e-c0e036718ba6/tier-vantage.jpg";
+
 const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.jpg";
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
@@ -58,7 +58,6 @@ export const LINKS = {
   macro: "https://t.me/xaubtcmacro_bot",
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
-  vantageOpenAccount: "https://vigco.co/la-scom-inv/ms/oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
@@ -68,8 +67,6 @@ const META_CLICK_EVENTS: Record<
   { event: SiteMetaEvent; contentId?: string; valueCents?: number }
 > = {
   pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
-  pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
-  pricing_vantage_open_account: { event: "Lead", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
   pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
@@ -639,24 +636,6 @@ type Tier = {
 
 const TIERS: Tier[] = [
   {
-    name: "Vantage Trial",
-    price: "Free for 30 days",
-    priceNote: "No card required",
-    blurb: "Pro access free for 30 days",
-    features: [
-      "No card required",
-      "Open a Vantage Markets account to unlock",
-      "Pro signal feed, trade log & stats",
-      "Activate through our bot",
-    ],
-    cta: "Get Free Access",
-    href: LINKS.bot,
-    event: "pricing_vantage_trial",
-    image: tierVantage,
-    openAccountHref: LINKS.vantageOpenAccount,
-    openAccountEvent: "pricing_vantage_open_account",
-  },
-  {
     name: "Beginner",
     price: "$29",
     priceNote: "per month",
@@ -729,10 +708,10 @@ export function Pricing() {
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
         eyebrow="Packages"
-        title="Start free. Upgrade when you're ready."
-        subtitle="All tiers enroll through our bot. Want to test the desk first? Open a Vantage Markets account and get 30 days of Pro access free — no card required."
+        title="Start with clarity. Upgrade when you're ready."
+        subtitle="All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required."
       />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
@@ -1297,7 +1276,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Is there a free option?",
-        a: "The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required. For a paid entry point, the Beginner tier at $29/month gives you daily signals, education and community access.",
+        a: "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29/month is the paid entry point.",
       },
       {
         q: "What's included in Pro, Premium and Elite?",
@@ -1327,10 +1306,6 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
       {
         q: "What happens after I pay?",
         a: "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
-      },
-      {
-        q: "How does the Vantage Trial work?",
-        a: "Choose the Vantage Trial in the bot, open your Vantage Markets account through the provided link, then tap “I've activated”. Your Pro-level access unlocks immediately and expires automatically after 30 days.",
       },
       {
         q: "Who do I contact for help?",
