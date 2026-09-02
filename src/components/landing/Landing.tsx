@@ -1039,7 +1039,7 @@ export function Products() {
 
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
-        <article className="glass-card relative h-full overflow-hidden rounded-xl p-6">
+        <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
           <img
             src={macroLogo}
             alt="Gold, Forex & Crypto Macros"
@@ -1054,7 +1054,7 @@ export function Products() {
             className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
           />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
             {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
@@ -1062,7 +1062,7 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-auto flex flex-col gap-2 pt-5">
             <a
               href={LINKS.macro}
               onClick={() => goTrack("products_macro_join")}
