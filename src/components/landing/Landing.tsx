@@ -235,7 +235,7 @@ const TICKER: { symbol: string; price: string; change: string; up: boolean }[] =
 
 export function Ticker() {
   return (
-    <div className="w-full bg-[#0b0f0c] text-white">
+    <div className="w-full border-b border-border bg-surface-elevated text-foreground">
       <div className="mx-auto flex max-w-6xl items-center gap-5 overflow-x-auto px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
         <span className="shrink-0 text-[10.5px] font-bold uppercase tracking-[0.16em] text-white/40">
           Indicative · static
