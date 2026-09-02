@@ -15,7 +15,9 @@ import { Route as MacroRouteImport } from './routes/macro'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTrackRecordRouteImport } from './routes/_authenticated/track-record'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
 
@@ -49,11 +51,21 @@ const AccountRoute = AccountRouteImport.update({
   path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTrackRecordRoute =
+  AuthenticatedTrackRecordRouteImport.update({
+    id: '/track-record',
+    path: '/track-record',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicTelegramWebhookRoute =
   ApiPublicTelegramWebhookRouteImport.update({
     id: '/api/public/telegram/webhook',
@@ -74,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -85,18 +98,21 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/faq': typeof FaqRoute
   '/macro': typeof MacroRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/track-record': typeof AuthenticatedTrackRecordRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -110,6 +126,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -121,23 +138,27 @@ export interface FileRouteTypes {
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/account'
     | '/auth'
     | '/faq'
     | '/macro'
     | '/privacy'
     | '/terms'
+    | '/_authenticated/track-record'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   FaqRoute: typeof FaqRoute
@@ -192,12 +213,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/track-record': {
+      id: '/_authenticated/track-record'
+      path: '/track-record'
+      fullPath: '/track-record'
+      preLoaderRoute: typeof AuthenticatedTrackRecordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/telegram/webhook': {
       id: '/api/public/telegram/webhook'
@@ -216,8 +251,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedTrackRecordRoute: typeof AuthenticatedTrackRecordRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedTrackRecordRoute: AuthenticatedTrackRecordRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   FaqRoute: FaqRoute,
