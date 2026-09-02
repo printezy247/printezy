@@ -54,8 +54,32 @@ export const LINKS = {
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
 };
 
+/** Site clicks that are also Meta conversions, with the tier value where known. */
+const META_CLICK_EVENTS: Record<
+  string,
+  { event: SiteMetaEvent; contentId?: string; valueCents?: number }
+> = {
+  pricing_free: { event: "Lead", contentId: "free" },
+  pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
+  pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
+  pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
+  pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
+  hero_bot_link: { event: "Lead", contentId: "hero" },
+  hero_primary: { event: "Lead", contentId: "hero" },
+  support_click: { event: "Lead", contentId: "support" },
+};
+
 function goTrack(name: string) {
   track("click", name);
+  const meta = META_CLICK_EVENTS[name];
+  if (meta) {
+    metaTrack(meta.event, {
+      id: name,
+      contentName: name,
+      contentId: meta.contentId,
+      valueCents: meta.valueCents,
+    });
+  }
 }
 
 /**
