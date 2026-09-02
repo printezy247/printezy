@@ -41,13 +41,6 @@ const VANTAGE_APP =
 const VANTAGE_ANDROID_APK =
   "https://vau-usa.oss-accelerate.aliyuncs.com//apk/au/Vantage.apk";
 
-const backTo = (keyword: string, ms: string, en = "⬅ Back"): Btn[][] => [
-  [{ text: en, keyword }],
-  // second language handled by caller when needed
-  [{ text: ms, keyword }],
-];
-void backTo;
-
 /** MT5 single-tool entries all share the same plan ladder. */
 function mt5Tool(
   id: string,
