@@ -12,12 +12,12 @@ import {
   GAUGE_TRACK,
   IMPACT_COLOR,
   recessionColor,
-  sparkline,
   stanceColor,
   type FearGreed,
   type MacroDesk,
   type MacroFilter,
   type Stance,
+  type TrendCard,
 } from "@/lib/macro-desk";
 
 
