@@ -1,0 +1,231 @@
+// Floating live-chat widget. Visitors talk to Sarah right on the site: the
+// bot's reply book answers instantly, and anything it can't answer is relayed
+// to Sarah's Telegram — her reply appears here on the next poll.
+import { useCallback, useEffect, useRef, useState } from "react";
+import { MessageCircle, Send, X } from "lucide-react";
+
+import { getSessionId, track } from "@/lib/analytics";
+import {
+  fetchSupportMessages,
+  sendSupportMessage,
+  type SupportLink,
+  type SupportQuick,
+} from "@/lib/support.functions";
+
+type Bubble = {
+  id: number;
+  role: "visitor" | "sarah";
+  author: string;
+  text: string;
+  links?: SupportLink[];
+  quick?: SupportQuick[];
+};
+
+const GREETING: Bubble = {
+  id: -1,
+  role: "sarah",
+  author: "Sarah (assistant)",
+  text:
+    "Hi! I'm Sarah. Ask me anything about the routines, packages, payment or getting your account unlocked — I answer instantly, and anything I can't answer goes straight to me on Telegram.",
+  quick: [
+    { label: "🛍 Products", entryId: "products" },
+    { label: "❓ FAQ", entryId: "faq" },
+  ],
+};
+
+export function SupportChat() {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState<Bubble[]>([GREETING]);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const lastIdRef = useRef(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const append = useCallback((bubble: Bubble) => {
+    setMessages((prev) => [...prev, bubble]);
+  }, []);
+
+  // Poll for Sarah's Telegram replies while the widget is open.
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const rows = await fetchSupportMessages({
+          data: { sessionId: getSessionId(), afterId: lastIdRef.current },
+        });
+        if (cancelled || !rows.length) return;
+        lastIdRef.current = rows[rows.length - 1]!.id;
+        // Only Sarah's inbound replies are pulled in; our own optimistic
+        // bubbles are already on screen.
+        const inbound = rows.filter((r) => r.role === "sarah" && r.author === "Sarah");
+        if (inbound.length) {
+          setMessages((prev) => [
+            ...prev,
+            ...inbound.map((r) => ({ id: r.id, role: "sarah" as const, author: r.author, text: r.text })),
+          ]);
+        }
+      } catch {
+        // Polling must never surface an error to the visitor.
+      }
+    };
+
+    void poll();
+    const timer = setInterval(poll, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages, open]);
+
+  const submit = useCallback(
+    async (text: string, entryId?: string) => {
+      const clean = text.trim();
+      if (!clean || busy) return;
+      setBusy(true);
+      setInput("");
+      append({ id: Date.now(), role: "visitor", author: "You", text: clean });
+      try {
+        const reply = await sendSupportMessage({
+          data: { sessionId: getSessionId(), text: clean, entryId: entryId ?? null },
+        });
+        append({
+          id: Date.now() + 1,
+          role: "sarah",
+          author: "Sarah (assistant)",
+          text: reply.text,
+          links: reply.links,
+          quick: reply.quick,
+        });
+      } catch {
+        append({
+          id: Date.now() + 2,
+          role: "sarah",
+          author: "Sarah (assistant)",
+          text: "That didn't send. Try again, or message Sarah on Telegram: https://t.me/ezysarah",
+        });
+      } finally {
+        setBusy(false);
+      }
+    },
+    [append, busy],
+  );
+
+  return (
+    <>
+      {!open && (
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(true);
+            track("click", "support_chat_open");
+          }}
+          aria-label="Chat with Sarah"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-105"
+        >
+          <MessageCircle className="h-5 w-5" />
+          Chat with Sarah
+        </button>
+      )}
+
+      {open && (
+        <div className="fixed bottom-5 right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+          <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Ask Sarah</p>
+              <p className="text-xs text-muted-foreground">Instant answers · human backup</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close chat"
+              className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </header>
+
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={m.role === "visitor" ? "flex justify-end" : "flex justify-start"}
+              >
+                <div
+                  className={`max-w-[85%] space-y-2 rounded-xl px-3 py-2 text-sm leading-relaxed whitespace-pre-line ${
+                    m.role === "visitor"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary/60 text-foreground"
+                  }`}
+                >
+                  <p>{m.text}</p>
+                  {m.links?.length ? (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {m.links.map((l) => (
+                        <a
+                          key={l.url}
+                          href={l.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-full border border-primary/50 px-3 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
+                        >
+                          {l.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                  {m.quick?.length ? (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {m.quick.map((q) => (
+                        <button
+                          key={q.entryId + q.label}
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void submit(q.label, q.entryId)}
+                          className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
+                        >
+                          {q.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+            {busy && <p className="text-xs text-muted-foreground">Sarah is typing…</p>}
+          </div>
+
+          <form
+            className="flex items-center gap-2 border-t border-border px-3 py-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void submit(input);
+            }}
+          >
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type your question…"
+              maxLength={1500}
+              aria-label="Message Sarah"
+              className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
+            />
+            <button
+              type="submit"
+              disabled={busy || !input.trim()}
+              aria-label="Send message"
+              className="rounded-lg bg-primary p-2 text-primary-foreground transition-opacity disabled:opacity-40"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}

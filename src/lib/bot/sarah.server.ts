@@ -7,16 +7,9 @@ import { sendMessage, type InlineButton } from "./telegram.server";
 
 export const SUPPORT_LINK = "https://t.me/ezysarah";
 
-/** One-time code Sarah uses to register her chat. Derived from the
- *  connection key so no extra secret is needed and it can't be guessed. */
-export async function deriveSupportCode(): Promise<string> {
-  const TELEGRAM_API_KEY = process.env.TELEGRAM_API_KEY;
-  if (!TELEGRAM_API_KEY) throw new Error("TELEGRAM_API_KEY is not configured");
-  const bytes = new TextEncoder().encode(`sarah-support:${TELEGRAM_API_KEY}`);
-  const digest = await crypto.subtle.digest("SHA-256", bytes);
-  const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
-  return hex.slice(0, 16);
-}
+/** Sarah's Telegram handle. The first time she messages the bot from this
+ *  account her chat is registered as the support inbox — no codes to share. */
+export const SARAH_USERNAME = "ezysarah";
 
 export async function getSarahChatId(): Promise<number | null> {
   const { data, error } = await supabaseAdmin
@@ -29,9 +22,13 @@ export async function getSarahChatId(): Promise<number | null> {
   return Number.isFinite(id) && id !== 0 ? id : null;
 }
 
-/** /support_login <code> — registers the sender's chat as Sarah's inbox. */
-export async function registerSupportChat(chatId: number, code: string): Promise<boolean> {
-  if (code !== (await deriveSupportCode())) return false;
+/** Auto-register Sarah's chat as the inbox when she writes from her handle. */
+export async function autoRegisterSarah(
+  chatId: number,
+  username: string | null | undefined,
+): Promise<boolean> {
+  if ((username ?? "").toLowerCase() !== SARAH_USERNAME) return false;
+  if ((await getSarahChatId()) === chatId) return false;
   const { error } = await supabaseAdmin
     .from("support_config")
     .upsert({ key: "sarah_chat_id", value: String(chatId), updated_at: new Date().toISOString() });
@@ -41,6 +38,7 @@ export async function registerSupportChat(chatId: number, code: string): Promise
   }
   return true;
 }
+
 
 async function setChatMode(telegramId: number, on: boolean) {
   // Upsert: the member may reach this from a button tap before any message,
@@ -140,12 +138,30 @@ export async function relayFromSarah(
 
   const { data, error } = await supabaseAdmin
     .from("support_messages")
-    .select("member_telegram_id")
+    .select("member_telegram_id, web_session_id")
     .eq("sarah_message_id", replyToMessageId)
     .maybeSingle();
   if (error) console.error("[sarah] reply lookup failed", error);
+
+  // Website visitor: the reply is stored and the widget picks it up on poll.
+  const webSessionId = (data as { web_session_id?: string | null } | null)?.web_session_id;
+  if (webSessionId) {
+    const { error: writeError } = await supabaseAdmin.from("support_messages").insert({
+      web_session_id: webSessionId,
+      display_name: "Sarah",
+      direction: "to_member",
+      text,
+    });
+    if (writeError) {
+      console.error("[sarah] website reply write failed", writeError);
+      return false;
+    }
+    return true;
+  }
+
   const memberId = data?.member_telegram_id;
   if (!memberId) return false;
+
 
   const sent = await sendMessage(memberId, `💬 <b>Sarah:</b>\n\n${text}`, [
     [{ text: "✖️ End chat", callback_data: "sarah:end" }],
@@ -232,4 +248,36 @@ export async function requestPurchase(
       [{ text: "📦 Packages", callback_data: "menu:packages" }],
     ],
   );
+}
+
+// ---------------------------------------------------------------------------
+// Website live chat: visitors relay through the same inbox.
+// ---------------------------------------------------------------------------
+
+/** Forward a website visitor's message to Sarah, tagged so her reply routes back. */
+export async function relayWebToSarah(
+  sessionId: string,
+  visitorName: string,
+  text: string,
+): Promise<boolean> {
+  const sarahChatId = await getSarahChatId();
+  if (!sarahChatId) return false;
+
+  const header = `🌐 <b>${visitorName}</b> · website chat`;
+  const sent = await sendMessage(sarahChatId, `${header}\n\n${text}`);
+  if (!sent.ok) {
+    console.error("[sarah] website forward failed", sent.error);
+    return false;
+  }
+
+  const sarahMessageId = (sent.result as { message_id?: number } | undefined)?.message_id;
+  const { error } = await supabaseAdmin.from("support_messages").insert({
+    web_session_id: sessionId,
+    display_name: visitorName,
+    sarah_message_id: sarahMessageId ?? null,
+    direction: "to_sarah",
+    text: `[relayed] ${text}`,
+  });
+  if (error) console.error("[sarah] website relay log failed", error);
+  return true;
 }
