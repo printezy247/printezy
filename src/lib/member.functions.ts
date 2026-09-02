@@ -39,6 +39,7 @@ export type MemberBilling = {
   status: string;
   createdAt: string;
   activatedAt: string | null;
+  expiresAt?: string | null;
 };
 
 export type MemberDashboard = {
