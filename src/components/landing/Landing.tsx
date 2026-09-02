@@ -38,7 +38,7 @@ const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/eboo
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
 
 const tierFree = "/__l5e/assets-v1/174daaab-2584-456e-a536-500846c6e53a/tier-beginner.jpg";
-const tierVantage = "/__l5e/assets-v1/3def8af3-222a-4817-ab9e-c0e036718ba6/tier-vantage.jpg";
+
 const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.jpg";
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
@@ -68,8 +68,6 @@ const META_CLICK_EVENTS: Record<
   { event: SiteMetaEvent; contentId?: string; valueCents?: number }
 > = {
   pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
-  pricing_vantage_trial: { event: "StartTrial", contentId: "vantage" },
-  pricing_vantage_open_account: { event: "Lead", contentId: "vantage" },
   pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
   pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
   pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
