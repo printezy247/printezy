@@ -543,11 +543,11 @@ export function TrackRecord() {
         <a
           href={LINKS.freeChannel}
           onClick={() => goTrack("track_record_telegram")}
-          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
+          className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
         >
           <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">Telegram history</p>
           <h3 className="mt-2 text-lg font-bold">Full signal archive</h3>
-          <p className="mt-2 text-sm text-body">
+          <p className="mt-2 flex-1 text-sm text-body">
             Scroll back through every published signal, entry, stop and target in the free channel.
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
@@ -559,11 +559,11 @@ export function TrackRecord() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => goTrack("track_record_forexfactory")}
-          className="rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
+          className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
           <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Reference</p>
           <h3 className="mt-2 text-lg font-bold">ForexFactory calendar</h3>
-          <p className="mt-2 text-sm text-body">
+          <p className="mt-2 flex-1 text-sm text-body">
             Cross-check every event we trade against the public economic calendar. This is a data
             reference, not a performance record.
           </p>
@@ -787,9 +787,11 @@ export function Pricing() {
                 <p className="mt-1 text-[11px] font-medium leading-snug text-accent">
                   or free access by Vantage activation
                 </p>
-              ) : null}
+              ) : (
+                <p className="mt-1 h-4" aria-hidden="true" />
+              )}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
-              <ul className="mt-5 flex-1 space-y-2.5">
+              <ul className="mt-5 flex-1 min-h-[9rem] space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -937,12 +939,12 @@ export function Products() {
               <a
                 href={LINKS.ebook}
                 onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
-                className="glass-card group flex items-center gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
+                className="glass-card group flex h-full items-stretch gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
               >
                 <Book3D image={b.image} title={b.title} />
-                <div className="min-w-0 flex-1">
-                  <h4 className="text-base font-semibold sm:text-lg">{b.title}</h4>
-                  <ul className="mt-2 space-y-1">
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <h4 className="min-h-[2.5rem] text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
+                  <ul className="mt-2 flex-1 space-y-1 min-h-[5rem]">
                     {b.bullets.map((bullet) => (
                       <li key={bullet} className="flex items-start gap-2 text-xs text-muted-foreground sm:text-sm">
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
@@ -964,12 +966,12 @@ export function Products() {
       <div className="grid gap-5 lg:grid-cols-3">
         {/* TradingView indicators */}
         <Reveal className="h-full">
-        <article className="glass-card h-full rounded-xl p-6">
+        <article className="glass-card flex h-full flex-col rounded-xl p-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
             <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
             {TV_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -977,7 +979,7 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-auto flex flex-col gap-2 pt-5">
             <a
               href={botHref}
               onClick={() => goTrack("products_tv_enroll")}
@@ -1001,12 +1003,12 @@ export function Products() {
 
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
-        <article className="glass-card h-full rounded-xl p-6">
+        <article className="glass-card flex h-full flex-col rounded-xl p-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
             <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
             {MT5_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -1014,7 +1016,7 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-auto flex flex-col gap-2 pt-5">
             <a
               href={botHref}
               onClick={() => goTrack("products_mt5_enroll")}
@@ -1037,7 +1039,7 @@ export function Products() {
 
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
-        <article className="glass-card relative h-full overflow-hidden rounded-xl p-6">
+        <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
           <img
             src={macroLogo}
             alt="Gold, Forex & Crypto Macros"
@@ -1052,7 +1054,7 @@ export function Products() {
             className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
           />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
             {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
@@ -1060,7 +1062,7 @@ export function Products() {
               </li>
             ))}
           </ul>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-auto flex flex-col gap-2 pt-5">
             <a
               href={LINKS.macro}
               onClick={() => goTrack("products_macro_join")}
@@ -1101,7 +1103,7 @@ export function HowItWorks() {
         {STEPS.map((s, i) => (
           <motion.li
             key={s.title}
-            className="glass-card relative rounded-xl p-6"
+            className="glass-card relative flex h-full flex-col rounded-xl p-6"
             initial={{ opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -1109,7 +1111,7 @@ export function HowItWorks() {
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+            <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.body}</p>
           </motion.li>
         ))}
       </ol>
@@ -1169,7 +1171,7 @@ export function Ambassador() {
               ["10+ yrs", "Trading"],
               ["24/5", "Coverage"],
             ].map(([v, l]) => (
-              <div key={l} className="rounded-xl border border-border bg-surface p-4">
+              <div key={l} className="flex h-full flex-col rounded-xl border border-border bg-surface p-4">
                 <dt className="text-xl font-bold text-accent">{v}</dt>
                 <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
               </div>
