@@ -167,13 +167,10 @@ export async function sendAccountLink(chatId: number, telegramId: number) {
   );
 }
 
-/** Support shortcut — hands the member straight to Sarah's chat. */
+/** Support shortcut — opens the in-bot live chat with Sarah. */
 export async function sendAskSarah(chatId: number) {
-  await sendMessage(
-    chatId,
-    `💬 <b>Ask Sarah</b>\n\nQuestions about packages, payment or access? Sarah answers personally — usually within a few hours.`,
-    [[{ text: "Message Sarah now", url: SUPPORT }], navRow()],
-  );
+  const { openSarahChat } = await import("./sarah.server");
+  await openSarahChat(chatId);
 }
 
 /** Fallback for free-text messages: point back to the menu. */
