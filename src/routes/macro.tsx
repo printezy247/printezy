@@ -406,9 +406,10 @@ function MacroPage() {
                       >
                         {r.probability}%
                       </div>
-                      <div key={`${r.country}-gauge`} className="border-t border-border py-2.5">
-                        <Gauge segments={fillGauge(r.probability)} color={recessionColor(r.probability)} />
+                      <div key={`${r.country}-gauge`} className="flex items-center border-t border-border py-2.5 pr-3">
+                        <FillBar percent={r.probability} color={recessionColor(r.probability)} />
                       </div>
+
                       <div key={`${r.country}-driver`} className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
                     </>
                   ))}
