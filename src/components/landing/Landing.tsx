@@ -27,6 +27,8 @@ import {
   trackSectionVisibility,
   trackAdClick,
   getSessionId,
+  metaTrack,
+  type SiteMetaEvent,
 } from "@/lib/analytics";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
@@ -1138,6 +1140,9 @@ export function Landing() {
   useEffect(() => {
     trackPageLoad("landing");
     trackAdClick();
+    // The site's own page view, reported to Meta through the same pipeline
+    // as the bot events (consent-gated where required).
+    metaTrack("PageView", { id: "landing" });
     const stopEngage = trackEngagement();
     const stopSections = trackSectionVisibility([
       "features",
