@@ -9,18 +9,17 @@ import {
   MACRO_PRICES,
   fetchFearGreed,
   fetchMacroDesk,
-  fillGauge,
   GAUGE_TRACK,
   IMPACT_COLOR,
   recessionColor,
-  sliderGauge,
   sparkline,
   stanceColor,
   type FearGreed,
-  type GaugeSegments,
   type MacroDesk,
   type MacroFilter,
+  type Stance,
 } from "@/lib/macro-desk";
+
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
@@ -105,16 +104,75 @@ function Card({
 
 const mono = "font-mono text-[13px] tracking-tight";
 
-/** Only the marker / filled run carries colour; the empty track stays muted. */
-function Gauge({ segments, color }: { segments: GaugeSegments; color: string }) {
+/**
+ * Rendered bars replace the monospace gauges: only the fill / marker carries
+ * colour, the empty track stays muted.
+ */
+function FillBar({
+  percent,
+  color,
+  height = 6,
+}: {
+  percent: number;
+  color: string;
+  height?: number;
+}) {
+  const pct = Math.max(0, Math.min(100, percent));
   return (
-    <span className={mono}>
-      {segments.before ? <span style={{ color: GAUGE_TRACK }}>{segments.before}</span> : null}
-      <span style={{ color }}>{segments.marker}</span>
-      {segments.after ? <span style={{ color: GAUGE_TRACK }}>{segments.after}</span> : null}
-    </span>
+    <div
+      role="meter"
+      aria-valuenow={Math.round(pct)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      className="w-full min-w-[80px] overflow-hidden rounded-full"
+      style={{ height, backgroundColor: GAUGE_TRACK }}
+    >
+      <div
+        className="h-full rounded-full transition-[width] duration-500 ease-out"
+        style={{
+          width: `${pct}%`,
+          backgroundColor: color,
+          boxShadow: `0 0 0 1px ${color}33`,
+        }}
+      />
+    </div>
   );
 }
+
+/** Dovish (left) → hawkish (right) track with a dot marker and centre tick. */
+function StanceBar({ stance, color }: { stance: Stance; color: string }) {
+  const pct = stance === "hawkish" ? 100 : stance === "neutral" ? 50 : 0;
+  return (
+    <div className="relative w-full min-w-[80px]" style={{ height: 10 }}>
+      <div
+        className="absolute left-0 right-0 top-1/2 -translate-y-1/2 rounded-full"
+        style={{ height: 4, backgroundColor: GAUGE_TRACK }}
+      />
+      <div
+        className="absolute top-1/2 -translate-y-1/2 rounded-full"
+        style={{
+          height: 8,
+          width: 2,
+          left: "50%",
+          marginLeft: -1,
+          backgroundColor: "rgba(255,255,255,0.16)",
+        }}
+      />
+      <div
+        className="absolute top-1/2 rounded-full transition-[left] duration-500 ease-out"
+        style={{
+          height: 10,
+          width: 10,
+          left: `calc(${pct}% - 5px)`,
+          marginTop: -5,
+          backgroundColor: color,
+          boxShadow: `0 0 0 3px ${color}22`,
+        }}
+      />
+    </div>
+  );
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Page                                                                */
@@ -294,14 +352,17 @@ function MacroPage() {
                         <div key={`${b.bank}-bank`} className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
                         <div key={`${b.bank}-rate`} className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
                         <div key={`${b.bank}-stance`} className="border-t border-border py-2.5 pr-3">
-                          <Gauge segments={sliderGauge(b.stance)} color={stanceColor(b.stance)} />
-                          <span
-                            className="ml-2 text-xs font-semibold capitalize"
-                            style={{ color: stanceColor(b.stance) }}
-                          >
-                            {b.stance}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <StanceBar stance={b.stance} color={stanceColor(b.stance)} />
+                            <span
+                              className="shrink-0 text-[11px] font-semibold capitalize"
+                              style={{ color: stanceColor(b.stance) }}
+                            >
+                              {b.stance}
+                            </span>
+                          </div>
                         </div>
+
                         <div key={`${b.bank}-meeting`} className="border-t border-border py-2.5 text-right text-muted-foreground">
                           {b.nextMeeting}
                         </div>
@@ -345,9 +406,10 @@ function MacroPage() {
                       >
                         {r.probability}%
                       </div>
-                      <div key={`${r.country}-gauge`} className="border-t border-border py-2.5">
-                        <Gauge segments={fillGauge(r.probability)} color={recessionColor(r.probability)} />
+                      <div key={`${r.country}-gauge`} className="flex items-center border-t border-border py-2.5 pr-3">
+                        <FillBar percent={r.probability} color={recessionColor(r.probability)} />
                       </div>
+
                       <div key={`${r.country}-driver`} className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
                     </>
                   ))}
@@ -407,9 +469,14 @@ function MacroPage() {
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
               <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? "Loading"}</p>
-              <p className="mt-3">
-                <Gauge segments={fillGauge(fng?.value ?? 0)} color="#c9a13a" />
-              </p>
+              <div className="mt-3">
+                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} />
+                <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <span>Fear</span>
+                  <span>Greed</span>
+                </div>
+              </div>
+
             </Card>
 
             <Card title="Next Rate Decisions">
