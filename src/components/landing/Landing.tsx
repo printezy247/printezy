@@ -297,6 +297,7 @@ const NAV_ITEMS = [
   { label: "Packages", href: "/#packages" },
   { label: "Education", href: "/#products" },
   { label: "Track Record", href: "/#track-record" },
+  { label: "Indicators", href: "/indicators" },
   { label: "Macro & Crypto", href: "/macro" },
   { label: "FAQ", href: "/faq" },
 ];
