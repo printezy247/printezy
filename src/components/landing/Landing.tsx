@@ -598,7 +598,7 @@ export function Features() {
         title="Built for traders who want clarity"
         subtitle="Everything runs through Telegram, so you never miss a setup while you're away from the charts."
       />
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((f, i) => (
           <Reveal key={f.title} delay={i * 0.08} className="h-full">
           <article className="glass-card h-full rounded-xl p-6">
