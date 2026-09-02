@@ -749,6 +749,11 @@ export function Pricing() {
                   </span>
                 ) : null}
               </p>
+              {t.freeAlt ? (
+                <p className="mt-1 text-[11px] font-medium leading-snug text-accent">
+                  or free access by Vantage activation
+                </p>
+              ) : null}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
                 {t.features.map((f) => (
