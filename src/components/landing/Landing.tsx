@@ -954,52 +954,117 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-const FAQS = [
+const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
   {
-    q: "How often do you send signals?",
-    a: "Multiple times daily during trading hours (24/5). Frequency depends on market conditions — we only alert when a setup meets our criteria.",
+    title: "Routines & signals",
+    items: [
+      {
+        q: "How often do you send signals?",
+        a: "Multiple times daily during trading hours (24/5). Frequency depends on market conditions — we only alert when a setup meets our criteria. Quality over quantity.",
+      },
+      {
+        q: "What markets do you trade?",
+        a: "Forex (major pairs), crypto and commodities. Our primary focus is scalping and intraday trading, with swing setups on higher timeframes.",
+      },
+      {
+        q: "What trading styles do the routines cover?",
+        a: "Three styles: Scalp, Intraday and Swing. Every signal states its style, entry, stop-loss and take-profit so you can match it to your schedule.",
+      },
+      {
+        q: "Do I need trading experience?",
+        a: "No. Our education channel teaches everything step by step. Start on the free channel and learn as you go.",
+      },
+      {
+        q: "Which broker should I use?",
+        a: "We recommend Vantage Markets (our affiliate partner), but any broker you trust will work with our routines.",
+      },
+    ],
   },
   {
-    q: "What markets do you trade?",
-    a: "Forex (major pairs), crypto and commodities. Our primary focus is scalping and intraday trading.",
+    title: "Pricing tiers",
+    items: [
+      {
+        q: "Is there a free option?",
+        a: "Yes, two. The Free tier gives you the public channel and starter education, forever free. The Vantage Trial unlocks 30 days of Pro-level access free after you activate a Vantage Markets account — no card required.",
+      },
+      {
+        q: "What's included in Pro, Premium and Elite?",
+        a: "Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",
+      },
+      {
+        q: "Can I upgrade or downgrade later?",
+        a: "Yes. Open the enrollment bot, choose your new package, and your account updates once payment is confirmed. Your trade log and history carry over.",
+      },
+      {
+        q: "Do you offer refunds?",
+        a: "Yes — every paid tier comes with a 30-day money-back guarantee. Message support through the bot and we'll take care of it.",
+      },
+    ],
   },
   {
-    q: "Do I need trading experience?",
-    a: "No. Our education channel teaches everything step by step. Start on the free channel and learn as you go.",
+    title: "Enrollment & your account",
+    items: [
+      {
+        q: "How do I enroll in a paid tier?",
+        a: "Tap Enroll Now on any package to open our enrollment bot on Telegram, pick your tier, and pay securely by card through Stripe. Your access activates the moment payment is confirmed.",
+      },
+      {
+        q: "How do I access my account?",
+        a: "Type /account in the bot for a one-tap signed-in link, or sign in on the site with a 6-digit code the bot sends to your Telegram — no passwords.",
+      },
+      {
+        q: "What happens after I pay?",
+        a: "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
+      },
+      {
+        q: "How does the Vantage Trial work?",
+        a: "Choose the Vantage Trial in the bot, open your Vantage Markets account through the provided link, then tap “I've activated”. Your Pro-level access unlocks immediately and expires automatically after 30 days.",
+      },
+      {
+        q: "Who do I contact for help?",
+        a: "Use the 💬 Ask Sarah button in the bot (or /ask) for live chat with our support lead, or reach her directly at t.me/ezysarah.",
+      },
+    ],
   },
-  {
-    q: "Which broker should I use?",
-    a: "We recommend Vantage Markets (our affiliate partner), but any broker you trust will work.",
-  },
-  { q: "Is there a free trial?", a: "Yes — join our free public channel. No payment required." },
-  { q: "How do I enroll in a paid tier?", a: "Tap Enroll Now on any package to open our enrollment bot, follow the steps, and activate via a Vantage Markets account or deposit." },
 ];
 
 export function Faq() {
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<string | null>("0-0");
   return (
     <Section id="faq">
       <SectionHeading eyebrow="FAQ" title="Questions, answered" />
-      <div className="mx-auto max-w-3xl space-y-3">
-        {FAQS.map((f, i) => (
-          <Reveal key={f.q} delay={i * 0.06} y={20}>
-          <div className="glass-card overflow-hidden rounded-xl">
-            <button
-              type="button"
-              onClick={() => setOpen(open === i ? null : i)}
-              aria-expanded={open === i}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-            >
-              <span className="text-sm font-semibold">{f.q}</span>
-              <ChevronDown
-                className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open === i ? "rotate-180" : ""}`}
-              />
-            </button>
-            {open === i ? (
-              <p className="px-5 pb-5 text-sm text-muted-foreground">{f.a}</p>
-            ) : null}
+      <div className="mx-auto max-w-3xl space-y-10">
+        {FAQ_GROUPS.map((g, gi) => (
+          <div key={g.title}>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              {g.title}
+            </h3>
+            <div className="space-y-3">
+              {g.items.map((f, i) => {
+                const id = `${gi}-${i}`;
+                return (
+                  <Reveal key={f.q} delay={i * 0.06} y={20}>
+                  <div className="glass-card overflow-hidden rounded-xl">
+                    <button
+                      type="button"
+                      onClick={() => setOpen(open === id ? null : id)}
+                      aria-expanded={open === id}
+                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    >
+                      <span className="text-sm font-semibold">{f.q}</span>
+                      <ChevronDown
+                        className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open === id ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    {open === id ? (
+                      <p className="px-5 pb-5 text-sm text-muted-foreground">{f.a}</p>
+                    ) : null}
+                  </div>
+                  </Reveal>
+                );
+              })}
+            </div>
           </div>
-          </Reveal>
         ))}
       </div>
     </Section>
@@ -1072,6 +1137,11 @@ export function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link to="/faq" className="hover:text-foreground">
+                  FAQ
+                </Link>
+              </li>
             </ul>
           </div>
 
