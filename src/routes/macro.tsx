@@ -582,13 +582,21 @@ function MacroPage() {
                   {desk?.cryptoAddons.map((a) => (
                     <li
                       key={a.name}
-                      className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                      className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
                     >
                       <div className="max-w-md">
                         <p className="text-sm font-semibold">{a.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
                       </div>
-                      <span className="text-sm font-bold text-accent">{a.price}</span>
+                      <a
+                        href={LINKS.macro}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => track("click", `macro_crypto_checkout_${a.name.toLowerCase().replace(/\s+/g, "_")}`)}
+                        className="shrink-0 rounded-md border border-accent/50 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/10"
+                      >
+                        Check out price
+                      </a>
                     </li>
                   ))}
                 </ul>
