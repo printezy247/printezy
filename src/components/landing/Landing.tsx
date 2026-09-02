@@ -937,8 +937,8 @@ export function Products() {
         <div className="grid gap-5 sm:grid-cols-2">
           {EBOOKS.map((b, i) => (
             <Reveal key={b.title} delay={i * 0.1}>
-              <a
-                href={LINKS.ebook}
+              <Link
+                to="/free-ebook"
                 onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
                 className="glass-card group flex h-full items-stretch gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
               >
