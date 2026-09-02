@@ -574,15 +574,7 @@ function MacroPage() {
             {shows("Sentiment") ? (
               <div className="grid gap-7 sm:grid-cols-2">
                 {desk?.trends.map((t) => (
-                  <Card
-                    key={t.key}
-                    title={t.title}
-                    badge={<Badge tone="paid">{t.price}</Badge>}
-                  >
-                    <p className="text-sm text-body">{t.description}</p>
-                    <p className={`mt-4 text-lg text-accent ${mono}`}>{sparkline(t.trend)}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{t.readout}</p>
-                  </Card>
+                  <TrendCard key={t.key} trend={t} />
                 ))}
               </div>
             ) : null}
