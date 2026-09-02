@@ -443,8 +443,20 @@ function Hero() {
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <TelegramCta label="Join Free Channel" event="hero_join_free" />
-            <TelegramCta label="Free Ebook" event="hero_free_ebook" variant="gold" href={LINKS.ebook} />
+            <Link
+              to="/free-channel"
+              onClick={() => goTrack("hero_join_free")}
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+            >
+              <Send className="h-4 w-4" /> Join Free Channel
+            </Link>
+            <Link
+              to="/free-ebook"
+              onClick={() => goTrack("hero_free_ebook")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-accent bg-card px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent-tint"
+            >
+              <BookOpen className="h-4 w-4" /> Free Ebook
+            </Link>
           </div>
 
           <p className="mt-3 text-sm text-muted-foreground">
