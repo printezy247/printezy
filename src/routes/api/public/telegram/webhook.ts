@@ -151,6 +151,18 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             ? text.slice(6).trim().slice(0, 64) || null
             : null;
 
+          // Account-linking code: handled entirely separately from the
+          // ad-attribution start payload below, then we're done.
+          if (startPayload?.startsWith("link_")) {
+            const { consumeTelegramLinkCode } = await import("@/lib/bot/account-link.server");
+            await consumeTelegramLinkCode(startPayload.slice(5), {
+              telegramId,
+              username: message?.from?.username ?? null,
+              firstName: message?.from?.first_name ?? null,
+            });
+            return Response.json({ ok: true });
+          }
+
           await upsertBotUser({
             telegramId,
             username: message?.from?.username ?? null,

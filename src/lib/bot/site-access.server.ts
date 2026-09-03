@@ -117,6 +117,33 @@ export async function claimSitePurchases(args: {
 }
 
 /**
+ * Claim every ungranted paid purchase linked to this account (via
+ * account_telegram_links, not the typed handle). Called right after a
+ * Telegram link code is consumed, so a purchase made while signed in but
+ * before linking gets delivered immediately.
+ */
+export async function claimPurchasesForUserId(
+  userId: string,
+  telegramId: number,
+): Promise<number> {
+  const { data, error } = await supabaseAdmin
+    .from("site_purchases")
+    .select("id, sku, telegram_username, amount_cents, currency")
+    .eq("status", "paid")
+    .is("granted_at", null)
+    .eq("user_id", userId);
+
+  if (error) {
+    console.error("[site-access] user-linked claim lookup failed", error);
+    return 0;
+  }
+
+  const rows = (data ?? []) as PurchaseRow[];
+  for (const row of rows) await grantPurchase(telegramId, row);
+  return rows.length;
+}
+
+/**
  * Try to grant a freshly recorded purchase right away: if the handle already
  * belongs to a known bot user there is nothing left to wait for.
  */
