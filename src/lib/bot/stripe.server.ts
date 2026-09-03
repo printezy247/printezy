@@ -97,6 +97,8 @@ export async function createProductCheckoutSession(args: {
     cancel_url: `${args.origin}/pricing?canceled=1`,
     "metadata[sku]": args.sku,
     "metadata[source]": "website",
+    "metadata[telegram_username]": args.telegramUsername,
+    client_reference_id: args.telegramUsername,
   });
 
   return stripeRequest<CheckoutSession>("/checkout/sessions", { method: "POST", body });
