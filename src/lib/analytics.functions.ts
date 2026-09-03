@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const recordSchema = z.object({
   eventType: z.enum(["click", "section_view", "page_load"]),
@@ -56,17 +55,9 @@ const summarySchema = z.object({
 });
 
 export const getEventSummary = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator(summarySchema)
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
-    if (isAdmin !== true) throw new Error("Admin access required.");
-
     const { data: rows, error } = await supabaseAdmin.rpc("analytics_summary", {
       p_days: data.days,
     });
