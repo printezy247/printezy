@@ -1244,9 +1244,9 @@ export function SocialProof() {
           );
         })}
       </div>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="flex flex-wrap justify-center gap-5">
         {TESTIMONIALS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 0.08} className="h-full">
+          <Reveal key={t.name} delay={i * 0.08} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
           <figure className="glass-card flex h-full flex-col rounded-xl p-6">
             <div className="flex gap-0.5 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
