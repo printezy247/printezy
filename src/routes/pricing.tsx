@@ -4,7 +4,8 @@ import { Check, ShieldCheck, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
 import { CATALOG, formatUsd, itemsByGroup, type CatalogItem } from "@/lib/catalog";
-import { trackPageLoad } from "@/lib/analytics";
+import { trackPageLoad, goTrack } from "@/lib/analytics";
+import { usdtBuyLink } from "@/lib/telegram-links";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
