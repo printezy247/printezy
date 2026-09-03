@@ -1,11 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MacroSubscribeButton } from "@/components/TelegramBuyButton";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { Nav, Footer } from "@/components/landing/Landing";
-import { itemsByGroup, formatUsd } from "@/lib/catalog";
+import { ArrowRight, Send } from "lucide-react";
+import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
-
 import { useLocalClock } from "@/lib/local-time";
 import {
   MACRO_FILTERS,
@@ -580,7 +577,7 @@ function MacroPage() {
             ) : null}
 
             {shows("Crypto") ? (
-              <Card title="Crypto Desk" note="Monthly products, billed separately">
+              <Card title="Crypto Desk" note="Add-ons, billed separately">
                 <ul className="divide-y divide-border">
                   {desk?.cryptoAddons.map((a) => (
                     <li
@@ -591,13 +588,20 @@ function MacroPage() {
                         <p className="text-sm font-semibold">{a.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
                       </div>
-                      <MacroSubscribeButton className="w-full shrink-0 sm:w-56" />
+                      <a
+                        href={LINKS.macro}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => track("click", `macro_crypto_checkout_${a.name.toLowerCase().replace(/\s+/g, "_")}`)}
+                        className="shrink-0 rounded-md border border-accent/50 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/10"
+                      >
+                        Check out price
+                      </a>
                     </li>
                   ))}
                 </ul>
               </Card>
             ) : null}
-
           </div>
 
           {/* Sidebar */}
@@ -639,29 +643,29 @@ function MacroPage() {
 
             <section className="rounded-xl border border-accent/45 bg-card p-5">
               <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
-                Macro desk products
+                Full macro desk
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                $19<span className="text-sm font-semibold text-muted-foreground">/month</span>
               </p>
               <p className="mt-2 text-sm text-body">
-                Each product is a separate monthly subscription, delivered daily at{" "}
+                Unlocks all four premium heatmaps — central bank divergence, recession probability,
+                asset correlation and geopolitical risk — delivered daily at{" "}
                 {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
               </p>
-              <ul className="mt-4 divide-y divide-border">
-                {itemsByGroup("macro").map((item) => (
-                  <li key={item.sku} className="flex items-center justify-between gap-3 py-2.5 first:pt-0">
-                    <span className="text-sm text-body">{item.name}</span>
-                    <span className="shrink-0 text-sm font-bold text-foreground">
-                      {formatUsd(item.amountCents)}
-                      <span className="text-[11px] font-semibold text-muted-foreground">/mo</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <MacroSubscribeButton className="mt-4" />
+              <a
+                href={LINKS.macro}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => track("click", "macro_subscribe")}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+              >
+                <Send className="h-4 w-4" /> Subscribe via Telegram
+              </a>
               <p className="mt-2 text-[11px] text-muted-foreground">
-                Telegram Stars or USDT · cancel anytime
+                Card, Telegram Stars or USDT · cancel anytime
               </p>
             </section>
-
 
             <div className="rounded-xl border border-border bg-surface p-5 text-[11.5px] leading-relaxed text-muted-foreground">
               Macro data is provided for education and research only and is not personalized

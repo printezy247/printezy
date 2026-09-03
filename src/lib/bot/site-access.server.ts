@@ -16,8 +16,6 @@ type PurchaseRow = {
   currency: string;
 };
 
-const PURCHASE_COLUMNS = "id, sku, telegram_username, amount_cents, currency";
-
 /** Package SKUs map onto the enrollment tiers the portal already understands. */
 const SKU_TIER: Record<string, string> = {
   signal_beginner: "beginner",
@@ -65,7 +63,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
 
   const { error: markError } = await supabaseAdmin
     .from("site_purchases")
-    .update({ granted_at: nowIso, claimed_by_telegram_id: telegramId } as never)
+    .update({ granted_at: nowIso } as never)
     .eq("id", purchase.id)
     .is("granted_at", null);
   if (markError) console.error("[site-access] granted_at update failed", markError);
@@ -102,7 +100,7 @@ export async function claimSitePurchases(args: {
 
   const { data, error } = await supabaseAdmin
     .from("site_purchases")
-    .select(PURCHASE_COLUMNS)
+    .select("id, sku, telegram_username, amount_cents, currency")
     .eq("status", "paid")
     .is("granted_at", null)
     .ilike("telegram_username", handle);
@@ -124,7 +122,7 @@ export async function claimSitePurchases(args: {
 export async function grantRecordedPurchase(stripeSessionId: string): Promise<boolean> {
   const { data } = await supabaseAdmin
     .from("site_purchases")
-    .select(PURCHASE_COLUMNS)
+    .select("id, sku, telegram_username, amount_cents, currency")
     .eq("stripe_session_id", stripeSessionId)
     .is("granted_at", null)
     .maybeSingle();
@@ -143,46 +141,5 @@ export async function grantRecordedPurchase(stripeSessionId: string): Promise<bo
   if (!telegramId) return false;
 
   await grantPurchase(telegramId, purchase);
-  return true;
-}
-
-/**
- * Claim a purchase with the one-time code from the success page or email.
- * This is the trusted path: the buyer's real Telegram account is bound to the
- * purchase, so no hand-typed username is involved.
- */
-export async function claimByCode(args: {
-  telegramId: number;
-  username?: string | null;
-  code: string;
-}): Promise<boolean> {
-  const code = args.code.trim().toUpperCase();
-  if (!/^EZY-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) return false;
-
-  const { data, error } = await supabaseAdmin
-    .from("site_purchases")
-    .select(PURCHASE_COLUMNS + ", granted_at")
-    .eq("claim_code", code)
-    .eq("status", "paid")
-    .maybeSingle();
-
-  if (error) {
-    console.error("[site-access] claim-by-code lookup failed", error);
-    return false;
-  }
-
-  const row = data as (PurchaseRow & { granted_at: string | null }) | null;
-  if (!row) return false;
-  if (row.granted_at) return true; // already claimed — idempotent
-
-  const handle = normalizeHandle(args.username);
-  if (handle && !row.telegram_username) {
-    await supabaseAdmin
-      .from("site_purchases")
-      .update({ telegram_username: handle } as never)
-      .eq("id", row.id);
-  }
-
-  await grantPurchase(args.telegramId, row);
   return true;
 }

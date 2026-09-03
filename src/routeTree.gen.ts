@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MacroRouteImport } from './routes/macro'
@@ -18,23 +17,19 @@ import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
-import { Route as AuthenticatedMyAccountRouteImport } from './routes/_authenticated/my-account'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -72,6 +67,11 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout-success',
+  path: '/checkout-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -96,11 +96,6 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedMyAccountRoute = AuthenticatedMyAccountRouteImport.update({
-  id: '/my-account',
-  path: '/my-account',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
@@ -113,11 +108,18 @@ const ApiPublicTelegramWebhookRoute =
     path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -125,17 +127,17 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -143,11 +145,10 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
@@ -156,6 +157,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/checkout-success': typeof CheckoutSuccessRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -163,11 +165,10 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
-  '/_authenticated/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
@@ -176,6 +177,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -183,17 +185,17 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/reset-password'
     | '/terms'
     | '/ads-dashboard'
-    | '/my-account'
     | '/ebooks/$slug'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -201,11 +203,10 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/reset-password'
     | '/terms'
     | '/ads-dashboard'
-    | '/my-account'
     | '/ebooks/$slug'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
@@ -213,6 +214,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/account'
     | '/auth'
+    | '/checkout-success'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -220,11 +222,10 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/reset-password'
     | '/terms'
     | '/_authenticated/ads-dashboard'
-    | '/_authenticated/my-account'
     | '/ebooks/$slug'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -233,6 +234,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
@@ -240,9 +242,9 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
@@ -253,13 +255,6 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -311,6 +306,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout-success': {
+      id: '/checkout-success'
+      path: '/checkout-success'
+      fullPath: '/checkout-success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -346,13 +348,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/my-account': {
-      id: '/_authenticated/my-account'
-      path: '/my-account'
-      fullPath: '/my-account'
-      preLoaderRoute: typeof AuthenticatedMyAccountRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/ads-dashboard': {
       id: '/_authenticated/ads-dashboard'
       path: '/ads-dashboard'
@@ -367,17 +362,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
-  AuthenticatedMyAccountRoute: typeof AuthenticatedMyAccountRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
-  AuthenticatedMyAccountRoute: AuthenticatedMyAccountRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -388,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
@@ -395,9 +396,9 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport

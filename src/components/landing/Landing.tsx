@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { AccountNavButton } from "@/components/AccountNavButton";
-import { TelegramBuyButton } from "@/components/TelegramBuyButton";
-import { lifetimePayload, FREE_ACCESS_LINK } from "@/lib/telegram-links";
 import {
   Zap,
   GraduationCap,
@@ -246,6 +243,52 @@ function Logo() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Market ticker (static reference quotes)                             */
+/* ------------------------------------------------------------------ */
+
+const TICKER: { symbol: string; price: string; change: string; up: boolean }[] = [
+  { symbol: "XAU/USD", price: "4,598.70", change: "+0.42%", up: true },
+  { symbol: "XAG/USD", price: "32.15", change: "+0.55%", up: true },
+  { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
+  { symbol: "GBP/USD", price: "1.2985", change: "+0.31%", up: true },
+  { symbol: "USD/JPY", price: "152.36", change: "+0.21%", up: true },
+  { symbol: "AUD/USD", price: "0.6745", change: "-0.12%", up: false },
+  { symbol: "USD/CAD", price: "1.3560", change: "+0.08%", up: true },
+  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
+  { symbol: "ETH/USD", price: "3,512.80", change: "+2.14%", up: true },
+  { symbol: "SOL/USD", price: "142.35", change: "+3.42%", up: true },
+  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
+  { symbol: "US500", price: "5,980.25", change: "-0.11%", up: false },
+  { symbol: "NAS100", price: "21,245", change: "+0.38%", up: true },
+  { symbol: "USOIL", price: "71.84", change: "-0.63%", up: false },
+  { symbol: "UKOIL", price: "75.20", change: "-0.45%", up: false },
+];
+
+export function Ticker() {
+  const items = [...TICKER, ...TICKER];
+  return (
+    <div className="w-full border-b border-border bg-surface-elevated text-foreground">
+      <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+        <div className="ticker-track animate-ticker gap-8">
+          {items.map((t, i) => (
+            <span key={`${t.symbol}-${i}`} className="flex shrink-0 items-baseline gap-1.5">
+              <span className="font-semibold text-body">{t.symbol}</span>
+              <span className="tabular-nums text-foreground">{t.price}</span>
+              <span
+                className="tabular-nums font-semibold"
+                style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+              >
+                {t.change}
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -266,6 +309,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-50 bg-background">
+      <Ticker />
       <nav className="border-b border-border">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" aria-label="EzyMap Algo home">
@@ -293,7 +337,6 @@ export function Nav() {
             >
               <Send className="h-4 w-4" /> Ask Sarah
             </a>
-            <AccountNavButton />
           </div>
 
           <button
@@ -329,9 +372,6 @@ export function Nav() {
               >
                 <Send className="h-4 w-4" /> Ask Sarah
               </a>
-            </li>
-            <li className="pt-2">
-              <AccountNavButton onNavigate={() => setOpen(false)} className="w-full justify-center" />
             </li>
           </ul>
         </div>
@@ -619,19 +659,11 @@ type Tier = {
   openAccountEvent?: string;
 };
 
-/** Pricing tiers that can be paid for by card on the site. */
-const TIER_SKU: Record<string, string | undefined> = {
-  Beginner: "signal_beginner",
-  Pro: "signal_pro",
-  Premium: "signal_premium",
-  Elite: "signal_elite",
-};
-
 const TIERS: Tier[] = [
   {
     name: "Beginner",
     price: "$29",
-    priceNote: "one-time",
+    priceNote: "per month",
     blurb: "Start with essential signals",
     features: [
       "Join our 640+ trader community",
@@ -648,7 +680,7 @@ const TIERS: Tier[] = [
   {
     name: "Pro",
     price: "$49",
-    priceNote: "one-time",
+    priceNote: "per month",
     blurb: "Scalp Mastery Signals",
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
@@ -660,7 +692,7 @@ const TIERS: Tier[] = [
   {
     name: "Premium",
     price: "$99",
-    priceNote: "one-time",
+    priceNote: "per month",
     blurb: "Alpha Edge Signals",
     features: [
       "M15-M30 Intraday",
@@ -678,7 +710,7 @@ const TIERS: Tier[] = [
   {
     name: "Elite",
     price: "$299",
-    priceNote: "one-time",
+    priceNote: "per month",
     blurb: "Full Suite",
     features: [
       "All indicators included",
@@ -780,21 +812,36 @@ export function Pricing() {
                 </a>
               ) : null}
 
-              <TelegramBuyButton
-                payload={lifetimePayload(TIER_SKU[t.name]!)}
-                variant={t.highlight ? "gold" : "primary"}
-                className={t.openAccountHref ? "mt-2" : "mt-6"}
-              />
+              <a
+                href={t.href === LINKS.bot ? botHref : t.href}
+                onClick={() => goTrack(t.event)}
+                className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                  t.openAccountHref ? "mt-2" : "mt-6"
+                } ${
+                  t.highlight
+                    ? "bg-accent text-accent-foreground hover:bg-accent-glow"
+                    : "bg-primary text-primary-foreground hover:bg-primary-glow"
+                }`}
+              >
+                {t.cta}
+              </a>
               {t.freeAlt ? (
-                <a
-                  href={FREE_ACCESS_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => goTrack(`${t.event}_free_access`)}
-                  className="mt-2 text-center text-xs font-semibold text-accent underline-offset-2 hover:underline"
-                >
-                  or activate free via Vantage
-                </a>
+                t.name === "Premium" ? (
+                  <div className="mt-2">
+                    <NeonFreeAccessButton
+                      href={botHref}
+                      event={`${t.event}_free_access`}
+                    />
+                  </div>
+                ) : (
+                  <a
+                    href={botHref}
+                    onClick={() => goTrack(`${t.event}_free_access`)}
+                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                  >
+                    Get Free Access
+                  </a>
+                )
               ) : null}
             </div>
           </article>
@@ -1175,9 +1222,11 @@ export function SocialProof() {
         title="640+ active traders trust EzyMap"
         subtitle="Real feedback from the community inside our Telegram channels."
       />
-      <div className="mb-10 flex justify-center">
+      <div className="mb-10 grid gap-4 sm:grid-cols-3">
         {[
+          [Activity, "3.2K+", "Signals delivered this month"],
           [Clock, "24/5", "Market coverage"],
+          [ShieldCheck, "0%", "Spam, ever"],
         ].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
@@ -1252,11 +1301,11 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "Is there a free option?",
-        a: "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner package at $29 is the paid entry point — a one-time payment for lifetime access.",
+        a: "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29/month is the paid entry point.",
       },
       {
         q: "What's included in Pro, Premium and Elite?",
-        a: "Every package is a one-time payment with lifetime access. Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",
+        a: "Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",
       },
       {
         q: "Can I upgrade or downgrade later?",
@@ -1273,7 +1322,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "How do I enroll in a paid tier?",
-        a: "Tap Get it in Telegram on any package to open our enrollment bot, pick your product, and pay by card, USDT or Telegram Stars. Your access activates the moment payment is confirmed.",
+        a: "Tap Enroll Now on any package to open our enrollment bot on Telegram, pick your tier, and pay securely by card through Stripe. Your access activates the moment payment is confirmed.",
       },
       {
         q: "How do I access my account?",

@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { ConsentBanner } from "../components/ConsentBanner";
+import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 import { SupportChat } from "../components/SupportChat";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -150,6 +151,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <PaymentTestModeBanner />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <SupportChat />

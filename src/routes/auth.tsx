@@ -6,17 +6,14 @@ import { Nav, Footer } from "@/components/landing/Landing";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in or create your account | EzyMap ALGO" },
+      { title: "Admin Sign In | PrintEzy" },
       {
         name: "description",
-        content:
-          "Sign in to see your EzyMap ALGO purchases, access status and Telegram claim codes — or create an account in seconds.",
+        content: "Sign in with your PrintEzy admin email and password to open the private desk.",
       },
-      { property: "og:title", content: "Sign in or create your account | EzyMap ALGO" },
-      {
-        property: "og:description",
-        content: "Track your EzyMap ALGO purchases and access from one account.",
-      },
+      { name: "robots", content: "noindex" },
+      { property: "og:title", content: "Admin Sign In | PrintEzy" },
+      { property: "og:description", content: "Private PrintEzy admin sign in." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -28,7 +25,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 const safePath = (value: string | undefined) =>
-  value && value.startsWith("/") && !value.startsWith("//") ? value : "/my-account";
+  value && value.startsWith("/") && !value.startsWith("//") ? value : "/ads-dashboard";
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -49,30 +46,6 @@ function AuthPage() {
       active = false;
     };
   }, [navigate, search.redirect]);
-
-  async function googleSignIn() {
-    setError(null);
-    try {
-      const { lovable } = await import("@/integrations/lovable");
-      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign-in failed.");
-    }
-  }
-
-  async function resetPassword() {
-    setError(null);
-    setNotice(null);
-    if (!email) {
-      setError("Enter your email first, then tap reset.");
-      return;
-    }
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/reset-password",
-    });
-    if (resetError) setError(resetError.message);
-    else setNotice("Password reset link sent — check your inbox.");
-  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -109,24 +82,13 @@ function AuthPage() {
       <Nav />
       <main className="mx-auto w-full max-w-md px-4 py-24">
         <h1 className="text-2xl font-semibold tracking-tight">
-          {mode === "signin" ? "Sign in" : "Create your account"}
+          {mode === "signin" ? "Admin sign in" : "Create admin account"}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {mode === "signin"
-            ? "Access your purchases, access status and Telegram claim codes."
-            : "One account keeps every package you buy, so access is never lost."}
+            ? "Private desk access for PrintEzy administrators."
+            : "The first account created becomes the administrator."}
         </p>
-
-        <button
-          type="button"
-          onClick={googleSignIn}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-elevated"
-        >
-          Continue with Google
-        </button>
-        <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="h-px flex-1 bg-border" /> or use email <span className="h-px flex-1 bg-border" />
-        </div>
         <form onSubmit={submit} className="mt-6 flex flex-col gap-3">
           <label htmlFor="email" className="text-sm text-muted-foreground">
             Email
@@ -165,15 +127,6 @@ function AuthPage() {
           {error && <p className="text-sm text-[#d9534f]">{error}</p>}
           {notice && <p className="text-sm text-[#2fbf71]">{notice}</p>}
         </form>
-        {mode === "signin" ? (
-          <button
-            type="button"
-            onClick={resetPassword}
-            className="mt-4 text-sm text-muted-foreground underline underline-offset-4"
-          >
-            Forgot your password?
-          </button>
-        ) : null}
         <button
           type="button"
           onClick={() => {
@@ -183,7 +136,7 @@ function AuthPage() {
           }}
           className="mt-5 text-sm text-muted-foreground underline underline-offset-4"
         >
-          {mode === "signin" ? "Create an account" : "Back to sign in"}
+          {mode === "signin" ? "Create the admin account" : "Back to sign in"}
         </button>
       </main>
       <Footer />

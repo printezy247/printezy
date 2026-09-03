@@ -155,23 +155,8 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             telegramId,
             username: message?.from?.username ?? null,
             firstName: message?.from?.first_name ?? null,
-            sessionId: startPayload && !/^EZY-/i.test(startPayload) ? startPayload : null,
+            sessionId: startPayload,
           });
-
-          // One-time claim code from the website success page / email.
-          const claimCode =
-            startPayload && /^EZY-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/i.test(startPayload)
-              ? startPayload.toUpperCase()
-              : null;
-
-          if (claimCode) {
-            const { claimByCode } = await import("@/lib/bot/site-access.server");
-            await claimByCode({
-              telegramId,
-              username: message?.from?.username ?? null,
-              code: claimCode,
-            });
-          }
 
           // Website purchases waiting on this handle are approved on contact.
           {
@@ -182,7 +167,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             });
           }
 
-          if (startPayload && !claimCode) {
+          if (startPayload) {
             // Ad click -> bot start: this is the Lead conversion for Meta.
             await reportLead(telegramId, startPayload);
           }
