@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
@@ -471,10 +471,10 @@ function MacroPage() {
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Forecast</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Previous</div>
                     {desk?.calendar.map((r) => (
-                      <>
-                        <div key={`${r.nyTime}-${r.event}-time`} className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
-                        <div key={`${r.nyTime}-${r.event}-ccy`} className="border-t border-border py-2.5 font-semibold">{r.currency}</div>
-                        <div key={`${r.nyTime}-${r.event}-event`} className="border-t border-border py-2.5 pr-3">
+                      <Fragment key={`${r.nyTime}-${r.event}`}>
+                        <div className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
+                        <div className="border-t border-border py-2.5 font-semibold">{r.currency}</div>
+                        <div className="border-t border-border py-2.5 pr-3">
                           <span className="inline-flex items-center gap-2">
                             <span
                               className="h-2 w-2 shrink-0 rounded-full"
@@ -484,9 +484,9 @@ function MacroPage() {
                             {r.event}
                           </span>
                         </div>
-                        <div key={`${r.nyTime}-${r.event}-forecast`} className={`border-t border-border py-2.5 text-right ${mono}`}>{r.forecast}</div>
-                        <div key={`${r.nyTime}-${r.event}-previous`} className={`border-t border-border py-2.5 text-right text-muted-foreground ${mono}`}>{r.previous}</div>
-                      </>
+                        <div className={`border-t border-border py-2.5 text-right ${mono}`}>{r.forecast}</div>
+                        <div className={`border-t border-border py-2.5 text-right text-muted-foreground ${mono}`}>{r.previous}</div>
+                      </Fragment>
                     ))}
                   </div>
                 </div>
@@ -514,10 +514,10 @@ function MacroPage() {
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Stance</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Next meeting</div>
                     {desk?.centralBanks.map((b) => (
-                      <>
-                        <div key={`${b.bank}-bank`} className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
-                        <div key={`${b.bank}-rate`} className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
-                        <div key={`${b.bank}-stance`} className="border-t border-border py-2.5 pr-3">
+                      <Fragment key={b.bank}>
+                        <div className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
+                        <div className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
+                        <div className="border-t border-border py-2.5 pr-3">
                           <div className="flex items-center gap-2">
                             <StanceBar stance={b.stance} color={stanceColor(b.stance)} />
                             <span
@@ -529,10 +529,10 @@ function MacroPage() {
                           </div>
                         </div>
 
-                        <div key={`${b.bank}-meeting`} className="border-t border-border py-2.5 text-right text-muted-foreground">
+                        <div className="border-t border-border py-2.5 text-right text-muted-foreground">
                           {b.nextMeeting}
                         </div>
-                      </>
+                      </Fragment>
                     ))}
                   </div>
                   <p className="mt-2 text-[11px] text-muted-foreground">
@@ -563,21 +563,20 @@ function MacroPage() {
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Gauge</div>
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Driver</div>
                   {desk?.recession.map((r) => (
-                    <>
-                      <div key={`${r.country}-country`} className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
+                    <Fragment key={r.country}>
+                      <div className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
                       <div
-                        key={`${r.country}-prob`}
                         className="border-t border-border py-2.5 text-right text-sm font-bold"
                         style={{ color: recessionColor(r.probability) }}
                       >
                         {r.probability}%
                       </div>
-                      <div key={`${r.country}-gauge`} className="flex items-center border-t border-border py-2.5 pr-3">
+                      <div className="flex items-center border-t border-border py-2.5 pr-3">
                         <FillBar percent={r.probability} color={recessionColor(r.probability)} />
                       </div>
 
-                      <div key={`${r.country}-driver`} className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
-                    </>
+                      <div className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
+                    </Fragment>
                   ))}
                 </div>
               </Card>

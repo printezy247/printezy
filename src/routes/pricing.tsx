@@ -31,7 +31,10 @@ export const Route = createFileRoute("/pricing")({
 
 function PriceCard({ item }: { item: CatalogItem }) {
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-elevated p-5">
+    <div
+      id={item.sku}
+      className="flex h-full scroll-mt-24 flex-col rounded-xl border border-border bg-elevated p-5"
+    >
       {item.badge ? (
         <span className="mb-3 inline-flex w-fit rounded-md border border-[rgba(201,161,58,0.45)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-accent">
           {item.badge}

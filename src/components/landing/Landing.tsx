@@ -647,6 +647,8 @@ type Tier = {
   features: string[];
   cta: string;
   href: string;
+  /** Catalog SKU (see src/lib/catalog.ts) — Enroll Now deep-links to this card on /pricing. */
+  sku: string;
   event: string;
   highlight?: boolean;
   image?: string;
@@ -673,6 +675,7 @@ const TIERS: Tier[] = [
     ],
     cta: "Enroll Now",
     href: LINKS.bot,
+    sku: "signal_beginner",
     event: "pricing_beginner",
     image: tierFree,
     freeAlt: true,
@@ -685,6 +688,7 @@ const TIERS: Tier[] = [
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
     href: LINKS.bot,
+    sku: "signal_pro",
     event: "pricing_pro",
     image: tierPro,
     freeAlt: true,
@@ -702,6 +706,7 @@ const TIERS: Tier[] = [
     ],
     cta: "Enroll Now",
     href: LINKS.bot,
+    sku: "signal_premium",
     event: "pricing_premium",
     highlight: true,
     image: tierPremium,
@@ -721,6 +726,7 @@ const TIERS: Tier[] = [
     ],
     cta: "Enroll Now",
     href: LINKS.bot,
+    sku: "signal_elite",
     event: "pricing_elite",
     image: tierElite,
     freeAlt: true,
@@ -812,19 +818,16 @@ export function Pricing() {
                 </a>
               ) : null}
 
-              <a
-                href={t.href === LINKS.bot ? botHref : t.href}
+              <Link
+                to="/pricing"
+                hash={t.sku}
                 onClick={() => goTrack(t.event)}
-                className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-primary hover:underline ${
                   t.openAccountHref ? "mt-2" : "mt-6"
-                } ${
-                  t.highlight
-                    ? "bg-accent text-accent-foreground hover:bg-accent-glow"
-                    : "bg-primary text-primary-foreground hover:bg-primary-glow"
                 }`}
               >
-                {t.cta}
-              </a>
+                {t.cta} <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
               {t.freeAlt ? (
                 t.name === "Premium" ? (
                   <div className="mt-2">
