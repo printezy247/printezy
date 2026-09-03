@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { ArrowRight, Check, Send, ShieldCheck, Zap } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
-import { track, trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
+import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { BuyButton } from "@/components/BuyButton";
 
 const tradingViewLogo = "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
