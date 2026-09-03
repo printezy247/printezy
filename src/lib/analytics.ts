@@ -58,6 +58,11 @@ export function track(eventType: AnalyticsEventType, eventName: string) {
   });
 }
 
+/** Shared click-tracking helper used by product/landing pages. */
+export function goTrack(name: string) {
+  track("click", name);
+}
+
 
 
 export function trackSectionVisibility(sectionIds: string[]) {
