@@ -76,6 +76,8 @@ export type TrendCard = {
   title: string;
   description: string;
   price: string;
+  /** Catalog SKU (see src/lib/catalog.ts) for direct card checkout. */
+  sku: string;
   /** 0-7 indices into the sparkline ramp. */
   trend: number[];
   readout: string;
@@ -85,6 +87,8 @@ export type CryptoAddon = {
   name: string;
   description: string;
   price: string;
+  /** Catalog SKU (see src/lib/catalog.ts) for direct card checkout. */
+  sku: string;
 };
 
 export type RateDecision = { bank: string; date: string };
@@ -165,6 +169,7 @@ const SEED: MacroDesk = {
       description:
         "Speech-by-speech hawkish and dovish scoring taken from the Fed's own releases, tracked as a 7-day tone trend.",
       price: MACRO_PRICES.addon,
+      sku: "macro_addon",
       trend: [3, 4, 4, 5, 6, 6, 7],
       readout: "7-day tone: drifting hawkish",
     },
@@ -174,6 +179,7 @@ const SEED: MacroDesk = {
       description:
         "Aggregated macro and crypto headline sentiment, scored daily and tracked as a trend.",
       price: MACRO_PRICES.addon,
+      sku: "macro_addon",
       trend: [5, 4, 4, 3, 4, 5, 4],
       readout: "7-day sentiment: neutral",
     },
@@ -183,23 +189,27 @@ const SEED: MacroDesk = {
       name: "Options Flow Analyzer",
       description: "Deribit BTC and ETH options positioning",
       price: MACRO_PRICES.addon,
+      sku: "macro_addon",
     },
     {
       name: "Whale Wallet Alerts",
       description:
         "Watch up to 5 wallets; large ETH and BTC transfers flagged within 20 minutes",
       price: MACRO_PRICES.addon,
+      sku: "macro_addon",
     },
     {
       name: "Gold Futures Roll Calendar",
       description: "Contract roll dates and expiry alerts",
       price: MACRO_PRICES.addon,
+      sku: "macro_addon",
     },
     {
       name: "Yield Optimizer & Risk Scorer",
       description:
         "DeFi yields with risk scoring, TVL trend and an impermanent-loss calculator",
       price: MACRO_PRICES.yieldOptimizer,
+      sku: "macro_yield_optimizer",
     },
   ],
   rateDecisions: [

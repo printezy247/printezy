@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { BuyButton } from "@/components/BuyButton";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
 import {
@@ -275,6 +276,20 @@ function TrendCard({ trend }: { trend: TrendCard }) {
       title={trend.title}
       badge={<Badge tone="paid">{trend.price}</Badge>}
       className="flex flex-col"
+      footer={
+        <div className="space-y-2">
+          <BuyButton sku={trend.sku} label={`Pay with card — ${trend.price}`} />
+          <a
+            href={LINKS.macro}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("click", `macro_telegram_${trend.key}`)}
+            className="block text-center text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
+          >
+            or subscribe via Telegram
+          </a>
+        </div>
+      }
     >
       <p className="text-sm text-body">{trend.description}</p>
 
@@ -578,28 +593,32 @@ function MacroPage() {
 
             {shows("Crypto") ? (
               <Card title="Crypto Desk" note="Add-ons, billed separately">
-                <ul className="divide-y divide-border">
+                <div className="grid gap-4 sm:grid-cols-2">
                   {desk?.cryptoAddons.map((a) => (
-                    <li
+                    <div
                       key={a.name}
-                      className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                      className="flex flex-col rounded-lg border border-border bg-surface/50 p-4"
                     >
-                      <div className="max-w-md">
+                      <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-semibold">{a.name}</p>
-                        <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
+                        <span className="shrink-0 text-xs font-bold text-accent">{a.price}</span>
                       </div>
+                      <p className="mt-1 flex-1 text-xs text-muted-foreground">{a.description}</p>
+                      <BuyButton sku={a.sku} label="Pay with card" className="mt-3" />
                       <a
                         href={LINKS.macro}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => track("click", `macro_crypto_checkout_${a.name.toLowerCase().replace(/\s+/g, "_")}`)}
-                        className="shrink-0 rounded-md border border-accent/50 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/10"
+                        onClick={() =>
+                          track("click", `macro_crypto_telegram_${a.name.toLowerCase().replace(/\s+/g, "_")}`)
+                        }
+                        className="mt-2 text-center text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
                       >
-                        Check out price
+                        or subscribe via Telegram
                       </a>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </Card>
             ) : null}
           </div>
@@ -653,12 +672,13 @@ function MacroPage() {
                 asset correlation and geopolitical risk — delivered daily at{" "}
                 {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
               </p>
+              <BuyButton sku="macro_full_desk" label="Pay with card — $19/mo" variant="gold" className="mt-4" />
               <a
                 href={LINKS.macro}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => track("click", "macro_subscribe")}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-body transition-colors hover:border-accent/50 hover:text-foreground"
               >
                 <Send className="h-4 w-4" /> Subscribe via Telegram
               </a>
