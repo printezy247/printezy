@@ -4,7 +4,8 @@ import { ArrowRight, Check, Send, ShieldCheck, Zap } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
-import { BuyButton } from "@/components/BuyButton";
+import { TelegramBuyButton } from "@/components/TelegramBuyButton";
+import { lifetimePayload, mt5Payload, type Mt5Term } from "@/lib/telegram-links";
 
 const tradingViewLogo = "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
 const mt5Logo = mt5LogoAsset;
@@ -111,15 +112,16 @@ const MT5_PRODUCTS: Product[] = [
   },
 ];
 
-const TERM_SUFFIX: Record<string, string> = {
-  "1 Month": "_1m",
-  "6 Months": "_6m",
-  "1 Year": "_1y",
-  "One-time": "",
+const TERM_CODE: Record<string, Mt5Term> = {
+  "1 Month": "1m",
+  "6 Months": "6m",
+  "1 Year": "1y",
 };
 
-function skuFor(productId: string, planLabel: string): string {
-  return `${productId}${TERM_SUFFIX[planLabel] ?? ""}`;
+/** Exact bot payload for a product/plan pair. */
+function payloadFor(productId: string, planLabel: string): string {
+  const term = TERM_CODE[planLabel];
+  return term ? mt5Payload(productId, term) : lifetimePayload(productId);
 }
 
 
@@ -150,20 +152,18 @@ function ProductCard({ product }: { product: Product }) {
               <span className="text-xs uppercase tracking-wide text-muted-foreground">{p.label}</span>
               <span className="text-sm font-semibold text-foreground">{p.price}</span>
             </div>
-            <BuyButton sku={skuFor(product.id, p.label)} label="Buy" className="w-24 shrink-0" />
+            <TelegramBuyButton
+              payload={payloadFor(product.id, p.label)}
+              className="w-40 shrink-0"
+              hideNote
+            />
           </div>
         ))}
       </div>
 
-      <a
-        href={LINKS.bot}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => goTrack(`indicators_${product.id}_buy`)}
-        className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-md border border-accent/60 bg-accent/5 px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-      >
-        Get {product.name.split("—").pop()?.trim() ?? product.name} <ArrowRight className="h-3.5 w-3.5" />
-      </a>
+      <p className="mt-5 text-[11px] leading-snug text-muted-foreground">
+        Card, USDT or Telegram Stars — access delivered instantly in Telegram.
+      </p>
     </article>
   );
 }
@@ -175,7 +175,7 @@ export const Route = createFileRoute("/indicators")({
       {
         name: "description",
         content:
-          "EzyMap TradingView and MT5 indicators with real prices: EzyMap Lite $49, EzyMap Pro $249, MT5 bundle from $99/month and single tools from $9/month.",
+          "EzyMap TradingView and MT5 indicators with real prices: EzyMap Lite $49, EzyMap Pro $249, MT5 bundle from $99 and single tools from $9.",
       },
       { property: "og:title", content: "Indicators & Pricing — EzyMap Algo" },
       {
