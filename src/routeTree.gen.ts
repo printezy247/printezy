@@ -26,6 +26,7 @@ import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
+import { Route as ApiPublicStripeSiteWebhookRouteImport } from './routes/api/public/stripe/site-webhook'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -113,6 +114,12 @@ const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   path: '/api/public/stripe/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicStripeSiteWebhookRoute =
+  ApiPublicStripeSiteWebhookRouteImport.update({
+    id: '/api/public/stripe/site-webhook',
+    path: '/api/public/stripe/site-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -167,6 +176,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
   '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/ads-dashboard'
     | '/ebooks/$slug'
+    | '/api/public/stripe/site-webhook'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/ads-dashboard'
     | '/ebooks/$slug'
+    | '/api/public/stripe/site-webhook'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   id:
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/ads-dashboard'
     | '/ebooks/$slug'
+    | '/api/public/stripe/site-webhook'
     | '/api/public/stripe/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -243,6 +256,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
+  ApiPublicStripeSiteWebhookRoute: typeof ApiPublicStripeSiteWebhookRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
@@ -368,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/stripe/site-webhook': {
+      id: '/api/public/stripe/site-webhook'
+      path: '/api/public/stripe/site-webhook'
+      fullPath: '/api/public/stripe/site-webhook'
+      preLoaderRoute: typeof ApiPublicStripeSiteWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -397,6 +418,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
+  ApiPublicStripeSiteWebhookRoute: ApiPublicStripeSiteWebhookRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
