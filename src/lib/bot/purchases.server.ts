@@ -10,11 +10,71 @@ const EXPERIENCE_LABEL: Record<string, string> = {
   advanced: "Advanced",
 };
 
-const CAPITAL_LABEL: Record<string, string> = {
-  under_1k: "Under $1k",
-  "1k_10k": "$1k–$10k",
-  "10k_plus": "$10k+",
-};
+/**
+ * Guest checkout: no account exists before payment. Create one now (or
+ * find the existing one for a repeat buyer's email) from the Stripe
+ * session's email + checkout metadata, then upsert their profile.
+ * Never blocks the purchase — a failure here just means no account this
+ * time, the purchase itself still records.
+ */
+async function provisionAccount(
+  email: string | null,
+  meta: Record<string, string>,
+): Promise<string | null> {
+  if (!email) return null;
+  try {
+    const created = await supabaseAdmin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+    });
+    let userId = created.data.user?.id ?? null;
+
+    if (!userId) {
+      // Most likely "already registered" — look up the existing account.
+      const { data: list } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
+      userId = list?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase())?.id ?? null;
+    }
+    if (!userId) return null;
+
+    let referredBy: string | undefined;
+    if (meta.referred_by) {
+      const { data: existingProfile } = await supabaseAdmin
+        .from("profiles")
+        .select("referred_by")
+        .eq("id", userId)
+        .maybeSingle();
+      const alreadySet = (existingProfile as { referred_by: string | null } | null)?.referred_by;
+      if (!alreadySet) {
+        const { data: owner } = await supabaseAdmin
+          .from("referral_codes")
+          .select("user_id")
+          .eq("code", meta.referred_by)
+          .maybeSingle();
+        const ownerId = (owner as { user_id: string } | null)?.user_id;
+        if (ownerId && ownerId !== userId) referredBy = meta.referred_by;
+      }
+    }
+
+    await supabaseAdmin.from("profiles").upsert(
+      {
+        id: userId,
+        email,
+        ...(meta.full_name ? { full_name: meta.full_name } : {}),
+        telegram_username: meta.telegram_username ?? null,
+        ...(meta.experience_level ? { experience_level: meta.experience_level } : {}),
+        ...(meta.mt5_account ? { mt5_account: meta.mt5_account } : {}),
+        ...(referredBy ? { referred_by: referredBy } : {}),
+        updated_at: new Date().toISOString(),
+      } as never,
+      { onConflict: "id" },
+    );
+
+    return userId;
+  } catch (error) {
+    console.error("[purchases] account provisioning failed", error);
+    return null;
+  }
+}
 
 /**
  * Re-fetch a checkout session from Stripe and record it as a paid website
@@ -41,15 +101,17 @@ export async function recordSitePurchase(
     .maybeSingle();
   if (existing) return true;
 
+  const email = session.customer_details?.email ?? session.customer_email ?? null;
+  const userId = await provisionAccount(email, meta);
+
   const { error } = await supabaseAdmin.from("site_purchases").insert({
     sku: meta.sku ?? "unknown",
     telegram_username: meta.telegram_username ?? null,
-    user_id: meta.user_id ?? null,
+    user_id: userId,
     full_name: meta.full_name ?? null,
     experience_level: meta.experience_level ?? null,
-    capital_range: meta.capital_range ?? null,
     mt5_account: meta.mt5_account ?? null,
-    email: session.customer_details?.email ?? session.customer_email ?? null,
+    email,
     amount_cents: session.amount_total ?? 0,
     currency: session.currency ?? "usd",
     status: "paid",
@@ -64,7 +126,7 @@ export async function recordSitePurchase(
   }
 
   await notifySarah(meta, session.amount_total ?? 0, session.currency ?? "usd");
-  if (meta.user_id) void notifyReferralConversion(meta.user_id, meta.sku ?? "unknown");
+  if (userId) void notifyReferralConversion(userId, meta.sku ?? "unknown");
   return true;
 }
 
@@ -136,7 +198,6 @@ async function notifySarah(meta: Record<string, string>, amountCents: number, cu
     `Telegram: @${meta.telegram_username ?? "unknown"}`,
     meta.full_name ? `Name: ${meta.full_name}` : null,
     meta.experience_level ? `Experience: ${EXPERIENCE_LABEL[meta.experience_level] ?? meta.experience_level}` : null,
-    meta.capital_range ? `Capital: ${CAPITAL_LABEL[meta.capital_range] ?? meta.capital_range}` : null,
     meta.mt5_account ? `MT5 account: ${meta.mt5_account}` : null,
   ].filter(Boolean);
 

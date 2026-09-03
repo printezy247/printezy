@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Send, Copy, Gift } from "lucide-react";
+import { CheckCircle2, Loader2, Send, Copy, Gift, Mail } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Nav, Footer } from "@/components/landing/Landing";
@@ -49,6 +49,8 @@ function SuccessPage() {
   const [handle, setHandle] = useState<string | null>(null);
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referralStats, setReferralStats] = useState<ReferralStats | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  const [signInState, setSignInState] = useState<"idle" | "sending" | "sent">("idle");
 
   useEffect(() => {
     const sessionId = new URLSearchParams(window.location.search).get("session_id");
@@ -61,30 +63,52 @@ function SuccessPage() {
         setState(res.paid ? "paid" : "pending");
         setProduct(res.product);
         setHandle(res.telegramUsername);
+        setEmail(res.email);
       })
       .catch(() => setState("pending"));
   }, [check]);
 
+  async function loadReferralInfo() {
+    try {
+      const [{ code }, stats] = await Promise.all([
+        getCode({ data: undefined }),
+        getStats({ data: undefined }),
+      ]);
+      setReferralCode(code);
+      setReferralStats(stats);
+    } catch {
+      // Referral block is a bonus, not critical — fail silently.
+    }
+  }
+
   useEffect(() => {
     let active = true;
-    void supabase.auth.getSession().then(async ({ data }) => {
+    void supabase.auth.getSession().then(({ data }) => {
       if (!active || !data.session) return;
-      try {
-        const [{ code }, stats] = await Promise.all([
-          getCode({ data: undefined }),
-          getStats({ data: undefined }),
-        ]);
-        if (!active) return;
-        setReferralCode(code);
-        setReferralStats(stats);
-      } catch {
-        // Referral block is a bonus, not critical — fail silently.
-      }
+      void loadReferralInfo();
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) void loadReferralInfo();
     });
     return () => {
       active = false;
+      subscription.unsubscribe();
     };
-  }, [getCode, getStats]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function sendMagicLink() {
+    if (!email || signInState !== "idle") return;
+    setSignInState("sending");
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.href },
+    });
+    setSignInState(error ? "idle" : "sent");
+    if (error) toast.error("Could not send the sign-in link — try again.");
+  }
 
   const referralLink =
     referralCode && typeof window !== "undefined"
@@ -171,6 +195,26 @@ function SuccessPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            ) : null}
+
+            {!referralCode && email ? (
+              <div className="mt-12 border-t border-border pt-8 text-center">
+                {signInState === "sent" ? (
+                  <p className="text-sm text-body">
+                    Check <span className="text-accent">{email}</span> for a sign-in link.
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => void sendMagicLink()}
+                    disabled={signInState === "sending"}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline disabled:opacity-50"
+                  >
+                    <Mail className="h-4 w-4" />
+                    {signInState === "sending" ? "Sending…" : "Email me a sign-in link to view my account"}
+                  </button>
+                )}
               </div>
             ) : null}
 

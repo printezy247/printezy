@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getCatalogItem } from "./catalog";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   type StripeEnv,
   createStripeClient,
@@ -10,48 +9,68 @@ import {
 
 const ALLOWED_ORIGIN = /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
 
-type ProfileRow = {
-  full_name: string | null;
-  telegram_username: string | null;
-  experience_level: string | null;
-  capital_range: string | null;
-  mt5_account: string | null;
-};
+const EXPERIENCE_LEVELS = ["beginner", "intermediate", "advanced"] as const;
 
+// Guest checkout: no account required. Details are collected in the same
+// modal that leads to Stripe and travel as checkout session metadata; the
+// account (if any) is created after payment, from this same metadata.
 export const createCheckout = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: { sku: string; origin: string; environment: StripeEnv }) => {
-    if (typeof input?.sku !== "string" || !getCatalogItem(input.sku)) {
-      throw new Error("Unknown product");
-    }
-    if (typeof input?.origin !== "string" || !ALLOWED_ORIGIN.test(input.origin)) {
-      throw new Error("Invalid origin");
-    }
-    if (input?.environment !== "sandbox" && input?.environment !== "live") {
-      throw new Error("Invalid environment");
-    }
-    return input;
-  })
-  .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
+  .inputValidator(
+    (input: {
+      sku: string;
+      origin: string;
+      environment: StripeEnv;
+      telegramUsername: string;
+      fullName?: string;
+      experienceLevel?: string;
+      mt5Account?: string;
+      referredBy?: string;
+    }) => {
+      const item = getCatalogItem(input?.sku ?? "");
+      if (typeof input?.sku !== "string" || !item) {
+        throw new Error("Unknown product");
+      }
+      if (typeof input?.origin !== "string" || !ALLOWED_ORIGIN.test(input.origin)) {
+        throw new Error("Invalid origin");
+      }
+      if (input?.environment !== "sandbox" && input?.environment !== "live") {
+        throw new Error("Invalid environment");
+      }
+      const telegramUsername = String(input?.telegramUsername ?? "")
+        .trim()
+        .replace(/^@+/, "")
+        .slice(0, 32);
+      if (!/^[A-Za-z0-9_]{5,32}$/.test(telegramUsername)) {
+        throw new Error("Enter a valid Telegram username.");
+      }
+      const mt5Account = input?.mt5Account
+        ? String(input.mt5Account).replace(/\D/g, "").slice(0, 20)
+        : undefined;
+      if (item.group === "mt5" && !mt5Account) {
+        throw new Error("Add your MT5 account number before checking out.");
+      }
+      const fullName = input?.fullName ? String(input.fullName).trim().slice(0, 120) : undefined;
+      const experienceLevel = EXPERIENCE_LEVELS.includes(input?.experienceLevel as never)
+        ? input.experienceLevel
+        : undefined;
+      const referredBy = input?.referredBy
+        ? String(input.referredBy).trim().toUpperCase().slice(0, 16)
+        : undefined;
+      return {
+        sku: input.sku,
+        origin: input.origin,
+        environment: input.environment,
+        telegramUsername,
+        fullName,
+        experienceLevel,
+        mt5Account,
+        referredBy,
+      };
+    },
+  )
+  .handler(async ({ data }): Promise<{ clientSecret: string } | { error: string }> => {
     const item = getCatalogItem(data.sku)!;
     try {
-      // Resolved server-side from the account's saved profile, never trusted
-      // from the client — the profile form is what keeps this filled in.
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { data: profileData } = await supabaseAdmin
-        .from("profiles")
-        .select("full_name, telegram_username, experience_level, capital_range, mt5_account")
-        .eq("id", context.userId)
-        .maybeSingle();
-      const profile = profileData as ProfileRow | null;
-
-      if (!profile?.telegram_username) {
-        return { error: "Add your details before checking out." };
-      }
-      if (item.group === "mt5" && !profile.mt5_account) {
-        return { error: "Add your MT5 account number before checking out." };
-      }
-
       const stripe = createStripeClient(data.environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
@@ -69,16 +88,14 @@ export const createCheckout = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: `${data.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
         payment_intent_data: { description: product.name },
-        ...(context.claims.email ? { customer_email: context.claims.email as string } : {}),
         metadata: {
           sku: item.sku,
           source: "website",
-          user_id: context.userId,
-          telegram_username: profile.telegram_username,
-          ...(profile.full_name ? { full_name: profile.full_name } : {}),
-          ...(profile.experience_level ? { experience_level: profile.experience_level } : {}),
-          ...(profile.capital_range ? { capital_range: profile.capital_range } : {}),
-          ...(profile.mt5_account ? { mt5_account: profile.mt5_account } : {}),
+          telegram_username: data.telegramUsername,
+          ...(data.fullName ? { full_name: data.fullName } : {}),
+          ...(data.experienceLevel ? { experience_level: data.experienceLevel } : {}),
+          ...(data.mt5Account ? { mt5_account: data.mt5Account } : {}),
+          ...(data.referredBy ? { referred_by: data.referredBy } : {}),
         },
       });
 
@@ -103,5 +120,6 @@ export const getCheckoutStatus = createServerFn({ method: "POST" })
       paid: session.payment_status === "paid",
       product: session.metadata?.sku ?? null,
       telegramUsername: session.metadata?.telegram_username ?? null,
+      email: session.customer_details?.email ?? session.customer_email ?? null,
     };
   });

@@ -3,13 +3,13 @@ import { useRouterState } from "@tanstack/react-router";
 import { EbookClaimModal } from "./EbookClaimModal";
 
 const EXCLUDED_PREFIXES = ["/ebooks", "/auth", "/account", "/free-ebook"];
-const TIMED_DELAY_MS = 25000;
+const TIMED_DELAY_MS = 45000;
 const SESSION_KEY = "pe_ebook_popup_shown";
 
 /**
- * Proactive "get the free ebook" popup — timed + exit-intent, once per
- * browser session. Skipped on pages where a claim flow already exists or
- * would be redundant.
+ * Proactive "get the free ebook" popup — timed only, once per browser
+ * session. Skipped on pages where a claim flow already exists or would
+ * be redundant, and suppressed entirely while a checkout overlay is open.
  */
 export function EbookAutoPopup() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -22,22 +22,14 @@ export function EbookAutoPopup() {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(SESSION_KEY)) return;
 
-    const show = () => {
+    const timer = window.setTimeout(() => {
       if (sessionStorage.getItem(SESSION_KEY)) return;
+      if (document.body.getAttribute("data-checkout-open") === "true") return;
       sessionStorage.setItem(SESSION_KEY, "1");
       setOpen(true);
-    };
+    }, TIMED_DELAY_MS);
 
-    const timer = window.setTimeout(show, TIMED_DELAY_MS);
-    const onMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0) show();
-    };
-    document.addEventListener("mouseleave", onMouseLeave);
-
-    return () => {
-      window.clearTimeout(timer);
-      document.removeEventListener("mouseleave", onMouseLeave);
-    };
+    return () => window.clearTimeout(timer);
   }, [excluded]);
 
   if (!open || excluded) return null;

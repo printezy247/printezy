@@ -8,7 +8,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "Terms governing the use of EzyMap ALGO trading signals, education content, subscriptions and the 30-day money-back guarantee.",
+          "Terms governing the use of EzyMap ALGO trading signals, education content and package access.",
       },
       { property: "og:title", content: "Terms of Service — EzyMap ALGO" },
       { property: "og:description", content: "Terms for using EzyMap ALGO signals and subscriptions." },
@@ -36,17 +36,10 @@ function TermsPage() {
             </p>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Subscriptions</h2>
+            <h2 className="text-lg font-semibold text-foreground">Packages</h2>
             <p className="mt-2">
-              Pro, Premium and Elite are billed monthly and can be cancelled at any time. Access
-              continues until the end of the paid period.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-foreground">Money-back guarantee</h2>
-            <p className="mt-2">
-              Paid tiers include a 30-day money-back guarantee from the date of first purchase.
-              Request a refund by messaging us on Telegram.
+              Beginner, Pro, Premium and Elite are one-time, lifetime purchases. Access does not
+              expire and does not renew or re-bill.
             </p>
           </div>
           <div>

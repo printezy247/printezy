@@ -1,6 +1,8 @@
 const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN;
 
 export function PaymentTestModeBanner() {
+  // Never shown to a real customer in production — dev-only diagnostic.
+  if (!import.meta.env.DEV) return null;
   if (!clientToken) {
     return (
       <div className="w-full border-b border-red-300 bg-red-100 px-4 py-2 text-center text-sm text-red-800">

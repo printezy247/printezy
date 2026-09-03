@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
+import { BuyButton } from "@/components/BuyButton";
+import { StickyBuyBar } from "@/components/StickyBuyBar";
+import { Tools } from "@/components/landing/Tools";
 import {
   Zap,
   GraduationCap,
@@ -147,7 +150,7 @@ function Reveal({
   );
 }
 
-function Section({
+export function Section({
   id,
   className = "",
   children,
@@ -157,13 +160,13 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className={`py-20 sm:py-24 ${className}`}>
+    <section id={id} className={`scroll-mt-24 py-20 sm:py-24 ${className}`}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">{children}</div>
     </section>
   );
 }
 
-function SectionHeading({
+export function SectionHeading({
   eyebrow,
   title,
   subtitle,
@@ -310,88 +313,91 @@ export function Ticker() {
 const NAV_ITEMS = [
   { label: "Signals", href: "/#features" },
   { label: "Packages", href: "/#packages" },
-  { label: "Education", href: "/#products" },
-  { label: "Track Record", href: "/#track-record" },
-  { label: "Indicators", href: "/indicators" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Macro & Crypto", href: "/macro" },
-  { label: "FAQ", href: "/faq" },
+  { label: "Tools", href: "/#tools" },
+  { label: "Macro", href: "/macro" },
 ];
 
+/** Not in the header nav — footer-only wayfinding links. */
+const FOOTER_ONLY_ITEMS = [
+  { label: "Track Record", href: "/#track-record" },
+  { label: "FAQ", href: "/faq" },
+];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background">
+    <>
       <Ticker />
-      <nav className="border-b border-border">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link to="/" aria-label="EzyMap Algo home">
-            <Logo />
-          </Link>
+      <header className="sticky top-0 z-50 bg-background">
+        <nav className="border-b border-border">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link to="/" aria-label="EzyMap Algo home">
+              <Logo />
+            </Link>
 
-          <ul className="hidden items-center gap-6 md:flex">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className="text-sm font-medium text-body transition-colors hover:text-primary"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+            <ul className="hidden items-center gap-6 md:flex">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
 
-          <div className="hidden items-center gap-4 md:flex">
-            <a
-              href={LINKS.support}
-              onClick={() => goTrack("nav_ask_sarah")}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-            >
-              <Send className="h-4 w-4" /> Ask Sarah
-            </a>
-          </div>
-
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            className="rounded-md p-2 text-foreground md:hidden"
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </nav>
-
-      {open ? (
-        <div className="border-b border-border bg-background md:hidden">
-          <ul className="space-y-1 px-4 py-4">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm font-medium text-body hover:bg-surface"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            <li className="pt-2">
+            <div className="hidden items-center gap-4 md:flex">
               <a
                 href={LINKS.support}
-                onClick={() => goTrack("nav_ask_sarah_mobile")}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                onClick={() => goTrack("nav_ask_sarah")}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
               >
                 <Send className="h-4 w-4" /> Ask Sarah
               </a>
-            </li>
-          </ul>
-        </div>
-      ) : null}
-    </header>
+            </div>
+
+            <button
+              type="button"
+              aria-label="Toggle menu"
+              className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-foreground md:hidden"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </nav>
+
+        {open ? (
+          <div className="border-b border-border bg-background md:hidden">
+            <ul className="space-y-1 px-4 py-4">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li className="pt-2">
+                <a
+                  href={LINKS.support}
+                  onClick={() => goTrack("nav_ask_sarah_mobile")}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+                >
+                  <Send className="h-4 w-4" /> Ask Sarah
+                </a>
+              </li>
+            </ul>
+          </div>
+        ) : null}
+      </header>
+    </>
   );
 }
 
@@ -439,7 +445,6 @@ function ChartGraphic() {
 }
 
 function Hero() {
-  const botHref = useBotLink();
   const { formatted: memberCount } = useMemberCount();
   return (
     <section className="bg-hero border-b border-border">
@@ -468,6 +473,13 @@ function Hero() {
             >
               <Send className="h-4 w-4" /> Join Free Channel
             </Link>
+            <a
+              href="/#packages"
+              onClick={() => goTrack("hero_see_packages")}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
+            >
+              See packages
+            </a>
           </div>
 
           <p className="mt-3 text-sm text-muted-foreground">
@@ -479,11 +491,6 @@ function Hero() {
             >
               <BookOpen className="h-3.5 w-3.5" /> Get the free ebook
             </Link>
-            {" "}or upgrade to Pro, Premium, or Elite through{" "}
-            <a href={botHref} onClick={() => goTrack("hero_bot_link")} className="font-medium text-primary hover:underline">
-              our bot
-            </a>
-            .
           </p>
 
           <dl className="mt-9 grid max-w-lg grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
@@ -685,7 +692,7 @@ const TIERS: Tier[] = [
   {
     name: "Beginner",
     price: "$29",
-    priceNote: "per month",
+    priceNote: "one-time",
     blurb: "Start with essential signals",
     features: [
       "Join our 640+ trader community",
@@ -703,7 +710,7 @@ const TIERS: Tier[] = [
   {
     name: "Pro",
     price: "$49",
-    priceNote: "per month",
+    priceNote: "one-time",
     blurb: "Scalp Mastery Signals",
     features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
@@ -716,7 +723,7 @@ const TIERS: Tier[] = [
   {
     name: "Premium",
     price: "$99",
-    priceNote: "per month",
+    priceNote: "one-time",
     blurb: "Alpha Edge Signals",
     features: [
       "M15-M30 Intraday",
@@ -735,7 +742,7 @@ const TIERS: Tier[] = [
   {
     name: "Elite",
     price: "$299",
-    priceNote: "per month",
+    priceNote: "one-time",
     blurb: "Full Suite",
     features: [
       "All indicators included",
@@ -767,7 +774,8 @@ export function Pricing() {
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.1} className="h-full">
           <article
-            className={`relative flex h-full flex-col overflow-hidden rounded-xl ${
+            id={t.sku}
+            className={`relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
               t.highlight
                 ? "border border-accent/40 bg-surface-elevated shadow-gold"
                 : "glass-card"
@@ -839,18 +847,11 @@ export function Pricing() {
                 </a>
               ) : null}
 
-              <Link
-                to="/pricing"
-                hash={t.sku}
-                onClick={() => goTrack(t.event)}
-                className={`inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-primary hover:underline ${
-                  t.openAccountHref ? "mt-2" : "mt-6"
-                }`}
-              >
-                {t.cta} <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary" /> 30-day money-back guarantee
+              <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
+                <BuyButton sku={t.sku} label={t.cta} />
+              </div>
+              <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
+                Card, USDT or Telegram Stars — access delivered in Telegram.
               </p>
               {t.freeAlt ? (
                 t.name === "Premium" ? (
@@ -1262,16 +1263,14 @@ export function SocialProof() {
         title={`${memberCount} active traders trust EzyMap`}
         subtitle="Real feedback from the community inside our Telegram channels."
       />
-      <div className="mb-10 grid gap-4 sm:grid-cols-3">
+      <div className="mb-10 grid gap-4">
         {[
-          [Activity, "3.2K+", "Signals delivered this month"],
           [Clock, "24/5", "Market coverage"],
-          [ShieldCheck, "0%", "Spam, ever"],
         ].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
             <Reveal key={l as string} delay={i * 0.08}>
-            <div className="glass-card flex h-full items-center gap-4 rounded-xl p-5">
+            <div className="glass-card mx-auto flex h-full max-w-xs items-center gap-4 rounded-xl p-5">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
                 <I className="h-5 w-5" />
               </span>
@@ -1358,7 +1357,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: "Do you offer refunds?",
-        a: "Yes — every paid tier comes with a 30-day money-back guarantee. Message support through the bot and we'll take care of it.",
+        a: "Message Sarah through the bot with your Telegram username and order details — she handles refund requests case by case.",
       },
     ],
   },
@@ -1491,7 +1490,7 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold">Navigate</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {NAV_ITEMS.map((i) => (
+              {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
                   <a href={i.href} className="hover:text-foreground">
                     {i.label}
@@ -1608,17 +1607,18 @@ export function Landing() {
           <TrustStrip />
           <Features />
           <Pricing />
-          <Faq />
+          <Tools />
           <Products />
           <HowItWorks />
-          <Ambassador />
           <TrackRecord />
           <SocialProof />
-
+          <Ambassador />
+          <Faq />
           <FinalCta />
         </main>
         <Footer />
       </div>
+      <StickyBuyBar />
     </MemberCountContext.Provider>
   );
 }

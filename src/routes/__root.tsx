@@ -164,7 +164,7 @@ function RootComponent() {
       <SupportChat />
       <ConsentBanner />
       <EbookAutoPopup />
-      <Toaster position="top-center" />
+      <Toaster position="bottom-right" />
     </QueryClientProvider>
   );
 }
