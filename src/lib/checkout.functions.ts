@@ -41,7 +41,7 @@ export const createCheckout = createServerFn({ method: "POST" })
       const { data: profileData } = await supabaseAdmin
         .from("profiles")
         .select("full_name, telegram_username, experience_level, capital_range, mt5_account")
-        .eq("user_id", context.userId)
+        .eq("id", context.userId)
         .maybeSingle();
       const profile = profileData as ProfileRow | null;
 

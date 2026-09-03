@@ -25,7 +25,7 @@ export const getMyProfile = createServerFn({ method: "POST" })
     const { data } = await supabaseAdmin
       .from("profiles")
       .select("full_name, telegram_username, experience_level, capital_range, mt5_account")
-      .eq("user_id", context.userId)
+      .eq("id", context.userId)
       .maybeSingle();
     const row = data as ProfileRow | null;
     return {
@@ -73,7 +73,7 @@ export const saveMyProfile = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("profiles").upsert(
       {
-        user_id: context.userId,
+        id: context.userId,
         full_name: data.fullName,
         telegram_username: data.telegramUsername,
         ...(data.experienceLevel ? { experience_level: data.experienceLevel } : {}),
@@ -81,7 +81,7 @@ export const saveMyProfile = createServerFn({ method: "POST" })
         ...(data.mt5Account ? { mt5_account: data.mt5Account } : {}),
         updated_at: new Date().toISOString(),
       } as never,
-      { onConflict: "user_id" },
+      { onConflict: "id" },
     );
     if (error) throw new Error(error.message);
     return { ok: true };
