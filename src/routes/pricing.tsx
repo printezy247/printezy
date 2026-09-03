@@ -146,7 +146,7 @@ function buildMt5Products(): Mt5Product[] {
     const one = byTerm("1m");
     return {
       base,
-      name: one.name.replace(/\s*[—(]\s*(1 Month|BONUS Layer Close \(1 Month\))\)?$/i, "").trim(),
+      name: one.name.replace(/\s*(—\s*1 Month|\(1 Month\))\s*$/i, "").trim(),
       description: one.description,
       bullets: one.bullets,
       badge: one.badge,
