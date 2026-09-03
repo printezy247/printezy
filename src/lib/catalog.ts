@@ -265,28 +265,17 @@ export const CATALOG: CatalogItem[] = [
 
   /* ------------------------------ Macro desk ------------------------------ */
   {
-    sku: "macro_full_desk",
+    sku: "macro_premium_heatmaps",
     group: "macro",
-    name: "Full Macro Desk",
-    description: "All four premium heatmaps plus the macro desk digest.",
+    name: "Premium Heatmaps",
+    description: "Central bank divergence and recession probability heatmaps, updated daily.",
     amountCents: 1900,
-    term: "1 Month",
+    term: "Monthly",
     bullets: [
       "Central bank divergence heatmap",
       "Recession probability heatmap",
-      "Gold futures roll calendar",
       "Daily macro digest",
     ],
-    badge: "Macro bestseller",
-  },
-  {
-    sku: "macro_addon",
-    group: "macro",
-    name: "Macro Add-on (single card)",
-    description: "One premium card: news sentiment, whale alerts, options flow or Fed watch.",
-    amountCents: 900,
-    term: "1 Month",
-    bullets: ["Pick any single premium card", "Delivered in the MacroTrader bot", "Cancel any time"],
   },
   {
     sku: "macro_yield_optimizer",
@@ -294,10 +283,56 @@ export const CATALOG: CatalogItem[] = [
     name: "Yield Optimizer",
     description: "Stablecoin and treasury yield routing signals.",
     amountCents: 1200,
-    term: "1 Month",
+    term: "Monthly",
     bullets: ["Best-yield venue tracking", "Risk-adjusted comparison", "Weekly rebalance note"],
   },
+  {
+    sku: "macro_gold_roll_calendar",
+    group: "macro",
+    name: "Gold Roll Calendar",
+    description: "Gold futures roll dates and the spread behaviour around them.",
+    amountCents: 900,
+    term: "Monthly",
+    bullets: ["Contract roll dates", "Spread and volume shifts", "Alerts before each roll"],
+  },
+  {
+    sku: "macro_news_sentiment",
+    group: "macro",
+    name: "News Sentiment",
+    description: "Headline sentiment scoring across macro and crypto news flow.",
+    amountCents: 900,
+    term: "Monthly",
+    bullets: ["Rolling sentiment score", "Source-weighted headlines", "Delivered in Telegram"],
+  },
+  {
+    sku: "macro_whale_alerts",
+    group: "macro",
+    name: "Whale Alerts",
+    description: "Large on-chain transfers polled every 20 minutes.",
+    amountCents: 900,
+    term: "Monthly",
+    bullets: ["Exchange in/out flows", "Threshold alerts", "20-minute polling"],
+  },
+  {
+    sku: "macro_options_flow",
+    group: "macro",
+    name: "Options Flow",
+    description: "Notable options positioning in gold, indices and crypto.",
+    amountCents: 900,
+    term: "Monthly",
+    bullets: ["Unusual size prints", "Put/call skew", "Daily flow recap"],
+  },
+  {
+    sku: "macro_fed_watch",
+    group: "macro",
+    name: "Fed Watch",
+    description: "Fed tone tracking and rate-path probabilities.",
+    amountCents: 900,
+    term: "Monthly",
+    bullets: ["Speech tone scoring", "Rate-path probabilities", "Meeting countdowns"],
+  },
 ];
+
 
 export function getCatalogItem(sku: string): CatalogItem | undefined {
   return CATALOG.find((item) => item.sku === sku);
