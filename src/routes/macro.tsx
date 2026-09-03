@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BuyButton } from "@/components/BuyButton";
+import { MacroSubscribeButton } from "@/components/TelegramBuyButton";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Send } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { ArrowRight } from "lucide-react";
+import { Nav, Footer } from "@/components/landing/Landing";
+import { itemsByGroup, formatUsd } from "@/lib/catalog";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
+
 import { useLocalClock } from "@/lib/local-time";
 import {
   MACRO_FILTERS,
@@ -24,11 +26,6 @@ import {
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
-
-/** Crypto desk add-ons map onto the two macro add-on SKUs in the catalog. */
-function cryptoSku(name: string): string {
-  return /yield/i.test(name) ? "macro_yield_optimizer" : "macro_addon";
-}
 
 export const Route = createFileRoute("/macro")({
   head: () => ({
@@ -583,7 +580,7 @@ function MacroPage() {
             ) : null}
 
             {shows("Crypto") ? (
-              <Card title="Crypto Desk" note="Add-ons, billed separately">
+              <Card title="Crypto Desk" note="Monthly products, billed separately">
                 <ul className="divide-y divide-border">
                   {desk?.cryptoAddons.map((a) => (
                     <li
@@ -594,17 +591,13 @@ function MacroPage() {
                         <p className="text-sm font-semibold">{a.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
                       </div>
-                      <BuyButton
-                        sku={cryptoSku(a.name)}
-                        label="Pay with card"
-                        variant="gold"
-                        className="shrink-0 px-3 py-1.5 text-xs"
-                      />
+                      <MacroSubscribeButton className="w-full shrink-0 sm:w-56" />
                     </li>
                   ))}
                 </ul>
               </Card>
             ) : null}
+
           </div>
 
           {/* Sidebar */}
@@ -646,34 +639,29 @@ function MacroPage() {
 
             <section className="rounded-xl border border-accent/45 bg-card p-5">
               <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
-                Full macro desk
-              </p>
-              <p className="mt-2 text-2xl font-black">
-                $19<span className="text-sm font-semibold text-muted-foreground">/month</span>
+                Macro desk products
               </p>
               <p className="mt-2 text-sm text-body">
-                Unlocks all four premium heatmaps — central bank divergence, recession probability,
-                asset correlation and geopolitical risk — delivered daily at{" "}
+                Each product is a separate monthly subscription, delivered daily at{" "}
                 {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
               </p>
-              <BuyButton
-                sku="macro_full_desk"
-                label="Pay with card"
-                className="mt-4 w-full"
-              />
-              <a
-                href={LINKS.macro}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track("click", "macro_subscribe")}
-                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-body transition-colors hover:text-primary"
-              >
-                <Send className="h-4 w-4" /> Subscribe via Telegram
-              </a>
+              <ul className="mt-4 divide-y divide-border">
+                {itemsByGroup("macro").map((item) => (
+                  <li key={item.sku} className="flex items-center justify-between gap-3 py-2.5 first:pt-0">
+                    <span className="text-sm text-body">{item.name}</span>
+                    <span className="shrink-0 text-sm font-bold text-foreground">
+                      {formatUsd(item.amountCents)}
+                      <span className="text-[11px] font-semibold text-muted-foreground">/mo</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <MacroSubscribeButton className="mt-4" />
               <p className="mt-2 text-[11px] text-muted-foreground">
-                Card, Telegram Stars or USDT · cancel anytime
+                Telegram Stars or USDT · cancel anytime
               </p>
             </section>
+
 
             <div className="rounded-xl border border-border bg-surface p-5 text-[11.5px] leading-relaxed text-muted-foreground">
               Macro data is provided for education and research only and is not personalized
