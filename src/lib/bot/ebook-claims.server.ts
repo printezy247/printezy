@@ -1,23 +1,61 @@
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getEbook } from "@/lib/ebooks";
 import { sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
 
+type ClaimNotice = {
+  claimId: string;
+  fullName: string;
+  telegramUsername: string;
+  vantageAccount: string;
+  slug: string;
+};
+
 /**
- * Website and bot don't share data, so a self-reported Vantage sign-up
- * (same trust model as the bot's own free trial) needs a human signal to
- * get noticed and reconciled — same rationale as notifySarah in
- * purchases.server.ts. Fire-and-forget; never blocks or fails the claim.
+ * Website and bot don't share data, and a self-reported Vantage account is
+ * not itself proof — Sarah checks it and approves from Telegram before the
+ * download unlocks. Fire-and-forget; never blocks or fails the claim.
  */
-export async function notifyVantageClaim(userEmail: string | null, slug: string): Promise<void> {
+export async function notifyVantageClaim(notice: ClaimNotice): Promise<void> {
   const sarah = await getSarahChatId();
   if (!sarah) return;
 
-  const book = getEbook(slug);
+  const book = getEbook(notice.slug);
   const lines = [
-    `📘 <b>Ebook claim — Vantage self-reported</b>`,
-    book ? book.title : slug,
-    userEmail ? `Account: ${userEmail}` : null,
-  ].filter(Boolean);
+    `📘 <b>Ebook claim — needs approval</b>`,
+    book ? book.title : notice.slug,
+    `Name: ${notice.fullName}`,
+    `Telegram: @${notice.telegramUsername}`,
+    `Vantage account: ${notice.vantageAccount}`,
+  ];
 
-  await sendMessage(sarah, lines.join("\n"));
+  await sendMessage(sarah, lines.join("\n"), [
+    [{ text: "✅ Approve download", callback_data: `ebook:approve:${notice.claimId}` }],
+  ]);
+}
+
+/** Sarah tapped Approve — unlock the download for that claim. */
+export async function approveEbookClaim(
+  claimId: string,
+): Promise<{ ok: boolean; alreadyApproved?: boolean; title?: string }> {
+  const { data: existing } = await supabaseAdmin
+    .from("ebook_claims")
+    .select("slug, status")
+    .eq("id", claimId)
+    .maybeSingle();
+  const row = existing as { slug: string; status: string } | null;
+  if (!row) return { ok: false };
+
+  const book = getEbook(row.slug);
+  if (row.status === "approved") return { ok: true, alreadyApproved: true, title: book?.title };
+
+  const { error } = await supabaseAdmin
+    .from("ebook_claims")
+    .update({ status: "approved", approved_at: new Date().toISOString() } as never)
+    .eq("id", claimId);
+  if (error) {
+    console.error("[ebook-claims] approve failed", error);
+    return { ok: false };
+  }
+  return { ok: true, title: book?.title };
 }

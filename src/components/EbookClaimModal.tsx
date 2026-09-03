@@ -3,9 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Download, LogIn, ShieldCheck, X } from "lucide-react";
+import { Loader2, Download, LogIn, ShieldCheck, X, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyEbookClaims, claimEbook } from "@/lib/ebook-claims.functions";
+import { getMyProfile } from "@/lib/profile.functions";
 import { getEbook } from "@/lib/ebooks";
 import { goTrack } from "@/lib/analytics";
 
@@ -17,15 +18,19 @@ type Props = {
 type Gate =
   | "loading"
   | "signed_out"
-  | "needs_vantage_confirm"
+  | "needs_vantage_details"
+  | "pending_review"
   | "claiming"
   | "claimed";
 
 const DENY_PULSE = { scale: [1, 1.02, 1] as number[] };
+const inputClass =
+  "w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
 
 export function EbookClaimModal({ slug, onClose }: Props) {
   const navigate = useNavigate();
   const getClaims = useServerFn(getMyEbookClaims);
+  const getProfile = useServerFn(getMyProfile);
   const claim = useServerFn(claimEbook);
   const book = getEbook(slug);
 
@@ -34,8 +39,16 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
 
+  const [fullName, setFullName] = useState("");
+  const [telegramUsername, setTelegramUsername] = useState("");
+  const [vantageAccount, setVantageAccount] = useState("");
+
   const requiresVantage = slug === "mapping-like-a-pro";
   const currentPath = () => (typeof window !== "undefined" ? window.location.pathname : "/");
+
+  const handle = telegramUsername.trim().replace(/^@+/, "");
+  const detailsReady =
+    fullName.trim().length > 0 && /^[A-Za-z0-9_]{5,32}$/.test(handle) && vantageAccount.trim().length > 0;
 
   useEffect(() => {
     let active = true;
@@ -49,17 +62,27 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         const claims = await getClaims({ data: undefined });
         if (!active) return;
         const existing = claims.find((c) => c.slug === slug);
-        if (existing && book) {
+        if (existing?.status === "approved" && book) {
           setPdf(book.pdf);
           setGate("claimed");
           return;
         }
+        if (existing?.status === "pending") {
+          setGate("pending_review");
+          return;
+        }
         if (requiresVantage) {
-          setGate("needs_vantage_confirm");
+          const profile = await getProfile({ data: undefined }).catch(() => null);
+          if (!active) return;
+          if (profile) {
+            setFullName(profile.fullName ?? "");
+            setTelegramUsername(profile.telegramUsername ?? "");
+          }
+          setGate("needs_vantage_details");
           return;
         }
         // Technical Analysis: instant claim the moment we know they're signed in.
-        void doClaim(false);
+        void doClaim();
       } catch {
         if (active) setGate("signed_out");
       }
@@ -70,18 +93,28 @@ export function EbookClaimModal({ slug, onClose }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function doClaim(vantageConfirmed: boolean) {
+  async function doClaim() {
     setGate("claiming");
     setError(null);
     try {
-      const result = await claim({ data: { slug, vantageConfirmed } });
+      const result = await claim({
+        data: requiresVantage
+          ? { slug, fullName: fullName.trim(), telegramUsername: handle, vantageAccount: vantageAccount.trim() }
+          : { slug },
+      });
+      if (result.status === "pending") {
+        setGate("pending_review");
+        toast.success("Submitted — Sarah will review and approve it shortly.");
+        goTrack(`ebook_claim_pending_${slug}`);
+        return;
+      }
       setPdf(result.pdf);
       setGate("claimed");
       toast.success(`${book?.title ?? "Ebook"} unlocked — download below.`);
       goTrack(`ebook_claim_${slug}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not claim this ebook.");
-      setGate(requiresVantage ? "needs_vantage_confirm" : "signed_out");
+      setGate(requiresVantage ? "needs_vantage_details" : "signed_out");
       setPulse((p) => p + 1);
     }
   }
@@ -143,10 +176,11 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               </div>
             ) : null}
 
-            {gate === "needs_vantage_confirm" ? (
+            {gate === "needs_vantage_details" ? (
               <div>
                 <p className="text-sm text-body">
-                  This guide is free after opening a no-deposit Vantage account.
+                  This guide is free after opening a no-deposit Vantage account. Sarah reviews and
+                  approves each request before the download unlocks.
                 </p>
                 <a
                   href="https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
@@ -157,14 +191,59 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                 >
                   <ShieldCheck className="h-4 w-4" /> Open Vantage account
                 </a>
+
+                <div className="mt-4 flex flex-col gap-3">
+                  <div>
+                    <label className="text-sm text-muted-foreground">Full name</label>
+                    <input
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Your name"
+                      className={`${inputClass} mt-1`}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-muted-foreground">Telegram username</label>
+                    <input
+                      value={telegramUsername}
+                      onChange={(e) => setTelegramUsername(e.target.value)}
+                      placeholder="your_telegram"
+                      autoComplete="off"
+                      spellCheck={false}
+                      className={`${inputClass} mt-1`}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-muted-foreground">Vantage account number</label>
+                    <input
+                      value={vantageAccount}
+                      onChange={(e) => setVantageAccount(e.target.value.replace(/\D/g, ""))}
+                      placeholder="12345678"
+                      inputMode="numeric"
+                      className={`${inputClass} mt-1`}
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => void doClaim(true)}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+                  disabled={!detailsReady}
+                  onClick={() => void doClaim()}
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
                 >
-                  I've opened my Vantage account — unlock it
+                  Submit for approval
                 </button>
                 {error && <p className="mt-3 text-sm text-[#d9534f]">{error}</p>}
+              </div>
+            ) : null}
+
+            {gate === "pending_review" ? (
+              <div className="flex flex-col items-center gap-2 py-4 text-center">
+                <Clock className="h-6 w-6 text-accent" />
+                <p className="text-sm text-body">
+                  Submitted — Sarah checks your Vantage account and approves it, usually within a
+                  few hours. Come back to this page once approved and the download will be here.
+                </p>
               </div>
             ) : null}
 

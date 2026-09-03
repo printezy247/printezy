@@ -90,6 +90,18 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
               await closeSarahChat(telegramId);
             } else if (data === "vantage:confirm") {
               await activateVantageTrial(telegramId);
+            } else if (data.startsWith("ebook:approve:")) {
+              const { approveEbookClaim } = await import("@/lib/bot/ebook-claims.server");
+              const { sendMessage } = await import("@/lib/bot/telegram.server");
+              const result = await approveEbookClaim(data.slice(14));
+              await sendMessage(
+                telegramId,
+                result.ok
+                  ? result.alreadyApproved
+                    ? `Already approved — ${result.title ?? "that ebook"}.`
+                    : `✅ Approved — ${result.title ?? "that ebook"} is now unlocked for download.`
+                  : `Couldn't find that claim.`,
+              );
             } else if (tierId === "vantage") {
               await offerVantageTrial(telegramId);
             } else if (tierId === "free") {
