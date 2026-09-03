@@ -17,7 +17,7 @@
 export const MACRO_PRICES = {
   /** FREE_TIER_HEATMAP — the economic calendar is the only ungated card. */
   calendar: "FREE",
-  /** The four premium heatmaps ship as one product. */
+  /** Premium heatmaps product. */
   heatmaps: "$19/mo",
   addon: "$9/mo",
   yieldOptimizer: "$12/mo",
