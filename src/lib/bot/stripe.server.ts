@@ -1,51 +1,22 @@
-// Server-only Stripe REST helpers (no SDK: keeps the Worker bundle edge-safe).
+// Server-only checkout helpers for the Telegram bot flow.
+// All Stripe calls route through the connector gateway (createStripeClient) —
+// the env keys are gateway connection identifiers, not raw Stripe keys.
 
-const STRIPE_API = "https://api.stripe.com/v1";
-
-function stripeKey(): string {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) throw new Error("STRIPE_SECRET_KEY is not configured");
-  return key;
-}
-
-function encodeForm(obj: Record<string, string | number | undefined>): string {
-  const params = new URLSearchParams();
-  for (const [k, v] of Object.entries(obj)) {
-    if (v !== undefined && v !== null) params.append(k, String(v));
-  }
-  return params.toString();
-}
-
-async function stripeRequest<T>(
-  path: string,
-  init?: { method?: string; body?: string },
-): Promise<T> {
-  const response = await fetch(`${STRIPE_API}${path}`, {
-    method: init?.method ?? "GET",
-    headers: {
-      Authorization: `Bearer ${stripeKey()}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    ...(init?.body ? { body: init.body } : {}),
-  });
-
-  const text = await response.text();
-  if (!response.ok) {
-    console.error(`[stripe] ${path} failed [${response.status}]: ${text}`);
-    throw new Error(`Stripe request failed [${response.status}]: ${text}`);
-  }
-  return JSON.parse(text) as T;
-}
+import { createStripeClient, detectStripeEnv } from "@/lib/stripe.server";
 
 export type CheckoutSession = {
   id: string;
-  url: string;
+  url: string | null;
   payment_status: string;
   status: string;
   payment_intent: string | null;
-  metadata?: Record<string, string>;
+  metadata?: Record<string, string> | null;
 };
 
+/**
+ * Hosted checkout for in-Telegram purchases. Telegram cannot embed a form,
+ * so the bot sends the buyer a hosted checkout URL.
+ */
 export async function createCheckoutSession(args: {
   tierId: string;
   tierName: string;
@@ -55,51 +26,53 @@ export async function createCheckoutSession(args: {
   sessionId: string | null;
   siteUrl: string;
 }): Promise<CheckoutSession> {
-  const body = encodeForm({
+  const stripe = createStripeClient(detectStripeEnv());
+
+  const session = await stripe.checkout.sessions.create({
     mode: "payment",
-    "line_items[0][quantity]": 1,
-    "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": args.amountCents,
-    "line_items[0][price_data][product_data][name]": `EzyMap ALGO — ${args.tierName}`,
+    line_items: [
+      {
+        quantity: 1,
+        price_data: {
+          currency: "usd",
+          unit_amount: args.amountCents,
+          product_data: { name: `EzyMap ALGO — ${args.tierName}` },
+        },
+      },
+    ],
     success_url: `${args.siteUrl}/account?t=${args.portalToken}&paid=1`,
     cancel_url: `${args.siteUrl}/account?t=${args.portalToken}&canceled=1`,
-    "metadata[telegram_id]": args.telegramId,
-    "metadata[tier]": args.tierId,
-    "metadata[portal_token]": args.portalToken,
-    "metadata[session_id]": args.sessionId ?? "",
+    metadata: {
+      telegram_id: String(args.telegramId),
+      tier: args.tierId,
+      portal_token: args.portalToken,
+      session_id: args.sessionId ?? "",
+    },
     client_reference_id: args.portalToken,
+    payment_intent_data: { description: `EzyMap ALGO — ${args.tierName}` },
   });
 
-  return stripeRequest<CheckoutSession>("/checkout/sessions", { method: "POST", body });
+  return {
+    id: session.id,
+    url: session.url,
+    payment_status: session.payment_status,
+    status: session.status ?? "",
+    payment_intent:
+      typeof session.payment_intent === "string" ? session.payment_intent : null,
+    metadata: (session.metadata as Record<string, string>) ?? null,
+  };
 }
 
 export async function retrieveCheckoutSession(id: string): Promise<CheckoutSession> {
-  return stripeRequest<CheckoutSession>(`/checkout/sessions/${encodeURIComponent(id)}`);
-}
-
-/** Generic one-time checkout for a catalogue SKU bought directly on the site. */
-export async function createProductCheckoutSession(args: {
-  sku: string;
-  productName: string;
-  amountCents: number;
-  origin: string;
-  telegramUsername?: string;
-  email?: string;
-}): Promise<CheckoutSession> {
-  const body = encodeForm({
-    mode: "payment",
-    "line_items[0][quantity]": 1,
-    "line_items[0][price_data][currency]": "usd",
-    "line_items[0][price_data][unit_amount]": args.amountCents,
-    "line_items[0][price_data][product_data][name]": `EzyMap ALGO — ${args.productName}`,
-    customer_email: args.email,
-    success_url: `${args.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${args.origin}/pricing?canceled=1`,
-    "metadata[sku]": args.sku,
-    "metadata[source]": "website",
-    "metadata[telegram_username]": args.telegramUsername,
-    client_reference_id: args.telegramUsername,
-  });
-
-  return stripeRequest<CheckoutSession>("/checkout/sessions", { method: "POST", body });
+  const stripe = createStripeClient(detectStripeEnv());
+  const session = await stripe.checkout.sessions.retrieve(id);
+  return {
+    id: session.id,
+    url: session.url,
+    payment_status: session.payment_status,
+    status: session.status ?? "",
+    payment_intent:
+      typeof session.payment_intent === "string" ? session.payment_intent : null,
+    metadata: (session.metadata as Record<string, string>) ?? null,
+  };
 }

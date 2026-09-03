@@ -25,8 +25,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
-import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe/webhook'
-import { Route as ApiPublicStripeSiteWebhookRouteImport } from './routes/api/public/stripe/site-webhook'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -109,15 +108,10 @@ const ApiPublicTelegramWebhookRoute =
     path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
-  id: '/api/public/stripe/webhook',
-  path: '/api/public/stripe/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicStripeSiteWebhookRoute =
-  ApiPublicStripeSiteWebhookRouteImport.update({
-    id: '/api/public/stripe/site-webhook',
-    path: '/api/public/stripe/site-webhook',
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -136,8 +130,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
-  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -155,8 +148,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
-  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRoutesById {
@@ -176,8 +168,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/api/public/stripe/site-webhook': typeof ApiPublicStripeSiteWebhookRoute
-  '/api/public/stripe/webhook': typeof ApiPublicStripeWebhookRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
 export interface FileRouteTypes {
@@ -197,8 +188,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/ads-dashboard'
     | '/ebooks/$slug'
-    | '/api/public/stripe/site-webhook'
-    | '/api/public/stripe/webhook'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -216,8 +206,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/ads-dashboard'
     | '/ebooks/$slug'
-    | '/api/public/stripe/site-webhook'
-    | '/api/public/stripe/webhook'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   id:
     | '__root__'
@@ -236,8 +225,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/ads-dashboard'
     | '/ebooks/$slug'
-    | '/api/public/stripe/site-webhook'
-    | '/api/public/stripe/webhook'
+    | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -256,8 +244,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
-  ApiPublicStripeSiteWebhookRoute: typeof ApiPublicStripeSiteWebhookRoute
-  ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
 
@@ -375,18 +362,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/stripe/webhook': {
-      id: '/api/public/stripe/webhook'
-      path: '/api/public/stripe/webhook'
-      fullPath: '/api/public/stripe/webhook'
-      preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/stripe/site-webhook': {
-      id: '/api/public/stripe/site-webhook'
-      path: '/api/public/stripe/site-webhook'
-      fullPath: '/api/public/stripe/site-webhook'
-      preLoaderRoute: typeof ApiPublicStripeSiteWebhookRouteImport
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -418,8 +398,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
-  ApiPublicStripeSiteWebhookRoute: ApiPublicStripeSiteWebhookRoute,
-  ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
 export const routeTree = rootRouteImport

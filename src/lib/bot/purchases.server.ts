@@ -1,25 +1,19 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { retrieveCheckoutSession } from "./stripe.server";
-
-type SessionWithDetails = {
-  payment_status: string;
-  payment_intent: string | null;
-  metadata?: Record<string, string>;
-  amount_total?: number;
-  currency?: string;
-  customer_details?: { email?: string | null } | null;
-  customer_email?: string | null;
-};
+import { type StripeEnv, createStripeClient } from "@/lib/stripe.server";
 
 /**
  * Re-fetch a checkout session from Stripe and record it as a paid website
  * purchase. Idempotent: the stripe_session_id column is unique.
  */
-export async function recordSitePurchase(stripeSessionId: string): Promise<boolean> {
-  const session = (await retrieveCheckoutSession(stripeSessionId)) as unknown as SessionWithDetails;
+export async function recordSitePurchase(
+  stripeSessionId: string,
+  env: StripeEnv,
+): Promise<boolean> {
+  const stripe = createStripeClient(env);
+  const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
   if (session.payment_status !== "paid") return false;
 
-  const meta = session.metadata ?? {};
+  const meta = (session.metadata as Record<string, string> | null) ?? {};
   if (meta.source !== "website") return false;
 
   const { error } = await supabaseAdmin.from("site_purchases").upsert(
@@ -31,7 +25,8 @@ export async function recordSitePurchase(stripeSessionId: string): Promise<boole
       currency: session.currency ?? "usd",
       status: "paid",
       stripe_session_id: stripeSessionId,
-      stripe_payment_intent: session.payment_intent,
+      stripe_payment_intent:
+        typeof session.payment_intent === "string" ? session.payment_intent : null,
     } as never,
     { onConflict: "stripe_session_id" },
   );

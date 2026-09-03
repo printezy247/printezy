@@ -243,7 +243,7 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
       .map((p) => `• ${p}`)
       .join("\n")}\n\nComplete your secure payment below. Your account activates the moment it clears.`,
     [
-      [{ text: `Pay ${formatPrice(tier.amountCents)} securely`, url: checkout.url }],
+      [{ text: `Pay ${formatPrice(tier.amountCents)} securely`, url: checkout.url ?? SITE_URL }],
       [{ text: "My account", url: portalUrl(token) }],
       [{ text: "Talk to a human", url: SUPPORT }],
     ],
