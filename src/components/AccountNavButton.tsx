@@ -18,6 +18,7 @@ export function AccountNavButton({ onNavigate, className = "" }: Props) {
     return (
       <Link
         to="/auth"
+        search={{ redirect: undefined }}
         onClick={onNavigate}
         className={`inline-flex items-center justify-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-semibold text-body transition-colors hover:text-primary ${className}`}
       >
@@ -31,7 +32,7 @@ export function AccountNavButton({ onNavigate, className = "" }: Props) {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/auth", search: { redirect: undefined }, replace: true });
   }
 
   return (
