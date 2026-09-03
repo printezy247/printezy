@@ -1273,7 +1273,7 @@ const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
     items: [
       {
         q: "How do I enroll in a paid tier?",
-        a: "Tap Enroll Now on any package to open our enrollment bot on Telegram, pick your tier, and pay securely by card through Stripe. Your access activates the moment payment is confirmed.",
+        a: "Tap Get it in Telegram on any package to open our enrollment bot, pick your product, and pay by card, USDT or Telegram Stars. Your access activates the moment payment is confirmed.",
       },
       {
         q: "How do I access my account?",
