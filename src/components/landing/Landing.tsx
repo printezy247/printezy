@@ -337,6 +337,7 @@ export function Nav() {
             >
               <Send className="h-4 w-4" /> Ask Sarah
             </a>
+            <AccountNavButton />
           </div>
 
           <button
@@ -372,6 +373,9 @@ export function Nav() {
               >
                 <Send className="h-4 w-4" /> Ask Sarah
               </a>
+            </li>
+            <li className="pt-2">
+              <AccountNavButton onNavigate={() => setOpen(false)} className="w-full justify-center" />
             </li>
           </ul>
         </div>
@@ -659,6 +663,14 @@ type Tier = {
   openAccountEvent?: string;
 };
 
+/** Pricing tiers that can be paid for by card on the site. */
+const TIER_SKU: Record<string, string | undefined> = {
+  Beginner: "signal_beginner",
+  Pro: "signal_pro",
+  Premium: "signal_premium",
+  Elite: "signal_elite",
+};
+
 const TIERS: Tier[] = [
   {
     name: "Beginner",
@@ -812,19 +824,37 @@ export function Pricing() {
                 </a>
               ) : null}
 
-              <a
-                href={t.href === LINKS.bot ? botHref : t.href}
-                onClick={() => goTrack(t.event)}
-                className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
-                  t.openAccountHref ? "mt-2" : "mt-6"
-                } ${
-                  t.highlight
-                    ? "bg-accent text-accent-foreground hover:bg-accent-glow"
-                    : "bg-primary text-primary-foreground hover:bg-primary-glow"
-                }`}
-              >
-                {t.cta}
-              </a>
+              {TIER_SKU[t.name] ? (
+                <BuyButton
+                  sku={TIER_SKU[t.name]!}
+                  label={t.cta}
+                  variant={t.highlight ? "gold" : "primary"}
+                  className={`w-full py-3 ${t.openAccountHref ? "mt-2" : "mt-6"}`}
+                />
+              ) : (
+                <a
+                  href={t.href === LINKS.bot ? botHref : t.href}
+                  onClick={() => goTrack(t.event)}
+                  className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors ${
+                    t.openAccountHref ? "mt-2" : "mt-6"
+                  } ${
+                    t.highlight
+                      ? "bg-accent text-accent-foreground hover:bg-accent-glow"
+                      : "bg-primary text-primary-foreground hover:bg-primary-glow"
+                  }`}
+                >
+                  {t.cta}
+                </a>
+              )}
+              {TIER_SKU[t.name] ? (
+                <a
+                  href={botHref}
+                  onClick={() => goTrack(t.event)}
+                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-semibold text-body transition-colors hover:text-primary"
+                >
+                  <Send className="h-4 w-4" /> Buy via Telegram
+                </a>
+              ) : null}
               {t.freeAlt ? (
                 t.name === "Premium" ? (
                   <div className="mt-2">
