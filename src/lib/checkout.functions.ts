@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getCatalogItem } from "./catalog";
-import { optionalSupabaseAuth } from "@/integrations/supabase/optional-auth";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getTelegramLinkStatus } from "./bot/account-link.server";
 import {
   type StripeEnv,
   createStripeClient,
@@ -11,34 +12,32 @@ import {
 const ALLOWED_ORIGIN = /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
 
 export const createCheckout = createServerFn({ method: "POST" })
-  .middleware([optionalSupabaseAuth])
+  .middleware([requireSupabaseAuth])
   .inputValidator(
-    (input: {
-      sku: string;
-      origin: string;
-      email?: string;
-      telegramUsername: string;
-      environment: StripeEnv;
-    }) => {
+    (input: { sku: string; origin: string; email?: string; environment: StripeEnv }) => {
       if (typeof input?.sku !== "string" || !getCatalogItem(input.sku)) {
         throw new Error("Unknown product");
       }
       if (typeof input?.origin !== "string" || !ALLOWED_ORIGIN.test(input.origin)) {
         throw new Error("Invalid origin");
       }
-      const handle = String(input?.telegramUsername ?? "").trim().replace(/^@+/, "");
-      if (!/^[A-Za-z0-9_]{5,32}$/.test(handle)) {
-        throw new Error("Invalid Telegram username");
-      }
       if (input?.environment !== "sandbox" && input?.environment !== "live") {
         throw new Error("Invalid environment");
       }
-      return { ...input, telegramUsername: handle };
+      return input;
     },
   )
   .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     const item = getCatalogItem(data.sku)!;
     try {
+      // Server-verified, not client-supplied: checkout requires the
+      // signed-in account to already have a Telegram link, so access can
+      // never be sent to the wrong handle.
+      const link = await getTelegramLinkStatus(context.userId);
+      if (!link.linked) {
+        return { error: "Connect your Telegram account before checking out." };
+      }
+
       const stripe = createStripeClient(data.environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
@@ -60,8 +59,8 @@ export const createCheckout = createServerFn({ method: "POST" })
         metadata: {
           sku: item.sku,
           source: "website",
-          telegram_username: data.telegramUsername,
-          ...(context.userId ? { user_id: context.userId } : {}),
+          user_id: context.userId,
+          ...(link.telegramUsername ? { telegram_username: link.telegramUsername } : {}),
         },
       });
 

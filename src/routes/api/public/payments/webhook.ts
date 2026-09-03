@@ -14,8 +14,13 @@ async function fulfillSession(sessionId: string, source: string | undefined, env
     const { recordSitePurchase } = await import("@/lib/bot/purchases.server");
     const recorded = await recordSitePurchase(sessionId, env);
     if (recorded) {
-      const { grantRecordedPurchase } = await import("@/lib/bot/site-access.server");
-      await grantRecordedPurchase(sessionId);
+      const { grantByLinkedAccount, grantRecordedPurchase } = await import(
+        "@/lib/bot/site-access.server"
+      );
+      // Every new checkout requires a linked account, so this should always
+      // succeed; the handle-based path stays as a fallback for older rows.
+      const grantedByAccount = await grantByLinkedAccount(sessionId);
+      if (!grantedByAccount) await grantRecordedPurchase(sessionId);
     }
     return;
   }
