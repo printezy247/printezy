@@ -27,11 +27,6 @@ import {
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
 
-/** Crypto desk add-ons map onto the two macro add-on SKUs in the catalog. */
-function cryptoSku(name: string): string {
-  return /yield/i.test(name) ? "macro_yield_optimizer" : "macro_addon";
-}
-
 export const Route = createFileRoute("/macro")({
   head: () => ({
     meta: [
