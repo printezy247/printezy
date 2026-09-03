@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { X } from "lucide-react";
 import { saveMyProfile, type Profile } from "@/lib/profile.functions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   profile: Profile;
@@ -22,6 +31,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
   const [mt5Account, setMt5Account] = useState(profile.mt5Account ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pulse, setPulse] = useState(0);
 
   const handle = telegramUsername.trim().replace(/^@+/, "");
   const ready = /^[A-Za-z0-9_]{5,32}$/.test(handle) && (!requireMt5 || mt5Account.trim().length > 0);
@@ -41,17 +51,34 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
           ...(mt5Account ? { mt5Account } : {}),
         },
       });
+      toast.success("Profile saved");
       onSaved();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save your details.");
+      setPulse((p) => p + 1);
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
-      <div className="relative my-8 w-full max-w-md rounded-xl border border-border bg-background p-6">
+    <AnimatePresence>
+      <motion.div
+        key="overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
+      >
+        <motion.div
+          key="panel"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1, ...(pulse ? { scale: [1, 1.02, 1] } : {}) }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="relative my-8 w-full max-w-md rounded-xl border border-border bg-background p-6"
+        >
         <button
           type="button"
           onClick={onClose}
@@ -85,28 +112,36 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
           />
 
           <label className="text-sm text-muted">Trading experience</label>
-          <select
-            value={experienceLevel}
-            onChange={(e) => setExperienceLevel(e.target.value)}
-            className={inputClass}
+          <Select
+            value={experienceLevel || "unspecified"}
+            onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
           >
-            <option value="">Prefer not to say</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
+            <SelectTrigger className={inputClass}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unspecified">Prefer not to say</SelectItem>
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advanced">Advanced</SelectItem>
+            </SelectContent>
+          </Select>
 
           <label className="text-sm text-muted">Capital you're working with</label>
-          <select
-            value={capitalRange}
-            onChange={(e) => setCapitalRange(e.target.value)}
-            className={inputClass}
+          <Select
+            value={capitalRange || "unspecified"}
+            onValueChange={(v) => setCapitalRange(v === "unspecified" ? "" : v)}
           >
-            <option value="">Prefer not to say</option>
-            <option value="under_1k">Under $1k</option>
-            <option value="1k_10k">$1k – $10k</option>
-            <option value="10k_plus">$10k+</option>
-          </select>
+            <SelectTrigger className={inputClass}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unspecified">Prefer not to say</SelectItem>
+              <SelectItem value="under_1k">Under $1k</SelectItem>
+              <SelectItem value="1k_10k">$1k – $10k</SelectItem>
+              <SelectItem value="10k_plus">$10k+</SelectItem>
+            </SelectContent>
+          </Select>
 
           {requireMt5 ? (
             <>
@@ -130,7 +165,8 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
           </button>
           {error && <p className="text-sm text-[#d9534f]">{error}</p>}
         </form>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

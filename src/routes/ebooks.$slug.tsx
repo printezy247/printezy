@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
 import { Nav, Footer } from "@/components/landing/Landing";
+import { EbookClaimModal } from "@/components/EbookClaimModal";
 import { getEbook, EBOOK_PAGES } from "@/lib/ebooks";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 
@@ -60,6 +61,7 @@ function EbookNotFound() {
 function EbookPage() {
   const { book } = Route.useLoaderData();
   const others = EBOOK_PAGES.filter((b) => b.slug !== book.slug);
+  const [claiming, setClaiming] = useState(false);
 
   useEffect(() => {
     trackPageLoad(`ebook_${book.slug}`);
@@ -67,7 +69,15 @@ function EbookPage() {
     return () => stop?.();
   }, [book.slug]);
 
-  const download = () => goTrack(`ebook_download_${book.slug}`);
+  const openClaim = () => {
+    goTrack(`ebook_get_${book.slug}`);
+    setClaiming(true);
+  };
+
+  const gateCopy =
+    book.slug === "mapping-like-a-pro"
+      ? "Free with sign-in + a Vantage account confirmation"
+      : "Free with a quick sign-in — instant download";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -91,23 +101,13 @@ function EbookPage() {
               <p className="mt-4 max-w-2xl text-body">{book.description}</p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <a
-                  href={book.pdf}
-                  download
-                  onClick={download}
+                <button
+                  type="button"
+                  onClick={openClaim}
                   className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
                 >
-                  <Download className="h-4 w-4" /> Download the PDF
-                </a>
-                <a
-                  href={book.pdf}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => goTrack(`ebook_preview_${book.slug}`)}
-                  className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
-                >
-                  <FileText className="h-4 w-4" /> Read online
-                </a>
+                  <Download className="h-4 w-4" /> Get it free
+                </button>
               </div>
               <p className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
@@ -116,7 +116,7 @@ function EbookPage() {
                 <span className="inline-flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5" /> {book.readTime}
                 </span>
-                <span>No email required</span>
+                <span>{gateCopy}</span>
               </p>
             </div>
 
@@ -135,17 +135,18 @@ function EbookPage() {
                   </li>
                 ))}
               </ul>
-              <a
-                href={book.pdf}
-                download
-                onClick={download}
+              <button
+                type="button"
+                onClick={openClaim}
                 className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md border border-accent bg-accent/5 px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
               >
                 <Download className="h-4 w-4" /> Get it free
-              </a>
+              </button>
             </div>
           </div>
         </section>
+
+        {claiming ? <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} /> : null}
 
         {/* Outcomes */}
         <section className="border-y border-border bg-surface/40">

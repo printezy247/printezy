@@ -1,4 +1,5 @@
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
+import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { createCheckout } from "@/lib/checkout.functions";
@@ -23,20 +24,36 @@ export function StripeEmbeddedCheckout({ sku, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
-      <div className="relative my-8 w-full max-w-lg rounded-xl border border-border bg-background">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close checkout"
-          className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted hover:bg-elevated hover:text-foreground"
+    <AnimatePresence>
+      <motion.div
+        key="overlay"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
+      >
+        <motion.div
+          key="panel"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="relative my-8 w-full max-w-lg rounded-xl border border-border bg-background"
         >
-          <X className="h-5 w-5" />
-        </button>
-        <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
-          <EmbeddedCheckout />
-        </EmbeddedCheckoutProvider>
-      </div>
-    </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close checkout"
+            className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted hover:bg-elevated hover:text-foreground"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+            <EmbeddedCheckout />
+          </EmbeddedCheckoutProvider>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

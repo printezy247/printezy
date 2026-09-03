@@ -123,7 +123,7 @@ function skuFor(productId: string, planLabel: string): string {
 }
 
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, showTrial }: { product: Product; showTrial?: boolean }) {
   return (
     <article className="glass-card relative flex h-full flex-col rounded-xl p-6">
       {product.highlight ? (
@@ -164,6 +164,18 @@ function ProductCard({ product }: { product: Product }) {
       >
         Get {product.name.split("—").pop()?.trim() ?? product.name} <ArrowRight className="h-3.5 w-3.5" />
       </a>
+
+      {showTrial ? (
+        <a
+          href={LINKS.bot}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => goTrack(`indicators_${product.id}_trial`)}
+          className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          Try 3-Day Trial — via our bot <ArrowRight className="h-3.5 w-3.5" />
+        </a>
+      ) : null}
     </article>
   );
 }
@@ -271,7 +283,7 @@ function IndicatorsPage() {
           </div>
           <div className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {MT5_PRODUCTS.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} showTrial />
             ))}
           </div>
           <a

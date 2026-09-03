@@ -453,7 +453,8 @@ function Hero() {
               <Send className="h-4 w-4" /> Join Free Channel
             </Link>
             <Link
-              to="/free-ebook"
+              to="/ebooks/$slug"
+              params={{ slug: "technical-analysis" }}
               onClick={() => goTrack("hero_free_ebook")}
               className="inline-flex items-center justify-center gap-2 rounded-md border border-accent bg-card px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent-tint"
             >
@@ -884,11 +885,13 @@ export function Pricing() {
 export const EBOOKS = [
   {
     title: "Mapping Like A Pro",
+    slug: "mapping-like-a-pro",
     image: ebookMapping,
     bullets: ["Master support & resistance zones", "Spot high-probability setups", "Step-by-step PDF guide"],
   },
   {
     title: "Technical Analysis Ebook",
+    slug: "technical-analysis",
     image: ebookTechnical,
     bullets: ["Price action fundamentals", "Indicator confluence framework", "Risk management rules"],
   },
@@ -943,7 +946,8 @@ export function Products() {
           {EBOOKS.map((b, i) => (
             <Reveal key={b.title} delay={i * 0.1}>
               <Link
-                to="/free-ebook"
+                to="/ebooks/$slug"
+                params={{ slug: b.slug }}
                 onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
                 className="glass-card group flex h-full items-stretch gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
               >

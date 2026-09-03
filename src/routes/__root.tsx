@@ -13,6 +13,8 @@ import appCss from "../styles.css?url";
 import { ConsentBanner } from "../components/ConsentBanner";
 import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 import { SupportChat } from "../components/SupportChat";
+import { EbookAutoPopup } from "../components/EbookAutoPopup";
+import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -156,6 +158,8 @@ function RootComponent() {
       <Outlet />
       <SupportChat />
       <ConsentBanner />
+      <EbookAutoPopup />
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 }
