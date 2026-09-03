@@ -155,7 +155,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             telegramId,
             username: message?.from?.username ?? null,
             firstName: message?.from?.first_name ?? null,
-            sessionId: startPayload,
+            sessionId: startPayload && !/^EZY-/i.test(startPayload) ? startPayload : null,
           });
 
           // One-time claim code from the website success page / email.
