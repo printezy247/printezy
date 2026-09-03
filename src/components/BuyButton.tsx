@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Loader2, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
 import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 import { track } from "@/lib/analytics";
 
 type Props = {
@@ -12,11 +13,7 @@ type Props = {
 
 export function BuyButton({ sku, label = "Checkout", variant = "primary", className = "" }: Props) {
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [username, setUsername] = useState("");
-
-  const handle = username.replace(/^@+/, "").trim();
-  const ready = handle.length > 0;
+  const { user } = useSupabaseUser();
 
   const styles =
     variant === "gold"
@@ -25,45 +22,27 @@ export function BuyButton({ sku, label = "Checkout", variant = "primary", classN
 
   function go() {
     track("click", `checkout_${sku}`);
-    setError(null);
     setOpen(true);
   }
 
   return (
-    <div className={className}>
-      <label className="mb-2 flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2">
-        <span className="text-sm text-muted">@</span>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="your Telegram username"
-          autoComplete="off"
-          spellCheck={false}
-          aria-label="Telegram username"
-          className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
-        />
-      </label>
+    <>
       <button
         type="button"
         onClick={go}
-        disabled={!ready}
-        className={`inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 ${styles}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors ${styles} ${className}`}
       >
         <CreditCard className="h-4 w-4" />
         {label}
       </button>
-      {error ? <p className="mt-2 text-xs text-[#d9534f]">{error}</p> : null}
-      {!ready && !error ? (
-        <p className="mt-2 text-xs text-muted">Telegram username required — access is delivered there.</p>
-      ) : null}
       {open ? (
         <StripeEmbeddedCheckout
           sku={sku}
-          telegramUsername={handle}
+          userId={user?.id}
+          email={user?.email ?? undefined}
           onClose={() => setOpen(false)}
         />
       ) : null}
-    </div>
+    </>
   );
 }
