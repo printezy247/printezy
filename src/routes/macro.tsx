@@ -583,7 +583,7 @@ function MacroPage() {
             ) : null}
 
             {shows("Crypto") ? (
-              <Card title="Crypto Desk" note="Add-ons, billed separately">
+              <Card title="Crypto Desk" note="Monthly products, billed separately">
                 <ul className="divide-y divide-border">
                   {desk?.cryptoAddons.map((a) => (
                     <li
@@ -594,17 +594,13 @@ function MacroPage() {
                         <p className="text-sm font-semibold">{a.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
                       </div>
-                      <BuyButton
-                        sku={cryptoSku(a.name)}
-                        label="Pay with card"
-                        variant="gold"
-                        className="shrink-0 px-3 py-1.5 text-xs"
-                      />
+                      <MacroSubscribeButton className="w-full shrink-0 sm:w-56" />
                     </li>
                   ))}
                 </ul>
               </Card>
             ) : null}
+
           </div>
 
           {/* Sidebar */}
