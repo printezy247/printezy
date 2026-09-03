@@ -10,7 +10,11 @@ export function getSessionId(): string {
   const key = "pe_analytics_session";
   let id = sessionStorage.getItem(key);
   if (!id) {
-    id = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+    // This id doubles as the bearer token for fetchSupportMessages (support
+    // chat history has no auth beyond knowing it), so it must be
+    // unguessable — crypto.randomUUID() (122 bits from a CSPRNG), not
+    // Date.now()+Math.random() which a guesser could narrow down.
+    id = crypto.randomUUID().replace(/-/g, "");
     sessionStorage.setItem(key, id);
   }
   return id;
