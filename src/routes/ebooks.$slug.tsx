@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/Landing";
 import { getEbook, EBOOK_PAGES } from "@/lib/ebooks";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 
