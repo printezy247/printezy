@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getCatalogItem } from "./catalog";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   type StripeEnv,
   createStripeClient,
@@ -9,34 +10,48 @@ import {
 
 const ALLOWED_ORIGIN = /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
 
+type ProfileRow = {
+  full_name: string | null;
+  telegram_username: string | null;
+  experience_level: string | null;
+  capital_range: string | null;
+  mt5_account: string | null;
+};
+
 export const createCheckout = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: {
-      sku: string;
-      origin: string;
-      email?: string;
-      telegramUsername: string;
-      environment: StripeEnv;
-    }) => {
-      if (typeof input?.sku !== "string" || !getCatalogItem(input.sku)) {
-        throw new Error("Unknown product");
-      }
-      if (typeof input?.origin !== "string" || !ALLOWED_ORIGIN.test(input.origin)) {
-        throw new Error("Invalid origin");
-      }
-      const handle = String(input?.telegramUsername ?? "").trim().replace(/^@+/, "");
-      if (!/^[A-Za-z0-9_]{5,32}$/.test(handle)) {
-        throw new Error("Invalid Telegram username");
-      }
-      if (input?.environment !== "sandbox" && input?.environment !== "live") {
-        throw new Error("Invalid environment");
-      }
-      return { ...input, telegramUsername: handle };
-    },
-  )
-  .handler(async ({ data }): Promise<{ clientSecret: string } | { error: string }> => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { sku: string; origin: string; environment: StripeEnv }) => {
+    if (typeof input?.sku !== "string" || !getCatalogItem(input.sku)) {
+      throw new Error("Unknown product");
+    }
+    if (typeof input?.origin !== "string" || !ALLOWED_ORIGIN.test(input.origin)) {
+      throw new Error("Invalid origin");
+    }
+    if (input?.environment !== "sandbox" && input?.environment !== "live") {
+      throw new Error("Invalid environment");
+    }
+    return input;
+  })
+  .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     const item = getCatalogItem(data.sku)!;
     try {
+      // Resolved server-side from the account's saved profile, never trusted
+      // from the client — the profile form is what keeps this filled in.
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: profileData } = await supabaseAdmin
+        .from("profiles")
+        .select("full_name, telegram_username, experience_level, capital_range, mt5_account")
+        .eq("user_id", context.userId)
+        .maybeSingle();
+      const profile = profileData as ProfileRow | null;
+
+      if (!profile?.telegram_username) {
+        return { error: "Add your details before checking out." };
+      }
+      if (item.group === "mt5" && !profile.mt5_account) {
+        return { error: "Add your MT5 account number before checking out." };
+      }
+
       const stripe = createStripeClient(data.environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
@@ -54,11 +69,16 @@ export const createCheckout = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: `${data.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
         payment_intent_data: { description: product.name },
-        ...(data.email ? { customer_email: data.email } : {}),
+        ...(context.claims.email ? { customer_email: context.claims.email as string } : {}),
         metadata: {
           sku: item.sku,
           source: "website",
-          telegram_username: data.telegramUsername,
+          user_id: context.userId,
+          telegram_username: profile.telegram_username,
+          ...(profile.full_name ? { full_name: profile.full_name } : {}),
+          ...(profile.experience_level ? { experience_level: profile.experience_level } : {}),
+          ...(profile.capital_range ? { capital_range: profile.capital_range } : {}),
+          ...(profile.mt5_account ? { mt5_account: profile.mt5_account } : {}),
         },
       });
 
