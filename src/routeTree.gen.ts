@@ -23,6 +23,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
+import { Route as AuthenticatedMyAccountRouteImport } from './routes/_authenticated/my-account'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -96,6 +97,11 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedMyAccountRoute = AuthenticatedMyAccountRouteImport.update({
+  id: '/my-account',
+  path: '/my-account',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/_authenticated/my-account': typeof AuthenticatedMyAccountRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
+    | '/my-account'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
+    | '/my-account'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/_authenticated/ads-dashboard'
+    | '/_authenticated/my-account'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/my-account': {
+      id: '/_authenticated/my-account'
+      path: '/my-account'
+      fullPath: '/my-account'
+      preLoaderRoute: typeof AuthenticatedMyAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ads-dashboard': {
       id: '/_authenticated/ads-dashboard'
       path: '/ads-dashboard'
@@ -374,10 +393,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
+  AuthenticatedMyAccountRoute: typeof AuthenticatedMyAccountRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
+  AuthenticatedMyAccountRoute: AuthenticatedMyAccountRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
