@@ -83,6 +83,7 @@ export async function createProductCheckoutSession(args: {
   productName: string;
   amountCents: number;
   origin: string;
+  telegramUsername?: string;
   email?: string;
 }): Promise<CheckoutSession> {
   const body = encodeForm({
