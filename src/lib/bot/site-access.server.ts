@@ -4,6 +4,7 @@
 // bot user) or when they open @EzyRegisterBot for the first time.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getCatalogItem } from "@/lib/catalog";
+import { escapeLikePattern } from "@/lib/like-escape";
 import { sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
 import { FREE_CHANNEL, SUPPORT, newPortalToken, portalUrl } from "./enrollment.server";
@@ -103,7 +104,7 @@ export async function claimSitePurchases(args: {
     .select("id, sku, telegram_username, amount_cents, currency")
     .eq("status", "paid")
     .is("granted_at", null)
-    .ilike("telegram_username", handle);
+    .ilike("telegram_username", escapeLikePattern(handle));
 
   if (error) {
     console.error("[site-access] claim lookup failed", error);
@@ -134,7 +135,7 @@ export async function grantRecordedPurchase(stripeSessionId: string): Promise<bo
   const { data: user } = await supabaseAdmin
     .from("bot_users")
     .select("telegram_id")
-    .ilike("username", handle)
+    .ilike("username", escapeLikePattern(handle))
     .maybeSingle();
 
   const telegramId = (user as { telegram_id: number } | null)?.telegram_id;

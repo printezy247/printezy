@@ -1,6 +1,7 @@
 // Server-only member account layer: one-time-code sign-in, browser sessions
 // and the data each signed-in member is allowed to see.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { escapeLikePattern } from "@/lib/like-escape";
 import { sendMessage } from "./telegram.server";
 import { getTier, SITE_URL, type TierId } from "./tiers";
 
@@ -37,7 +38,7 @@ export async function findMemberByHandle(handle: string) {
   const { data } = await supabaseAdmin
     .from("bot_users")
     .select("telegram_id, username, first_name")
-    .ilike("username", clean)
+    .ilike("username", escapeLikePattern(clean))
     .maybeSingle();
   return (data as { telegram_id: number; username: string | null; first_name: string | null } | null) ?? null;
 }
