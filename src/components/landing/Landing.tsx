@@ -18,9 +18,7 @@ import {
   Menu,
   X,
   BookOpen,
-  User,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import {
   track,
   trackPageLoad,
@@ -308,21 +306,6 @@ const NAV_ITEMS = [
 
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (active) setSignedIn(!!data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active) setSignedIn(!!session);
-    });
-    return () => {
-      active = false;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-background">
@@ -347,12 +330,6 @@ export function Nav() {
           </ul>
 
           <div className="hidden items-center gap-4 md:flex">
-            <Link
-              to={signedIn ? "/link-telegram" : "/auth"}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-body transition-colors hover:text-primary"
-            >
-              <User className="h-4 w-4" /> {signedIn ? "Account" : "Sign in"}
-            </Link>
             <a
               href={LINKS.support}
               onClick={() => goTrack("nav_ask_sarah")}
@@ -387,15 +364,6 @@ export function Nav() {
                 </a>
               </li>
             ))}
-            <li>
-              <Link
-                to={signedIn ? "/link-telegram" : "/auth"}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-1.5 rounded-md px-2 py-2 text-sm font-medium text-body hover:bg-surface"
-              >
-                <User className="h-4 w-4" /> {signedIn ? "Account" : "Sign in"}
-              </Link>
-            </li>
             <li className="pt-2">
               <a
                 href={LINKS.support}

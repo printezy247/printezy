@@ -17,8 +17,6 @@ type PurchaseRow = {
   currency: string;
 };
 
-type PurchaseRowWithUser = PurchaseRow & { user_id: string | null };
-
 /** Package SKUs map onto the enrollment tiers the portal already understands. */
 const SKU_TIER: Record<string, string> = {
   signal_beginner: "beginner",
@@ -119,33 +117,6 @@ export async function claimSitePurchases(args: {
 }
 
 /**
- * Claim every ungranted paid purchase linked to this account (via
- * account_telegram_links, not the typed handle). Called right after a
- * Telegram link code is consumed, so a purchase made while signed in but
- * before linking gets delivered immediately.
- */
-export async function claimPurchasesForUserId(
-  userId: string,
-  telegramId: number,
-): Promise<number> {
-  const { data, error } = await supabaseAdmin
-    .from("site_purchases")
-    .select("id, sku, telegram_username, amount_cents, currency")
-    .eq("status", "paid")
-    .is("granted_at", null)
-    .eq("user_id", userId);
-
-  if (error) {
-    console.error("[site-access] user-linked claim lookup failed", error);
-    return 0;
-  }
-
-  const rows = (data ?? []) as PurchaseRow[];
-  for (const row of rows) await grantPurchase(telegramId, row);
-  return rows.length;
-}
-
-/**
  * Try to grant a freshly recorded purchase right away: if the handle already
  * belongs to a known bot user there is nothing left to wait for.
  */
@@ -168,37 +139,6 @@ export async function grantRecordedPurchase(stripeSessionId: string): Promise<bo
     .maybeSingle();
 
   const telegramId = (user as { telegram_id: number } | null)?.telegram_id;
-  if (!telegramId) return false;
-
-  await grantPurchase(telegramId, purchase);
-  return true;
-}
-
-/**
- * Grant a freshly recorded purchase via the buyer's linked Telegram account
- * (account_telegram_links), not the typed handle. Checkout now requires
- * linking first, so this is the primary fulfillment path for every new
- * purchase — grantRecordedPurchase / claimSitePurchases stay as a fallback
- * for older, handle-only rows.
- */
-export async function grantByLinkedAccount(stripeSessionId: string): Promise<boolean> {
-  const { data } = await supabaseAdmin
-    .from("site_purchases")
-    .select("id, sku, telegram_username, amount_cents, currency, user_id")
-    .eq("stripe_session_id", stripeSessionId)
-    .is("granted_at", null)
-    .maybeSingle();
-
-  const purchase = data as PurchaseRowWithUser | null;
-  if (!purchase?.user_id) return false;
-
-  const { data: link } = await supabaseAdmin
-    .from("account_telegram_links")
-    .select("telegram_id")
-    .eq("user_id", purchase.user_id)
-    .maybeSingle();
-
-  const telegramId = (link as { telegram_id: number } | null)?.telegram_id;
   if (!telegramId) return false;
 
   await grantPurchase(telegramId, purchase);

@@ -5,16 +5,18 @@ import { createCheckout } from "@/lib/checkout.functions";
 
 type Props = {
   sku: string;
+  telegramUsername: string;
   email?: string;
   onClose: () => void;
 };
 
-export function StripeEmbeddedCheckout({ sku, email, onClose }: Props) {
+export function StripeEmbeddedCheckout({ sku, telegramUsername, email, onClose }: Props) {
   const fetchClientSecret = async (): Promise<string> => {
     const result = await createCheckout({
       data: {
         sku,
         origin: window.location.origin,
+        telegramUsername,
         ...(email ? { email } : {}),
         environment: getStripeEnvironment(),
       },
