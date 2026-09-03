@@ -48,5 +48,6 @@ export const getCheckoutStatus = createServerFn({ method: "POST" })
     return {
       paid: session.payment_status === "paid",
       product: session.metadata?.sku ?? null,
+      telegramUsername: session.metadata?.telegram_username ?? null,
     };
   });
