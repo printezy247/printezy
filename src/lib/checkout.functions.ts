@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getCatalogItem } from "./catalog";
+import { optionalSupabaseAuth } from "@/integrations/supabase/optional-auth";
 import {
   type StripeEnv,
   createStripeClient,
@@ -10,6 +11,7 @@ import {
 const ALLOWED_ORIGIN = /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
 
 export const createCheckout = createServerFn({ method: "POST" })
+  .middleware([optionalSupabaseAuth])
   .inputValidator(
     (input: {
       sku: string;
@@ -34,7 +36,7 @@ export const createCheckout = createServerFn({ method: "POST" })
       return { ...input, telegramUsername: handle };
     },
   )
-  .handler(async ({ data }): Promise<{ clientSecret: string } | { error: string }> => {
+  .handler(async ({ data, context }): Promise<{ clientSecret: string } | { error: string }> => {
     const item = getCatalogItem(data.sku)!;
     try {
       const stripe = createStripeClient(data.environment);
@@ -59,6 +61,7 @@ export const createCheckout = createServerFn({ method: "POST" })
           sku: item.sku,
           source: "website",
           telegram_username: data.telegramUsername,
+          ...(context.userId ? { user_id: context.userId } : {}),
         },
       });
 

@@ -20,6 +20,7 @@ export async function recordSitePurchase(
     {
       sku: meta.sku ?? "unknown",
       telegram_username: meta.telegram_username ?? null,
+      user_id: meta.user_id ?? null,
       email: session.customer_details?.email ?? session.customer_email ?? null,
       amount_cents: session.amount_total ?? 0,
       currency: session.currency ?? "usd",
