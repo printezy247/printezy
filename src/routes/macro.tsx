@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BuyButton } from "@/components/BuyButton";
+import { MacroSubscribeButton } from "@/components/TelegramBuyButton";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Send } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { ArrowRight } from "lucide-react";
+import { Nav, Footer } from "@/components/landing/Landing";
+import { itemsByGroup, formatUsd } from "@/lib/catalog";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
+
 import { useLocalClock } from "@/lib/local-time";
 import {
   MACRO_FILTERS,
