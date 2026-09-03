@@ -158,6 +158,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             sessionId: startPayload,
           });
 
+          // Website purchases waiting on this handle are approved on contact.
+          {
+            const { claimSitePurchases } = await import("@/lib/bot/site-access.server");
+            await claimSitePurchases({
+              telegramId,
+              username: message?.from?.username ?? null,
+            });
+          }
+
           if (startPayload) {
             // Ad click -> bot start: this is the Lead conversion for Meta.
             await reportLead(telegramId, startPayload);
