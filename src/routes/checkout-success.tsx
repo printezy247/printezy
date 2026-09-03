@@ -3,9 +3,18 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { Nav, Footer } from "@/components/landing/Landing";
+import { BuyButton } from "@/components/BuyButton";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
-import { getCatalogItem, formatUsd } from "@/lib/catalog";
+import { getCatalogItem, formatUsd, type CatalogGroup } from "@/lib/catalog";
 import { REGISTER_BOT, botStartLink } from "@/lib/telegram-links";
+
+/** 1-2 complementary SKUs to surface after a purchase, by the group just bought. */
+const CROSS_SELL: Record<CatalogGroup, string[]> = {
+  package: ["macro_full_desk", "mt5_bundle_1m"],
+  tradingview: ["macro_full_desk", "mt5_currency_strength_1m"],
+  mt5: ["macro_full_desk", "signal_pro"],
+  macro: ["mt5_bundle_1m", "signal_pro"],
+};
 
 export const Route = createFileRoute("/checkout-success")({
   head: () => ({
@@ -50,6 +59,11 @@ function SuccessPage() {
   }, [check]);
 
   const item = product ? getCatalogItem(product) : undefined;
+  const crossSell = item
+    ? CROSS_SELL[item.group]
+        .map((sku) => getCatalogItem(sku))
+        .filter((i): i is NonNullable<typeof i> => !!i && i.sku !== item.sku)
+    : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,6 +119,27 @@ function SuccessPage() {
               Nothing after a few minutes? Message Sarah in the bot with your Telegram username and
               we'll unlock it manually.
             </p>
+
+            {crossSell.length > 0 ? (
+              <div className="mt-12 border-t border-border pt-8 text-left">
+                <h2 className="text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  You might also like
+                </h2>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  {crossSell.map((cs) => (
+                    <div key={cs.sku} className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
+                      <h3 className="text-sm font-semibold text-foreground">{cs.name}</h3>
+                      <p className="mt-1 flex-1 text-xs text-muted-foreground">{cs.description}</p>
+                      <p className="mt-3 text-lg font-bold text-foreground">
+                        {formatUsd(cs.amountCents)}{" "}
+                        <span className="text-xs font-normal text-muted-foreground">{cs.term}</span>
+                      </p>
+                      <BuyButton sku={cs.sku} label="Add this" className="mt-3" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         )}
       </main>

@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { getActiveMemberCount } from "@/lib/member-count.functions";
 import {
   Zap,
   GraduationCap,
@@ -99,6 +101,19 @@ function useBotLink() {
     setHref(`${LINKS.bot}?start=${encodeURIComponent(getSessionId())}`);
   }, []);
   return href;
+}
+
+/**
+ * Live Telegram channel member count (falls back to 640 while loading or on
+ * fetch failure), fetched once at the page root and shared everywhere the
+ * site quotes the community size instead of leaving it hardcoded.
+ */
+const FALLBACK_MEMBER_COUNT = 640;
+const MemberCountContext = createContext(FALLBACK_MEMBER_COUNT);
+
+function useMemberCount() {
+  const count = useContext(MemberCountContext);
+  return { count, formatted: `${count}+` };
 }
 
 /* ------------------------------------------------------------------ */
@@ -425,6 +440,7 @@ function ChartGraphic() {
 
 function Hero() {
   const botHref = useBotLink();
+  const { formatted: memberCount } = useMemberCount();
   return (
     <section className="bg-hero border-b border-border">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
@@ -434,7 +450,7 @@ function Hero() {
           transition={{ duration: 0.8, ease: APPLE_EASE }}
         >
           <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
-            640+ Active Members · Est. 2021
+            {memberCount} Active Members · Est. 2021
           </span>
           <h1 className="mt-4 max-w-2xl text-[34px] font-black leading-[1.08] text-foreground sm:text-[44px]">
             Professional trading signals, delivered live to your phone.
@@ -452,18 +468,18 @@ function Hero() {
             >
               <Send className="h-4 w-4" /> Join Free Channel
             </Link>
+          </div>
+
+          <p className="mt-3 text-sm text-muted-foreground">
             <Link
               to="/ebooks/$slug"
               params={{ slug: "technical-analysis" }}
               onClick={() => goTrack("hero_free_ebook")}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-accent bg-card px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent-tint"
+              className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
             >
-              <BookOpen className="h-4 w-4" /> Free Ebook
+              <BookOpen className="h-3.5 w-3.5" /> Get the free ebook
             </Link>
-          </div>
-
-          <p className="mt-3 text-sm text-muted-foreground">
-            Or upgrade to Pro, Premium, or Elite through{" "}
+            {" "}or upgrade to Pro, Premium, or Elite through{" "}
             <a href={botHref} onClick={() => goTrack("hero_bot_link")} className="font-medium text-primary hover:underline">
               our bot
             </a>
@@ -472,7 +488,7 @@ function Hero() {
 
           <dl className="mt-9 grid max-w-lg grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
             {[
-              ["640+", "Active members"],
+              [memberCount, "Active members"],
               ["24/5", "Market coverage"],
               ["3 Styles", "Scalp · Intraday · Swing"],
             ].map(([v, l]) => (
@@ -614,6 +630,7 @@ const FEATURES = [
 ];
 
 export function Features() {
+  const { formatted: memberCount } = useMemberCount();
   return (
     <Section id="features">
       <SectionHeading
@@ -629,7 +646,9 @@ export function Features() {
               <f.icon className="h-5 w-5" />
             </span>
             <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {f.body.replace("640+", memberCount)}
+            </p>
           </article>
           </Reveal>
         ))}
@@ -736,6 +755,7 @@ const TIERS: Tier[] = [
 
 export function Pricing() {
   const botHref = useBotLink();
+  const { formatted: memberCount } = useMemberCount();
   return (
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
@@ -805,7 +825,7 @@ export function Pricing() {
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-muted-foreground">{f}</span>
+                    <span className="text-muted-foreground">{f.replace("640+", memberCount)}</span>
                   </li>
                 ))}
               </ul>
@@ -1137,6 +1157,7 @@ export function HowItWorks() {
 /* ------------------------------------------------------------------ */
 
 export function Ambassador() {
+  const { formatted: memberCount } = useMemberCount();
   return (
     <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
@@ -1177,7 +1198,7 @@ export function Ambassador() {
           </blockquote>
           <dl className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              ["640+", "Students"],
+              [memberCount, "Students"],
               ["10+ yrs", "Trading"],
               ["24/5", "Coverage"],
             ].map(([v, l]) => (
@@ -1222,11 +1243,12 @@ const TESTIMONIALS = [
 ];
 
 export function SocialProof() {
+  const { formatted: memberCount } = useMemberCount();
   return (
     <Section id="testimonials" className="bg-surface/40">
       <SectionHeading
         eyebrow="Social proof"
-        title="640+ active traders trust EzyMap"
+        title={`${memberCount} active traders trust EzyMap`}
         subtitle="Real feedback from the community inside our Telegram channels."
       />
       <div className="mb-10 grid gap-4 sm:grid-cols-3">
@@ -1525,6 +1547,18 @@ export function Footer() {
 /* ------------------------------------------------------------------ */
 
 export function Landing() {
+  const [memberCount, setMemberCount] = useState(FALLBACK_MEMBER_COUNT);
+  const getMemberCount = useServerFn(getActiveMemberCount);
+
+  useEffect(() => {
+    void getMemberCount({ data: undefined })
+      .then((count) => setMemberCount(count))
+      .catch(() => {
+        // Keep the fallback — never let this block the homepage.
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     trackPageLoad("landing");
     trackAdClick();
@@ -1550,23 +1584,25 @@ export function Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <main>
-        <Hero />
-        <TrustStrip />
-        <Features />
-        <Pricing />
-        <Products />
-        <HowItWorks />
-        <Ambassador />
-        <TrackRecord />
-        <SocialProof />
+    <MemberCountContext.Provider value={memberCount}>
+      <div className="min-h-screen bg-background text-foreground">
+        <Nav />
+        <main>
+          <Hero />
+          <TrustStrip />
+          <Features />
+          <Pricing />
+          <Faq />
+          <Products />
+          <HowItWorks />
+          <Ambassador />
+          <TrackRecord />
+          <SocialProof />
 
-        <Faq />
-        <FinalCta />
-      </main>
-      <Footer />
-    </div>
+          <FinalCta />
+        </main>
+        <Footer />
+      </div>
+    </MemberCountContext.Provider>
   );
 }
