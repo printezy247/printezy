@@ -317,6 +317,48 @@ export type Database = {
         }
         Relationships: []
       }
+      site_purchases: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          email: string | null
+          granted_at: string | null
+          id: string
+          sku: string
+          status: string
+          stripe_payment_intent: string | null
+          stripe_session_id: string
+          telegram_username: string | null
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          granted_at?: string | null
+          id?: string
+          sku: string
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id: string
+          telegram_username?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          granted_at?: string | null
+          id?: string
+          sku?: string
+          status?: string
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string
+          telegram_username?: string | null
+        }
+        Relationships: []
+      }
       support_config: {
         Row: {
           key: string

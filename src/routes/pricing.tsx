@@ -4,7 +4,8 @@ import { Check, ShieldCheck, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
 import { CATALOG, formatUsd, itemsByGroup, type CatalogItem } from "@/lib/catalog";
-import { trackPageLoad } from "@/lib/analytics";
+import { trackPageLoad, goTrack } from "@/lib/analytics";
+import { usdtBuyLink } from "@/lib/telegram-links";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -59,6 +60,16 @@ function PriceCard({ item }: { item: CatalogItem }) {
         variant={item.badge ? "gold" : "primary"}
         className="mt-5"
       />
+
+      <a
+        href={usdtBuyLink(item.sku)}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => goTrack(`usdt_${item.sku}`)}
+        className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-xs font-semibold text-muted transition-colors hover:text-primary"
+      >
+        <Send className="h-3.5 w-3.5" /> Pay with USDT in Telegram
+      </a>
     </div>
   );
 }

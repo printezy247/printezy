@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/Landing";
 import { getEbook, EBOOK_PAGES } from "@/lib/ebooks";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 
@@ -194,15 +194,13 @@ function EbookPage() {
               >
                 Join the free channel <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href={LINKS.register}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/pricing"
                 onClick={() => goTrack(`ebook_${book.slug}_enroll`)}
                 className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
               >
                 See the packages
-              </a>
+              </Link>
             </div>
           </div>
 
