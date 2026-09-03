@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { BuyButton } from "@/components/BuyButton";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
@@ -23,6 +24,11 @@ import {
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
+
+/** Crypto desk add-ons map onto the two macro add-on SKUs in the catalog. */
+function cryptoSku(name: string): string {
+  return /yield/i.test(name) ? "macro_yield_optimizer" : "macro_addon";
+}
 
 export const Route = createFileRoute("/macro")({
   head: () => ({
@@ -588,15 +594,12 @@ function MacroPage() {
                         <p className="text-sm font-semibold">{a.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{a.description}</p>
                       </div>
-                      <a
-                        href={LINKS.macro}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => track("click", `macro_crypto_checkout_${a.name.toLowerCase().replace(/\s+/g, "_")}`)}
-                        className="shrink-0 rounded-md border border-accent/50 px-3 py-1.5 text-xs font-semibold text-accent transition-colors hover:bg-accent/10"
-                      >
-                        Check out price
-                      </a>
+                      <BuyButton
+                        sku={cryptoSku(a.name)}
+                        label="Pay with card"
+                        variant="gold"
+                        className="shrink-0 px-3 py-1.5 text-xs"
+                      />
                     </li>
                   ))}
                 </ul>
@@ -653,12 +656,17 @@ function MacroPage() {
                 asset correlation and geopolitical risk — delivered daily at{" "}
                 {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
               </p>
+              <BuyButton
+                sku="macro_full_desk"
+                label="Pay with card"
+                className="mt-4 w-full"
+              />
               <a
                 href={LINKS.macro}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => track("click", "macro_subscribe")}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-body transition-colors hover:text-primary"
               >
                 <Send className="h-4 w-4" /> Subscribe via Telegram
               </a>

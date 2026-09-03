@@ -272,6 +272,39 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          telegram_id: number | null
+          telegram_username: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       signals: {
         Row: {
           created_at: string
@@ -320,6 +353,8 @@ export type Database = {
       site_purchases: {
         Row: {
           amount_cents: number
+          claim_code: string | null
+          claimed_by_telegram_id: number | null
           created_at: string
           currency: string
           email: string | null
@@ -330,9 +365,12 @@ export type Database = {
           stripe_payment_intent: string | null
           stripe_session_id: string
           telegram_username: string | null
+          user_id: string | null
         }
         Insert: {
           amount_cents?: number
+          claim_code?: string | null
+          claimed_by_telegram_id?: number | null
           created_at?: string
           currency?: string
           email?: string | null
@@ -343,9 +381,12 @@ export type Database = {
           stripe_payment_intent?: string | null
           stripe_session_id: string
           telegram_username?: string | null
+          user_id?: string | null
         }
         Update: {
           amount_cents?: number
+          claim_code?: string | null
+          claimed_by_telegram_id?: number | null
           created_at?: string
           currency?: string
           email?: string | null
@@ -356,6 +397,7 @@ export type Database = {
           stripe_payment_intent?: string | null
           stripe_session_id?: string
           telegram_username?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
