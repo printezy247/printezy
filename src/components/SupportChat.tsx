@@ -11,6 +11,7 @@ import {
   type SupportLink,
   type SupportQuick,
 } from "@/lib/support.functions";
+import { onOpenSupportChatRequested } from "@/lib/support-chat-trigger";
 
 type Bubble = {
   id: number;
@@ -43,6 +44,13 @@ export function SupportChat() {
 
   const append = useCallback((bubble: Bubble) => {
     setMessages((prev) => [...prev, bubble]);
+  }, []);
+
+  useEffect(() => {
+    return onOpenSupportChatRequested(() => {
+      setOpen(true);
+      track("click", "support_chat_open_proactive");
+    });
   }, []);
 
   // Poll for Sarah's Telegram replies while the widget is open.

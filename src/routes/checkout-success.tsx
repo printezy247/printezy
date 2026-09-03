@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Send } from "lucide-react";
+import { CheckCircle2, Loader2, Send, Copy, Gift } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { Nav, Footer } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
+import { supabase } from "@/integrations/supabase/client";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
+import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
 import { getCatalogItem, formatUsd, type CatalogGroup } from "@/lib/catalog";
 import { REGISTER_BOT, botStartLink } from "@/lib/telegram-links";
 
@@ -39,9 +42,13 @@ export const Route = createFileRoute("/checkout-success")({
 
 function SuccessPage() {
   const check = useServerFn(getCheckoutStatus);
+  const getCode = useServerFn(getOrCreateReferralCode);
+  const getStats = useServerFn(getMyReferralStats);
   const [state, setState] = useState<"loading" | "paid" | "pending">("loading");
   const [product, setProduct] = useState<string | null>(null);
   const [handle, setHandle] = useState<string | null>(null);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referralStats, setReferralStats] = useState<ReferralStats | null>(null);
 
   useEffect(() => {
     const sessionId = new URLSearchParams(window.location.search).get("session_id");
@@ -57,6 +64,32 @@ function SuccessPage() {
       })
       .catch(() => setState("pending"));
   }, [check]);
+
+  useEffect(() => {
+    let active = true;
+    void supabase.auth.getSession().then(async ({ data }) => {
+      if (!active || !data.session) return;
+      try {
+        const [{ code }, stats] = await Promise.all([
+          getCode({ data: undefined }),
+          getStats({ data: undefined }),
+        ]);
+        if (!active) return;
+        setReferralCode(code);
+        setReferralStats(stats);
+      } catch {
+        // Referral block is a bonus, not critical — fail silently.
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [getCode, getStats]);
+
+  const referralLink =
+    referralCode && typeof window !== "undefined"
+      ? `${window.location.origin}/?ref=${referralCode}`
+      : null;
 
   const item = product ? getCatalogItem(product) : undefined;
   const crossSell = item
@@ -138,6 +171,36 @@ function SuccessPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            ) : null}
+
+            {referralLink ? (
+              <div className="mt-12 border-t border-border pt-8 text-left">
+                <h2 className="flex items-center justify-center gap-2 text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  <Gift className="h-4 w-4 text-accent" /> Refer a friend
+                </h2>
+                <p className="mt-2 text-center text-sm text-muted-foreground">
+                  Share your link. When someone you referred buys, we'll reach out to reward you.
+                </p>
+                <div className="mt-4 flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2">
+                  <code className="flex-1 truncate text-xs text-body">{referralLink}</code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(referralLink);
+                      toast.success("Link copied");
+                    }}
+                    aria-label="Copy referral link"
+                    className="shrink-0 rounded-md border border-border p-1.5 text-muted-foreground hover:text-foreground"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                {referralStats ? (
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    {referralStats.signups} signed up · {referralStats.purchases} purchased
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>

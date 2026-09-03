@@ -64,7 +64,53 @@ export async function recordSitePurchase(
   }
 
   await notifySarah(meta, session.amount_total ?? 0, session.currency ?? "usd");
+  if (meta.user_id) void notifyReferralConversion(meta.user_id, meta.sku ?? "unknown");
   return true;
+}
+
+/**
+ * A referred user just paid — Sarah gets pinged to manually reward the
+ * referrer (store credit / free month, her call). No automated payout;
+ * same trust model as everything else that reaches her this way.
+ */
+async function notifyReferralConversion(buyerUserId: string, sku: string) {
+  const { data: buyerProfile } = await supabaseAdmin
+    .from("profiles")
+    .select("referred_by, full_name, telegram_username")
+    .eq("id", buyerUserId)
+    .maybeSingle();
+  const referredBy = (buyerProfile as { referred_by: string | null } | null)?.referred_by;
+  if (!referredBy) return;
+
+  const { data: referrerCode } = await supabaseAdmin
+    .from("referral_codes")
+    .select("user_id")
+    .eq("code", referredBy)
+    .maybeSingle();
+  const referrerId = (referrerCode as { user_id: string } | null)?.user_id;
+  if (!referrerId) return;
+
+  const { data: referrerProfile } = await supabaseAdmin
+    .from("profiles")
+    .select("full_name, telegram_username")
+    .eq("id", referrerId)
+    .maybeSingle();
+  const referrer = referrerProfile as { full_name: string | null; telegram_username: string | null } | null;
+  const buyer = buyerProfile as { full_name: string | null; telegram_username: string | null } | null;
+
+  const item = getCatalogItem(sku);
+  const sarah = await getSarahChatId();
+  if (!sarah) return;
+
+  await sendMessage(
+    sarah,
+    [
+      `🎁 <b>Referral conversion — reward the referrer</b>`,
+      `Referrer: ${referrer?.full_name ?? "unknown"} (@${referrer?.telegram_username ?? "unknown"})`,
+      `Bought by: ${buyer?.full_name ?? "unknown"} (@${buyer?.telegram_username ?? "unknown"})`,
+      `Product: ${item?.name ?? sku}`,
+    ].join("\n"),
+  );
 }
 
 /**

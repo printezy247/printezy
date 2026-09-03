@@ -6,6 +6,7 @@ import { BuyButton } from "@/components/BuyButton";
 import { CATALOG, formatUsd, itemsByGroup, type CatalogItem } from "@/lib/catalog";
 import { trackPageLoad, goTrack } from "@/lib/analytics";
 import { usdtBuyLink } from "@/lib/telegram-links";
+import { openSupportChat } from "@/lib/support-chat-trigger";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -63,6 +64,11 @@ function PriceCard({ item }: { item: CatalogItem }) {
         variant={item.badge ? "gold" : "primary"}
         className="mt-5"
       />
+      {item.group === "package" ? (
+        <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> 30-day money-back guarantee
+        </p>
+      ) : null}
 
       <a
         href={usdtBuyLink(item.sku)}
@@ -103,9 +109,22 @@ function Section({
   );
 }
 
+const CHAT_PROMPT_DELAY_MS = 25000;
+const CHAT_PROMPT_SESSION_KEY = "pe_pricing_chat_prompt_shown";
+
 function PricingPage() {
   useEffect(() => {
     trackPageLoad("pricing");
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem(CHAT_PROMPT_SESSION_KEY)) return;
+    const timer = window.setTimeout(() => {
+      sessionStorage.setItem(CHAT_PROMPT_SESSION_KEY, "1");
+      openSupportChat();
+    }, CHAT_PROMPT_DELAY_MS);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const canceled =

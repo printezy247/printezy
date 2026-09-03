@@ -50,6 +50,7 @@ export const saveMyProfile = createServerFn({ method: "POST" })
       experienceLevel?: string;
       capitalRange?: string;
       mt5Account?: string;
+      referredBy?: string;
     }) => {
       const fullName = String(input?.fullName ?? "").trim().slice(0, 120);
       const telegramUsername = String(input?.telegramUsername ?? "")
@@ -66,11 +67,36 @@ export const saveMyProfile = createServerFn({ method: "POST" })
         ? input.capitalRange
         : undefined;
       const mt5Account = input?.mt5Account ? String(input.mt5Account).replace(/\D/g, "").slice(0, 20) : undefined;
-      return { fullName, telegramUsername, experienceLevel, capitalRange, mt5Account };
+      const referredBy = input?.referredBy
+        ? String(input.referredBy).trim().toUpperCase().slice(0, 16)
+        : undefined;
+      return { fullName, telegramUsername, experienceLevel, capitalRange, mt5Account, referredBy };
     },
   )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Only ever set once — a referral shouldn't be overwritten by a later
+    // profile edit, and a user can't credit themselves.
+    let referredBy: string | undefined;
+    if (data.referredBy) {
+      const { data: existing } = await supabaseAdmin
+        .from("profiles")
+        .select("referred_by")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const alreadySet = (existing as { referred_by: string | null } | null)?.referred_by;
+      if (!alreadySet) {
+        const { data: owner } = await supabaseAdmin
+          .from("referral_codes")
+          .select("user_id")
+          .eq("code", data.referredBy)
+          .maybeSingle();
+        const ownerId = (owner as { user_id: string } | null)?.user_id;
+        if (ownerId && ownerId !== context.userId) referredBy = data.referredBy;
+      }
+    }
+
     const { error } = await supabaseAdmin.from("profiles").upsert(
       {
         id: context.userId,
@@ -79,6 +105,7 @@ export const saveMyProfile = createServerFn({ method: "POST" })
         ...(data.experienceLevel ? { experience_level: data.experienceLevel } : {}),
         ...(data.capitalRange ? { capital_range: data.capitalRange } : {}),
         ...(data.mt5Account ? { mt5_account: data.mt5Account } : {}),
+        ...(referredBy ? { referred_by: referredBy } : {}),
         updated_at: new Date().toISOString(),
       } as never,
       { onConflict: "id" },

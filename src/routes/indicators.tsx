@@ -245,6 +245,39 @@ function IndicatorsPage() {
           </div>
         </header>
 
+        <section className="glass-card mt-10 rounded-xl p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-xl">
+              <h2 className="text-lg font-semibold">Free access with a Vantage activation</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Open an account under IB 26468008 and the indicators bundled with your package are unlocked at no extra
+                cost — Lite on Beginner, Currency Strength on Pro, Auto TPSL and MTF Bias on Premium, the full MT5 set on
+                Elite.
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-2">
+              <a
+                href="https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => goTrack("indicators_vantage_open_account")}
+                className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                <ShieldCheck className="h-4 w-4" /> Open Account
+              </a>
+              <a
+                href={LINKS.bot}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => goTrack("indicators_vantage_free_access")}
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+              >
+                Get Free Access <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          </div>
+        </section>
+
         <section className="mt-12">
           <div className="flex items-center gap-3">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
@@ -295,39 +328,6 @@ function IndicatorsPage() {
           >
             Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
           </a>
-        </section>
-
-        <section className="glass-card mt-14 rounded-xl p-6 sm:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-xl">
-              <h2 className="text-lg font-semibold">Free access with a Vantage activation</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Open an account under IB 26468008 and the indicators bundled with your package are unlocked at no extra
-                cost — Lite on Beginner, Currency Strength on Pro, Auto TPSL and MTF Bias on Premium, the full MT5 set on
-                Elite.
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-col gap-2">
-              <a
-                href="https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("indicators_vantage_open_account")}
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                <ShieldCheck className="h-4 w-4" /> Open Account
-              </a>
-              <a
-                href={LINKS.bot}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("indicators_vantage_free_access")}
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-              >
-                Get Free Access <ArrowRight className="h-3.5 w-3.5" />
-              </a>
-            </div>
-          </div>
         </section>
 
         <p className="mt-8 text-xs text-muted-foreground">

@@ -849,6 +849,9 @@ export function Pricing() {
               >
                 {t.cta} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" /> 30-day money-back guarantee
+              </p>
               {t.freeAlt ? (
                 t.name === "Premium" ? (
                   <div className="mt-2">
@@ -1219,7 +1222,15 @@ export function Ambassador() {
 /* Social proof                                                        */
 /* ------------------------------------------------------------------ */
 
-const TESTIMONIALS = [
+type Testimonial = {
+  name: string;
+  role: string;
+  quote: string;
+  /** Real Telegram handle, only set for testimonials that can genuinely be verified. */
+  verifiedHandle?: string;
+};
+
+const TESTIMONIALS: Testimonial[] = [
   {
     name: "Budi D.",
     role: "Part-time trader",
@@ -1286,6 +1297,11 @@ export function SocialProof() {
             <figcaption className="mt-4 text-sm">
               <span className="font-semibold">{t.name}</span>
               <span className="block text-xs text-muted-foreground">{t.role}</span>
+              {t.verifiedHandle ? (
+                <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                  <ShieldCheck className="h-3 w-3" /> Verified Telegram member
+                </span>
+              ) : null}
             </figcaption>
           </figure>
           </Reveal>

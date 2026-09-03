@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { saveMyProfile, type Profile } from "@/lib/profile.functions";
+import { getStoredReferralCode } from "@/lib/referral-capture";
 import {
   Select,
   SelectContent,
@@ -42,6 +43,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
     setBusy(true);
     setError(null);
     try {
+      const referredBy = getStoredReferralCode();
       await save({
         data: {
           fullName,
@@ -49,6 +51,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
           ...(experienceLevel ? { experienceLevel } : {}),
           ...(capitalRange ? { capitalRange } : {}),
           ...(mt5Account ? { mt5Account } : {}),
+          ...(referredBy ? { referredBy } : {}),
         },
       });
       toast.success("Profile saved");

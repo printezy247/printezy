@@ -3,12 +3,13 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Download, LogIn, ShieldCheck, X, Clock } from "lucide-react";
+import { Loader2, Download, LogIn, ShieldCheck, X, Clock, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyEbookClaims, claimEbook } from "@/lib/ebook-claims.functions";
 import { getMyProfile } from "@/lib/profile.functions";
+import { saveLead } from "@/lib/leads.functions";
 import { getEbook } from "@/lib/ebooks";
-import { goTrack } from "@/lib/analytics";
+import { goTrack, getSessionId } from "@/lib/analytics";
 
 type Props = {
   slug: string;
@@ -42,6 +43,11 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const [fullName, setFullName] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
   const [vantageAccount, setVantageAccount] = useState("");
+
+  const saveLeadFn = useServerFn(saveLead);
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadBusy, setLeadBusy] = useState(false);
+  const [leadSaved, setLeadSaved] = useState(false);
 
   const requiresVantage = slug === "mapping-like-a-pro";
   const currentPath = () => (typeof window !== "undefined" ? window.location.pathname : "/");
@@ -119,6 +125,23 @@ export function EbookClaimModal({ slug, onClose }: Props) {
     }
   }
 
+  async function submitLead(e: React.FormEvent) {
+    e.preventDefault();
+    if (!leadEmail.trim() || leadBusy) return;
+    setLeadBusy(true);
+    try {
+      await saveLeadFn({
+        data: { email: leadEmail.trim(), source: "free-ebook", sessionId: getSessionId() },
+      });
+      setLeadSaved(true);
+      goTrack(`ebook_lead_${slug}`);
+    } catch {
+      // Non-critical — fail silently, sign-in remains the primary path.
+    } finally {
+      setLeadBusy(false);
+    }
+  }
+
   if (!book) return null;
 
   return (
@@ -172,6 +195,40 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                   <LogIn className="h-4 w-4" /> Sign in to claim
                 </button>
                 <p className="mt-2 text-xs text-muted-foreground">Free account, one click with Google.</p>
+
+                <div className="mt-4 border-t border-border pt-4">
+                  {leadSaved ? (
+                    <p className="text-sm text-body">
+                      Thanks — we'll keep you posted on free resources. Sign in any time to claim this one.
+                    </p>
+                  ) : (
+                    <form onSubmit={submitLead}>
+                      <p className="text-xs text-muted-foreground">
+                        Not ready to sign in? Leave your email and we'll keep you posted on free resources —
+                        no promises on this ebook specifically, sign-in is still the fastest way to get it.
+                      </p>
+                      <div className="mt-2 flex gap-2">
+                        <input
+                          type="email"
+                          required
+                          value={leadEmail}
+                          onChange={(e) => setLeadEmail(e.target.value)}
+                          placeholder="you@example.com"
+                          className={inputClass}
+                        />
+                        <button
+                          type="submit"
+                          disabled={leadBusy}
+                          aria-label="Save email"
+                          className="inline-flex shrink-0 items-center justify-center rounded-md border border-border px-3 text-muted-foreground hover:text-foreground disabled:opacity-50"
+                        >
+                          <Mail className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+
                 {error && <p className="mt-3 text-sm text-[#d9534f]">{error}</p>}
               </div>
             ) : null}

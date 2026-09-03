@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { getEventSummary } from "@/lib/analytics.functions";
+import { getEventSummary, getCampaignEngagement, type CampaignEngagementRow } from "@/lib/analytics.functions";
 import { AdminGate } from "@/components/AdminGate";
 
 export const Route = createFileRoute("/_authenticated/site-analytics")({
@@ -33,7 +33,9 @@ function totalFor(rows: SummaryRow[], eventName: string): number {
 
 function SiteAnalyticsPage() {
   const load = useServerFn(getEventSummary);
+  const loadCampaigns = useServerFn(getCampaignEngagement);
   const [rows, setRows] = useState<SummaryRow[] | null>(null);
+  const [campaigns, setCampaigns] = useState<CampaignEngagementRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [days, setDays] = useState(7);
 
@@ -46,10 +48,17 @@ function SiteAnalyticsPage() {
       .catch((err: unknown) => {
         if (active) setError(err instanceof Error ? err.message : "Could not load analytics.");
       });
+    void loadCampaigns({ data: { days } })
+      .then((res) => {
+        if (active) setCampaigns(res.rows);
+      })
+      .catch(() => {
+        if (active) setCampaigns([]);
+      });
     return () => {
       active = false;
     };
-  }, [load, days]);
+  }, [load, loadCampaigns, days]);
 
   const pageLoads = rows ? totalFor(rows, "landing") : 0;
   const otherEvents = rows
@@ -122,6 +131,48 @@ function SiteAnalyticsPage() {
                     <div className="mt-2 text-2xl font-semibold">{totalFor(rows, name)}</div>
                   </div>
                 ))}
+              </div>
+            </section>
+
+            <section className="space-y-3">
+              <h2 className="text-xl font-semibold">By campaign</h2>
+              <p className="text-sm text-muted-foreground">
+                Only sessions tagged with a UTM/fbclid ad click — organic visits aren't attributed to a campaign.
+              </p>
+              <div className="overflow-x-auto rounded-xl border border-border">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-3">Campaign</th>
+                      <th className="px-4 py-3">Source</th>
+                      <th className="px-4 py-3">Page loads</th>
+                      <th className="px-4 py-3">Scrolled 50%+</th>
+                      <th className="px-4 py-3">Engaged</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(campaigns ?? []).map((c) => (
+                      <tr key={`${c.source}-${c.campaign}`} className="border-t border-border">
+                        <td className="px-4 py-3">{c.campaign}</td>
+                        <td className="px-4 py-3">{c.source}</td>
+                        <td className="px-4 py-3">{c.pageLoads}</td>
+                        <td className="px-4 py-3">
+                          {c.pageLoads > 0 ? Math.round((c.scroll50 / c.pageLoads) * 100) : 0}%
+                        </td>
+                        <td className="px-4 py-3">
+                          {c.pageLoads > 0 ? Math.round((c.engaged / c.pageLoads) * 100) : 0}%
+                        </td>
+                      </tr>
+                    ))}
+                    {(campaigns ?? []).length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-6 text-muted-foreground">
+                          No campaign-attributed sessions yet.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </section>
 
