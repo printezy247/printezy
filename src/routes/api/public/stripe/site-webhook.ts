@@ -33,7 +33,12 @@ export const Route = createFileRoute("/api/public/stripe/site-webhook")({
 
         try {
           const { recordSitePurchase } = await import("@/lib/bot/purchases.server");
-          await recordSitePurchase(sessionId);
+          const recorded = await recordSitePurchase(sessionId);
+          if (recorded) {
+            // Approve the buyer instantly when we already know their handle.
+            const { grantRecordedPurchase } = await import("@/lib/bot/site-access.server");
+            await grantRecordedPurchase(sessionId);
+          }
         } catch (error) {
           console.error("[stripe site-webhook] record error", error);
           return new Response("Recording failed", { status: 500 });
