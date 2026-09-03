@@ -83,17 +83,17 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-3 top-3 rounded-md p-1.5 text-muted hover:bg-elevated hover:text-foreground"
+          className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
         >
           <X className="h-5 w-5" />
         </button>
         <h2 className="text-lg font-semibold text-foreground">A few quick details</h2>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-sm text-muted-foreground">
           One-time — saved to your account, you won't be asked again.
         </p>
 
         <form onSubmit={submit} className="mt-5 flex flex-col gap-3">
-          <label className="text-sm text-muted">Full name</label>
+          <label className="text-sm text-muted-foreground">Full name</label>
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
@@ -101,7 +101,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
             className={inputClass}
           />
 
-          <label className="text-sm text-muted">Telegram username</label>
+          <label className="text-sm text-muted-foreground">Telegram username</label>
           <input
             value={telegramUsername}
             onChange={(e) => setTelegramUsername(e.target.value)}
@@ -111,7 +111,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
             className={inputClass}
           />
 
-          <label className="text-sm text-muted">Trading experience</label>
+          <label className="text-sm text-muted-foreground">Trading experience</label>
           <Select
             value={experienceLevel || "unspecified"}
             onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
@@ -127,7 +127,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
             </SelectContent>
           </Select>
 
-          <label className="text-sm text-muted">Capital you're working with</label>
+          <label className="text-sm text-muted-foreground">Capital you're working with</label>
           <Select
             value={capitalRange || "unspecified"}
             onValueChange={(v) => setCapitalRange(v === "unspecified" ? "" : v)}
@@ -145,7 +145,7 @@ export function PurchaseDetailsForm({ profile, requireMt5, onSaved, onClose }: P
 
           {requireMt5 ? (
             <>
-              <label className="text-sm text-muted">MT5 account number</label>
+              <label className="text-sm text-muted-foreground">MT5 account number</label>
               <input
                 value={mt5Account}
                 onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}

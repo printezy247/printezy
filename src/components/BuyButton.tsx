@@ -91,7 +91,7 @@ export function BuyButton({ sku, label = "Checkout", variant = "primary", classN
         >
           <LogIn className="h-4 w-4" /> Sign in to buy
         </button>
-        <p className="mt-2 text-xs text-muted">Free account, one click with Google.</p>
+        <p className="mt-2 text-xs text-muted-foreground">Free account, one click with Google.</p>
       </div>
     );
   }

@@ -45,7 +45,7 @@ export function StripeEmbeddedCheckout({ sku, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close checkout"
-            className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted hover:bg-elevated hover:text-foreground"
+            className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
           >
             <X className="h-5 w-5" />
           </button>

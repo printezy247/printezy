@@ -56,7 +56,7 @@ function SuccessPage() {
       <Nav />
       <main className="mx-auto max-w-2xl px-4 py-20 sm:px-6">
         {state === "loading" ? (
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-muted" />
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-muted-foreground" />
         ) : (
           <div className="text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-primary" />
@@ -65,10 +65,10 @@ function SuccessPage() {
             </h1>
 
             {item ? (
-              <div className="mx-auto mt-6 max-w-md rounded-xl border border-border bg-elevated p-5 text-left">
-                <p className="text-xs uppercase tracking-wide text-muted">You purchased</p>
+              <div className="mx-auto mt-6 max-w-md rounded-xl border border-border bg-surface-elevated p-5 text-left">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">You purchased</p>
                 <p className="mt-1 text-base font-semibold text-foreground">{item.name}</p>
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {item.term} · {formatUsd(item.amountCents)}
                 </p>
                 {handle ? (
@@ -101,7 +101,7 @@ function SuccessPage() {
               </Link>
             </div>
 
-            <p className="mt-6 text-xs text-muted">
+            <p className="mt-6 text-xs text-muted-foreground">
               Nothing after a few minutes? Message Sarah in the bot with your Telegram username and
               we'll unlock it manually.
             </p>

@@ -112,7 +112,7 @@ function AuthPage() {
           type="button"
           onClick={signInWithGoogle}
           disabled={googleBusy || busy}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-elevated disabled:opacity-50"
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-elevated disabled:opacity-50"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
             <path

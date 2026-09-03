@@ -112,18 +112,18 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-3 top-3 rounded-md p-1.5 text-muted hover:bg-elevated hover:text-foreground"
+            className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
           >
             <X className="h-5 w-5" />
           </button>
 
           <h2 className="pr-8 text-lg font-semibold text-foreground">{book.title}</h2>
-          <p className="mt-1 text-sm text-muted">{book.tagline}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{book.tagline}</p>
 
           <div className="mt-5">
             {gate === "loading" ? (
               <div className="flex justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin text-muted" />
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
             ) : null}
 
@@ -138,7 +138,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                 >
                   <LogIn className="h-4 w-4" /> Sign in to claim
                 </button>
-                <p className="mt-2 text-xs text-muted">Free account, one click with Google.</p>
+                <p className="mt-2 text-xs text-muted-foreground">Free account, one click with Google.</p>
                 {error && <p className="mt-3 text-sm text-[#d9534f]">{error}</p>}
               </div>
             ) : null}
@@ -170,7 +170,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
 
             {gate === "claiming" ? (
               <div className="flex justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin text-muted" />
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
               </div>
             ) : null}
 
@@ -189,7 +189,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => goTrack(`ebook_preview_${slug}`)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-elevated"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-surface-elevated"
                 >
                   Read online
                 </a>
