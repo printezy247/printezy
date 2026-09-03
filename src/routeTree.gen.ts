@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MacroRouteImport } from './routes/macro'
@@ -31,6 +32,11 @@ import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/publi
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/my-account': typeof AuthenticatedMyAccountRoute
@@ -152,6 +159,7 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/my-account': typeof AuthenticatedMyAccountRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/my-account': typeof AuthenticatedMyAccountRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/ads-dashboard'
     | '/my-account'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/ads-dashboard'
     | '/my-account'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/my-account'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -267,6 +280,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -417,6 +437,7 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
