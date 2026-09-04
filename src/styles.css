@@ -100,7 +100,8 @@
   /* Neutral depth only — no coloured glows */
   --shadow-gold: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-green: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3),
+    0 16px 40px rgba(0, 0, 0, 0.35);
   --shadow-inset-gold: none;
 }
 
@@ -123,6 +124,9 @@
     font-weight: 400;
     letter-spacing: -0.015em;
     line-height: 1.15;
+  }
+  .lucide {
+    stroke-width: 1.75;
   }
 }
 
@@ -169,8 +173,8 @@
 @utility glass-card {
   background: var(--gradient-metal);
   border: 1px solid var(--border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 1px 2px rgba(0, 0, 0, 0.4),
-    0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3), 0 16px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* 3D stacked ebook preview */

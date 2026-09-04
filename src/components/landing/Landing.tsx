@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
+import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
@@ -37,8 +38,9 @@ import {
 } from "@/lib/analytics";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
-const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
-const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
+/** Exported for reuse as og:image on routes that don't have a more specific banner. */
+export const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
+export const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 
 const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
 const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
@@ -90,7 +92,8 @@ const FALLBACK_MEMBER_COUNT = 640;
 const MemberCountContext = createContext(FALLBACK_MEMBER_COUNT);
 
 function useMemberCount() {
-  const count = useContext(MemberCountContext);
+  const target = useContext(MemberCountContext);
+  const count = useCountUp(target);
   return { count, formatted: `${count}+` };
 }
 
@@ -797,10 +800,13 @@ export function Pricing() {
             id={t.sku}
             className={`relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
               t.highlight
-                ? "border border-accent/40 bg-surface-elevated shadow-gold"
+                ? "border border-accent/60 bg-surface-elevated shadow-elevated ring-1 ring-accent/15 lg:-translate-y-1.5"
                 : "glass-card"
             }`}
           >
+            {t.highlight ? (
+              <div className="bg-gold absolute inset-x-0 top-0 z-10 h-[3px]" aria-hidden="true" />
+            ) : null}
             {t.image ? (
               <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
                 {t.highlight ? (
@@ -1007,7 +1013,6 @@ export function Products() {
                   <span className="mt-4 inline-flex items-center gap-1 rounded-md border border-accent/60 bg-accent/5 px-3 py-2 text-xs font-semibold text-accent transition-colors group-hover:bg-accent/10 sm:px-4 sm:text-sm">
                     Get it free <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
-                  <p className="mt-2 text-[11px] text-muted-foreground">PDF delivered via Telegram</p>
                 </div>
               </Link>
             </Reveal>

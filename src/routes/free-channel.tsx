@@ -3,8 +3,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, ArrowLeft, Users, ShieldCheck, Clock, Zap } from "lucide-react";
 import { saveLead } from "@/lib/leads.functions";
-import { LINKS } from "@/components/landing/Landing";
+import { LINKS, brandLogo } from "@/components/landing/Landing";
 import { getSessionId } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/free-channel")({
   head: () => ({
@@ -14,7 +15,9 @@ export const Route = createFileRoute("/free-channel")({
       { property: "og:title", content: "Join the Free Telegram Channel — EzyMap" },
       { property: "og:description", content: "Get free forex, gold and crypto trading signals delivered live on Telegram." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
     ],
   }),
   component: FreeChannelPage,

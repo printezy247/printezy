@@ -5,6 +5,7 @@ import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
+import { SITE_URL } from "@/lib/bot/tiers";
 import {
   MACRO_FILTERS,
   MACRO_PRICES,
@@ -41,12 +42,14 @@ export const Route = createFileRoute("/macro")({
           "Economic calendar, central bank divergence, recession odds and crypto desk add-ons from the MacroTrader Telegram desk.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}${macroLogo}` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Macro & Crypto Desk — EzyMap Algo" },
       {
         name: "twitter:description",
         content: "Macro heatmaps, economic calendar and crypto add-ons, in your own timezone.",
       },
+      { name: "twitter:image", content: `${SITE_URL}${macroLogo}` },
     ],
   }),
   component: MacroPage,

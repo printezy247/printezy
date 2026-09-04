@@ -1,11 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
 import { Nav, Footer } from "@/components/landing/Landing";
-import { EbookClaimModal } from "@/components/EbookClaimModal";
 import { getEbook, EBOOK_PAGES } from "@/lib/ebooks";
+
+const EbookClaimModal = lazy(() =>
+  import("@/components/EbookClaimModal").then((m) => ({ default: m.EbookClaimModal })),
+);
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/ebooks/$slug")({
   loader: ({ params }) => {
@@ -26,7 +30,9 @@ export const Route = createFileRoute("/ebooks/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: book.tagline },
         { property: "og:type", content: "article" },
+        { property: "og:image", content: `${SITE_URL}${book.image}` },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: `${SITE_URL}${book.image}` },
       ],
     };
   },
@@ -148,7 +154,11 @@ function EbookPage() {
         </section>
 
         <AnimatePresence>
-          {claiming ? <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} /> : null}
+          {claiming ? (
+            <Suspense fallback={null}>
+              <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} />
+            </Suspense>
+          ) : null}
         </AnimatePresence>
 
         {/* Outcomes */}

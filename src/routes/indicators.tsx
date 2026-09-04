@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowRight, Send, ShieldCheck, Zap } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { Nav, Footer, LINKS, brandLogo } from "@/components/landing/Landing";
 import { Tools } from "@/components/landing/Tools";
 import { Button } from "@/components/ui/button";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/indicators")({
   head: () => ({
@@ -22,7 +23,9 @@ export const Route = createFileRoute("/indicators")({
           "TradingView and MT5 indicators from EzyMap Algo — Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias and more, with live pricing.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
     ],
   }),
   component: IndicatorsPage,

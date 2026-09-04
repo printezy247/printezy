@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { AnimatePresence } from "framer-motion";
-import { EbookClaimModal } from "./EbookClaimModal";
+
+// Code-split: this pulls in Supabase auth + the claim flow, only needed
+// once the popup actually fires, not on every page load site-wide.
+const EbookClaimModal = lazy(() =>
+  import("./EbookClaimModal").then((m) => ({ default: m.EbookClaimModal })),
+);
 
 const EXCLUDED_PREFIXES = ["/ebooks", "/auth", "/account", "/free-ebook"];
 const TIMED_DELAY_MS = 45000;
@@ -36,7 +41,9 @@ export function EbookAutoPopup() {
   return (
     <AnimatePresence>
       {open && !excluded ? (
-        <EbookClaimModal slug="technical-analysis" onClose={() => setOpen(false)} />
+        <Suspense fallback={null}>
+          <EbookClaimModal slug="technical-analysis" onClose={() => setOpen(false)} />
+        </Suspense>
       ) : null}
     </AnimatePresence>
   );
