@@ -6,6 +6,8 @@ import { BuyButton } from "@/components/BuyButton";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
 import { SITE_URL } from "@/lib/bot/tiers";
+import { useTranslation } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/translations";
 import {
   MACRO_FILTERS,
   MACRO_PRICES,
@@ -261,6 +263,7 @@ function SpectrumBar({
 }
 
 function TrendCard({ trend }: { trend: TrendCard }) {
+  const { t } = useTranslation();
   const isFed = trend.key === "fed-tone";
   const current = trend.trend[trend.trend.length - 1] ?? 4;
   const prev = trend.trend[trend.trend.length - 2] ?? current;
@@ -281,7 +284,7 @@ function TrendCard({ trend }: { trend: TrendCard }) {
       className="flex flex-col"
       footer={
         <div className="space-y-2">
-          <BuyButton sku={trend.sku} label={`Pay with card — ${trend.price}`} />
+          <BuyButton sku={trend.sku} label={t("macro_pay_with_card_price").replace("{price}", trend.price)} />
           <a
             href={LINKS.macro}
             target="_blank"
@@ -289,7 +292,7 @@ function TrendCard({ trend }: { trend: TrendCard }) {
             onClick={() => track("click", `macro_telegram_${trend.key}`)}
             className="block text-center text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
           >
-            or subscribe via Telegram
+            {t("macro_subscribe_telegram")}
           </a>
         </div>
       }
@@ -313,7 +316,7 @@ function TrendCard({ trend }: { trend: TrendCard }) {
           }`}
         >
           {delta > 0 ? "+" : ""}
-          {delta} today
+          {delta} {t("macro_today")}
         </span>
       </div>
 
@@ -321,8 +324,8 @@ function TrendCard({ trend }: { trend: TrendCard }) {
         {isFed ? (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Dovish</span>
-              <span>Hawkish</span>
+              <span>{t("macro_dovish")}</span>
+              <span>{t("macro_hawkish")}</span>
             </div>
             <StanceBar
               stance={current >= 5 ? "hawkish" : current <= 2 ? "dovish" : "neutral"}
@@ -333,8 +336,8 @@ function TrendCard({ trend }: { trend: TrendCard }) {
           <SpectrumBar
             percent={pct}
             color={color}
-            leftLabel="Bearish"
-            rightLabel="Bullish"
+            leftLabel={t("macro_bearish")}
+            rightLabel={t("macro_bullish")}
           />
         )}
       </div>
@@ -347,11 +350,21 @@ function TrendCard({ trend }: { trend: TrendCard }) {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
+const FILTER_LABEL_KEY: Record<MacroFilter, TranslationKey> = {
+  All: "macro_filter_all",
+  Calendar: "macro_filter_calendar",
+  "Central Banks": "macro_filter_central_banks",
+  Recession: "macro_filter_recession",
+  Crypto: "macro_filter_crypto",
+  Sentiment: "macro_filter_sentiment",
+};
+
 function MacroPage() {
   const [filter, setFilter] = useState<MacroFilter>("All");
   const [desk, setDesk] = useState<MacroDesk | null>(null);
   const [fng, setFng] = useState<FearGreed | null>(null);
   const clock = useLocalClock();
+  const { t } = useTranslation();
 
   useEffect(() => {
     trackPageLoad("macro");
@@ -384,29 +397,28 @@ function MacroPage() {
             />
             <div>
               <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
-                MacroTrader desk
+                {t("macro_desk_label")}
               </p>
-              <h1 className="mt-1 text-3xl sm:text-4xl">Macro & Crypto</h1>
+              <h1 className="mt-1 text-3xl sm:text-4xl">{t("macro_page_title")}</h1>
               <p className="mt-2 max-w-xl text-sm text-body">
-                The desk that reads the calendar, the central banks and the crypto tape overnight,
-                then posts the briefing to Telegram every morning.
+                {t("macro_page_desc")}
               </p>
             </div>
           </div>
 
           <dl className="shrink-0 space-y-1.5 text-sm md:text-right">
             <div>
-              <dt className="inline text-muted-foreground">Daily digest · </dt>
+              <dt className="inline text-muted-foreground">{t("macro_digest_label")} · </dt>
               <dd className="inline font-semibold">
                 {digest} {clock.ready ? clock.tzLabel : "EST"}
               </dd>
             </div>
             <div>
-              <dt className="inline text-muted-foreground">Whale polling · </dt>
-              <dd className="inline font-semibold">every 20 min</dd>
+              <dt className="inline text-muted-foreground">{t("macro_whale_polling_label")} · </dt>
+              <dd className="inline font-semibold">{t("macro_whale_polling_value")}</dd>
             </div>
             <div>
-              <dt className="inline text-muted-foreground">Your timezone · </dt>
+              <dt className="inline text-muted-foreground">{t("macro_timezone_label")} · </dt>
               <dd className="inline font-semibold">{clock.ready ? clock.tzLabel : "EST"}</dd>
             </div>
           </dl>
@@ -425,7 +437,7 @@ function MacroPage() {
                   : "border-border text-body hover:border-accent/50 hover:text-foreground"
               }`}
             >
-              {f}
+              {t(FILTER_LABEL_KEY[f])}
             </button>
           ))}
         </div>
@@ -435,9 +447,9 @@ function MacroPage() {
           <div className="min-w-0 space-y-7">
             {shows("Calendar") ? (
               <Card
-                title="Today's Economic Calendar"
+                title={t("macro_calendar_title")}
                 badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
-                note={`Times shown in ${clock.ready ? clock.tzLabel : "EST"}`}
+                note={t("macro_calendar_note").replace("{tz}", clock.ready ? clock.tzLabel : "EST")}
                 footer={
                   <div className="flex flex-wrap items-center justify-between gap-3 text-[11.5px]">
                     <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
@@ -447,7 +459,7 @@ function MacroPage() {
                             className="h-2 w-2 rounded-full"
                             style={{ background: IMPACT_COLOR[i] }}
                           />
-                          {i} impact
+                          {t(`macro_impact_${i}` as TranslationKey)} {t("macro_impact_suffix")}
                         </span>
                       ))}
                     </div>
@@ -458,7 +470,7 @@ function MacroPage() {
                       onClick={() => track("click", "macro_forexfactory")}
                       className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
                     >
-                      Cross-check on ForexFactory <ArrowRight className="h-3 w-3" />
+                      {t("macro_crosscheck_ff")} <ArrowRight className="h-3 w-3" />
                     </a>
                   </div>
                 }
@@ -468,11 +480,11 @@ function MacroPage() {
                     className="grid gap-x-3 text-left text-sm"
                     style={{ gridTemplateColumns: "56px 52px minmax(0, 1fr) 78px 78px" }}
                   >
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Time</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Ccy</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Event</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Forecast</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Previous</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_time")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_ccy")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_event")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_forecast")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_previous")}</div>
                     {desk?.calendar.map((r) => (
                       <Fragment key={`${r.nyTime}-${r.event}`}>
                         <div className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
@@ -498,12 +510,11 @@ function MacroPage() {
 
             {shows("Central Banks") ? (
               <Card
-                title="Central Bank Policy Divergence"
-                badge={<Badge tone="paid">Heatmaps · {MACRO_PRICES.heatmaps}</Badge>}
+                title={t("macro_central_banks_title")}
+                badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
-                    The bigger the divergence between two banks' stances, the stronger the trend
-                    tends to be in their currency pair.
+                    {t("macro_central_banks_footer")}
                   </p>
                 }
               >
@@ -512,10 +523,10 @@ function MacroPage() {
                     className="grid gap-x-3 text-left text-sm"
                     style={{ gridTemplateColumns: "minmax(0, 1fr) 72px minmax(90px, 150px) 86px" }}
                   >
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Central bank</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Rate</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Stance</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Next meeting</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_bank")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_rate")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_stance")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_next_meeting")}</div>
                     {desk?.centralBanks.map((b) => (
                       <Fragment key={b.bank}>
                         <div className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
@@ -539,7 +550,7 @@ function MacroPage() {
                     ))}
                   </div>
                   <p className="mt-2 text-[11px] text-muted-foreground">
-                    Track reads dovish (left) → hawkish (right).
+                    {t("macro_stance_reads_note")}
                   </p>
                 </div>
               </Card>
@@ -547,13 +558,12 @@ function MacroPage() {
 
             {shows("Recession") ? (
               <Card
-                title="Recession Probability"
-                subtitle="Next 12 months"
-                badge={<Badge tone="paid">Heatmaps · {MACRO_PRICES.heatmaps}</Badge>}
+                title={t("macro_recession_title")}
+                subtitle={t("macro_recession_subtitle")}
+                badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
-                    Higher recession odds typically favour safe-haven assets (gold, USD, JPY) over
-                    risk assets.
+                    {t("macro_recession_footer")}
                   </p>
                 }
               >
@@ -561,10 +571,10 @@ function MacroPage() {
                   className="grid gap-x-3 text-left text-sm"
                   style={{ gridTemplateColumns: "minmax(0, 150px) 52px minmax(80px, 140px) minmax(0, 1fr)" }}
                 >
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Country</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">Prob</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Gauge</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">Driver</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_country")}</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_prob")}</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_gauge")}</div>
+                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_driver")}</div>
                   {desk?.recession.map((r) => (
                     <Fragment key={r.country}>
                       <div className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
@@ -594,7 +604,7 @@ function MacroPage() {
             ) : null}
 
             {shows("Crypto") ? (
-              <Card title="Crypto Desk" note="Add-ons, billed separately">
+              <Card title={t("macro_crypto_desk_title")} note={t("macro_crypto_desk_note")}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   {desk?.cryptoAddons.map((a) => (
                     <div
@@ -606,7 +616,7 @@ function MacroPage() {
                         <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-accent">{a.price}</span>
                       </div>
                       <p className="mt-1 flex-1 text-xs text-muted-foreground">{a.description}</p>
-                      <BuyButton sku={a.sku} label="Pay with card" className="mt-3" />
+                      <BuyButton sku={a.sku} label={t("macro_pay_with_card")} className="mt-3" />
                       <a
                         href={LINKS.macro}
                         target="_blank"
@@ -616,7 +626,7 @@ function MacroPage() {
                         }
                         className="mt-2 text-center text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
                       >
-                        or subscribe via Telegram
+                        {t("macro_subscribe_telegram")}
                       </a>
                     </div>
                   ))}
@@ -628,11 +638,11 @@ function MacroPage() {
           {/* Sidebar */}
           <aside className="space-y-7">
             <Card
-              title="Crypto Fear & Greed"
+              title={t("macro_fear_greed_title")}
               badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
               footer={
                 <p className="text-[11.5px] text-muted-foreground">
-                  Updated daily · {fng?.source ?? "alternative.me"}
+                  {t("macro_updated_daily").replace("{source}", fng?.source ?? "alternative.me")}
                 </p>
               }
             >
@@ -640,18 +650,18 @@ function MacroPage() {
                 {fng?.value ?? "—"}
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
-              <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? "Loading"}</p>
+              <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? t("macro_loading")}</p>
               <div className="mt-3">
                 <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} />
                 <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  <span>Fear</span>
-                  <span>Greed</span>
+                  <span>{t("macro_fear_label")}</span>
+                  <span>{t("macro_greed_label")}</span>
                 </div>
               </div>
 
             </Card>
 
-            <Card title="Next Rate Decisions">
+            <Card title={t("macro_next_rate_decisions_title")}>
               <ul className="space-y-2.5 text-sm">
                 {desk?.rateDecisions.map((d) => (
                   <li key={d.bank} className="flex items-center justify-between gap-3">
@@ -664,17 +674,18 @@ function MacroPage() {
 
             <section className="rounded-xl border border-accent/45 bg-card p-5">
               <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
-                Full macro desk
+                {t("macro_full_desk_label")}
               </p>
               <p className="mt-2 text-2xl font-black">
                 $19<span className="text-sm font-semibold text-muted-foreground">/month</span>
               </p>
               <p className="mt-2 text-sm text-body">
-                Unlocks all four premium heatmaps — central bank divergence, recession probability,
-                asset correlation and geopolitical risk — delivered daily at{" "}
-                {clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST"}, your local digest time.
+                {t("macro_full_desk_desc").replace(
+                  "{time}",
+                  clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST",
+                )}
               </p>
-              <BuyButton sku="macro_full_desk" label="Pay with card — $19/mo" variant="gold" className="mt-4" />
+              <BuyButton sku="macro_full_desk" label={t("macro_pay_with_card_price").replace("{price}", "$19/mo")} variant="gold" className="mt-4" />
               <a
                 href={LINKS.macro}
                 target="_blank"
@@ -682,17 +693,15 @@ function MacroPage() {
                 onClick={() => track("click", "macro_subscribe")}
                 className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-body transition-colors hover:border-accent/50 hover:text-foreground"
               >
-                <Send className="h-4 w-4" /> Subscribe via Telegram
+                <Send className="h-4 w-4" /> {t("macro_subscribe_via_telegram_full")}
               </a>
               <p className="mt-2 text-[11px] text-muted-foreground">
-                Card, Telegram Stars or USDT · cancel anytime
+                {t("macro_payment_methods_note")}
               </p>
             </section>
 
             <div className="rounded-xl border border-border bg-surface p-5 text-[11.5px] leading-relaxed text-muted-foreground">
-              Macro data is provided for education and research only and is not personalized
-              investment advice. Figures come from third-party sources and may be delayed or
-              revised — cross-check against{" "}
+              {t("macro_disclaimer_before")}{" "}
               <a
                 href={FOREXFACTORY}
                 target="_blank"
@@ -701,7 +710,7 @@ function MacroPage() {
               >
                 ForexFactory
               </a>{" "}
-              before acting. Trading carries a risk of loss.
+              {t("macro_disclaimer_after")}
             </div>
           </aside>
         </div>
