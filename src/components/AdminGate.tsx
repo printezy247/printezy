@@ -27,7 +27,7 @@ export function AdminGate({ children }: { children: ReactNode }) {
   if (state === "denied") {
     return (
       <div className="mx-auto max-w-md px-4 py-24">
-        <h1 className="text-2xl font-semibold tracking-tight">Not authorised</h1>
+        <h1 className="text-2xl tracking-tight">Not authorised</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           This account does not have admin access. Sign in with the administrator account.
         </p>

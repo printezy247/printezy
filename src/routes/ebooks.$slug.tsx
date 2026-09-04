@@ -38,7 +38,7 @@ function EbookNotFound() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <h1 className="text-3xl font-bold">Ebook not found</h1>
+        <h1 className="text-3xl ">Ebook not found</h1>
         <p className="mt-3 text-muted-foreground">That guide does not exist. Browse the available ones below.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {EBOOK_PAGES.map((b) => (
@@ -96,7 +96,7 @@ function EbookPage() {
               <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/50 bg-accent/8 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-accent">
                 <BookOpen className="h-3.5 w-3.5" /> Free PDF
               </span>
-              <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl">{book.title}</h1>
+              <h1 className="mt-4 text-3xl leading-tight sm:text-4xl">{book.title}</h1>
               <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{book.tagline}</p>
               <p className="mt-4 max-w-2xl text-body">{book.description}</p>
 
@@ -124,7 +124,7 @@ function EbookPage() {
               <div className="mx-auto aspect-[2/3] w-40 overflow-hidden rounded-lg border border-border bg-surface">
                 <img src={book.image} alt={`${book.title} cover`} className="h-full w-full object-cover" />
               </div>
-              <h2 className="mt-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <h2 className="mt-5 text-sm uppercase tracking-wide text-muted-foreground">
                 This is for you if
               </h2>
               <ul className="mt-3 space-y-2">
@@ -151,7 +151,7 @@ function EbookPage() {
         {/* Outcomes */}
         <section className="border-y border-border bg-surface/40">
           <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold">What you will be able to do</h2>
+            <h2 className="text-2xl ">What you will be able to do</h2>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {book.outcomes.map((o) => (
                 <div key={o} className="flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4">
@@ -165,7 +165,7 @@ function EbookPage() {
 
         {/* Chapters */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold">Inside the guide</h2>
+          <h2 className="text-2xl ">Inside the guide</h2>
           <ol className="mt-6 grid gap-3 sm:grid-cols-2">
             {book.chapters.map((c, i) => (
               <li key={c.title} className="flex h-full gap-3 rounded-xl border border-border bg-card p-4">
@@ -182,7 +182,7 @@ function EbookPage() {
         {/* CTA + other books */}
         <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="rounded-2xl border border-accent/40 bg-accent/5 p-6 sm:p-8">
-            <h2 className="text-xl font-bold">Want the levels drawn for you?</h2>
+            <h2 className="text-xl ">Want the levels drawn for you?</h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               The guide teaches the method. Our free Telegram channel posts the maps and signals daily so you can see it
               applied live.
@@ -207,7 +207,7 @@ function EbookPage() {
 
           {others.length > 0 && (
             <div className="mt-10">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Other free guides</h2>
+              <h2 className="text-sm uppercase tracking-wide text-muted-foreground">Other free guides</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {others.map((b) => (
                   <Link

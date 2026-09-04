@@ -99,7 +99,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto w-full max-w-md px-4 py-24">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl tracking-tight">
           {mode === "signin" ? "Sign in" : "Create your account"}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -176,8 +176,8 @@ function AuthPage() {
           >
             {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
           </button>
-          {error && <p className="text-sm text-[#d9534f]">{error}</p>}
-          {notice && <p className="text-sm text-[#2fbf71]">{notice}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          {notice && <p className="text-sm text-primary">{notice}</p>}
         </form>
         <button
           type="button"

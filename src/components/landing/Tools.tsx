@@ -24,10 +24,10 @@ function SectionHeading({ eyebrow, title, subtitle }: { eyebrow?: string; title:
   return (
     <div className="mx-auto mb-12 max-w-2xl text-center">
       {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
+        <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{eyebrow}</p>
       ) : null}
-      <h2 className="text-3xl font-bold sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-4 text-base text-muted-foreground">{subtitle}</p> : null}
+      <h2 className="text-3xl sm:text-4xl">{title}</h2>
+      {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
     </div>
   );
 }
@@ -112,16 +112,16 @@ function TvCard({ product }: { product: TvProduct }) {
         </span>
       ) : null}
       <h3 className="pr-24 text-lg font-semibold">{product.name}</h3>
-      <p className="mt-2 text-sm text-muted-foreground">{product.tagline}</p>
+      <p className="mt-2 text-sm text-body">{product.tagline}</p>
       <ul className="mt-4 flex-1 space-y-2.5">
         {product.bullets.map((b) => (
           <li key={b} className="flex items-start gap-2 text-sm">
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            <span className="text-muted-foreground">{b}</span>
+            <span className="text-body">{b}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-5 text-2xl font-bold text-foreground">{formatUsd(TV_PRICE[product.id])}</p>
+      <p className="mt-5 font-mono text-2xl font-bold tabular-nums text-foreground">{formatUsd(TV_PRICE[product.id])}</p>
       <BuyButton sku={product.id} label="Buy" className="mt-3" />
     </article>
   );
@@ -140,12 +140,12 @@ function Mt5Card({ product }: { product: Mt5Product }) {
         </span>
       ) : null}
       <h3 className="pr-24 text-lg font-semibold">{product.name}</h3>
-      <p className="mt-2 text-sm text-muted-foreground">{product.tagline}</p>
+      <p className="mt-2 text-sm text-body">{product.tagline}</p>
       <ul className="mt-4 space-y-2.5">
         {product.bullets.map((b) => (
           <li key={b} className="flex items-start gap-2 text-sm">
             <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            <span className="text-muted-foreground">{b}</span>
+            <span className="text-body">{b}</span>
           </li>
         ))}
       </ul>
@@ -165,7 +165,7 @@ function Mt5Card({ product }: { product: Mt5Product }) {
         ))}
       </div>
 
-      <p className="mt-4 flex-1 text-2xl font-bold text-foreground">
+      <p className="mt-4 flex-1 font-mono text-2xl font-bold tabular-nums text-foreground">
         {item ? formatUsd(item.amountCents) : "—"}
       </p>
       <BuyButton sku={sku} label="Buy" className="mt-3" />
@@ -189,7 +189,7 @@ export function Tools() {
           </span>
           <div>
             <h3 className="text-xl font-semibold">TradingView Indicators</h3>
-            <p className="text-sm text-muted-foreground">One-time licence, lifetime updates.</p>
+            <p className="text-sm text-body">One-time licence, lifetime updates.</p>
           </div>
         </div>
         <div className="mt-5 grid gap-5 md:grid-cols-2">
@@ -215,7 +215,7 @@ export function Tools() {
           </span>
           <div>
             <h3 className="text-xl font-semibold">MT5 Indicators</h3>
-            <p className="text-sm text-muted-foreground">Pick a term — monthly, 6-month or yearly.</p>
+            <p className="text-sm text-body">Pick a term — monthly, 6-month or yearly.</p>
           </div>
         </div>
         <div className="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

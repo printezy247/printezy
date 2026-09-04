@@ -81,7 +81,7 @@ function FreeChannelPage() {
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
                 <Send className="h-6 w-6" />
               </div>
-              <h1 className="text-2xl font-bold sm:text-3xl">Join the free Telegram channel</h1>
+              <h1 className="text-2xl sm:text-3xl">Join the free Telegram channel</h1>
               <p className="mt-3 text-body">
                 Get free forex, gold and crypto signals with full entry, stop and target transparency.
               </p>
@@ -98,7 +98,7 @@ function FreeChannelPage() {
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-6 w-6" />
                     </div>
-                    <h2 className="text-lg font-semibold">You're on the list</h2>
+                    <h2 className="text-lg ">You're on the list</h2>
                     <p className="mt-2 text-sm text-muted-foreground">
                       Click below to join the channel instantly on Telegram.
                     </p>

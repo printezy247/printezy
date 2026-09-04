@@ -91,7 +91,7 @@ function Card({
     <section className={`rounded-xl border border-border bg-card p-5 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-base font-bold">{title}</h2>
+          <h2 className="text-base ">{title}</h2>
           {subtitle ? <p className="text-xs text-muted-foreground">{subtitle}</p> : null}
         </div>
         {badge}
@@ -103,7 +103,7 @@ function Card({
   );
 }
 
-const mono = "font-mono text-[13px] tracking-tight";
+const mono = "font-mono text-[13px] tracking-tight tabular-nums";
 
 /**
  * Rendered bars replace the monospace gauges: only the fill / marker carries
@@ -380,10 +380,10 @@ function MacroPage() {
               loading="lazy"
             />
             <div>
-              <p className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-accent">
+              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
                 MacroTrader desk
               </p>
-              <h1 className="mt-1 text-3xl font-black sm:text-4xl">Macro & Crypto</h1>
+              <h1 className="mt-1 text-3xl sm:text-4xl">Macro & Crypto</h1>
               <p className="mt-2 max-w-xl text-sm text-body">
                 The desk that reads the calendar, the central banks and the crypto tape overnight,
                 then posts the briefing to Telegram every morning.
@@ -566,7 +566,7 @@ function MacroPage() {
                     <Fragment key={r.country}>
                       <div className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
                       <div
-                        className="border-t border-border py-2.5 text-right text-sm font-bold"
+                        className="border-t border-border py-2.5 text-right font-mono text-sm font-bold tabular-nums"
                         style={{ color: recessionColor(r.probability) }}
                       >
                         {r.probability}%
@@ -600,7 +600,7 @@ function MacroPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="text-sm font-semibold">{a.name}</p>
-                        <span className="shrink-0 text-xs font-bold text-accent">{a.price}</span>
+                        <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-accent">{a.price}</span>
                       </div>
                       <p className="mt-1 flex-1 text-xs text-muted-foreground">{a.description}</p>
                       <BuyButton sku={a.sku} label="Pay with card" className="mt-3" />

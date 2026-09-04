@@ -70,7 +70,7 @@ function SiteAnalyticsPage() {
       <div className="mx-auto w-full max-w-6xl space-y-10">
         <header className="flex flex-wrap items-center justify-between gap-4">
           <div className="space-y-2">
-            <h1 className="text-3xl font-semibold tracking-tight">Site analytics</h1>
+            <h1 className="text-3xl tracking-tight">Site analytics</h1>
             <p className="text-sm text-muted-foreground">
               Scroll depth, engagement and raw event counts from on-site tracking.
             </p>
@@ -93,13 +93,13 @@ function SiteAnalyticsPage() {
           </div>
         </header>
 
-        {error && <p className="text-sm text-[#d9534f]">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
         {!rows && !error && <p className="text-sm text-muted-foreground">Loading…</p>}
 
         {rows && (
           <div className="space-y-10">
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">Scroll depth</h2>
+              <h2 className="text-xl ">Scroll depth</h2>
               <p className="text-sm text-muted-foreground">
                 Share of homepage loads ({pageLoads}) that scrolled past each milestone.
               </p>
@@ -121,7 +121,7 @@ function SiteAnalyticsPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">Engagement</h2>
+              <h2 className="text-xl ">Engagement</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {ENGAGEMENT_EVENTS.map((name) => (
                   <div key={name} className="rounded-xl border border-border bg-card p-5">
@@ -135,7 +135,7 @@ function SiteAnalyticsPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">By campaign</h2>
+              <h2 className="text-xl ">By campaign</h2>
               <p className="text-sm text-muted-foreground">
                 Only sessions tagged with a UTM/fbclid ad click — organic visits aren't attributed to a campaign.
               </p>
@@ -177,7 +177,7 @@ function SiteAnalyticsPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">All other events</h2>
+              <h2 className="text-xl ">All other events</h2>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">

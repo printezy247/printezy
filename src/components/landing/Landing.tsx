@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { BuyButton } from "@/components/BuyButton";
+import { Button } from "@/components/ui/button";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
 import {
@@ -179,10 +180,10 @@ export function SectionHeading({
     <Reveal>
       <div className="mx-auto mb-12 max-w-2xl text-center">
         {eyebrow ? (
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p>
+          <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{eyebrow}</p>
         ) : null}
-        <h2 className="text-3xl font-bold sm:text-4xl">{title}</h2>
-        {subtitle ? <p className="mt-4 text-base text-muted-foreground">{subtitle}</p> : null}
+        <h2 className="text-3xl sm:text-4xl">{title}</h2>
+        {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
       </div>
     </Reveal>
   );
@@ -201,33 +202,27 @@ function TelegramCta({
   href?: string;
   className?: string;
 }) {
-  const styles =
-    variant === "primary"
-      ? "bg-primary text-primary-foreground hover:bg-primary-glow"
-      : variant === "gold"
-        ? "border border-accent bg-card text-accent hover:bg-accent-tint"
-        : "border border-border bg-card text-foreground hover:bg-surface";
   return (
-    <a
-      href={href}
-      onClick={() => goTrack(event)}
-      className={`inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors ${styles} ${className}`}
+    <Button
+      asChild
+      variant={variant === "primary" ? "primary" : "outline"}
+      className={className}
     >
-      <Send className="h-4 w-4" />
-      {label}
-    </a>
+      <a href={href} onClick={() => goTrack(event)}>
+        <Send className="h-4 w-4" />
+        {label}
+      </a>
+    </Button>
   );
 }
 
 function SupportCta({ className = "" }: { className?: string }) {
   return (
-    <a
-      href={LINKS.support}
-      onClick={() => goTrack("support_click")}
-      className={`inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10 ${className}`}
-    >
-      <Send className="h-4 w-4" /> Ask Sarah
-    </a>
+    <Button asChild variant="outline" size="sm" className={className}>
+      <a href={LINKS.support} onClick={() => goTrack("support_click")}>
+        <Send className="h-4 w-4" /> Ask Sarah
+      </a>
+    </Button>
   );
 }
 
@@ -291,9 +286,9 @@ export function Ticker() {
           {items.map((t, i) => (
             <span key={`${t.symbol}-${i}`} className="flex shrink-0 items-baseline gap-1.5">
               <span className="font-semibold text-body">{t.symbol}</span>
-              <span className="tabular-nums text-foreground">{t.price}</span>
+              <span className="font-mono tabular-nums text-foreground">{t.price}</span>
               <span
-                className="tabular-nums font-semibold"
+                className="font-mono tabular-nums font-semibold"
                 style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
               >
                 {t.change}
@@ -350,13 +345,11 @@ export function Nav() {
             </ul>
 
             <div className="hidden items-center gap-4 md:flex">
-              <a
-                href={LINKS.support}
-                onClick={() => goTrack("nav_ask_sarah")}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-              >
-                <Send className="h-4 w-4" /> Ask Sarah
-              </a>
+              <Button asChild variant="outline" size="sm">
+                <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah")}>
+                  <Send className="h-4 w-4" /> Ask Sarah
+                </a>
+              </Button>
             </div>
 
             <button
@@ -385,13 +378,11 @@ export function Nav() {
                 </li>
               ))}
               <li className="pt-2">
-                <a
-                  href={LINKS.support}
-                  onClick={() => goTrack("nav_ask_sarah_mobile")}
-                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-                >
-                  <Send className="h-4 w-4" /> Ask Sarah
-                </a>
+                <Button asChild variant="outline" size="md" className="w-full">
+                  <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah_mobile")}>
+                    <Send className="h-4 w-4" /> Ask Sarah
+                  </a>
+                </Button>
               </li>
             </ul>
           </div>
@@ -455,9 +446,9 @@ function Hero() {
           transition={{ duration: 0.8, ease: APPLE_EASE }}
         >
           <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
-            {memberCount} Active Members · Est. 2021
+            <span className="font-mono tabular-nums">{memberCount}</span> Active Members · Est. 2021
           </span>
-          <h1 className="mt-4 max-w-2xl text-[34px] font-black leading-[1.08] text-foreground sm:text-[44px]">
+          <h1 className="mt-4 max-w-2xl text-[34px] leading-[1.05] text-foreground sm:text-[44px]">
             Professional trading signals, delivered live to your phone.
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-body">
@@ -500,7 +491,7 @@ function Hero() {
               ["3 Styles", "Scalp · Intraday · Swing"],
             ].map(([v, l]) => (
               <div key={l} className="bg-card px-4 py-3.5">
-                <dt className="text-xl font-extrabold text-foreground">{v}</dt>
+                <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
                 <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {l}
                 </dd>
@@ -534,7 +525,7 @@ function Hero() {
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
                     {label}
                   </p>
-                  <p className={`mt-1 text-sm font-extrabold tabular-nums ${tone}`}>{value}</p>
+                  <p className={`mt-1 font-mono text-sm font-extrabold tabular-nums ${tone}`}>{value}</p>
                 </div>
               ))}
             </div>
@@ -653,7 +644,7 @@ export function Features() {
               <f.icon className="h-5 w-5" />
             </span>
             <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-body">
               {f.body.replace("640+", memberCount)}
             </p>
           </article>
@@ -793,7 +784,7 @@ export function Pricing() {
                   src={t.image}
                   alt={`${t.name} package preview`}
                   loading="lazy"
-                  className="h-full w-full object-contain"
+                  className="h-full w-full object-cover"
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
               </div>
@@ -812,7 +803,7 @@ export function Pricing() {
                 {t.name}
               </h3>
               <p className="mt-2 flex items-baseline gap-1.5">
-                <span className="text-2xl font-extrabold tracking-tight text-foreground">
+                <span className="font-mono text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
                   {t.price}
                 </span>
                 {t.priceNote ? (
@@ -829,11 +820,11 @@ export function Pricing() {
                 <p className="mt-1 h-4" aria-hidden="true" />
               )}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
-              <ul className="mt-5 flex-1 min-h-[9rem] space-y-2.5">
+              <ul className="mt-5 flex-1 space-y-2.5">
                 {t.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-muted-foreground">{f.replace("640+", memberCount)}</span>
+                    <span className="text-body">{f.replace("640+", memberCount)}</span>
                   </li>
                 ))}
               </ul>
@@ -862,13 +853,11 @@ export function Pricing() {
                     />
                   </div>
                 ) : (
-                  <a
-                    href={botHref}
-                    onClick={() => goTrack(`${t.event}_free_access`)}
-                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-                  >
-                    Get Free Access
-                  </a>
+                  <Button asChild variant="outline" className="mt-2 w-full">
+                    <a href={botHref} onClick={() => goTrack(`${t.event}_free_access`)}>
+                      Get Free Access
+                    </a>
+                  </Button>
                 )
               ) : null}
             </div>
@@ -977,10 +966,10 @@ export function Products() {
               >
                 <Book3D image={b.image} title={b.title} />
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <h4 className="min-h-[2.5rem] text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
-                  <ul className="mt-2 flex-1 space-y-1 min-h-[5rem]">
+                  <h4 className="text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
+                  <ul className="mt-2 flex-1 space-y-1">
                     {b.bullets.map((bullet) => (
-                      <li key={bullet} className="flex items-start gap-2 text-xs text-muted-foreground sm:text-sm">
+                      <li key={bullet} className="flex items-start gap-2 text-xs text-body sm:text-sm">
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
                         <span>{bullet}</span>
                       </li>
@@ -1005,11 +994,11 @@ export function Products() {
             <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
-          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
+          <ul className="mt-4 flex-1 space-y-2.5">
             {TV_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-muted-foreground">{f}</span>
+                <span className="text-body">{f}</span>
               </li>
             ))}
           </ul>
@@ -1021,16 +1010,17 @@ export function Products() {
             >
               Enroll Now <ArrowRight className="h-3.5 w-3.5" />
             </a>
-            <a
-              href={LINKS.tradingView}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => goTrack("products_tv_open_free_account")}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-4 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-            >
-              <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
-              Open Free Account
-            </a>
+            <Button asChild variant="outline">
+              <a
+                href={LINKS.tradingView}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => goTrack("products_tv_open_free_account")}
+              >
+                <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
+                Open Free Account
+              </a>
+            </Button>
           </div>
         </article>
         </Reveal>
@@ -1042,11 +1032,11 @@ export function Products() {
             <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
-          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
+          <ul className="mt-4 flex-1 space-y-2.5">
             {MT5_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-muted-foreground">{f}</span>
+                <span className="text-body">{f}</span>
               </li>
             ))}
           </ul>
@@ -1058,15 +1048,16 @@ export function Products() {
             >
               Enroll Now <ArrowRight className="h-3.5 w-3.5" />
             </a>
-            <a
-              href="https://www.metatrader5.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => goTrack("products_mt5_download")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent transition hover:bg-accent/15"
-            >
-              Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
-            </a>
+            <Button asChild variant="outline">
+              <a
+                href="https://www.metatrader5.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => goTrack("products_mt5_download")}
+              >
+                Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            </Button>
           </div>
         </article>
         </Reveal>
@@ -1088,11 +1079,11 @@ export function Products() {
             className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
           />
           <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
-          <ul className="mt-4 flex-1 min-h-[7rem] space-y-2.5">
+          <ul className="mt-4 flex-1 space-y-2.5">
             {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
               <li key={f} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                <span className="text-muted-foreground">{f}</span>
+                <span className="text-body">{f}</span>
               </li>
             ))}
           </ul>
@@ -1104,13 +1095,11 @@ export function Products() {
             >
               Join Macro Bot <ArrowRight className="h-3.5 w-3.5" />
             </a>
-            <Link
-              to="/macro"
-              onClick={() => goTrack("products_macro_view")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-semibold text-accent transition hover:bg-accent/15"
-            >
-              View It Here <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            <Button asChild variant="outline">
+              <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
+                View It Here <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
         </article>
         </Reveal>
@@ -1145,7 +1134,7 @@ export function HowItWorks() {
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.body}</p>
+            <p className="mt-2 flex-1 text-sm text-body">{s.body}</p>
           </motion.li>
         ))}
       </ol>
@@ -1180,21 +1169,19 @@ export function Ambassador() {
           <p className="mt-3 text-xs text-muted-foreground">
             10+ year trading veteran
           </p>
-          <a
-            href={LINKS.support}
-            onClick={() => goTrack("ambassador_contact_sarah")}
-            className="mt-5 inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-          >
-            <Send className="h-4 w-4" /> Questions? Ask Sarah
-          </a>
+          <Button asChild variant="outline" size="sm" className="mt-5">
+            <a href={LINKS.support} onClick={() => goTrack("ambassador_contact_sarah")}>
+              <Send className="h-4 w-4" /> Questions? Ask Sarah
+            </a>
+          </Button>
         </div>
         </Reveal>
 
         <Reveal delay={0.15}>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Ambassador</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Meet Jack</h2>
-          <p className="mt-4 text-base text-muted-foreground">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">Ambassador</p>
+          <h2 className="mt-3 text-3xl sm:text-4xl">Meet Jack</h2>
+          <p className="mt-4 text-base text-body">
             Jack focuses on one thing: repeatable, mechanical execution.
           </p>
           <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
@@ -1207,7 +1194,7 @@ export function Ambassador() {
               ["24/5", "Coverage"],
             ].map(([v, l]) => (
               <div key={l} className="flex h-full flex-col rounded-xl border border-border bg-surface p-4">
-                <dt className="text-xl font-bold text-accent">{v}</dt>
+                <dt className="font-mono text-xl font-bold tabular-nums text-accent">{v}</dt>
                 <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
               </div>
             ))}
@@ -1275,7 +1262,7 @@ export function SocialProof() {
                 <I className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-xl font-bold">{v as string}</p>
+                <p className="font-mono text-xl font-bold tabular-nums">{v as string}</p>
                 <p className="text-xs text-muted-foreground">{l as string}</p>
               </div>
             </div>
@@ -1292,7 +1279,7 @@ export function SocialProof() {
                 <Star key={i} className="h-3.5 w-3.5 fill-current" />
               ))}
             </div>
-            <blockquote className="mt-3 flex-1 text-sm text-muted-foreground">"{t.quote}"</blockquote>
+            <blockquote className="mt-3 flex-1 text-sm text-body">"{t.quote}"</blockquote>
             <figcaption className="mt-4 text-sm">
               <span className="font-semibold">{t.name}</span>
               <span className="block text-xs text-muted-foreground">{t.role}</span>
@@ -1441,8 +1428,8 @@ function FinalCta() {
     <Section id="get-started" className="bg-surface/40">
       <Reveal>
       <div className="glass-card rounded-xl px-6 py-14 text-center sm:px-12">
-        <h2 className="text-3xl font-bold sm:text-4xl">Start with the free channel today</h2>
-        <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+        <h2 className="text-3xl sm:text-4xl">Start with the free channel today</h2>
+        <p className="mx-auto mt-4 max-w-xl text-body">
           No payment, no commitment. See the signals and education for yourself, then upgrade
           through our bot when it fits your trading.
         </p>

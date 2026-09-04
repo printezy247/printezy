@@ -207,7 +207,7 @@ function Shell({ children }: { children: React.ReactNode }) {
         >
           ← EzyMap ALGO
         </Link>
-        <h1 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="mt-6 text-3xl tracking-tight text-foreground sm:text-4xl">
           My trading account
         </h1>
         {children}

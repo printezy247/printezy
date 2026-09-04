@@ -24,11 +24,11 @@ function TermsPage() {
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto max-w-3xl px-4 pt-10 pb-20 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold sm:text-4xl">Terms of Service</h1>
+        <h1 className="text-3xl sm:text-4xl">Terms of Service</h1>
         <p className="mt-2 text-sm text-muted-foreground">Last updated: 2026</p>
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Educational use only</h2>
+            <h2 className="text-lg text-foreground">Educational use only</h2>
             <p className="mt-2">
               EzyMap ALGO provides trading signals and education for informational purposes. Nothing
               on this site or in our channels is financial advice. Trading carries substantial risk
@@ -36,21 +36,21 @@ function TermsPage() {
             </p>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Packages</h2>
+            <h2 className="text-lg text-foreground">Packages</h2>
             <p className="mt-2">
               Beginner, Pro, Premium and Elite are one-time, lifetime purchases. Access does not
               expire and does not renew or re-bill.
             </p>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Broker relationship</h2>
+            <h2 className="text-lg text-foreground">Broker relationship</h2>
             <p className="mt-2">
               We are an Introducing Broker affiliate of Vantage Markets and may earn a commission if
               you open an account through our link. You are free to use any broker.
             </p>
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Access</h2>
+            <h2 className="text-lg text-foreground">Access</h2>
             <p className="mt-2">
               Sharing private channel content or credentials results in immediate removal without
               refund.

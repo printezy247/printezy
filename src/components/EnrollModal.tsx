@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { motion, AnimatePresence } from "framer-motion";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Loader2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { createCheckout } from "@/lib/checkout.functions";
 import { getStoredReferralCode } from "@/lib/referral-capture";
@@ -163,7 +164,7 @@ export function EnrollModal({ sku, onClose }: Props) {
 
           {step === "details" ? (
             <>
-              <h2 className="pr-8 text-lg font-semibold text-foreground">{item.name}</h2>
+              <h2 className="pr-8 text-lg text-foreground">{item.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Access is delivered to this Telegram account.
               </p>
@@ -216,30 +217,27 @@ export function EnrollModal({ sku, onClose }: Props) {
                   </SelectContent>
                 </Select>
 
-                <button
-                  type="submit"
-                  disabled={!ready}
-                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-                >
+                <Button type="submit" disabled={!ready} className="mt-2 w-full">
                   Continue to payment
-                </button>
+                </Button>
               </form>
             </>
           ) : (
             <div className="relative min-h-[280px]">
               {checkoutError ? (
                 <div className="flex flex-col items-center gap-3 p-8 text-center">
-                  <p className="text-sm text-[#d9534f]">{checkoutError}</p>
-                  <button
+                  <p className="text-sm text-destructive">{checkoutError}</p>
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
                       setCheckoutError(null);
                       setStep("details");
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-surface-elevated"
                   >
                     Back
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <>

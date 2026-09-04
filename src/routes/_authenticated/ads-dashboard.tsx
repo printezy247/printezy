@@ -59,13 +59,13 @@ function AdsDashboardPage() {
     <main className="min-h-screen bg-background px-4 py-16 text-foreground">
       <div className="mx-auto w-full max-w-6xl space-y-10">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight">Ad performance</h1>
+          <h1 className="text-3xl tracking-tight">Ad performance</h1>
           <p className="text-sm text-muted-foreground">
             Meta ad clicks matched to enrollments by session.
           </p>
         </header>
 
-        {error && <p className="text-sm text-[#d9534f]">{error}</p>}
+        {error && <p className="text-sm text-destructive">{error}</p>}
         {!data && !error && <p className="text-sm text-muted-foreground">Loading…</p>}
 
         {data && (
@@ -90,7 +90,7 @@ function AdsDashboardPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">By campaign</h2>
+              <h2 className="text-xl ">By campaign</h2>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
@@ -127,7 +127,7 @@ function AdsDashboardPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-xl font-semibold">Recent clicks</h2>
+              <h2 className="text-xl ">Recent clicks</h2>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-sm">
                   <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">

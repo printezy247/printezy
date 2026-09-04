@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Nav, Footer } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
 import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
@@ -131,7 +132,7 @@ function SuccessPage() {
         ) : (
           <div className="text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-primary" />
-            <h1 className="mt-4 text-2xl font-bold text-foreground sm:text-3xl">
+            <h1 className="mt-4 text-2xl text-foreground sm:text-3xl">
               {state === "paid" ? "Payment confirmed" : "Thanks — we're confirming your payment"}
             </h1>
 
@@ -140,7 +141,7 @@ function SuccessPage() {
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">You purchased</p>
                 <p className="mt-1 text-base font-semibold text-foreground">{item.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {item.term} · {formatUsd(item.amountCents)}
+                  {item.term} · <span className="font-mono tabular-nums">{formatUsd(item.amountCents)}</span>
                 </p>
                 {handle ? (
                   <p className="mt-3 border-t border-border pt-3 text-sm text-body">
@@ -158,18 +159,14 @@ function SuccessPage() {
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a
-                href={botStartLink(product ? `paid_${product}` : "paid")}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90"
-              >
-                <Send className="h-4 w-4" /> Open Telegram & claim access
-              </a>
-              <Link
-                to="/pricing"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-body hover:text-primary"
-              >
-                Back to pricing
-              </Link>
+              <Button asChild size="lg">
+                <a href={botStartLink(product ? `paid_${product}` : "paid")}>
+                  <Send className="h-4 w-4" /> Open Telegram & claim access
+                </a>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link to="/pricing">Back to pricing</Link>
+              </Button>
             </div>
 
             <p className="mt-6 text-xs text-muted-foreground">
@@ -179,7 +176,7 @@ function SuccessPage() {
 
             {crossSell.length > 0 ? (
               <div className="mt-12 border-t border-border pt-8 text-left">
-                <h2 className="text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                <h2 className="text-center text-sm uppercase tracking-wide text-muted-foreground">
                   You might also like
                 </h2>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -187,9 +184,9 @@ function SuccessPage() {
                     <div key={cs.sku} className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
                       <h3 className="text-sm font-semibold text-foreground">{cs.name}</h3>
                       <p className="mt-1 flex-1 text-xs text-muted-foreground">{cs.description}</p>
-                      <p className="mt-3 text-lg font-bold text-foreground">
+                      <p className="mt-3 font-mono text-lg font-bold tabular-nums text-foreground">
                         {formatUsd(cs.amountCents)}{" "}
-                        <span className="text-xs font-normal text-muted-foreground">{cs.term}</span>
+                        <span className="font-sans text-xs font-normal text-muted-foreground">{cs.term}</span>
                       </p>
                       <BuyButton sku={cs.sku} label="Add this" className="mt-3" />
                     </div>
@@ -220,7 +217,7 @@ function SuccessPage() {
 
             {referralLink ? (
               <div className="mt-12 border-t border-border pt-8 text-left">
-                <h2 className="flex items-center justify-center gap-2 text-center text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                <h2 className="flex items-center justify-center gap-2 text-center text-sm uppercase tracking-wide text-muted-foreground">
                   <Gift className="h-4 w-4 text-accent" /> Refer a friend
                 </h2>
                 <p className="mt-2 text-center text-sm text-muted-foreground">
@@ -242,7 +239,8 @@ function SuccessPage() {
                 </div>
                 {referralStats ? (
                   <p className="mt-3 text-center text-xs text-muted-foreground">
-                    {referralStats.signups} signed up · {referralStats.purchases} purchased
+                    <span className="font-mono tabular-nums">{referralStats.signups}</span> signed up ·{" "}
+                    <span className="font-mono tabular-nums">{referralStats.purchases}</span> purchased
                   </p>
                 ) : null}
               </div>

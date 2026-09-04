@@ -24,7 +24,7 @@ export function StickyBuyBar() {
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-foreground">{item.name}</p>
-          <p className="text-xs text-muted-foreground">{formatUsd(item.amountCents)}</p>
+          <p className="font-mono text-xs tabular-nums text-muted-foreground">{formatUsd(item.amountCents)}</p>
         </div>
         <BuyButton sku={SKU} label="Enroll Now" className="w-auto shrink-0" />
       </div>

@@ -173,7 +173,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             <X className="h-5 w-5" />
           </button>
 
-          <h2 className="pr-8 text-lg font-semibold text-foreground">{book.title}</h2>
+          <h2 className="pr-8 text-lg text-foreground">{book.title}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{book.tagline}</p>
 
           <div className="mt-5">
@@ -229,7 +229,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                   )}
                 </div>
 
-                {error && <p className="mt-3 text-sm text-[#d9534f]">{error}</p>}
+                {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
               </div>
             ) : null}
 
@@ -290,7 +290,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                 >
                   Submit for approval
                 </button>
-                {error && <p className="mt-3 text-sm text-[#d9534f]">{error}</p>}
+                {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
               </div>
             ) : null}
 

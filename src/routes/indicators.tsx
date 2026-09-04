@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { ArrowRight, Send, ShieldCheck, Zap } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { Tools } from "@/components/landing/Tools";
+import { Button } from "@/components/ui/button";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 
 export const Route = createFileRoute("/indicators")({
@@ -43,61 +44,50 @@ function IndicatorsPage() {
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
             <Zap className="h-3.5 w-3.5 text-primary" /> EzyMap indicator desk
           </span>
-          <h1 className="mt-4 text-3xl font-semibold sm:text-4xl">Indicators</h1>
-          <p className="mt-3 text-sm text-muted-foreground sm:text-base">
+          <h1 className="mt-4 text-3xl sm:text-4xl">Indicators</h1>
+          <p className="mt-3 text-sm text-body sm:text-base">
             The same TradingView and MT5 tools our members trade with — mapping, risk control and multi-timeframe bias.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href={LINKS.bot}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => goTrack("indicators_hero_bot")}
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              <Send className="h-4 w-4" /> Get Your Indicator
-            </a>
-            <a
-              href={LINKS.support}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => goTrack("indicators_hero_ask_sarah")}
-              className="inline-flex items-center gap-2 rounded-md border border-[rgba(201,161,58,0.45)] px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-            >
-              Ask Sarah
-            </a>
+            <Button asChild>
+              <a href={LINKS.bot} target="_blank" rel="noopener noreferrer" onClick={() => goTrack("indicators_hero_bot")}>
+                <Send className="h-4 w-4" /> Get Your Indicator
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href={LINKS.support} target="_blank" rel="noopener noreferrer" onClick={() => goTrack("indicators_hero_ask_sarah")}>
+                Ask Sarah
+              </a>
+            </Button>
           </div>
         </header>
 
         <section className="glass-card mt-10 rounded-xl p-6 sm:p-8">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
-              <h2 className="text-lg font-semibold">Free access with a Vantage activation</h2>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <h2 className="text-lg ">Free access with a Vantage activation</h2>
+              <p className="mt-2 text-sm text-body">
                 Open an account under IB 26468008 and the indicators bundled with your package are unlocked at no extra
                 cost — Lite on Beginner, Currency Strength on Pro, Auto TPSL and MTF Bias on Premium, the full MT5 set on
                 Elite.
               </p>
             </div>
             <div className="flex shrink-0 flex-col gap-2">
-              <a
-                href="https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("indicators_vantage_open_account")}
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                <ShieldCheck className="h-4 w-4" /> Open Account
-              </a>
-              <a
-                href={LINKS.bot}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("indicators_vantage_free_access")}
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/60 bg-accent/5 px-5 py-2.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-              >
-                Get Free Access <ArrowRight className="h-3.5 w-3.5" />
-              </a>
+              <Button asChild>
+                <a
+                  href="https://vigco.co/la-scom-inv/ms/oQQlQ8yM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => goTrack("indicators_vantage_open_account")}
+                >
+                  <ShieldCheck className="h-4 w-4" /> Open Account
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href={LINKS.bot} target="_blank" rel="noopener noreferrer" onClick={() => goTrack("indicators_vantage_free_access")}>
+                  Get Free Access <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </Button>
             </div>
           </div>
         </section>
