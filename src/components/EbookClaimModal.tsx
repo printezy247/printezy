@@ -232,8 +232,17 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             <X className="h-5 w-5" />
           </button>
 
-          <h2 className="pr-8 text-lg text-foreground">{book.title}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{book.tagline}</p>
+          <div className="flex items-start gap-3 pr-8">
+            <img
+              src={book.image}
+              alt={`${book.title} cover`}
+              className="h-20 w-14 shrink-0 rounded-md border border-border object-cover"
+            />
+            <div className="min-w-0">
+              <h2 className="text-lg text-foreground">{book.title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{book.tagline}</p>
+            </div>
+          </div>
 
           <div className="mt-5">
             {gate === "loading" ? (

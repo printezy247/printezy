@@ -230,7 +230,7 @@ function Logo() {
         alt="EzyMap Algo logo"
         className="h-8 w-8 rounded-md object-contain"
       />
-      <span className="font-display text-[17px] font-extrabold tracking-tight text-foreground">
+      <span className="font-display text-[17px] font-bold tracking-tight text-foreground">
         EzyMap<span className="text-accent">Algo</span>
       </span>
     </span>
