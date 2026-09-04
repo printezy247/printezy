@@ -303,10 +303,6 @@ export function getCatalogItem(sku: string): CatalogItem | undefined {
   return CATALOG.find((item) => item.sku === sku);
 }
 
-export function itemsByGroup(group: CatalogGroup): CatalogItem[] {
-  return CATALOG.filter((item) => item.group === group);
-}
-
 export function formatUsd(amountCents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
