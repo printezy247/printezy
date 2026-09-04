@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
@@ -12,6 +12,10 @@ import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
+
+const EbookDetailsModal = lazy(() =>
+  import("@/components/EbookDetailsModal").then((m) => ({ default: m.EbookDetailsModal })),
+);
 import {
   Zap,
   GraduationCap,
@@ -983,6 +987,7 @@ function Book3D({ image, title }: { image: string; title: string }) {
 
 export function Products() {
   const botHref = useBotLink();
+  const [detailsSlug, setDetailsSlug] = useState<string | null>(null);
   return (
     <Section id="products">
       <SectionHeading
@@ -1002,11 +1007,13 @@ export function Products() {
         <div className="grid gap-5 sm:grid-cols-2">
           {EBOOKS.map((b, i) => (
             <Reveal key={b.title} delay={i * 0.04}>
-              <Link
-                to="/ebooks/$slug"
-                params={{ slug: b.slug }}
-                onClick={() => goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`)}
-                className="glass-card group flex h-full items-stretch gap-4 overflow-hidden rounded-xl p-4 transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
+              <button
+                type="button"
+                onClick={() => {
+                  goTrack(`ebook_${b.title.toLowerCase().replace(/\s+/g, "_")}`);
+                  setDetailsSlug(b.slug);
+                }}
+                className="glass-card group flex h-full w-full items-stretch gap-4 overflow-hidden rounded-xl p-4 text-left transition-transform hover:-translate-y-1 sm:gap-5 sm:p-5"
               >
                 <Book3D image={b.image} title={b.title} />
                 <div className="flex min-w-0 flex-1 flex-col">
@@ -1023,11 +1030,19 @@ export function Products() {
                     Get it free <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
                 </div>
-              </Link>
+              </button>
             </Reveal>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {detailsSlug ? (
+          <Suspense fallback={null}>
+            <EbookDetailsModal slug={detailsSlug} onClose={() => setDetailsSlug(null)} />
+          </Suspense>
+        ) : null}
+      </AnimatePresence>
 
       <div className="grid gap-5 lg:grid-cols-3">
         {/* TradingView indicators */}
