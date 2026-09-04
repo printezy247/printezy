@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
 import { Nav, Footer } from "@/components/landing/Landing";
 import { EbookClaimModal } from "@/components/EbookClaimModal";
@@ -146,7 +147,9 @@ function EbookPage() {
           </div>
         </section>
 
-        {claiming ? <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} /> : null}
+        <AnimatePresence>
+          {claiming ? <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} /> : null}
+        </AnimatePresence>
 
         {/* Outcomes */}
         <section className="border-y border-border bg-surface/40">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { AnimatePresence } from "framer-motion";
 import { EbookClaimModal } from "./EbookClaimModal";
 
 const EXCLUDED_PREFIXES = ["/ebooks", "/auth", "/account", "/free-ebook"];
@@ -32,6 +33,11 @@ export function EbookAutoPopup() {
     return () => window.clearTimeout(timer);
   }, [excluded]);
 
-  if (!open || excluded) return null;
-  return <EbookClaimModal slug="technical-analysis" onClose={() => setOpen(false)} />;
+  return (
+    <AnimatePresence>
+      {open && !excluded ? (
+        <EbookClaimModal slug="technical-analysis" onClose={() => setOpen(false)} />
+      ) : null}
+    </AnimatePresence>
+  );
 }

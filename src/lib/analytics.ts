@@ -62,9 +62,32 @@ export function track(eventType: AnalyticsEventType, eventName: string) {
   });
 }
 
-/** Shared click-tracking helper used by product/landing pages. */
+/** Site clicks that are also Meta conversions, with the tier value where known. */
+const META_CLICK_EVENTS: Record<
+  string,
+  { event: SiteMetaEvent; contentId?: string; valueCents?: number }
+> = {
+  pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
+  pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
+  pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
+  pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
+  hero_bot_link: { event: "Lead", contentId: "hero" },
+  hero_primary: { event: "Lead", contentId: "hero" },
+  support_click: { event: "Lead", contentId: "support" },
+};
+
+/** Shared click-tracking helper used by product/landing pages — also fires the matching Meta conversion, if any. */
 export function goTrack(name: string) {
   track("click", name);
+  const meta = META_CLICK_EVENTS[name];
+  if (meta) {
+    metaTrack(meta.event, {
+      id: name,
+      contentName: name,
+      contentId: meta.contentId,
+      valueCents: meta.valueCents,
+    });
+  }
 }
 
 

@@ -41,9 +41,17 @@ export function SupportChat() {
   const [busy, setBusy] = useState(false);
   const lastIdRef = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const openBtnRef = useRef<HTMLButtonElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   const append = useCallback((bubble: Bubble) => {
     setMessages((prev) => [...prev, bubble]);
+  }, []);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    openBtnRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -52,6 +60,50 @@ export function SupportChat() {
       track("click", "support_chat_open_proactive");
     });
   }, []);
+
+  // Body scroll lock, focus trap, Escape-to-close and click-outside-to-dismiss
+  // while the panel is open — same pattern as the checkout/ebook overlays.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeBtnRef.current?.focus();
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        close();
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    function onPointerDown(e: MouseEvent) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        close();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [open, close]);
 
   // Poll for Sarah's Telegram replies while the widget is open.
   useEffect(() => {
@@ -128,6 +180,7 @@ export function SupportChat() {
     <>
       {!open && (
         <button
+          ref={openBtnRef}
           type="button"
           onClick={() => {
             setOpen(true);
@@ -142,15 +195,22 @@ export function SupportChat() {
       )}
 
       {open && (
-        <div className="fixed bottom-5 right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+        <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Chat with Sarah"
+          className="fixed bottom-5 right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+        >
           <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-3">
             <div>
               <p className="text-sm font-semibold text-foreground">Ask Sarah</p>
               <p className="text-xs text-muted-foreground">Instant answers · human backup</p>
             </div>
             <button
+              ref={closeBtnRef}
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={close}
               aria-label="Close chat"
               className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
             >

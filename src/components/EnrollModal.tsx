@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { createCheckout } from "@/lib/checkout.functions";
 import { getStoredReferralCode } from "@/lib/referral-capture";
 import { getCatalogItem } from "@/lib/catalog";
@@ -31,6 +32,7 @@ export function EnrollModal({ sku, onClose }: Props) {
   const item = getCatalogItem(sku);
   const requireMt5 = item?.group === "mt5";
   const checkout = useServerFn(createCheckout);
+  const reducedMotion = usePrefersReducedMotion();
 
   const [step, setStep] = useState<Step>("details");
   const [fullName, setFullName] = useState("");
@@ -125,13 +127,11 @@ export function EnrollModal({ sku, onClose }: Props) {
   if (!item) return null;
 
   return (
-    <AnimatePresence>
       <motion.div
         key="overlay"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.2 } }}
+        exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.15 } }}
         className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
@@ -143,10 +143,19 @@ export function EnrollModal({ sku, onClose }: Props) {
           role="dialog"
           aria-modal="true"
           aria-label={step === "details" ? "Purchase details" : "Payment"}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1, ...(pulse ? { scale: [1, 1.02, 1] } : {}) }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.96, y: 8 }}
+          animate={{
+            opacity: 1,
+            scale: !reducedMotion && pulse ? [1, 1.02, 1] : 1,
+            y: 0,
+            transition: { duration: reducedMotion ? 0 : 0.2, ease: "easeOut" },
+          }}
+          exit={{
+            opacity: 0,
+            scale: reducedMotion ? 1 : 0.96,
+            y: reducedMotion ? 0 : 8,
+            transition: { duration: reducedMotion ? 0 : 0.15, ease: "easeIn" },
+          }}
           onClick={(e) => e.stopPropagation()}
           className={`relative my-8 w-full rounded-xl border border-border bg-background ${
             step === "details" ? "max-w-md p-6" : "max-w-lg"
@@ -255,6 +264,5 @@ export function EnrollModal({ sku, onClose }: Props) {
           )}
         </motion.div>
       </motion.div>
-    </AnimatePresence>
   );
 }

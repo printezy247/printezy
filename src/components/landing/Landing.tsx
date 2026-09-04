@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
@@ -26,14 +27,13 @@ import {
   BookOpen,
 } from "lucide-react";
 import {
-  track,
   trackPageLoad,
   trackEngagement,
   trackSectionVisibility,
   trackAdClick,
   getSessionId,
   metaTrack,
-  type SiteMetaEvent,
+  goTrack,
 } from "@/lib/analytics";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
@@ -67,32 +67,6 @@ export const LINKS = {
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
 };
 
-/** Site clicks that are also Meta conversions, with the tier value where known. */
-const META_CLICK_EVENTS: Record<
-  string,
-  { event: SiteMetaEvent; contentId?: string; valueCents?: number }
-> = {
-  pricing_beginner: { event: "InitiateCheckout", contentId: "beginner", valueCents: 2900 },
-  pricing_pro: { event: "InitiateCheckout", contentId: "pro", valueCents: 4900 },
-  pricing_premium: { event: "InitiateCheckout", contentId: "premium", valueCents: 9900 },
-  pricing_elite: { event: "InitiateCheckout", contentId: "elite", valueCents: 29900 },
-  hero_bot_link: { event: "Lead", contentId: "hero" },
-  hero_primary: { event: "Lead", contentId: "hero" },
-  support_click: { event: "Lead", contentId: "support" },
-};
-
-function goTrack(name: string) {
-  track("click", name);
-  const meta = META_CLICK_EVENTS[name];
-  if (meta) {
-    metaTrack(meta.event, {
-      id: name,
-      contentName: name,
-      contentId: meta.contentId,
-      valueCents: meta.valueCents,
-    });
-  }
-}
 
 /**
  * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
@@ -138,13 +112,17 @@ function Reveal({
   y?: number;
   className?: string;
 }) {
+  const reducedMotion = usePrefersReducedMotion();
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, y, scale: 0.985 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.9, delay, ease: APPLE_EASE }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.4, delay, ease: APPLE_EASE }}
     >
       {children}
     </motion.div>
@@ -320,6 +298,57 @@ const FOOTER_ONLY_ITEMS = [
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+    toggleBtnRef.current?.focus();
+  }, []);
+
+  // Body scroll lock, focus trap, Escape-to-close and click-outside-to-dismiss
+  // while the mobile menu is open.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        closeMenu();
+        return;
+      }
+      if (e.key !== "Tab" || !menuRef.current) return;
+      const focusable = menuRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    function onPointerDown(e: MouseEvent) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target) && !toggleBtnRef.current?.contains(target)) {
+        closeMenu();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [open, closeMenu]);
 
   return (
     <>
@@ -353,8 +382,10 @@ export function Nav() {
             </div>
 
             <button
+              ref={toggleBtnRef}
               type="button"
               aria-label="Toggle menu"
+              aria-expanded={open}
               className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-foreground md:hidden"
               onClick={() => setOpen((v) => !v)}
             >
@@ -364,13 +395,19 @@ export function Nav() {
         </nav>
 
         {open ? (
-          <div className="border-b border-border bg-background md:hidden">
+          <div
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site menu"
+            className="border-b border-border bg-background md:hidden"
+          >
             <ul className="space-y-1 px-4 py-4">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    onClick={closeMenu}
                     className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
                   >
                     {item.label}
@@ -440,11 +477,7 @@ function Hero() {
   return (
     <section className="bg-hero border-b border-border">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: APPLE_EASE }}
-        >
+        <div>
           <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
             <span className="font-mono tabular-nums">{memberCount}</span> Active Members · Est. 2021
           </span>
@@ -498,13 +531,9 @@ function Hero() {
               </div>
             ))}
           </dl>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: APPLE_EASE }}
-        >
+        <div>
           <div className="rounded-md border border-border bg-card shadow-elevated">
             <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
               <span className="text-sm font-bold text-foreground">XAU/USD · Gold Spot</span>
@@ -534,7 +563,7 @@ function Hero() {
             Illustrative example of signal format. Trading carries risk of loss. Signals are for
             education only and are not personalized financial advice.
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -621,10 +650,10 @@ export function TrackRecord() {
 /* ------------------------------------------------------------------ */
 
 const FEATURES = [
-  { icon: Zap, title: "Real-time Signals", body: "Instant alerts the moment a setup forms on our indicators." },
-  { icon: GraduationCap, title: "Live Education", body: "Learn proven, mechanical trading strategies from Jack." },
-  { icon: Users, title: "Community", body: "Connect with 640+ traders worldwide inside Telegram." },
-  { icon: Smartphone, title: "Mobile First", body: "Get alerts anywhere, anytime — no terminal required." },
+  { icon: Zap, title: "Real-time Signals", body: () => "Instant alerts the moment a setup forms on our indicators." },
+  { icon: GraduationCap, title: "Live Education", body: () => "Learn proven, mechanical trading strategies from Jack." },
+  { icon: Users, title: "Community", body: (memberCount: string) => `Connect with ${memberCount} traders worldwide inside Telegram.` },
+  { icon: Smartphone, title: "Mobile First", body: () => "Get alerts anywhere, anytime — no terminal required." },
 ];
 
 export function Features() {
@@ -638,14 +667,14 @@ export function Features() {
       />
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((f, i) => (
-          <Reveal key={f.title} delay={i * 0.08} className="h-full">
+          <Reveal key={f.title} delay={i * 0.04} className="h-full">
           <article className="glass-card h-full rounded-xl p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <f.icon className="h-5 w-5" />
             </span>
             <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
             <p className="mt-2 text-sm text-body">
-              {f.body.replace("640+", memberCount)}
+              {f.body(memberCount)}
             </p>
           </article>
           </Reveal>
@@ -662,7 +691,7 @@ export function Features() {
 type Tier = {
   name: string;
   blurb: string;
-  features: string[];
+  features: (memberCount: string) => string[];
   cta: string;
   href: string;
   /** Catalog SKU (see src/lib/catalog.ts) — Enroll Now deep-links to this card on /pricing. */
@@ -685,8 +714,8 @@ const TIERS: Tier[] = [
     price: "$29",
     priceNote: "one-time",
     blurb: "Start with essential signals",
-    features: [
-      "Join our 640+ trader community",
+    features: (memberCount) => [
+      `Join our ${memberCount} trader community`,
       "Daily signals & education",
       "Public channel access",
       "Enroll through our bot",
@@ -703,7 +732,7 @@ const TIERS: Tier[] = [
     price: "$49",
     priceNote: "one-time",
     blurb: "Scalp Mastery Signals",
-    features: ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
+    features: () => ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
     cta: "Enroll Now",
     href: LINKS.bot,
     sku: "signal_pro",
@@ -716,7 +745,7 @@ const TIERS: Tier[] = [
     price: "$99",
     priceNote: "one-time",
     blurb: "Alpha Edge Signals",
-    features: [
+    features: () => [
       "M15-M30 Intraday",
       "Advanced Analysis",
       "Priority Support",
@@ -735,7 +764,7 @@ const TIERS: Tier[] = [
     price: "$299",
     priceNote: "one-time",
     blurb: "Full Suite",
-    features: [
+    features: () => [
       "All indicators included",
       "1-on-1 Coaching with Jack",
       "Custom Strategies",
@@ -763,7 +792,7 @@ export function Pricing() {
       />
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 0.1} className="h-full">
+          <Reveal key={t.name} delay={i * 0.04} className="h-full">
           <article
             id={t.sku}
             className={`relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
@@ -821,10 +850,10 @@ export function Pricing() {
               )}
               <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
-                {t.features.map((f) => (
+                {t.features(memberCount).map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-body">{f.replace("640+", memberCount)}</span>
+                    <span className="text-body">{f}</span>
                   </li>
                 ))}
               </ul>
@@ -957,7 +986,7 @@ export function Products() {
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           {EBOOKS.map((b, i) => (
-            <Reveal key={b.title} delay={i * 0.1}>
+            <Reveal key={b.title} delay={i * 0.04}>
               <Link
                 to="/ebooks/$slug"
                 params={{ slug: b.slug }}
@@ -1119,6 +1148,7 @@ const STEPS = [
 ];
 
 export function HowItWorks() {
+  const reducedMotion = usePrefersReducedMotion();
   return (
     <Section id="how-it-works" className="bg-surface/40">
       <SectionHeading eyebrow="How it works" title="Three steps to your first signal" />
@@ -1127,10 +1157,10 @@ export function HowItWorks() {
           <motion.li
             key={s.title}
             className="glass-card relative flex h-full flex-col rounded-xl p-6"
-            initial={{ opacity: 0, y: 32, scale: 0.985 }}
+            initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.9, delay: i * 0.12, ease: APPLE_EASE }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }}
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
@@ -1256,7 +1286,7 @@ export function SocialProof() {
         ].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
-            <Reveal key={l as string} delay={i * 0.08}>
+            <Reveal key={l as string} delay={i * 0.04}>
             <div className="glass-card mx-auto flex h-full max-w-xs items-center gap-4 rounded-xl p-5">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
                 <I className="h-5 w-5" />
@@ -1272,7 +1302,7 @@ export function SocialProof() {
       </div>
       <div className="flex flex-wrap justify-center gap-5">
         {TESTIMONIALS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 0.08} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
+          <Reveal key={t.name} delay={i * 0.04} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
           <figure className="glass-card flex h-full flex-col rounded-xl p-6">
             <div className="flex gap-0.5 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -1388,7 +1418,7 @@ export function Faq() {
               {g.items.map((f, i) => {
                 const id = `${gi}-${i}`;
                 return (
-                  <Reveal key={f.q} delay={i * 0.06} y={20}>
+                  <Reveal key={f.q} delay={i * 0.04} y={20}>
                   <div className="glass-card overflow-hidden rounded-xl">
                     <button
                       type="button"

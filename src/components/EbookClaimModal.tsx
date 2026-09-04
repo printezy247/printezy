@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Download, LogIn, ShieldCheck, X, Clock, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,7 @@ import { getMyProfile } from "@/lib/profile.functions";
 import { saveLead } from "@/lib/leads.functions";
 import { getEbook } from "@/lib/ebooks";
 import { goTrack, getSessionId } from "@/lib/analytics";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 
 type Props = {
   slug: string;
@@ -34,6 +35,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const getProfile = useServerFn(getMyProfile);
   const claim = useServerFn(claimEbook);
   const book = getEbook(slug);
+  const reducedMotion = usePrefersReducedMotion();
 
   const [gate, setGate] = useState<Gate>("loading");
   const [pdf, setPdf] = useState<string | null>(null);
@@ -51,6 +53,48 @@ export function EbookClaimModal({ slug, onClose }: Props) {
 
   const requiresVantage = slug === "mapping-like-a-pro";
   const currentPath = () => (typeof window !== "undefined" ? window.location.pathname : "/");
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Body scroll lock while the dialog is open, and a signal other
+  // proactive popups (e.g. EnrollModal) check to stay suppressed.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.body.setAttribute("data-checkout-open", "true");
+    return () => {
+      document.body.style.overflow = prev;
+      document.body.removeAttribute("data-checkout-open");
+    };
+  }, []);
+
+  // Focus trap + Escape to close; focus returns to the trigger on close via onClose.
+  useEffect(() => {
+    closeBtnRef.current?.focus();
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   const handle = telegramUsername.trim().replace(/^@+/, "");
   const detailsReady =
@@ -145,26 +189,40 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   if (!book) return null;
 
   return (
-    <AnimatePresence>
       <motion.div
         key="overlay"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.2 } }}
+        exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.15 } }}
         className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
       >
         <motion.div
+          ref={dialogRef}
           key="panel"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1, ...(pulse ? DENY_PULSE : {}) }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={book.title}
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.96, y: 8 }}
+          animate={{
+            opacity: 1,
+            scale: !reducedMotion && pulse ? DENY_PULSE.scale : 1,
+            y: 0,
+            transition: { duration: reducedMotion ? 0 : 0.2, ease: "easeOut" },
+          }}
+          exit={{
+            opacity: 0,
+            scale: reducedMotion ? 1 : 0.96,
+            y: reducedMotion ? 0 : 8,
+            transition: { duration: reducedMotion ? 0 : 0.15, ease: "easeIn" },
+          }}
           onClick={(e) => e.stopPropagation()}
           className="relative my-8 w-full max-w-md rounded-xl border border-border bg-background p-6"
         >
           <button
+            ref={closeBtnRef}
             type="button"
             onClick={onClose}
             aria-label="Close"
@@ -334,6 +392,5 @@ export function EbookClaimModal({ slug, onClose }: Props) {
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
   );
 }

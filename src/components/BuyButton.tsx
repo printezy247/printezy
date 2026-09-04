@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import { EnrollModal } from "@/components/EnrollModal";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,9 @@ export function BuyButton({ sku, label = "Checkout", variant = "primary", classN
         <CreditCard className="h-4 w-4" />
         {label}
       </Button>
-      {open ? <EnrollModal sku={sku} onClose={() => setOpen(false)} /> : null}
+      <AnimatePresence>
+        {open ? <EnrollModal sku={sku} onClose={() => setOpen(false)} /> : null}
+      </AnimatePresence>
     </div>
   );
 }
