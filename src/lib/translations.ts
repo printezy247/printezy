@@ -1,0 +1,268 @@
+/**
+ * Landing-page copy in English/Malay/Chinese. Scoped to the sections wired
+ * to `useTranslation()` — adding a new section means adding its keys here
+ * across all three locales before using `t()` for it.
+ */
+
+export const translations = {
+  en: {
+    nav_signals: "Signals",
+    nav_packages: "Packages",
+    nav_tools: "Tools",
+    nav_macro: "Macro",
+    nav_ask_sarah: "Ask Sarah",
+    nav_toggle_menu: "Toggle menu",
+    nav_site_menu: "Site menu",
+
+    hero_badge: "Active Members · Est. 2021",
+    hero_title: "Professional trading signals, delivered live to your phone.",
+    hero_subtitle:
+      "Forex, commodities and crypto analysis from a 10-year veteran trader, delivered on Telegram with full entry, stop and target transparency.",
+    hero_cta_join: "Join Free Channel",
+    hero_cta_packages: "See packages",
+    hero_cta_ebook: "Get the free ebook",
+    hero_stat_members: "Active members",
+    hero_stat_coverage: "Market coverage",
+    hero_stat_styles: "Scalp · Intraday · Swing",
+    hero_sample_symbol: "XAU/USD · Gold Spot",
+    hero_sample_badge: "Sample signal",
+    hero_sample_entry: "Entry",
+    hero_sample_stop: "Stop",
+    hero_sample_target: "Target",
+    hero_disclaimer:
+      "Illustrative example of signal format. Trading carries risk of loss. Signals are for education only and are not personalized financial advice.",
+
+    trust_strip_label: "Trusted platforms we operate on",
+
+    track_record_eyebrow: "Track record",
+    track_record_title: "Check the history yourself",
+    track_record_subtitle:
+      "We publish every call in the channel with timestamps. Verify our history before you pay for anything.",
+    track_record_telegram_eyebrow: "Telegram history",
+    track_record_telegram_title: "Full signal archive",
+    track_record_telegram_body:
+      "Scroll back through every published signal, entry, stop and target in the free channel.",
+    track_record_telegram_cta: "Open channel",
+    track_record_ff_eyebrow: "Reference",
+    track_record_ff_title: "ForexFactory calendar",
+    track_record_ff_body:
+      "Cross-check every event we trade against the public economic calendar. This is a data reference, not a performance record.",
+    track_record_ff_cta: "Open ForexFactory",
+    track_record_disclaimer:
+      "Past performance is not indicative of future results. We do not publish win-rate or pip totals that cannot be independently verified.",
+
+    features_eyebrow: "What you get",
+    features_title: "Built for traders who want clarity",
+    features_subtitle:
+      "Everything runs through Telegram, so you never miss a setup while you're away from the charts.",
+    feature_signals_title: "Real-time Signals",
+    feature_signals_body: "Instant alerts the moment a setup forms on our indicators.",
+    feature_education_title: "Live Education",
+    feature_education_body: "Learn proven, mechanical trading strategies from Jack.",
+    feature_community_title: "Community",
+    feature_community_body: "Connect with {memberCount} traders worldwide inside Telegram.",
+    feature_mobile_title: "Mobile First",
+    feature_mobile_body: "Get alerts anywhere, anytime — no terminal required.",
+
+    pricing_eyebrow: "Packages",
+    pricing_title: "Start with clarity. Upgrade when you're ready.",
+    pricing_subtitle:
+      "All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required.",
+    pricing_most_popular: "Most popular",
+    pricing_free_alt: "or free access by Vantage activation",
+    pricing_cta: "Enroll Now",
+
+    tier_beginner_blurb: "Start with essential signals",
+    tier_beginner_f1: "Join our {memberCount} trader community",
+    tier_beginner_f2: "Daily signals & education",
+    tier_beginner_f3: "Public channel access",
+    tier_pro_blurb: "Scalp Mastery Signals",
+    tier_pro_f1: "M5 Timeframe Strategies",
+    tier_pro_f2: "Real-time Alerts",
+    tier_premium_blurb: "Alpha Edge Signals",
+    tier_premium_f1: "M15-M30 Intraday",
+    tier_premium_f2: "Advanced Analysis",
+    tier_premium_f3: "Priority Support",
+    tier_elite_blurb: "Full Suite",
+    tier_elite_f1: "All indicators included",
+    tier_elite_f2: "1-on-1 Coaching with Jack",
+    tier_elite_f3: "Custom Strategies",
+    tier_elite_f4: "Premium Support",
+    tier_enroll_via_bot: "Enroll through our bot",
+
+    footer_track_record: "Track Record",
+    footer_faq: "FAQ",
+  },
+  ms: {
+    nav_signals: "Isyarat",
+    nav_packages: "Pakej",
+    nav_tools: "Alat",
+    nav_macro: "Makro",
+    nav_ask_sarah: "Tanya Sarah",
+    nav_toggle_menu: "Togol menu",
+    nav_site_menu: "Menu laman",
+
+    hero_badge: "Ahli Aktif · Ditubuhkan 2021",
+    hero_title: "Isyarat dagangan profesional, dihantar terus ke telefon anda.",
+    hero_subtitle:
+      "Analisis forex, komoditi dan kripto daripada peniaga veteran 10 tahun, dihantar melalui Telegram dengan ketelusan penuh entri, stop dan sasaran.",
+    hero_cta_join: "Sertai Saluran Percuma",
+    hero_cta_packages: "Lihat pakej",
+    hero_cta_ebook: "Dapatkan ebook percuma",
+    hero_stat_members: "Ahli aktif",
+    hero_stat_coverage: "Liputan pasaran",
+    hero_stat_styles: "Scalp · Intraday · Swing",
+    hero_sample_symbol: "XAU/USD · Gold Spot",
+    hero_sample_badge: "Contoh isyarat",
+    hero_sample_entry: "Entri",
+    hero_sample_stop: "Stop",
+    hero_sample_target: "Sasaran",
+    hero_disclaimer:
+      "Contoh ilustrasi format isyarat. Dagangan membawa risiko kerugian. Isyarat adalah untuk tujuan pendidikan sahaja dan bukan nasihat kewangan peribadi.",
+
+    trust_strip_label: "Platform dipercayai yang kami gunakan",
+
+    track_record_eyebrow: "Rekod prestasi",
+    track_record_title: "Semak sendiri sejarahnya",
+    track_record_subtitle:
+      "Kami menerbitkan setiap panggilan di saluran dengan cap masa. Sahkan sejarah kami sebelum anda membayar apa-apa.",
+    track_record_telegram_eyebrow: "Sejarah Telegram",
+    track_record_telegram_title: "Arkib isyarat penuh",
+    track_record_telegram_body:
+      "Skrol semula setiap isyarat, entri, stop dan sasaran yang diterbitkan di saluran percuma.",
+    track_record_telegram_cta: "Buka saluran",
+    track_record_ff_eyebrow: "Rujukan",
+    track_record_ff_title: "Kalendar ForexFactory",
+    track_record_ff_body:
+      "Semak silang setiap acara yang kami dagangkan dengan kalendar ekonomi awam. Ini rujukan data, bukan rekod prestasi.",
+    track_record_ff_cta: "Buka ForexFactory",
+    track_record_disclaimer:
+      "Prestasi lepas tidak menunjukkan hasil masa depan. Kami tidak menerbitkan kadar kemenangan atau jumlah pip yang tidak dapat disahkan secara bebas.",
+
+    features_eyebrow: "Apa yang anda dapat",
+    features_title: "Dibina untuk peniaga yang mahukan kejelasan",
+    features_subtitle:
+      "Semuanya berjalan melalui Telegram, jadi anda tidak akan terlepas peluang walaupun jauh dari carta.",
+    feature_signals_title: "Isyarat Masa Nyata",
+    feature_signals_body: "Amaran segera sebaik sahaja peluang terbentuk pada penunjuk kami.",
+    feature_education_title: "Pendidikan Langsung",
+    feature_education_body: "Pelajari strategi dagangan mekanikal terbukti daripada Jack.",
+    feature_community_title: "Komuniti",
+    feature_community_body: "Berhubung dengan {memberCount} peniaga di seluruh dunia di dalam Telegram.",
+    feature_mobile_title: "Mesra Mudah Alih",
+    feature_mobile_body: "Dapatkan amaran di mana-mana, bila-bila masa — tanpa terminal.",
+
+    pricing_eyebrow: "Pakej",
+    pricing_title: "Mula dengan kejelasan. Naik taraf bila anda bersedia.",
+    pricing_subtitle:
+      "Semua peringkat mendaftar melalui bot kami. Mahu akses percuma? Aktifkan melalui Vantage Markets — tiada kad diperlukan.",
+    pricing_most_popular: "Paling popular",
+    pricing_free_alt: "atau akses percuma melalui pengaktifan Vantage",
+    pricing_cta: "Daftar Sekarang",
+
+    tier_beginner_blurb: "Mula dengan isyarat penting",
+    tier_beginner_f1: "Sertai komuniti {memberCount} peniaga kami",
+    tier_beginner_f2: "Isyarat & pendidikan harian",
+    tier_beginner_f3: "Akses saluran awam",
+    tier_pro_blurb: "Isyarat Scalp Mastery",
+    tier_pro_f1: "Strategi Rangka Masa M5",
+    tier_pro_f2: "Amaran Masa Nyata",
+    tier_premium_blurb: "Isyarat Alpha Edge",
+    tier_premium_f1: "M15-M30 Intraday",
+    tier_premium_f2: "Analisis Lanjutan",
+    tier_premium_f3: "Sokongan Keutamaan",
+    tier_elite_blurb: "Suite Penuh",
+    tier_elite_f1: "Semua penunjuk termasuk",
+    tier_elite_f2: "Kaunseling 1-lawan-1 dengan Jack",
+    tier_elite_f3: "Strategi Tersuai",
+    tier_elite_f4: "Sokongan Premium",
+    tier_enroll_via_bot: "Daftar melalui bot kami",
+
+    footer_track_record: "Rekod Prestasi",
+    footer_faq: "Soalan Lazim",
+  },
+  zh: {
+    nav_signals: "信号",
+    nav_packages: "套餐",
+    nav_tools: "工具",
+    nav_macro: "宏观",
+    nav_ask_sarah: "咨询 Sarah",
+    nav_toggle_menu: "切换菜单",
+    nav_site_menu: "网站菜单",
+
+    hero_badge: "活跃会员 · 成立于 2021",
+    hero_title: "专业交易信号,实时发送到您的手机。",
+    hero_subtitle:
+      "由拥有10年经验的资深交易员提供外汇、大宗商品和加密货币分析,通过 Telegram 发送,完整披露入场、止损和目标点位。",
+    hero_cta_join: "加入免费频道",
+    hero_cta_packages: "查看套餐",
+    hero_cta_ebook: "领取免费电子书",
+    hero_stat_members: "活跃会员",
+    hero_stat_coverage: "市场覆盖",
+    hero_stat_styles: "剥头皮 · 日内 · 波段",
+    hero_sample_symbol: "XAU/USD · 黄金现货",
+    hero_sample_badge: "信号示例",
+    hero_sample_entry: "入场",
+    hero_sample_stop: "止损",
+    hero_sample_target: "目标",
+    hero_disclaimer:
+      "信号格式示例说明。交易存在亏损风险。信号仅供教育用途,不构成个性化的财务建议。",
+
+    trust_strip_label: "我们使用的可信平台",
+
+    track_record_eyebrow: "历史记录",
+    track_record_title: "自行查证历史记录",
+    track_record_subtitle: "我们在频道中发布每一次信号并附带时间戳。在您付费之前,请先核实我们的历史记录。",
+    track_record_telegram_eyebrow: "Telegram 历史",
+    track_record_telegram_title: "完整信号存档",
+    track_record_telegram_body: "回溯免费频道中发布的每一个信号、入场、止损和目标点位。",
+    track_record_telegram_cta: "打开频道",
+    track_record_ff_eyebrow: "参考资料",
+    track_record_ff_title: "ForexFactory 日历",
+    track_record_ff_body: "将我们交易的每个事件与公开经济日历进行核对。这是数据参考,不是业绩记录。",
+    track_record_ff_cta: "打开 ForexFactory",
+    track_record_disclaimer: "过往表现不代表未来结果。我们不会发布无法独立核实的胜率或点数总数。",
+
+    features_eyebrow: "您将获得",
+    features_title: "为追求清晰的交易者而设计",
+    features_subtitle: "一切都通过 Telegram 运行,即使您不在图表前也不会错过任何机会。",
+    feature_signals_title: "实时信号",
+    feature_signals_body: "一旦我们的指标形成入场机会,立即发送提醒。",
+    feature_education_title: "实时教学",
+    feature_education_body: "向 Jack 学习经过验证的机械化交易策略。",
+    feature_community_title: "社区",
+    feature_community_body: "在 Telegram 中与来自世界各地的 {memberCount} 名交易者建立联系。",
+    feature_mobile_title: "移动优先",
+    feature_mobile_body: "随时随地接收提醒 — 无需交易终端。",
+
+    pricing_eyebrow: "套餐",
+    pricing_title: "从清晰开始,准备好后再升级。",
+    pricing_subtitle: "所有套餐均通过我们的机器人注册。想要免费访问?通过 Vantage Markets 激活 — 无需信用卡。",
+    pricing_most_popular: "最受欢迎",
+    pricing_free_alt: "或通过 Vantage 激活免费访问",
+    pricing_cta: "立即注册",
+
+    tier_beginner_blurb: "从基础信号开始",
+    tier_beginner_f1: "加入我们 {memberCount} 名交易者的社区",
+    tier_beginner_f2: "每日信号与教学",
+    tier_beginner_f3: "公开频道访问权限",
+    tier_pro_blurb: "剥头皮精通信号",
+    tier_pro_f1: "M5 时间框架策略",
+    tier_pro_f2: "实时提醒",
+    tier_premium_blurb: "Alpha Edge 信号",
+    tier_premium_f1: "M15-M30 日内交易",
+    tier_premium_f2: "进阶分析",
+    tier_premium_f3: "优先支持",
+    tier_elite_blurb: "完整套件",
+    tier_elite_f1: "包含所有指标",
+    tier_elite_f2: "与 Jack 一对一指导",
+    tier_elite_f3: "定制策略",
+    tier_elite_f4: "尊享支持",
+    tier_enroll_via_bot: "通过我们的机器人注册",
+
+    footer_track_record: "历史记录",
+    footer_faq: "常见问题",
+  },
+} as const;
+
+export type TranslationKey = keyof typeof translations.en;

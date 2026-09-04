@@ -5,6 +5,8 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
+import { useTranslation, useLocale, LOCALES, LOCALE_LABELS } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
@@ -288,19 +290,41 @@ export function Ticker() {
 /* ------------------------------------------------------------------ */
 
 const NAV_ITEMS = [
-  { label: "Signals", href: "/#features" },
-  { label: "Packages", href: "/#packages" },
-  { label: "Tools", href: "/#tools" },
-  { label: "Macro", href: "/macro" },
-];
+  { key: "nav_signals", href: "/#features" },
+  { key: "nav_packages", href: "/#packages" },
+  { key: "nav_tools", href: "/#tools" },
+  { key: "nav_macro", href: "/macro" },
+] as const;
 
 /** Not in the header nav — footer-only wayfinding links. */
 const FOOTER_ONLY_ITEMS = [
-  { label: "Track Record", href: "/#track-record" },
-  { label: "FAQ", href: "/faq" },
-];
+  { key: "footer_track_record", href: "/#track-record" },
+  { key: "footer_faq", href: "/faq" },
+] as const;
+
+function LocaleSwitcher({ className = "" }: { className?: string }) {
+  const { locale, setLocale } = useLocale();
+  return (
+    <div className={`flex items-center gap-1 ${className}`}>
+      {LOCALES.map((l) => (
+        <button
+          key={l}
+          type="button"
+          onClick={() => setLocale(l)}
+          aria-pressed={locale === l}
+          className={`flex min-h-8 min-w-8 items-center justify-center rounded-md px-1.5 text-xs font-semibold transition-colors ${
+            locale === l ? "bg-primary-tint text-primary" : "text-muted-foreground hover:text-body"
+          }`}
+        >
+          {LOCALE_LABELS[l]}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export function Nav() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
@@ -371,30 +395,34 @@ export function Nav() {
                     href={item.href}
                     className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
                   >
-                    {item.label}
+                    {t(item.key)}
                   </a>
                 </li>
               ))}
             </ul>
 
             <div className="hidden items-center gap-4 md:flex">
+              <LocaleSwitcher />
               <Button asChild variant="outline" size="sm">
                 <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah")}>
-                  <Send className="h-4 w-4" /> Ask Sarah
+                  <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
                 </a>
               </Button>
             </div>
 
-            <button
-              ref={toggleBtnRef}
-              type="button"
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-foreground md:hidden"
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+            <div className="flex items-center gap-2 md:hidden">
+              <LocaleSwitcher />
+              <button
+                ref={toggleBtnRef}
+                type="button"
+                aria-label={t("nav_toggle_menu")}
+                aria-expanded={open}
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-foreground"
+                onClick={() => setOpen((v) => !v)}
+              >
+                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
         </nav>
 
@@ -403,7 +431,7 @@ export function Nav() {
             ref={menuRef}
             role="dialog"
             aria-modal="true"
-            aria-label="Site menu"
+            aria-label={t("nav_site_menu")}
             className="border-b border-border bg-background md:hidden"
           >
             <ul className="space-y-1 px-4 py-4">
@@ -414,14 +442,14 @@ export function Nav() {
                     onClick={closeMenu}
                     className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
                   >
-                    {item.label}
+                    {t(item.key)}
                   </a>
                 </li>
               ))}
               <li className="pt-2">
                 <Button asChild variant="outline" size="md" className="w-full">
                   <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah_mobile")}>
-                    <Send className="h-4 w-4" /> Ask Sarah
+                    <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
                   </a>
                 </Button>
               </li>
@@ -478,19 +506,19 @@ function ChartGraphic() {
 
 function Hero() {
   const { formatted: memberCount } = useMemberCount();
+  const { t } = useTranslation();
   return (
     <section className="bg-hero border-b border-border">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
         <div>
           <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
-            <span className="font-mono tabular-nums">{memberCount}</span> Active Members · Est. 2021
+            <span className="font-mono tabular-nums">{memberCount}</span> {t("hero_badge")}
           </span>
           <h1 className="mt-4 max-w-2xl text-[34px] leading-[1.05] text-foreground sm:text-[44px]">
-            Professional trading signals, delivered live to your phone.
+            {t("hero_title")}
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-body">
-            Forex, commodities and crypto analysis from a 10-year veteran trader, delivered on
-            Telegram with full entry, stop and target transparency.
+            {t("hero_subtitle")}
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -499,14 +527,14 @@ function Hero() {
               onClick={() => goTrack("hero_join_free")}
               className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
             >
-              <Send className="h-4 w-4" /> Join Free Channel
+              <Send className="h-4 w-4" /> {t("hero_cta_join")}
             </Link>
             <a
               href="/#packages"
               onClick={() => goTrack("hero_see_packages")}
               className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
             >
-              See packages
+              {t("hero_cta_packages")}
             </a>
           </div>
 
@@ -517,15 +545,15 @@ function Hero() {
               onClick={() => goTrack("hero_free_ebook")}
               className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
             >
-              <BookOpen className="h-3.5 w-3.5" /> Get the free ebook
+              <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
             </Link>
           </p>
 
           <dl className="mt-9 grid max-w-lg grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
             {[
-              [memberCount, "Active members"],
-              ["24/5", "Market coverage"],
-              ["3 Styles", "Scalp · Intraday · Swing"],
+              [memberCount, t("hero_stat_members")],
+              ["24/5", t("hero_stat_coverage")],
+              ["3 Styles", t("hero_stat_styles")],
             ].map(([v, l]) => (
               <div key={l} className="bg-card px-4 py-3.5">
                 <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
@@ -540,9 +568,9 @@ function Hero() {
         <div>
           <div className="rounded-md border border-border bg-card shadow-elevated">
             <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-              <span className="text-sm font-bold text-foreground">XAU/USD · Gold Spot</span>
+              <span className="text-sm font-bold text-foreground">{t("hero_sample_symbol")}</span>
               <span className="rounded bg-accent-tint px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent">
-                Sample signal
+                {t("hero_sample_badge")}
               </span>
             </div>
             <div className="h-40 px-2 py-3 sm:h-48">
@@ -550,9 +578,9 @@ function Hero() {
             </div>
             <div className="grid grid-cols-3 gap-px border-t border-border bg-border">
               {[
-                ["Entry", "4,598.70", "text-foreground"],
-                ["Stop", "4,596.70", "text-accent"],
-                ["Target", "4,600.61", "text-primary"],
+                [t("hero_sample_entry"), "4,598.70", "text-foreground"],
+                [t("hero_sample_stop"), "4,596.70", "text-accent"],
+                [t("hero_sample_target"), "4,600.61", "text-primary"],
               ].map(([label, value, tone]) => (
                 <div key={label} className="bg-secondary px-3 py-3 text-center">
                   <p className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
@@ -564,8 +592,7 @@ function Hero() {
             </div>
           </div>
           <p className="mt-2.5 text-[11.5px] leading-relaxed text-muted-foreground">
-            Illustrative example of signal format. Trading carries risk of loss. Signals are for
-            education only and are not personalized financial advice.
+            {t("hero_disclaimer")}
           </p>
         </div>
       </div>
@@ -580,11 +607,12 @@ function Hero() {
 const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "ForexFactory"];
 
 export function TrustStrip() {
+  const { t } = useTranslation();
   return (
     <div className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-4 sm:px-6 lg:px-8">
         <span className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-          Trusted platforms we operate on
+          {t("trust_strip_label")}
         </span>
         {PLATFORMS.map((p) => (
           <span key={p} className="text-[12.5px] font-bold uppercase tracking-wide text-body">
@@ -601,12 +629,13 @@ export function TrustStrip() {
 /* ------------------------------------------------------------------ */
 
 export function TrackRecord() {
+  const { t } = useTranslation();
   return (
     <Section id="track-record" className="bg-surface">
       <SectionHeading
-        eyebrow="Track record"
-        title="Check the history yourself"
-        subtitle="We publish every call in the channel with timestamps. Verify our history before you pay for anything."
+        eyebrow={t("track_record_eyebrow")}
+        title={t("track_record_title")}
+        subtitle={t("track_record_subtitle")}
       />
       <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2">
         <a
@@ -614,13 +643,13 @@ export function TrackRecord() {
           onClick={() => goTrack("track_record_telegram")}
           className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">Telegram history</p>
-          <h3 className="mt-2 text-lg font-bold">Full signal archive</h3>
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">{t("track_record_telegram_eyebrow")}</p>
+          <h3 className="mt-2 text-lg font-bold">{t("track_record_telegram_title")}</h3>
           <p className="mt-2 flex-1 text-sm text-body">
-            Scroll back through every published signal, entry, stop and target in the free channel.
+            {t("track_record_telegram_body")}
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-            Open channel <ArrowRight className="h-3.5 w-3.5" />
+            {t("track_record_telegram_cta")} <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </a>
         <a
@@ -630,20 +659,18 @@ export function TrackRecord() {
           onClick={() => goTrack("track_record_forexfactory")}
           className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">Reference</p>
-          <h3 className="mt-2 text-lg font-bold">ForexFactory calendar</h3>
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">{t("track_record_ff_eyebrow")}</p>
+          <h3 className="mt-2 text-lg font-bold">{t("track_record_ff_title")}</h3>
           <p className="mt-2 flex-1 text-sm text-body">
-            Cross-check every event we trade against the public economic calendar. This is a data
-            reference, not a performance record.
+            {t("track_record_ff_body")}
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
-            Open ForexFactory <ArrowRight className="h-3.5 w-3.5" />
+            {t("track_record_ff_cta")} <ArrowRight className="h-3.5 w-3.5" />
           </span>
         </a>
       </div>
       <p className="mx-auto mt-5 max-w-4xl text-xs leading-relaxed text-muted-foreground">
-        Past performance is not indicative of future results. We do not publish win-rate or pip
-        totals that cannot be independently verified.
+        {t("track_record_disclaimer")}
       </p>
     </Section>
   );
@@ -654,31 +681,32 @@ export function TrackRecord() {
 /* ------------------------------------------------------------------ */
 
 const FEATURES = [
-  { icon: Zap, title: "Real-time Signals", body: () => "Instant alerts the moment a setup forms on our indicators." },
-  { icon: GraduationCap, title: "Live Education", body: () => "Learn proven, mechanical trading strategies from Jack." },
-  { icon: Users, title: "Community", body: (memberCount: string) => `Connect with ${memberCount} traders worldwide inside Telegram.` },
-  { icon: Smartphone, title: "Mobile First", body: () => "Get alerts anywhere, anytime — no terminal required." },
-];
+  { icon: Zap, titleKey: "feature_signals_title", bodyKey: "feature_signals_body" },
+  { icon: GraduationCap, titleKey: "feature_education_title", bodyKey: "feature_education_body" },
+  { icon: Users, titleKey: "feature_community_title", bodyKey: "feature_community_body" },
+  { icon: Smartphone, titleKey: "feature_mobile_title", bodyKey: "feature_mobile_body" },
+] as const;
 
 export function Features() {
   const { formatted: memberCount } = useMemberCount();
+  const { t } = useTranslation();
   return (
     <Section id="features">
       <SectionHeading
-        eyebrow="What you get"
-        title="Built for traders who want clarity"
-        subtitle="Everything runs through Telegram, so you never miss a setup while you're away from the charts."
+        eyebrow={t("features_eyebrow")}
+        title={t("features_title")}
+        subtitle={t("features_subtitle")}
       />
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((f, i) => (
-          <Reveal key={f.title} delay={i * 0.04} className="h-full">
+          <Reveal key={f.titleKey} delay={i * 0.04} className="h-full">
           <article className="glass-card h-full rounded-xl p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <f.icon className="h-5 w-5" />
             </span>
-            <h3 className="mt-4 text-lg font-semibold">{f.title}</h3>
+            <h3 className="mt-4 text-lg font-semibold">{t(f.titleKey)}</h3>
             <p className="mt-2 text-sm text-body">
-              {f.body(memberCount)}
+              {t(f.bodyKey).replace("{memberCount}", memberCount)}
             </p>
           </article>
           </Reveal>
@@ -694,9 +722,8 @@ export function Features() {
 
 type Tier = {
   name: string;
-  blurb: string;
-  features: (memberCount: string) => string[];
-  cta: string;
+  blurbKey: TranslationKey;
+  featureKeys: TranslationKey[];
   href: string;
   /** Catalog SKU (see src/lib/catalog.ts) — Enroll Now deep-links to this card on /pricing. */
   sku: string;
@@ -717,14 +744,8 @@ const TIERS: Tier[] = [
     name: "Beginner",
     price: "$29",
     priceNote: "one-time",
-    blurb: "Start with essential signals",
-    features: (memberCount) => [
-      `Join our ${memberCount} trader community`,
-      "Daily signals & education",
-      "Public channel access",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
+    blurbKey: "tier_beginner_blurb",
+    featureKeys: ["tier_beginner_f1", "tier_beginner_f2", "tier_beginner_f3", "tier_enroll_via_bot"],
     href: LINKS.bot,
     sku: "signal_beginner",
     event: "pricing_beginner",
@@ -735,9 +756,8 @@ const TIERS: Tier[] = [
     name: "Pro",
     price: "$49",
     priceNote: "one-time",
-    blurb: "Scalp Mastery Signals",
-    features: () => ["M5 Timeframe Strategies", "Real-time Alerts", "Enroll through our bot"],
-    cta: "Enroll Now",
+    blurbKey: "tier_pro_blurb",
+    featureKeys: ["tier_pro_f1", "tier_pro_f2", "tier_enroll_via_bot"],
     href: LINKS.bot,
     sku: "signal_pro",
     event: "pricing_pro",
@@ -748,14 +768,8 @@ const TIERS: Tier[] = [
     name: "Premium",
     price: "$99",
     priceNote: "one-time",
-    blurb: "Alpha Edge Signals",
-    features: () => [
-      "M15-M30 Intraday",
-      "Advanced Analysis",
-      "Priority Support",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
+    blurbKey: "tier_premium_blurb",
+    featureKeys: ["tier_premium_f1", "tier_premium_f2", "tier_premium_f3", "tier_enroll_via_bot"],
     href: LINKS.bot,
     sku: "signal_premium",
     event: "pricing_premium",
@@ -767,15 +781,8 @@ const TIERS: Tier[] = [
     name: "Elite",
     price: "$299",
     priceNote: "one-time",
-    blurb: "Full Suite",
-    features: () => [
-      "All indicators included",
-      "1-on-1 Coaching with Jack",
-      "Custom Strategies",
-      "Premium Support",
-      "Enroll through our bot",
-    ],
-    cta: "Enroll Now",
+    blurbKey: "tier_elite_blurb",
+    featureKeys: ["tier_elite_f1", "tier_elite_f2", "tier_elite_f3", "tier_elite_f4", "tier_enroll_via_bot"],
     href: LINKS.bot,
     sku: "signal_elite",
     event: "pricing_elite",
@@ -787,12 +794,13 @@ const TIERS: Tier[] = [
 export function Pricing() {
   const botHref = useBotLink();
   const { formatted: memberCount } = useMemberCount();
+  const { t: tt } = useTranslation();
   return (
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
-        eyebrow="Packages"
-        title="Start with clarity. Upgrade when you're ready."
-        subtitle="All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required."
+        eyebrow={tt("pricing_eyebrow")}
+        title={tt("pricing_title")}
+        subtitle={tt("pricing_subtitle")}
       />
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t, i) => (
@@ -813,7 +821,7 @@ export function Pricing() {
                 {t.highlight ? (
                   <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    Most popular
+                    {tt("pricing_most_popular")}
                   </span>
                 ) : null}
                 <img
@@ -829,7 +837,7 @@ export function Pricing() {
                 {t.highlight ? (
                   <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    Most popular
+                    {tt("pricing_most_popular")}
                   </span>
                 ) : null}
               </div>
@@ -850,17 +858,17 @@ export function Pricing() {
               </p>
               {t.freeAlt ? (
                 <p className="mt-1 text-[11px] font-medium leading-snug text-accent">
-                  or free access by Vantage activation
+                  {tt("pricing_free_alt")}
                 </p>
               ) : (
                 <p className="mt-1 h-4" aria-hidden="true" />
               )}
-              <p className="mt-2 text-sm font-semibold text-body">{t.blurb}</p>
+              <p className="mt-2 text-sm font-semibold text-body">{tt(t.blurbKey).replace("{memberCount}", memberCount)}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
-                {t.features(memberCount).map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm">
+                {t.featureKeys.map((fk) => (
+                  <li key={fk} className="flex items-start gap-2 text-sm">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-body">{f}</span>
+                    <span className="text-body">{tt(fk).replace("{memberCount}", memberCount)}</span>
                   </li>
                 ))}
               </ul>
@@ -875,7 +883,7 @@ export function Pricing() {
               ) : null}
 
               <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
-                <BuyButton sku={t.sku} label={t.cta} />
+                <BuyButton sku={t.sku} label={tt("pricing_cta")} />
               </div>
               <p className="mt-1.5 flex items-center justify-center gap-1 text-center text-[11px] text-muted-foreground">
                 <Lock className="h-3 w-3" /> Secured by Stripe
@@ -1491,6 +1499,7 @@ function FinalCta() {
 
 export function Footer() {
   const botHref = useBotLink();
+  const { t } = useTranslation();
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -1516,7 +1525,7 @@ export function Footer() {
               {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
                   <a href={i.href} className="hover:text-foreground">
-                    {i.label}
+                    {t(i.key)}
                   </a>
                 </li>
               ))}

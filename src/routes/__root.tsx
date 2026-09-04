@@ -17,6 +17,7 @@ import { EbookAutoPopup } from "../components/EbookAutoPopup";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
+import { LocaleProvider } from "../lib/i18n";
 
 function NotFoundComponent() {
   return (
@@ -158,13 +159,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PaymentTestModeBanner />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <SupportChat />
-      <ConsentBanner />
-      <EbookAutoPopup />
-      <Toaster position="bottom-right" />
+      <LocaleProvider>
+        <PaymentTestModeBanner />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <SupportChat />
+        <ConsentBanner />
+        <EbookAutoPopup />
+        <Toaster position="bottom-right" />
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }
