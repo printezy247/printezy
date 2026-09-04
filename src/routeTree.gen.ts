@@ -9,73 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as MacroRouteImport } from './routes/macro'
-import { Route as IndicatorsRouteImport } from './routes/indicators'
-import { Route as FreeEbookRouteImport } from './routes/free-ebook'
-import { Route as FreeChannelRouteImport } from './routes/free-channel'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
-import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FreeChannelRouteImport } from './routes/free-channel'
+import { Route as FreeEbookRouteImport } from './routes/free-ebook'
+import { Route as IndicatorsRouteImport } from './routes/indicators'
+import { Route as MacroRouteImport } from './routes/macro'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
-import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
+import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
+import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MacroRoute = MacroRouteImport.update({
-  id: '/macro',
-  path: '/macro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndicatorsRoute = IndicatorsRouteImport.update({
-  id: '/indicators',
-  path: '/indicators',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreeEbookRoute = FreeEbookRouteImport.update({
-  id: '/free-ebook',
-  path: '/free-ebook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreeChannelRoute = FreeChannelRouteImport.update({
-  id: '/free-channel',
-  path: '/free-channel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
-  id: '/checkout-success',
-  path: '/checkout-success',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountRoute = AccountRouteImport.update({
@@ -83,42 +42,83 @@ const AccountRoute = AccountRouteImport.update({
   path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout-success',
+  path: '/checkout-success',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EbooksSlugRoute = EbooksSlugRouteImport.update({
-  id: '/ebooks/$slug',
-  path: '/ebooks/$slug',
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedSiteAnalyticsRoute =
-  AuthenticatedSiteAnalyticsRouteImport.update({
-    id: '/site-analytics',
-    path: '/site-analytics',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
+const FreeChannelRoute = FreeChannelRouteImport.update({
+  id: '/free-channel',
+  path: '/free-channel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeEbookRoute = FreeEbookRouteImport.update({
+  id: '/free-ebook',
+  path: '/free-ebook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndicatorsRoute = IndicatorsRouteImport.update({
+  id: '/indicators',
+  path: '/indicators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MacroRoute = MacroRouteImport.update({
+  id: '/macro',
+  path: '/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
     path: '/ads-dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const ApiPublicTelegramWebhookRoute =
-  ApiPublicTelegramWebhookRouteImport.update({
-    id: '/api/public/telegram/webhook',
-    path: '/api/public/telegram/webhook',
-    getParentRoute: () => rootRouteImport,
+const AuthenticatedSiteAnalyticsRoute =
+  AuthenticatedSiteAnalyticsRouteImport.update({
+    id: '/site-analytics',
+    path: '/site-analytics',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const EbooksSlugRoute = EbooksSlugRouteImport.update({
+  id: '/ebooks/$slug',
+  path: '/ebooks/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
     path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicTelegramWebhookRoute =
+  ApiPublicTelegramWebhookRouteImport.update({
+    id: '/api/public/telegram/webhook',
+    path: '/api/public/telegram/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -263,81 +263,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/macro': {
-      id: '/macro'
-      path: '/macro'
-      fullPath: '/macro'
-      preLoaderRoute: typeof MacroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/indicators': {
-      id: '/indicators'
-      path: '/indicators'
-      fullPath: '/indicators'
-      preLoaderRoute: typeof IndicatorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/free-ebook': {
-      id: '/free-ebook'
-      path: '/free-ebook'
-      fullPath: '/free-ebook'
-      preLoaderRoute: typeof FreeEbookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/free-channel': {
-      id: '/free-channel'
-      path: '/free-channel'
-      fullPath: '/free-channel'
-      preLoaderRoute: typeof FreeChannelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout-success': {
-      id: '/checkout-success'
-      path: '/checkout-success'
-      fullPath: '/checkout-success'
-      preLoaderRoute: typeof CheckoutSuccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -347,26 +277,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ebooks/$slug': {
-      id: '/ebooks/$slug'
-      path: '/ebooks/$slug'
-      fullPath: '/ebooks/$slug'
-      preLoaderRoute: typeof EbooksSlugRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/site-analytics': {
-      id: '/_authenticated/site-analytics'
-      path: '/site-analytics'
-      fullPath: '/site-analytics'
-      preLoaderRoute: typeof AuthenticatedSiteAnalyticsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/checkout-success': {
+      id: '/checkout-success'
+      path: '/checkout-success'
+      fullPath: '/checkout-success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-channel': {
+      id: '/free-channel'
+      path: '/free-channel'
+      fullPath: '/free-channel'
+      preLoaderRoute: typeof FreeChannelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-ebook': {
+      id: '/free-ebook'
+      path: '/free-ebook'
+      fullPath: '/free-ebook'
+      preLoaderRoute: typeof FreeEbookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/indicators': {
+      id: '/indicators'
+      path: '/indicators'
+      fullPath: '/indicators'
+      preLoaderRoute: typeof IndicatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/macro': {
+      id: '/macro'
+      path: '/macro'
+      fullPath: '/macro'
+      preLoaderRoute: typeof MacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/ads-dashboard': {
       id: '/_authenticated/ads-dashboard'
@@ -375,11 +361,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdsDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/public/telegram/webhook': {
-      id: '/api/public/telegram/webhook'
-      path: '/api/public/telegram/webhook'
-      fullPath: '/api/public/telegram/webhook'
-      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
+    '/_authenticated/site-analytics': {
+      id: '/_authenticated/site-analytics'
+      path: '/site-analytics'
+      fullPath: '/site-analytics'
+      preLoaderRoute: typeof AuthenticatedSiteAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/ebooks/$slug': {
+      id: '/ebooks/$slug'
+      path: '/ebooks/$slug'
+      fullPath: '/ebooks/$slug'
+      preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/payments/webhook': {
@@ -387,6 +380,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/payments/webhook'
       fullPath: '/api/public/payments/webhook'
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/telegram/webhook': {
+      id: '/api/public/telegram/webhook'
+      path: '/api/public/telegram/webhook'
+      fullPath: '/api/public/telegram/webhook'
+      preLoaderRoute: typeof ApiPublicTelegramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -13,29 +13,23 @@ const adClickSchema = z.object({
 export const recordAdClick = createServerFn({ method: "POST" })
   .inputValidator(adClickSchema)
   .handler(async ({ data }) => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
-
-    if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return { ok: false, error: "Attribution backend not configured" };
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: {
-        storage: undefined,
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    });
+    // This is a server function (never runs in the browser), so it should
+    // authenticate as service_role, not the public anon key — record_ad_click
+    // is SECURITY DEFINER and its anon/authenticated grants have been
+    // revoked (see the lock_record_ad_click migration).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { error } = await supabase.rpc("record_ad_click", {
+    const { error } = await supabaseAdmin.rpc("record_ad_click", {
       p_session_id: data.sessionId,
       p_fbclid: data.fbclid,
-      p_utm_source: data.utmSource ?? null,
-      p_utm_medium: data.utmMedium ?? null,
-      p_utm_campaign: data.utmCampaign ?? null,
-      p_landing_path: data.landingPath ?? null,
+      p_utm_source: data.utmSource ?? undefined,
+      p_utm_medium: data.utmMedium ?? undefined,
+      p_utm_campaign: data.utmCampaign ?? undefined,
+      p_landing_path: data.landingPath ?? undefined,
     });
 
     if (error) {

@@ -4,15 +4,20 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+// getSessionId() (src/lib/analytics.ts) produces crypto.randomUUID() with
+// the dashes stripped — always exactly 32 lowercase hex chars. Enforcing
+// that exact shape here rejects the short/guessable ids a probe would try.
+const SESSION_ID_SHAPE = z.string().regex(/^[a-f0-9]{32}$/);
+
 const sendSchema = z.object({
-  sessionId: z.string().min(4).max(80),
+  sessionId: SESSION_ID_SHAPE,
   name: z.string().max(60).nullable().optional(),
   text: z.string().min(1).max(1500),
   entryId: z.string().max(60).nullable().optional(),
 });
 
 const fetchSchema = z.object({
-  sessionId: z.string().min(4).max(80),
+  sessionId: SESSION_ID_SHAPE,
   afterId: z.number().int().nonnegative().default(0),
 });
 
@@ -94,6 +99,16 @@ export const fetchSupportMessages = createServerFn({ method: "POST" })
   .inputValidator(fetchSchema)
   .handler(async ({ data }): Promise<SupportMessage[]> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+
+    // Knowing the session id is the only thing gating chat history, so keep
+    // polling/enumeration cheap-but-not-free even though the id itself is
+    // now an unguessable UUID.
+    const allowed = await checkRateLimit("support_history", data.sessionId, {
+      max: 120,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (!allowed) return [];
 
     const { data: rows, error } = await supabaseAdmin
       .from("support_messages")
