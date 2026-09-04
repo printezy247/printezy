@@ -26,6 +26,7 @@ import {
   Menu,
   X,
   BookOpen,
+  Lock,
 } from "lucide-react";
 import {
   trackPageLoad,
@@ -876,8 +877,8 @@ export function Pricing() {
               <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
                 <BuyButton sku={t.sku} label={t.cta} />
               </div>
-              <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
-                Card, USDT or Telegram Stars — access delivered in Telegram.
+              <p className="mt-1.5 flex items-center justify-center gap-1 text-center text-[11px] text-muted-foreground">
+                <Lock className="h-3 w-3" /> Secured by Stripe
               </p>
               {t.freeAlt ? (
                 t.name === "Premium" ? (

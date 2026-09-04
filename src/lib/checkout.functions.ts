@@ -25,6 +25,7 @@ export const createCheckout = createServerFn({ method: "POST" })
       experienceLevel?: string;
       mt5Account?: string;
       referredBy?: string;
+      sessionId?: string;
     }) => {
       const item = getCatalogItem(input?.sku ?? "");
       if (typeof input?.sku !== "string" || !item) {
@@ -65,12 +66,22 @@ export const createCheckout = createServerFn({ method: "POST" })
         experienceLevel,
         mt5Account,
         referredBy,
+        sessionId: input?.sessionId ? String(input.sessionId).trim().slice(0, 80) : undefined,
       };
     },
   )
   .handler(async ({ data }): Promise<{ clientSecret: string } | { error: string }> => {
     const item = getCatalogItem(data.sku)!;
     try {
+      const { checkRateLimit } = await import("@/lib/rate-limit.server");
+      const allowed = await checkRateLimit("create_checkout", data.sessionId || "anonymous", {
+        max: 10,
+        windowMs: 60 * 60 * 1000,
+      });
+      if (!allowed) {
+        return { error: "Too many checkout attempts — please try again in a bit." };
+      }
+
       const stripe = createStripeClient(data.environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.

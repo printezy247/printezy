@@ -194,7 +194,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         initial={reducedMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.2 } }}
         exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.15 } }}
-        className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
@@ -219,8 +219,9 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             transition: { duration: reducedMotion ? 0 : 0.15, ease: "easeIn" },
           }}
           onClick={(e) => e.stopPropagation()}
-          className="relative my-8 w-full max-w-md rounded-xl border border-border bg-background p-6"
+          className="relative my-8 w-full max-w-sm overflow-hidden rounded-xl border border-accent/25 bg-background p-6 shadow-gold"
         >
+          <div className="bg-gold absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
           <button
             ref={closeBtnRef}
             type="button"

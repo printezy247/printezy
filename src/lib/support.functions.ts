@@ -38,6 +38,15 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { answerFor, entryAnswer } = await import("@/lib/bot/replies.server");
     const { relayWebToSarah } = await import("@/lib/bot/sarah.server");
+    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+
+    const allowed = await checkRateLimit("support_message", data.sessionId, {
+      max: 20,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (!allowed) {
+      throw new Error("You're sending messages a bit fast — please wait a moment and try again.");
+    }
 
     const visitor = (data.name ?? "").trim().slice(0, 60) || "Website visitor";
     const text = data.text.trim();

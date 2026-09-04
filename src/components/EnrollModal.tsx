@@ -8,6 +8,7 @@ import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { createCheckout } from "@/lib/checkout.functions";
 import { getStoredReferralCode } from "@/lib/referral-capture";
+import { getSessionId } from "@/lib/analytics";
 import { getCatalogItem } from "@/lib/catalog";
 import {
   Select,
@@ -107,6 +108,7 @@ export function EnrollModal({ sku, onClose }: Props) {
           origin: window.location.origin,
           environment: getStripeEnvironment(),
           telegramUsername: handle,
+          sessionId: getSessionId(),
           ...(fullName.trim() ? { fullName: fullName.trim() } : {}),
           ...(experienceLevel ? { experienceLevel } : {}),
           ...(mt5Account.trim() ? { mt5Account: mt5Account.trim() } : {}),
@@ -157,10 +159,11 @@ export function EnrollModal({ sku, onClose }: Props) {
             transition: { duration: reducedMotion ? 0 : 0.15, ease: "easeIn" },
           }}
           onClick={(e) => e.stopPropagation()}
-          className={`relative my-8 w-full rounded-xl border border-border bg-background ${
+          className={`relative my-8 w-full overflow-hidden rounded-xl border border-primary/25 bg-background shadow-elevated ${
             step === "details" ? "max-w-md p-6" : "max-w-lg"
           }`}
         >
+          <div className="bg-green absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
           <button
             ref={closeBtnRef}
             type="button"

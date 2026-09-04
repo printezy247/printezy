@@ -17,6 +17,17 @@ export function StickyBuyBar() {
     return () => observer.disconnect();
   }, []);
 
+  // Signal other fixed-position mobile UI (the support chat trigger) to
+  // shift up so it doesn't collide with this bar.
+  useEffect(() => {
+    if (visible) {
+      document.body.setAttribute("data-sticky-buy-bar-visible", "true");
+    } else {
+      document.body.removeAttribute("data-sticky-buy-bar-visible");
+    }
+    return () => document.body.removeAttribute("data-sticky-buy-bar-visible");
+  }, [visible]);
+
   if (!item || !visible) return null;
 
   return (

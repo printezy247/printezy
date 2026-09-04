@@ -240,6 +240,56 @@
   animation: conic-spin 8s linear infinite;
 }
 
+/* Premium glass button treatment — layered gradient fill + inset sheen,
+   deepened on press for a tactile, slightly 3D feel. */
+.btn-primary-glass {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary) 100%, white 15%) 0%,
+    var(--primary) 55%,
+    var(--primary-glow) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 10px 24px rgba(47, 191, 113, 0.22);
+}
+.btn-primary-glass:hover {
+  filter: brightness(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    0 14px 32px rgba(47, 191, 113, 0.32);
+}
+.btn-primary-glass:active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 2px 5px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+.btn-outline-glass {
+  background: linear-gradient(180deg, rgba(201, 161, 58, 0.14) 0%, rgba(201, 161, 58, 0.05) 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.btn-outline-glass:hover {
+  background: linear-gradient(180deg, rgba(201, 161, 58, 0.22) 0%, rgba(201, 161, 58, 0.08) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 14px rgba(201, 161, 58, 0.2);
+}
+.btn-outline-glass:active {
+  background: linear-gradient(180deg, rgba(201, 161, 58, 0.1) 0%, rgba(201, 161, 58, 0.03) 100%);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.btn-ghost-glass:hover {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
 /* Premium red neon flowing border for the Premium "Get Free Access" CTA */
 .neon-free-btn {
   position: relative;

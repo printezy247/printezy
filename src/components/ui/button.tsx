@@ -9,10 +9,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground hover:brightness-110",
-        outline:
-          "border border-[rgba(201,161,58,0.45)] bg-transparent text-accent hover:bg-accent/10",
-        ghost: "bg-transparent text-body hover:bg-surface hover:text-foreground",
+        primary: "btn-primary-glass text-primary-foreground",
+        outline: "btn-outline-glass border border-[rgba(201,161,58,0.45)] text-accent",
+        ghost: "btn-ghost-glass bg-transparent text-body hover:bg-surface hover:text-foreground",
       },
       size: {
         sm: "min-h-10 rounded-lg px-4 py-2 text-[13px]",

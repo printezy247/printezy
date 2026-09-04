@@ -23,6 +23,7 @@ import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
+import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -96,6 +97,12 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSiteAnalyticsRoute =
+  AuthenticatedSiteAnalyticsRouteImport.update({
+    id: '/site-analytics',
+    path: '/site-analytics',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
@@ -129,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -147,6 +155,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -167,6 +176,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
+    | '/site-analytics'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -205,6 +216,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/ads-dashboard'
+    | '/site-analytics'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -224,6 +236,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/_authenticated/ads-dashboard'
+    | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
@@ -348,6 +361,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/site-analytics': {
+      id: '/_authenticated/site-analytics'
+      path: '/site-analytics'
+      fullPath: '/site-analytics'
+      preLoaderRoute: typeof AuthenticatedSiteAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/ads-dashboard': {
       id: '/_authenticated/ads-dashboard'
       path: '/ads-dashboard'
@@ -374,10 +394,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
+  AuthenticatedSiteAnalyticsRoute: typeof AuthenticatedSiteAnalyticsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
+  AuthenticatedSiteAnalyticsRoute: AuthenticatedSiteAnalyticsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

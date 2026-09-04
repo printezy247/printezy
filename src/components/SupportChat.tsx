@@ -39,6 +39,8 @@ export function SupportChat() {
   const [messages, setMessages] = useState<Bubble[]>([GREETING]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [suppressed, setSuppressed] = useState(false);
+  const [liftForBuyBar, setLiftForBuyBar] = useState(false);
   const lastIdRef = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -59,6 +61,25 @@ export function SupportChat() {
       setOpen(true);
       track("click", "support_chat_open_proactive");
     });
+  }, []);
+
+  // Stay out of the way of a checkout/ebook overlay (which sets
+  // data-checkout-open) and shift up above the mobile sticky buy bar
+  // (which sets data-sticky-buy-bar-visible) instead of overlapping it.
+  useEffect(() => {
+    const sync = () => {
+      const checkoutOpen = document.body.getAttribute("data-checkout-open") === "true";
+      setSuppressed(checkoutOpen);
+      if (checkoutOpen) setOpen(false);
+      setLiftForBuyBar(document.body.hasAttribute("data-sticky-buy-bar-visible"));
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-checkout-open", "data-sticky-buy-bar-visible"],
+    });
+    return () => observer.disconnect();
   }, []);
 
   // Body scroll lock, focus trap, Escape-to-close and click-outside-to-dismiss
@@ -178,7 +199,7 @@ export function SupportChat() {
 
   return (
     <>
-      {!open && (
+      {!open && !suppressed && (
         <button
           ref={openBtnRef}
           type="button"
@@ -187,20 +208,24 @@ export function SupportChat() {
             track("click", "support_chat_open");
           }}
           aria-label="Chat with Sarah"
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-105"
+          className={`fixed right-5 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-[transform,bottom] hover:scale-105 ${
+            liftForBuyBar ? "bottom-24 sm:bottom-5" : "bottom-5"
+          }`}
         >
           <MessageCircle className="h-5 w-5" />
           Chat with Sarah
         </button>
       )}
 
-      {open && (
+      {open && !suppressed && (
         <div
           ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-label="Chat with Sarah"
-          className="fixed bottom-5 right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+          className={`fixed right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl ${
+            liftForBuyBar ? "bottom-24 sm:bottom-5" : "bottom-5"
+          }`}
         >
           <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-3">
             <div>

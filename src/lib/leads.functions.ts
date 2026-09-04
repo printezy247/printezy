@@ -13,6 +13,15 @@ export const saveLead = createServerFn({ method: "POST" })
   .inputValidator(saveLeadSchema)
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+
+    const allowed = await checkRateLimit("save_lead", data.sessionId?.trim() || "anonymous", {
+      max: 10,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (!allowed) {
+      throw new Error("Too many requests — please try again in a bit.");
+    }
 
     const email = data.email.trim().toLowerCase();
     const name = data.name?.trim() || null;
