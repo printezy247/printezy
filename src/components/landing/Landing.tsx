@@ -948,28 +948,26 @@ export const EBOOKS = [
     title: "Mapping Like A Pro",
     slug: "mapping-like-a-pro",
     image: ebookMapping,
-    bullets: ["Master support & resistance zones", "Spot high-probability setups", "Step-by-step PDF guide"],
+    bulletKeys: ["ebook_mapping_b1", "ebook_mapping_b2", "ebook_mapping_b3"] as TranslationKey[],
   },
   {
     title: "Technical Analysis Ebook",
     slug: "technical-analysis",
     image: ebookTechnical,
-    bullets: ["Price action fundamentals", "Indicator confluence framework", "Risk management rules"],
+    bulletKeys: ["ebook_technical_b1", "ebook_technical_b2", "ebook_technical_b3"] as TranslationKey[],
   },
 ];
 
-const TV_FEATURES = [
-  "Real-time signal generation",
-  "Support/Resistance detection",
-  "Confluence analysis",
+const TV_FEATURE_KEYS: TranslationKey[] = ["tv_feature_1", "tv_feature_2", "tv_feature_3"];
+
+const MT5_FEATURE_KEYS: TranslationKey[] = [
+  "mt5_feature_1",
+  "mt5_feature_2",
+  "mt5_feature_3",
+  "mt5_feature_4",
 ];
 
-const MT5_FEATURES = [
-  "Built for Vantage Markets",
-  "Automated signals",
-  "Risk management tools",
-  "Available in Elite tier",
-];
+const MACRO_FEATURE_KEYS: TranslationKey[] = ["macro_feature_1", "macro_feature_2", "macro_feature_3"];
 
 function Book3D({ image, title }: { image: string; title: string }) {
   return (
@@ -988,12 +986,13 @@ function Book3D({ image, title }: { image: string; title: string }) {
 export function Products() {
   const botHref = useBotLink();
   const [detailsSlug, setDetailsSlug] = useState<string | null>(null);
+  const { t } = useTranslation();
   return (
     <Section id="products">
       <SectionHeading
-        eyebrow="Products"
-        title="The full EzyMap toolkit"
-        subtitle="Ebooks, indicators and macro research — everything behind the signals."
+        eyebrow={t("products_eyebrow")}
+        title={t("products_title")}
+        subtitle={t("products_subtitle")}
       />
 
       {/* Ebooks */}
@@ -1002,7 +1001,7 @@ export function Products() {
           <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
             <BookOpen className="h-5 w-5" />
           </span>
-          <h3 className="text-xl font-bold">Ebooks</h3>
+          <h3 className="text-xl font-bold">{t("products_ebooks_heading")}</h3>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           {EBOOKS.map((b, i) => (
@@ -1019,15 +1018,15 @@ export function Products() {
                 <div className="flex min-w-0 flex-1 flex-col">
                   <h4 className="text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
                   <ul className="mt-2 flex-1 space-y-1">
-                    {b.bullets.map((bullet) => (
-                      <li key={bullet} className="flex items-start gap-2 text-xs text-body sm:text-sm">
+                    {b.bulletKeys.map((bulletKey) => (
+                      <li key={bulletKey} className="flex items-start gap-2 text-xs text-body sm:text-sm">
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
-                        <span>{bullet}</span>
+                        <span>{t(bulletKey)}</span>
                       </li>
                     ))}
                   </ul>
                   <span className="mt-4 inline-flex items-center gap-1 rounded-md border border-accent/60 bg-accent/5 px-3 py-2 text-xs font-semibold text-accent transition-colors group-hover:bg-accent/10 sm:px-4 sm:text-sm">
-                    Get it free <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                    {t("ebook_get_it_free")} <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </span>
                 </div>
               </button>
@@ -1051,12 +1050,12 @@ export function Products() {
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
             <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
-          <h3 className="mt-4 text-lg font-semibold">TradingView Indicators</h3>
+          <h3 className="mt-4 text-lg font-semibold">{t("products_tv_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
-            {TV_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm">
+            {TV_FEATURE_KEYS.map((fk) => (
+              <li key={fk} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-body">{f}</span>
+                <span className="text-body">{t(fk)}</span>
               </li>
             ))}
           </ul>
@@ -1066,7 +1065,7 @@ export function Products() {
               onClick={() => goTrack("products_tv_enroll")}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
             >
-              Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+              {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <Button asChild variant="outline">
               <a
@@ -1076,7 +1075,7 @@ export function Products() {
                 onClick={() => goTrack("products_tv_open_free_account")}
               >
                 <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
-                Open Free Account
+                {t("products_open_free_account")}
               </a>
             </Button>
           </div>
@@ -1089,12 +1088,12 @@ export function Products() {
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
             <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
-          <h3 className="mt-4 text-lg font-semibold">MT5 Indicators</h3>
+          <h3 className="mt-4 text-lg font-semibold">{t("products_mt5_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
-            {MT5_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm">
+            {MT5_FEATURE_KEYS.map((fk) => (
+              <li key={fk} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-body">{f}</span>
+                <span className="text-body">{t(fk)}</span>
               </li>
             ))}
           </ul>
@@ -1104,7 +1103,7 @@ export function Products() {
               onClick={() => goTrack("products_mt5_enroll")}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
             >
-              Enroll Now <ArrowRight className="h-3.5 w-3.5" />
+              {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <Button asChild variant="outline">
               <a
@@ -1113,7 +1112,7 @@ export function Products() {
                 rel="noopener noreferrer"
                 onClick={() => goTrack("products_mt5_download")}
               >
-                Download MT5 Now <ArrowRight className="h-3.5 w-3.5" />
+                {t("products_download_mt5")} <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </Button>
           </div>
@@ -1136,12 +1135,12 @@ export function Products() {
             loading="lazy"
             className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
           />
-          <h3 className="mt-4 text-lg font-semibold">Macro &amp; Fundamentals</h3>
+          <h3 className="mt-4 text-lg font-semibold">{t("products_macro_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
-            {["Daily macro updates", "Economic analysis", "Gold & crypto coverage"].map((f) => (
-              <li key={f} className="flex items-start gap-2 text-sm">
+            {MACRO_FEATURE_KEYS.map((fk) => (
+              <li key={fk} className="flex items-start gap-2 text-sm">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                <span className="text-body">{f}</span>
+                <span className="text-body">{t(fk)}</span>
               </li>
             ))}
           </ul>
@@ -1151,11 +1150,11 @@ export function Products() {
               onClick={() => goTrack("products_macro_join")}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
             >
-              Join Macro Bot <ArrowRight className="h-3.5 w-3.5" />
+              {t("products_join_macro_bot")} <ArrowRight className="h-3.5 w-3.5" />
             </a>
             <Button asChild variant="outline">
               <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
-                View It Here <ArrowRight className="h-3.5 w-3.5" />
+                {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Button>
           </div>
@@ -1170,21 +1169,22 @@ export function Products() {
 /* How it works                                                        */
 /* ------------------------------------------------------------------ */
 
-const STEPS = [
-  { title: "Join t.me/ezymap", body: "One tap. No payment, no forms — you're in the free channel instantly." },
-  { title: "Receive instant signal alerts", body: "Entry, stop loss and targets arrive as soon as a setup confirms." },
-  { title: "Execute on Vantage Markets", body: "Place the trade with your own broker — we recommend Vantage Markets." },
+const STEPS: { titleKey: TranslationKey; bodyKey: TranslationKey }[] = [
+  { titleKey: "how_step1_title", bodyKey: "how_step1_body" },
+  { titleKey: "how_step2_title", bodyKey: "how_step2_body" },
+  { titleKey: "how_step3_title", bodyKey: "how_step3_body" },
 ];
 
 export function HowItWorks() {
   const reducedMotion = usePrefersReducedMotion();
+  const { t } = useTranslation();
   return (
     <Section id="how-it-works" className="bg-surface/40">
-      <SectionHeading eyebrow="How it works" title="Three steps to your first signal" />
+      <SectionHeading eyebrow={t("how_eyebrow")} title={t("how_title")} />
       <ol className="grid gap-5 md:grid-cols-3">
         {STEPS.map((s, i) => (
           <motion.li
-            key={s.title}
+            key={s.titleKey}
             className="glass-card relative flex h-full flex-col rounded-xl p-6"
             initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -1192,8 +1192,8 @@ export function HowItWorks() {
             transition={reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }}
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
-            <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-            <p className="mt-2 flex-1 text-sm text-body">{s.body}</p>
+            <h3 className="mt-2 text-lg font-semibold">{t(s.titleKey)}</h3>
+            <p className="mt-2 flex-1 text-sm text-body">{t(s.bodyKey)}</p>
           </motion.li>
         ))}
       </ol>
@@ -1210,6 +1210,7 @@ export function HowItWorks() {
 
 export function Ambassador() {
   const { formatted: memberCount } = useMemberCount();
+  const { t } = useTranslation();
   return (
     <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
@@ -1224,13 +1225,13 @@ export function Ambassador() {
             />
           </div>
           <p className="mt-5 text-lg font-semibold">Jack</p>
-          <p className="text-sm text-muted-foreground">Founder, EzyMap ALGO</p>
+          <p className="text-sm text-muted-foreground">{t("ambassador_role")}</p>
           <p className="mt-3 text-xs text-muted-foreground">
-            10+ year trading veteran
+            {t("ambassador_experience")}
           </p>
           <Button asChild variant="outline" size="sm" className="mt-5">
             <a href={LINKS.support} onClick={() => goTrack("ambassador_contact_sarah")}>
-              <Send className="h-4 w-4" /> Questions? Ask Sarah
+              <Send className="h-4 w-4" /> {t("ambassador_ask_sarah")}
             </a>
           </Button>
         </div>
@@ -1238,19 +1239,19 @@ export function Ambassador() {
 
         <Reveal delay={0.15}>
         <div>
-          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">Ambassador</p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">Meet Jack</h2>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{t("ambassador_eyebrow")}</p>
+          <h2 className="mt-3 text-3xl sm:text-4xl">{t("ambassador_title")}</h2>
           <p className="mt-4 text-base text-body">
-            Jack focuses on one thing: repeatable, mechanical execution.
+            {t("ambassador_bio")}
           </p>
           <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
-            "Consistent wins come from consistent methodology."
+            "{t("ambassador_quote")}"
           </blockquote>
           <dl className="mt-8 grid gap-4 sm:grid-cols-3">
             {[
-              [memberCount, "Students"],
-              ["10+ yrs", "Trading"],
-              ["24/5", "Coverage"],
+              [memberCount, t("ambassador_stat_students")],
+              ["10+ yrs", t("ambassador_stat_trading")],
+              ["24/5", t("ambassador_stat_coverage")],
             ].map(([v, l]) => (
               <div key={l} className="flex h-full flex-col rounded-xl border border-border bg-surface p-4">
                 <dt className="font-mono text-xl font-bold tabular-nums text-accent">{v}</dt>
@@ -1271,47 +1272,32 @@ export function Ambassador() {
 
 type Testimonial = {
   name: string;
-  role: string;
-  quote: string;
+  roleKey: TranslationKey;
+  quoteKey: TranslationKey;
   /** Real Telegram handle, only set for testimonials that can genuinely be verified. */
   verifiedHandle?: string;
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  {
-    name: "Budi D.",
-    role: "Part-time trader",
-    quote: "The alerts land on my phone while I'm at work. I no longer stare at charts all day.",
-  },
-  {
-    name: "Priya R.",
-    role: "Intraday trader",
-    quote: "Clean entries, clear invalidation. It made my journaling and risk sizing far easier.",
-  },
-  {
-    name: "Luqman R.",
-    role: "Scalper",
-    quote: "The M5 channel matches how I already trade — it just removes the second-guessing.",
-  },
-  {
-    name: "Chen W.",
-    role: "New trader",
-    quote: "Started on the free channel to learn. The education alone was worth joining.",
-  },
+  { name: "Budi D.", roleKey: "testimonial_budi_role", quoteKey: "testimonial_budi_quote" },
+  { name: "Priya R.", roleKey: "testimonial_priya_role", quoteKey: "testimonial_priya_quote" },
+  { name: "Luqman R.", roleKey: "testimonial_luqman_role", quoteKey: "testimonial_luqman_quote" },
+  { name: "Chen W.", roleKey: "testimonial_chen_role", quoteKey: "testimonial_chen_quote" },
 ];
 
 export function SocialProof() {
   const { formatted: memberCount } = useMemberCount();
+  const { t } = useTranslation();
   return (
     <Section id="testimonials" className="bg-surface/40">
       <SectionHeading
-        eyebrow="Social proof"
-        title={`${memberCount} active traders trust EzyMap`}
-        subtitle="Real feedback from the community inside our Telegram channels."
+        eyebrow={t("social_eyebrow")}
+        title={t("social_title").replace("{memberCount}", memberCount)}
+        subtitle={t("social_subtitle")}
       />
       <div className="mb-10 grid gap-4">
         {[
-          [Clock, "24/5", "Market coverage"],
+          [Clock, "24/5", t("social_market_coverage")],
         ].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
@@ -1330,21 +1316,21 @@ export function SocialProof() {
         })}
       </div>
       <div className="flex flex-wrap justify-center gap-5">
-        {TESTIMONIALS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 0.04} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
+        {TESTIMONIALS.map((item, i) => (
+          <Reveal key={item.name} delay={i * 0.04} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
           <figure className="glass-card flex h-full flex-col rounded-xl p-6">
             <div className="flex gap-0.5 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-current" />
               ))}
             </div>
-            <blockquote className="mt-3 flex-1 text-sm text-body">"{t.quote}"</blockquote>
+            <blockquote className="mt-3 flex-1 text-sm text-body">"{t(item.quoteKey)}"</blockquote>
             <figcaption className="mt-4 text-sm">
-              <span className="font-semibold">{t.name}</span>
-              <span className="block text-xs text-muted-foreground">{t.role}</span>
-              {t.verifiedHandle ? (
+              <span className="font-semibold">{item.name}</span>
+              <span className="block text-xs text-muted-foreground">{t(item.roleKey)}</span>
+              {item.verifiedHandle ? (
                 <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                  <ShieldCheck className="h-3 w-3" /> Verified Telegram member
+                  <ShieldCheck className="h-3 w-3" /> {t("testimonial_verified")}
                 </span>
               ) : null}
             </figcaption>
@@ -1360,72 +1346,33 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-const FAQ_GROUPS: { title: string; items: { q: string; a: string }[] }[] = [
+const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
   {
-    title: "Routines & signals",
+    titleKey: "faq_group1_title",
     items: [
-      {
-        q: "How often do you send signals?",
-        a: "Multiple times daily during trading hours (24/5). Frequency depends on market conditions — we only alert when a setup meets our criteria. Quality over quantity.",
-      },
-      {
-        q: "What markets do you trade?",
-        a: "Forex (major pairs), crypto and commodities. Our primary focus is scalping and intraday trading, with swing setups on higher timeframes.",
-      },
-      {
-        q: "What trading styles do the routines cover?",
-        a: "Three styles: Scalp, Intraday and Swing. Every signal states its style, entry, stop-loss and take-profit so you can match it to your schedule.",
-      },
-      {
-        q: "Do I need trading experience?",
-        a: "No. Our education channel teaches everything step by step. Start on the free channel and learn as you go.",
-      },
-      {
-        q: "Which broker should I use?",
-        a: "We recommend Vantage Markets (our affiliate partner), but any broker you trust will work with our routines.",
-      },
+      { qKey: "faq_g1_q1", aKey: "faq_g1_a1" },
+      { qKey: "faq_g1_q2", aKey: "faq_g1_a2" },
+      { qKey: "faq_g1_q3", aKey: "faq_g1_a3" },
+      { qKey: "faq_g1_q4", aKey: "faq_g1_a4" },
+      { qKey: "faq_g1_q5", aKey: "faq_g1_a5" },
     ],
   },
   {
-    title: "Pricing tiers",
+    titleKey: "faq_group2_title",
     items: [
-      {
-        q: "Is there a free option?",
-        a: "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29/month is the paid entry point.",
-      },
-      {
-        q: "What's included in Pro, Premium and Elite?",
-        a: "Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",
-      },
-      {
-        q: "Can I upgrade or downgrade later?",
-        a: "Yes. Open the enrollment bot, choose your new package, and your account updates once payment is confirmed. Your trade log and history carry over.",
-      },
-      {
-        q: "Do you offer refunds?",
-        a: "Message Sarah through the bot with your Telegram username and order details — she handles refund requests case by case.",
-      },
+      { qKey: "faq_g2_q1", aKey: "faq_g2_a1" },
+      { qKey: "faq_g2_q2", aKey: "faq_g2_a2" },
+      { qKey: "faq_g2_q3", aKey: "faq_g2_a3" },
+      { qKey: "faq_g2_q4", aKey: "faq_g2_a4" },
     ],
   },
   {
-    title: "Enrollment & your account",
+    titleKey: "faq_group3_title",
     items: [
-      {
-        q: "How do I enroll in a paid tier?",
-        a: "Tap Enroll Now on any package to open our enrollment bot on Telegram, pick your tier, and pay securely by card through Stripe. Your access activates the moment payment is confirmed.",
-      },
-      {
-        q: "How do I access my account?",
-        a: "Type /account in the bot for a one-tap signed-in link, or sign in on the site with a 6-digit code the bot sends to your Telegram — no passwords.",
-      },
-      {
-        q: "What happens after I pay?",
-        a: "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
-      },
-      {
-        q: "Who do I contact for help?",
-        a: "Use the 💬 Ask Sarah button in the bot (or /ask) for live chat with our support lead, or reach her directly at t.me/ezysarah.",
-      },
+      { qKey: "faq_g3_q1", aKey: "faq_g3_a1" },
+      { qKey: "faq_g3_q2", aKey: "faq_g3_a2" },
+      { qKey: "faq_g3_q3", aKey: "faq_g3_a3" },
+      { qKey: "faq_g3_q4", aKey: "faq_g3_a4" },
     ],
   },
 ];
@@ -1434,20 +1381,21 @@ export function Faq() {
   const [openIds, setOpenIds] = useState<string[]>([]);
   const toggle = (id: string) =>
     setOpenIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  const { t } = useTranslation();
   return (
     <Section id="faq">
-      <SectionHeading eyebrow="FAQ" title="Questions, answered" />
+      <SectionHeading eyebrow={t("faq_eyebrow")} title={t("faq_title")} />
       <div className="mx-auto max-w-3xl space-y-10">
         {FAQ_GROUPS.map((g, gi) => (
-          <div key={g.title}>
+          <div key={g.titleKey}>
             <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              {g.title}
+              {t(g.titleKey)}
             </h3>
             <div className="space-y-3">
               {g.items.map((f, i) => {
                 const id = `${gi}-${i}`;
                 return (
-                  <Reveal key={f.q} delay={i * 0.04} y={20}>
+                  <Reveal key={f.qKey} delay={i * 0.04} y={20}>
                   <div className="glass-card overflow-hidden rounded-xl">
                     <button
                       type="button"
@@ -1455,14 +1403,14 @@ export function Faq() {
                       aria-expanded={openIds.includes(id)}
                       className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                     >
-                      <span className="text-sm font-semibold">{f.q}</span>
+                      <span className="text-sm font-semibold">{t(f.qKey)}</span>
                       <ChevronDown
                         className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${openIds.includes(id) ? "rotate-180" : ""}`}
                       />
                     </button>
                     {openIds.includes(id) ? (
                       <p className="border-t border-border px-5 py-4 text-sm leading-relaxed text-body">
-                        {f.a}
+                        {t(f.aKey)}
                       </p>
                     ) : null}
                   </div>
@@ -1483,19 +1431,19 @@ export function Faq() {
 
 function FinalCta() {
   const botHref = useBotLink();
+  const { t } = useTranslation();
   return (
     <Section id="get-started" className="bg-surface/40">
       <Reveal>
       <div className="glass-card rounded-xl px-6 py-14 text-center sm:px-12">
-        <h2 className="text-3xl sm:text-4xl">Start with the free channel today</h2>
+        <h2 className="text-3xl sm:text-4xl">{t("final_title")}</h2>
         <p className="mx-auto mt-4 max-w-xl text-body">
-          No payment, no commitment. See the signals and education for yourself, then upgrade
-          through our bot when it fits your trading.
+          {t("final_body")}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <TelegramCta event="final_join_free" className="px-7 py-3.5 text-base" />
           <TelegramCta
-            label="Enroll via Bot"
+            label={t("final_enroll_via_bot")}
             event="final_enroll_bot"
             variant="gold"
             href={botHref}
@@ -1522,8 +1470,7 @@ export function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Professional trading signals and education delivered on Telegram. Built for traders
-              who value consistency over hype.
+              {t("footer_tagline")}
             </p>
             <a
               href={LINKS.freeChannel}
@@ -1535,7 +1482,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold">Navigate</h3>
+            <h3 className="text-sm font-semibold">{t("footer_navigate")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
@@ -1548,47 +1495,47 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold">Links</h3>
+            <h3 className="text-sm font-semibold">{t("footer_links")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
                 <a href={botHref} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
-                  Enrollment Bot
+                  {t("footer_enrollment_bot")}
                 </a>
               </li>
               <li>
                 <a href={LINKS.support} onClick={() => goTrack("footer_support")} className="hover:text-foreground">
-                  Support (Sarah)
+                  {t("footer_support")}
                 </a>
               </li>
               <li>
                 <a href={LINKS.macro} onClick={() => goTrack("footer_macro")} className="hover:text-foreground">
-                  Macro &amp; Fundamentals
+                  {t("footer_macro_fundamentals")}
                 </a>
               </li>
               <li>
                 <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
-                  Vantage Markets
+                  {t("footer_vantage_markets")}
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold">Legal</h3>
+            <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link to="/privacy" className="hover:text-foreground">
-                  Privacy Policy
+                  {t("footer_privacy")}
                 </Link>
               </li>
               <li>
                 <Link to="/terms" className="hover:text-foreground">
-                  Terms of Service
+                  {t("footer_terms")}
                 </Link>
               </li>
               <li>
                 <a href={LINKS.support} onClick={() => goTrack("footer_contact")} className="hover:text-foreground">
-                  Contact
+                  {t("footer_contact")}
                 </a>
               </li>
             </ul>
@@ -1596,8 +1543,8 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>© 2026 EzyMap ALGO. All rights reserved.</p>
-          <p>Trading involves risk. Signals are educational, not financial advice.</p>
+          <p>{t("footer_copyright")}</p>
+          <p>{t("footer_risk_disclaimer")}</p>
         </div>
       </div>
     </footer>
