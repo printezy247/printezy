@@ -2,7 +2,7 @@
 // payment-status view and support shortcuts, all rendered as inline keyboards.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TIER_CATALOG, formatPrice, getTier } from "./tiers";
-import { sendMessage, telegramCall, type InlineButton } from "./telegram.server";
+import { escapeHtml, sendMessage, telegramCall, type InlineButton } from "./telegram.server";
 import { createMemberSession, accountLink, type EnrollmentRow } from "./member.server";
 
 export const SUPPORT = "https://t.me/ezysarah";
@@ -55,7 +55,7 @@ export async function sendMainMenu(chatId: number, firstName?: string | null) {
 
   await sendMessage(
     chatId,
-    `👋 <b>EzyMap ALGO${firstName ? ` — hi ${firstName}` : ""}.</b>\n\nPick a package below and I'll set your account up right here. Paid packages activate automatically the moment payment clears — tap <b>My status</b> any time to check.`,
+    `👋 <b>EzyMap ALGO${firstName ? ` — hi ${escapeHtml(firstName)}` : ""}.</b>\n\nPick a package below and I'll set your account up right here. Paid packages activate automatically the moment payment clears — tap <b>My status</b> any time to check.`,
     keyboard,
   );
 }

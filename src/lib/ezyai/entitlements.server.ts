@@ -54,6 +54,7 @@ export async function recordEzyAiEntitlement(
   const stripe = createStripeClient(env);
   const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
   if (session.payment_status !== "paid") return null;
+  if (session.livemode !== (env === "live")) return null;
 
   const meta = (session.metadata as Record<string, string> | null) ?? {};
   const months = EZYAI_SKU_MONTHS[meta.sku ?? ""];

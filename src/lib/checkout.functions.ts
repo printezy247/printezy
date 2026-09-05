@@ -82,7 +82,14 @@ export const createCheckout = createServerFn({ method: "POST" })
         return { error: "Too many checkout attempts — please try again in a bit." };
       }
 
-      const stripe = createStripeClient(data.environment);
+      // The browser's Stripe key decides which environment its embedded
+      // checkout can render, but the server decides which one is real. A
+      // mismatch means a stale/test client talking to the live site.
+      const environment = detectStripeEnv();
+      if (data.environment !== environment) {
+        return { error: "Payment system mismatch — reload the page and try again." };
+      }
+      const stripe = createStripeClient(environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
       // A catalog item with no Stripe price yet gets one created on first

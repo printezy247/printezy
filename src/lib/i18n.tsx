@@ -106,7 +106,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   const setLocale = (next: Locale) => {
     if (routeLocale && (next === "en" || next === "ms")) {
-      const bare = location.pathname.replace(/^\/ms/, "") || "/";
+      const bare = "/" + location.pathname.replace(/^\/ms/, "").replace(/^\/+/, "");
       const target = next === "ms" ? (bare === "/" ? "/ms" : `/ms${bare}`) : bare;
       window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
       return;

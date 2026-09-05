@@ -41,6 +41,18 @@ export async function telegramCall(
 
 export type InlineButton = { text: string; callback_data?: string; url?: string };
 
+/**
+ * Every message goes out with parse_mode HTML, so any user-supplied value
+ * (names, handles, chat text, callback data) must be escaped or a stray `<`
+ * either injects markup into Sarah's inbox or makes Telegram reject the send.
+ */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 export async function sendMessage(
   chatId: number,
   text: string,

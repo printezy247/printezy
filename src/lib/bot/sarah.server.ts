@@ -3,7 +3,7 @@
 // and when she replies (Telegram "reply" on a forwarded message) the reply is
 // delivered back to the right member.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { sendMessage, type InlineButton } from "./telegram.server";
+import { escapeHtml, sendMessage, type InlineButton } from "./telegram.server";
 
 export const SUPPORT_LINK = "https://t.me/ezysarah";
 
@@ -28,7 +28,15 @@ export async function autoRegisterSarah(
   username: string | null | undefined,
 ): Promise<boolean> {
   if ((username ?? "").toLowerCase() !== SARAH_USERNAME) return false;
-  if ((await getSarahChatId()) === chatId) return false;
+  const current = await getSarahChatId();
+  if (current === chatId) return false;
+  if (current !== null) {
+    // Inbox already bound to a chat. Telegram usernames can be released and
+    // re-registered by someone else, so never let a new chat take it over
+    // silently — clear support_config.sarah_chat_id by hand to move it.
+    console.error("[sarah] refusing to re-bind inbox from", current, "to", chatId);
+    return false;
+  }
   const { error } = await supabaseAdmin
     .from("support_config")
     .upsert({ key: "sarah_chat_id", value: String(chatId), updated_at: new Date().toISOString() });
@@ -105,9 +113,11 @@ export async function relayToSarah(
   const sarahChatId = await getSarahChatId();
   if (!sarahChatId) return false;
 
-  const header = `📩 <b>${member.firstName ?? "Member"}</b>${
-    member.username ? ` (@${member.username})` : ""
+  const header = `📩 <b>${escapeHtml(member.firstName ?? "Member")}</b>${
+    member.username ? ` (@${escapeHtml(member.username)})` : ""
   } · id <code>${member.telegramId}</code>`;
+  // `text` is trusted HTML built by the caller; callers escape any user input
+  // they embed (see the webhook relay and the no-keyword fallback).
   const sent = await sendMessage(sarahChatId, `${header}\n\n${text}`);
   if (!sent.ok) {
     console.error("[sarah] forward failed", sent.error);
@@ -197,7 +207,7 @@ export async function alertMissedMessage(
     .maybeSingle();
   if (data?.missed_alert_sent) return;
 
-  const relayed = await relayToSarah(member, `❓ <i>No keyword matched:</i>\n\n${text}`);
+  const relayed = await relayToSarah(member, `❓ <i>No keyword matched:</i>\n\n${escapeHtml(text)}`);
   if (!relayed) return;
 
   const { error } = await supabaseAdmin
@@ -225,10 +235,10 @@ export async function requestTrial(
   member: { telegramId: number; username?: string | null; firstName?: string | null },
   product: string,
 ): Promise<void> {
-  await relayToSarah(member, `🎁 <b>3-day trial request</b> — <code>${product}</code>`);
+  await relayToSarah(member, `🎁 <b>3-day trial request</b> — <code>${escapeHtml(product)}</code>`);
   await sendMessage(
     member.telegramId,
-    `🎁 Trial requested for <b>${product.replace(/^mt5_/, "").replace(/_/g, " ")}</b>. Sarah builds the time-limited file by hand and sends it here — usually the same day.`,
+    `🎁 Trial requested for <b>${escapeHtml(product.replace(/^mt5_/, "").replace(/_/g, " "))}</b>. Sarah builds the time-limited file by hand and sends it here — usually the same day.`,
     [[{ text: "💬 Ask Sarah", callback_data: "sarah:start" }]],
   );
 }
@@ -239,10 +249,10 @@ export async function requestPurchase(
   product: string,
   plan: string,
 ): Promise<void> {
-  await relayToSarah(member, `🛒 <b>Purchase request</b> — <code>${product}</code> · ${plan}`);
+  await relayToSarah(member, `🛒 <b>Purchase request</b> — <code>${escapeHtml(product)}</code> · ${escapeHtml(plan)}`);
   await sendMessage(
     member.telegramId,
-    `🛒 Noted: <b>${product.replace(/_/g, " ")}</b> (${plan}). Sarah will send you the payment details right here — tap below if you'd like to add anything.`,
+    `🛒 Noted: <b>${escapeHtml(product.replace(/_/g, " "))}</b> (${escapeHtml(plan)}). Sarah will send you the payment details right here — tap below if you'd like to add anything.`,
     [
       [{ text: "💬 Ask Sarah", callback_data: "sarah:start" }],
       [{ text: "📦 Packages", callback_data: "menu:packages" }],
@@ -263,8 +273,8 @@ export async function relayWebToSarah(
   const sarahChatId = await getSarahChatId();
   if (!sarahChatId) return false;
 
-  const header = `🌐 <b>${visitorName}</b> · website chat`;
-  const sent = await sendMessage(sarahChatId, `${header}\n\n${text}`);
+  const header = `🌐 <b>${escapeHtml(visitorName)}</b> · website chat`;
+  const sent = await sendMessage(sarahChatId, `${header}\n\n${escapeHtml(text)}`);
   if (!sent.ok) {
     console.error("[sarah] website forward failed", sent.error);
     return false;

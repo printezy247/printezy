@@ -6,7 +6,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const { deriveWebhookSecret, safeEqual, answerCallbackQuery } =
+        const { deriveWebhookSecret, safeEqual, answerCallbackQuery, escapeHtml } =
           await import("@/lib/bot/telegram.server");
         const {
           upsertBotUser,
@@ -31,7 +31,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return new Response("Unauthorized", { status: 401 });
         }
 
-        const update = (await request.json()) as {
+        const body: unknown = await request.json().catch(() => null);
+        if (!body || typeof body !== "object") return Response.json({ ok: true });
+        const update = body as {
           message?: {
             message_id?: number;
             chat?: { id?: number };
@@ -91,6 +93,9 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             } else if (data === "vantage:confirm") {
               await activateVantageTrial(telegramId);
             } else if (data.startsWith("ebook:approve:")) {
+              // callback_data is client-controlled: only Sarah's chat may approve.
+              const { getSarahChatId } = await import("@/lib/bot/sarah.server");
+              if (telegramId !== (await getSarahChatId())) return Response.json({ ok: true });
               const { approveEbookClaim } = await import("@/lib/bot/ebook-claims.server");
               const { sendMessage } = await import("@/lib/bot/telegram.server");
               const result = await approveEbookClaim(data.slice(14));
@@ -231,7 +236,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                   username: message?.from?.username ?? null,
                   firstName: message?.from?.first_name ?? null,
                 },
-                text,
+                escapeHtml(text),
               );
               await sendMessageHelpText(
                 telegramId,

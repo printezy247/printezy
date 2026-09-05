@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
+import { type StripeEnv, detectStripeEnv, verifyWebhook } from "@/lib/stripe.server";
 
 /**
  * Built-in payments webhook (test + live, selected via ?env=).
@@ -46,6 +46,11 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
           return Response.json({ received: true, ignored: "invalid env" });
         }
         const env: StripeEnv = rawEnv;
+        // Only the environment this deployment actually runs may fulfil
+        // orders: a sandbox event must never grant access on the live site.
+        if (env !== detectStripeEnv()) {
+          return Response.json({ received: true, ignored: "env not active here" });
+        }
 
         try {
           const event = await verifyWebhook(request, env);

@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import { safeEqual } from '@/lib/bot/telegram.server';
 
 const getEnv = (key: string): string => {
   const value = process.env[key];
@@ -132,7 +133,7 @@ export async function verifyWebhook(
   );
   const expected = Buffer.from(new Uint8Array(signed)).toString('hex');
 
-  if (!v1Signatures.includes(expected)) {
+  if (!v1Signatures.some((sig) => safeEqual(sig, expected))) {
     throw new Error('Invalid webhook signature');
   }
 
