@@ -35,10 +35,11 @@ const STORAGE_KEY = "pe_locale";
 
 /**
  * Routes with a real per-locale URL (see src/routes/index.tsx, faq.tsx,
- * ezyai.tsx and their ms.tsx/ms.faq.tsx/ms.ezyai.tsx twins). On these
- * specific paths the URL is authoritative — crawlers and the switcher both
- * need locale to follow the path, not a stored preference. Every other
- * route (no /ms/ twin yet) keeps the original client-toggle behavior below.
+ * ezyai.tsx and their src/routes/ms/{index,faq,ezyai}.tsx twins). On these
+ * specific paths en/ms follow the URL, not a stored preference — crawlers
+ * and the switcher both need that. Every other locale (zh/hi/ar/sw, no URL
+ * anywhere yet) and every other route keep the original client-toggle
+ * behavior below.
  */
 const ROUTE_LOCALE: Record<string, Locale> = {
   "/": "en",
@@ -74,7 +75,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     }
   }, [routeLocale]);
 
-  const locale = routeLocale ?? storedLocale;
+  // On a route-locked page, en/ms stay tied to the URL — but zh/hi/ar/sw
+  // have no URL of their own anywhere, so an explicit pick of one of those
+  // still needs to work as a client-side preview (as it always has).
+  const isPreviewLocale = storedLocale !== "en" && storedLocale !== "ms";
+  const locale = isPreviewLocale ? storedLocale : (routeLocale ?? storedLocale);
 
   useEffect(() => {
     document.documentElement.lang = locale;
