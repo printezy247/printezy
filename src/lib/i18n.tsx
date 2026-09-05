@@ -34,21 +34,39 @@ const RTL_LOCALES: Locale[] = ["ar"];
 const STORAGE_KEY = "pe_locale";
 
 /**
- * Routes with a real per-locale URL (see src/routes/index.tsx, faq.tsx,
- * ezyai.tsx and their src/routes/ms/{index,faq,ezyai}.tsx twins). On these
- * specific paths en/ms follow the URL, not a stored preference — crawlers
- * and the switcher both need that. Every other locale (zh/hi/ar/sw, no URL
- * anywhere yet) and every other route keep the original client-toggle
- * behavior below.
+ * Public pages with a real per-locale URL: `/x` (en) and `/ms/x` (ms), see
+ * src/routes/ms/*. On these paths en/ms follow the URL, not a stored
+ * preference — crawlers and the switcher both need that. zh/hi/ar/sw have no
+ * URL of their own anywhere and stay a client-side preview. Routes not
+ * listed here (checkout, account, admin) keep the plain client toggle.
  */
-const ROUTE_LOCALE: Record<string, Locale> = {
-  "/": "en",
-  "/faq": "en",
-  "/ezyai": "en",
-  "/ms": "ms",
-  "/ms/faq": "ms",
-  "/ms/ezyai": "ms",
-};
+const LOCALIZED_PATHS = new Set([
+  "/",
+  "/faq",
+  "/ezyai",
+  "/indicators",
+  "/macro",
+  "/free-channel",
+  "/privacy",
+  "/terms",
+]);
+const LOCALIZED_PREFIXES = ["/ebooks/"];
+
+export function routeLocaleFor(pathname: string): Locale | undefined {
+  if (pathname === "/ms" || pathname.startsWith("/ms/")) return "ms";
+  if (LOCALIZED_PATHS.has(pathname) || LOCALIZED_PREFIXES.some((p) => pathname.startsWith(p)))
+    return "en";
+  return undefined;
+}
+
+/** `/faq` → `/ms/faq`, `/#packages` → `/ms#packages`; unchanged for en. */
+export function localizePath(path: string, locale: Locale): string {
+  if (locale !== "ms") return path;
+  const hashAt = path.indexOf("#");
+  const bare = hashAt === -1 ? path : path.slice(0, hashAt);
+  const hash = hashAt === -1 ? "" : path.slice(hashAt);
+  return `${bare === "/" ? "/ms" : `/ms${bare}`}${hash}`;
+}
 
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
 const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocale: () => {} });
@@ -62,7 +80,7 @@ const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocal
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const routeLocale = ROUTE_LOCALE[location.pathname];
+  const routeLocale = routeLocaleFor(location.pathname);
   const [storedLocale, setStoredLocale] = useState<Locale>("en");
 
   useEffect(() => {

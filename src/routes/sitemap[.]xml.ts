@@ -6,19 +6,18 @@ import { EBOOK_PAGES } from "@/lib/ebooks";
  * Generated, not hand-written, so it can never go stale. Only the static
  * indexable routes plus one entry per real ebook — never a fabricated
  * <lastmod>, since none of these routes have a real timestamp to report.
- * `msPath` is set only for the 3 routes with a genuine, fully-translated
- * /ms/ twin (see src/routes/ms.tsx, ms.faq.tsx, ms.ezyai.tsx) — every other
- * route stays English-only until it has real Malay copy.
+ * Every public page has a real, translated /ms/ twin (see src/routes/ms/*),
+ * so each entry carries en/ms/x-default alternates.
  */
 const STATIC_ROUTES: { path: string; priority: string; msPath?: string }[] = [
   { path: "/", priority: "1.0", msPath: "/ms" },
-  { path: "/indicators", priority: "0.8" },
-  { path: "/macro", priority: "0.8" },
+  { path: "/indicators", priority: "0.8", msPath: "/ms/indicators" },
+  { path: "/macro", priority: "0.8", msPath: "/ms/macro" },
   { path: "/ezyai", priority: "0.8", msPath: "/ms/ezyai" },
-  { path: "/free-channel", priority: "0.7" },
+  { path: "/free-channel", priority: "0.7", msPath: "/ms/free-channel" },
   { path: "/faq", priority: "0.6", msPath: "/ms/faq" },
-  { path: "/privacy", priority: "0.3" },
-  { path: "/terms", priority: "0.3" },
+  { path: "/privacy", priority: "0.3", msPath: "/ms/privacy" },
+  { path: "/terms", priority: "0.3", msPath: "/ms/terms" },
 ];
 
 function urlEntry(path: string, priority: string, msPath?: string, enPath?: string): string {
@@ -38,7 +37,10 @@ function buildSitemap(): string {
   const urls = [
     ...STATIC_ROUTES.map(({ path, priority, msPath }) => urlEntry(path, priority, msPath)),
     ...STATIC_ROUTES.filter((r) => r.msPath).map((r) => urlEntry(r.msPath!, r.priority, r.msPath, r.path)),
-    ...EBOOK_PAGES.map((book) => urlEntry(`/ebooks/${book.slug}`, "0.7")),
+    ...EBOOK_PAGES.map((book) => urlEntry(`/ebooks/${book.slug}`, "0.7", `/ms/ebooks/${book.slug}`)),
+    ...EBOOK_PAGES.map((book) =>
+      urlEntry(`/ms/ebooks/${book.slug}`, "0.7", `/ms/ebooks/${book.slug}`, `/ebooks/${book.slug}`),
+    ),
   ];
 
   return `<?xml version="1.0" encoding="UTF-8"?>
