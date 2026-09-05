@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import { useTranslation, useLocale, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
+import { useTranslation, useLocale, localizePath, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
@@ -380,7 +380,7 @@ function LocaleSwitcher({ className = "" }: { className?: string }) {
 }
 
 export function Nav() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
@@ -440,7 +440,7 @@ export function Nav() {
       <header className="sticky top-0 z-50 bg-background">
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link to="/" aria-label="EzyMap Algo home">
+            <Link to={locale === "ms" ? "/ms" : "/"} aria-label="EzyMap Algo home">
               <Logo />
             </Link>
 
@@ -448,7 +448,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
+                    href={localizePath(item.href, locale)}
                     className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
                   >
                     {t(item.key)}
@@ -494,7 +494,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
+                    href={localizePath(item.href, locale)}
                     onClick={closeMenu}
                     className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
                   >
@@ -1548,7 +1548,7 @@ function FinalCta() {
 
 export function Footer() {
   const botHref = useBotLink();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -1572,7 +1572,7 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
-                  <a href={i.href} className="hover:text-foreground">
+                  <a href={localizePath(i.href, locale)} className="hover:text-foreground">
                     {t(i.key)}
                   </a>
                 </li>
@@ -1610,12 +1610,12 @@ export function Footer() {
             <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/privacy" className="hover:text-foreground">
+                <Link to={locale === "ms" ? "/ms/privacy" : "/privacy"} className="hover:text-foreground">
                   {t("footer_privacy")}
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-foreground">
+                <Link to={locale === "ms" ? "/ms/terms" : "/terms"} className="hover:text-foreground">
                   {t("footer_terms")}
                 </Link>
               </li>

@@ -71,10 +71,25 @@ supabase/
 - **Guest checkout** — no account required to buy; an account is created
   from the Stripe webhook after payment, with an optional magic-link
   sign-in offered afterward.
-- **EN / MS / ZH localization** — a client-only locale toggle (see
-  `src/lib/i18n.tsx`) covering the landing page and the Macro desk.
-  Adding a new translated section means adding its keys to
-  `src/lib/translations.ts` for all three locales before wiring `t()`.
+- **Six locales (en/ms/zh/hi/ar/sw)** — switcher in the nav (see
+  `src/lib/i18n.tsx`). Every public page has a real Malay URL under `/ms/*`
+  (`src/routes/ms/*` re-export the English page component with a Malay
+  `head()` from `src/lib/seo.ts`); reciprocal hreflang is emitted per route
+  and in `/sitemap.xml`. zh/hi/ar/sw are a client-side preview with no URL
+  of their own. `TranslationKey` is derived from the `en` block, so a new
+  key must be added to all six blocks in `src/lib/translations.ts`.
+  Ebook page copy is localized via the `ms` field on each `EBOOK_PAGES`
+  entry (`src/lib/ebooks.ts`); the PDFs and the Macro desk data
+  (`src/lib/macro-desk.ts`) stay English.
+- **EzyAI PRO checkout** — `ezyai_pro_{1m,6m,1y}` SKUs go through the same
+  guest Stripe checkout as every other product. The webhook records the
+  `site_purchases` row, then writes an `ezyai_entitlements` row keyed on
+  the Telegram handle typed at checkout instead of granting an EzyRegister
+  enrollment. `@ezytradeai_bot` pulls unclaimed rows for a handle from
+  `GET/POST /api/public/ezyai/entitlements` (bearer key
+  `EZYAI_ENTITLEMENT_KEY`, same value as the bot's `EZYAI_SITE_KEY`) and
+  activates PRO itself. See `src/lib/ezyai/entitlements.server.ts`.
+  Stripe needs one Price per SKU with `lookup_key` = SKU (sandbox + live).
 - **Rate limiting** — `checkCheckout`, `saveLead`, and the support chat
   endpoints are protected by a Supabase-backed fixed-window limiter that
   fails open (never blocks a legitimate purchase or message on a limiter
@@ -93,11 +108,11 @@ supabase/
   manual reconciliation against the bot's own product/license system.
 - **[EzyAi](https://github.com/tradernonymous/EzyAi)** — the `@ezytradeai_bot`
   Telegram bot (Python): on-demand analysis, live watch alerts, fundamentals
-  and autopilot signals, with Free/PRO tiers billed entirely inside Telegram
-  (Stripe Checkout, Telegram Stars, or USDT with admin approval). The
-  website only markets it (`/ezyai` route + landing card); the `/ezyai`
-  page's CTAs deep-link to the bot and never touch this site's own Stripe
-  checkout or `catalog.ts` — EzyAI's billing is that bot's own webhook.
+  and autopilot signals, with Free/PRO tiers. PRO is billed two ways: inside
+  Telegram (the bot's own Stripe Checkout, Telegram Stars, or USDT with admin
+  approval) or by card on `/ezyai` here, delivered through the
+  `ezyai_entitlements` bridge described above. The bot keeps its own plan
+  state; the website never reads it.
 
 ## Deployment
 

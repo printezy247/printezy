@@ -3,40 +3,41 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, ArrowLeft, Users, ShieldCheck, Clock, Zap } from "lucide-react";
 import { saveLead } from "@/lib/leads.functions";
-import { LINKS, brandLogo } from "@/components/landing/Landing";
+import { LINKS } from "@/components/landing/Landing";
 import { getSessionId } from "@/lib/analytics";
-import { SITE_URL } from "@/lib/bot/tiers";
+import { useTranslation } from "@/lib/i18n";
+import { translations, type TranslationKey } from "@/lib/translations";
+import { localizedHead } from "@/lib/seo";
+
+export function freeChannelHead(locale: "en" | "ms") {
+  const t = translations[locale];
+  return localizedHead({
+    path: "/free-channel",
+    locale,
+    title: t.fc_meta_title,
+    description: t.fc_meta_desc,
+  });
+}
 
 export const Route = createFileRoute("/free-channel")({
-  head: () => ({
-    meta: [
-      { title: "Join the Free Telegram Channel — EzyMap" },
-      { name: "description", content: "Get free forex, gold and crypto trading signals delivered live on Telegram." },
-      { property: "og:title", content: "Join the Free Telegram Channel — EzyMap" },
-      { property: "og:description", content: "Get free forex, gold and crypto trading signals delivered live on Telegram." },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/free-channel` },
-      { property: "og:locale", content: "en_US" },
-      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
-      { property: "og:image:alt", content: "EzyMap ALGO logo" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/free-channel` }],
-  }),
+  head: () => freeChannelHead("en"),
   component: FreeChannelPage,
 });
 
-const benefits = [
-  { icon: Zap, label: "Live signals", desc: "Forex, gold & crypto ideas" },
-  { icon: Clock, label: "24/5 coverage", desc: "During active market hours" },
-  { icon: ShieldCheck, label: "Full transparency", desc: "Entry, stop & target shown" },
-  { icon: Users, label: "640+ members", desc: "Active trader community" },
+const benefits: { icon: typeof Zap; label: TranslationKey; desc: TranslationKey }[] = [
+  { icon: Zap, label: "fc_benefit_signals_label", desc: "fc_benefit_signals_desc" },
+  { icon: Clock, label: "fc_benefit_coverage_label", desc: "fc_benefit_coverage_desc" },
+  {
+    icon: ShieldCheck,
+    label: "fc_benefit_transparency_label",
+    desc: "fc_benefit_transparency_desc",
+  },
+  { icon: Users, label: "fc_benefit_members_label", desc: "fc_benefit_members_desc" },
 ];
 
-function FreeChannelPage() {
+export function FreeChannelPage() {
+  const { t, locale } = useTranslation();
+  const home = locale === "ms" ? "/ms" : "/";
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [telegram, setTelegram] = useState("");
@@ -60,7 +61,7 @@ function FreeChannelPage() {
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : t("fc_error_generic"));
     }
   };
 
@@ -68,14 +69,14 @@ function FreeChannelPage() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 sm:px-6 lg:px-8">
         <header className="flex h-16 items-center justify-between">
-          <Link to="/" className="text-lg font-black tracking-tight text-foreground">
+          <Link to={home} className="text-lg font-black tracking-tight text-foreground">
             EzyMap
           </Link>
           <Link
-            to="/"
+            to={home}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft className="h-4 w-4" /> Back home
+            <ArrowLeft className="h-4 w-4" /> {t("fc_back_home")}
           </Link>
         </header>
 
@@ -90,10 +91,8 @@ function FreeChannelPage() {
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
                 <Send className="h-6 w-6" />
               </div>
-              <h1 className="text-2xl sm:text-3xl">Join the free Telegram channel</h1>
-              <p className="mt-3 text-body">
-                Get free forex, gold and crypto signals with full entry, stop and target transparency.
-              </p>
+              <h1 className="text-2xl sm:text-3xl">{t("fc_title")}</h1>
+              <p className="mt-3 text-body">{t("fc_subtitle")}</p>
 
               <AnimatePresence mode="wait">
                 {status === "success" ? (
@@ -107,17 +106,15 @@ function FreeChannelPage() {
                     <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-6 w-6" />
                     </div>
-                    <h2 className="text-lg ">You're on the list</h2>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Click below to join the channel instantly on Telegram.
-                    </p>
+                    <h2 className="text-lg ">{t("fc_success_title")}</h2>
+                    <p className="mt-2 text-sm text-muted-foreground">{t("fc_success_body")}</p>
                     <a
                       href={LINKS.freeChannel}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
                     >
-                      <Send className="h-4 w-4" /> Open Telegram Channel
+                      <Send className="h-4 w-4" /> {t("fc_open_channel")}
                     </a>
                   </motion.div>
                 ) : (
@@ -130,21 +127,27 @@ function FreeChannelPage() {
                     className="mt-8 space-y-4"
                   >
                     <div>
-                      <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-foreground">
-                        Name
+                      <label
+                        htmlFor="name"
+                        className="mb-1.5 block text-sm font-medium text-foreground"
+                      >
+                        {t("fc_label_name")}
                       </label>
                       <input
                         id="name"
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Your name"
+                        placeholder={t("fc_placeholder_name")}
                         className="w-full rounded-md border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
                     <div>
-                      <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-foreground">
-                        Email <span className="text-primary">*</span>
+                      <label
+                        htmlFor="email"
+                        className="mb-1.5 block text-sm font-medium text-foreground"
+                      >
+                        {t("fc_label_email")} <span className="text-primary">*</span>
                       </label>
                       <input
                         id="email"
@@ -157,8 +160,12 @@ function FreeChannelPage() {
                       />
                     </div>
                     <div>
-                      <label htmlFor="telegram" className="mb-1.5 block text-sm font-medium text-foreground">
-                        Telegram username <span className="text-muted-foreground">(optional)</span>
+                      <label
+                        htmlFor="telegram"
+                        className="mb-1.5 block text-sm font-medium text-foreground"
+                      >
+                        {t("fc_label_telegram")}{" "}
+                        <span className="text-muted-foreground">{t("fc_optional")}</span>
                       </label>
                       <input
                         id="telegram"
@@ -170,9 +177,7 @@ function FreeChannelPage() {
                       />
                     </div>
 
-                    {status === "error" && (
-                      <p className="text-sm text-destructive">{error}</p>
-                    )}
+                    {status === "error" && <p className="text-sm text-destructive">{error}</p>}
 
                     <button
                       type="submit"
@@ -180,16 +185,14 @@ function FreeChannelPage() {
                       className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow disabled:opacity-60"
                     >
                       {status === "submitting" ? (
-                        "Saving..."
+                        t("fc_saving")
                       ) : (
                         <>
-                          <Send className="h-4 w-4" /> Join Free Channel
+                          <Send className="h-4 w-4" /> {t("fc_submit")}
                         </>
                       )}
                     </button>
-                    <p className="text-center text-xs text-muted-foreground">
-                      No spam. Unsubscribe anytime.
-                    </p>
+                    <p className="text-center text-xs text-muted-foreground">{t("fc_no_spam")}</p>
                   </motion.form>
                 )}
               </AnimatePresence>
@@ -197,10 +200,13 @@ function FreeChannelPage() {
 
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {benefits.map((b) => (
-                <div key={b.label} className="rounded-xl border border-border bg-card p-4 text-center">
+                <div
+                  key={b.label}
+                  className="rounded-xl border border-border bg-card p-4 text-center"
+                >
                   <b.icon className="mx-auto h-5 w-5 text-primary" />
-                  <p className="mt-2 text-xs font-semibold text-foreground">{b.label}</p>
-                  <p className="text-[11px] text-muted-foreground">{b.desc}</p>
+                  <p className="mt-2 text-xs font-semibold text-foreground">{t(b.label)}</p>
+                  <p className="text-[11px] text-muted-foreground">{t(b.desc)}</p>
                 </div>
               ))}
             </div>

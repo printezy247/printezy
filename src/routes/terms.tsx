@@ -1,72 +1,54 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Nav, Footer, brandLogo } from "@/components/landing/Landing";
-import { SITE_URL } from "@/lib/bot/tiers";
+import { Nav, Footer } from "@/components/landing/Landing";
+import { useTranslation } from "@/lib/i18n";
+import { translations, type TranslationKey } from "@/lib/translations";
+import { localizedHead } from "@/lib/seo";
+
+export function termsHead(locale: "en" | "ms") {
+  const t = translations[locale];
+  return localizedHead({
+    path: "/terms",
+    locale,
+    title: t.terms_meta_title,
+    description: t.terms_meta_desc,
+    ogDescription: t.terms_og_desc,
+    twitterCard: "summary",
+  });
+}
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({
-    meta: [
-      { title: "Terms of Service — EzyMap ALGO" },
-      {
-        name: "description",
-        content:
-          "Terms governing the use of EzyMap ALGO trading signals, education content and package access.",
-      },
-      { property: "og:title", content: "Terms of Service — EzyMap ALGO" },
-      { property: "og:description", content: "Terms for using EzyMap ALGO signals and subscriptions." },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/terms` },
-      { property: "og:locale", content: "en_US" },
-      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
-      { property: "og:image:alt", content: "EzyMap ALGO logo" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary" },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/terms` }],
-  }),
+  head: () => termsHead("en"),
   component: TermsPage,
 });
 
-function TermsPage() {
+const SECTIONS: { title: TranslationKey; body: TranslationKey }[] = [
+  { title: "terms_edu_title", body: "terms_edu_body" },
+  { title: "terms_packages_title", body: "terms_packages_body" },
+  { title: "terms_broker_title", body: "terms_broker_body" },
+  { title: "terms_access_title", body: "terms_access_body" },
+];
+
+export function TermsPage() {
+  const { t, locale } = useTranslation();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto max-w-3xl px-4 pt-10 pb-20 sm:px-6 lg:px-8">
-        <h1 className="text-3xl sm:text-4xl">Terms of Service</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: 2026</p>
+        <h1 className="text-3xl sm:text-4xl">{t("terms_title")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("legal_updated")}</p>
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
-          <div>
-            <h2 className="text-lg text-foreground">Educational use only</h2>
-            <p className="mt-2">
-              EzyMap ALGO provides trading signals and education for informational purposes. Nothing
-              on this site or in our channels is financial advice. Trading carries substantial risk
-              of loss and you are solely responsible for your own decisions.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-lg text-foreground">Packages</h2>
-            <p className="mt-2">
-              Beginner, Pro, Premium and Elite are one-time, lifetime purchases. Access does not
-              expire and does not renew or re-bill.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-lg text-foreground">Broker relationship</h2>
-            <p className="mt-2">
-              We are an Introducing Broker affiliate of Vantage Markets and may earn a commission if
-              you open an account through our link. You are free to use any broker.
-            </p>
-          </div>
-          <div>
-            <h2 className="text-lg text-foreground">Access</h2>
-            <p className="mt-2">
-              Sharing private channel content or credentials results in immediate removal without
-              refund.
-            </p>
-          </div>
+          {SECTIONS.map((sec) => (
+            <div key={sec.title}>
+              <h2 className="text-lg text-foreground">{t(sec.title)}</h2>
+              <p className="mt-2">{t(sec.body)}</p>
+            </div>
+          ))}
         </div>
-        <Link to="/" className="mt-10 inline-block text-sm text-primary hover:underline">
-          ← Back to home
+        <Link
+          to={locale === "ms" ? "/ms" : "/"}
+          className="mt-10 inline-block text-sm text-primary hover:underline"
+        >
+          {t("legal_back_home")}
         </Link>
       </main>
       <Footer />
