@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import { useTranslation, useLocale, LOCALES, LOCALE_LABELS } from "@/lib/i18n";
+import { useTranslation, useLocale, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
@@ -311,21 +311,70 @@ const FOOTER_ONLY_ITEMS = [
 
 function LocaleSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLocale();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
+    function onPointerDown(e: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [open]);
+
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
-      {LOCALES.map((l) => (
-        <button
-          key={l}
-          type="button"
-          onClick={() => setLocale(l)}
-          aria-pressed={locale === l}
-          className={`flex min-h-8 min-w-8 items-center justify-center rounded-md px-1.5 text-xs font-semibold transition-colors ${
-            locale === l ? "bg-primary-tint text-primary" : "text-muted-foreground hover:text-body"
-          }`}
+    <div ref={rootRef} className={`relative ${className}`}>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex min-h-9 items-center gap-1.5 rounded-md border border-border px-2.5 text-xs font-semibold text-body transition-colors hover:bg-surface"
+      >
+        <span aria-hidden="true">{LOCALE_FLAGS[locale]}</span>
+        {LOCALE_LABELS[locale]}
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open ? (
+        <ul
+          role="listbox"
+          className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card py-1 shadow-elevated"
         >
-          {LOCALE_LABELS[l]}
-        </button>
-      ))}
+          {LOCALES.map((l) => (
+            <li key={l}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={locale === l}
+                onClick={() => {
+                  setLocale(l);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors ${
+                  locale === l ? "bg-primary-tint text-primary" : "text-body hover:bg-surface"
+                }`}
+              >
+                <span aria-hidden="true">{LOCALE_FLAGS[l]}</span>
+                <span className="flex-1">{LOCALE_NATIVE_NAMES[l]}</span>
+                {locale === l ? <Check className="h-3.5 w-3.5" /> : null}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
