@@ -33,6 +33,7 @@ import {
   X,
   BookOpen,
   Lock,
+  Bot,
 } from "lucide-react";
 import {
   trackPageLoad,
@@ -74,6 +75,7 @@ export const LINKS = {
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
+  ezyai: "https://t.me/ezytradeai_bot",
 };
 
 
@@ -298,6 +300,7 @@ const NAV_ITEMS = [
   { key: "nav_packages", href: "/#packages" },
   { key: "nav_tools", href: "/#tools" },
   { key: "nav_macro", href: "/macro" },
+  { key: "nav_ezyai", href: "/ezyai" },
 ] as const;
 
 /** Not in the header nav — footer-only wayfinding links. */
@@ -1043,7 +1046,7 @@ export function Products() {
         ) : null}
       </AnimatePresence>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* TradingView indicators */}
         <Reveal className="h-full">
         <article className="glass-card flex h-full flex-col rounded-xl p-6">
@@ -1154,6 +1157,40 @@ export function Products() {
             </a>
             <Button asChild variant="outline">
               <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
+                {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </article>
+        </Reveal>
+
+        {/* EzyAI */}
+        <Reveal className="h-full" delay={0.3}>
+        <article className="glass-card flex h-full flex-col rounded-xl p-6">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <Bot className="h-6 w-6" />
+          </span>
+          <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
+          <ul className="mt-4 flex-1 space-y-2.5">
+            {(["ezyai_feature_1", "ezyai_feature_2", "ezyai_feature_3"] as TranslationKey[]).map((fk) => (
+              <li key={fk} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-body">{t(fk)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-col gap-2 pt-5">
+            <a
+              href={LINKS.ezyai}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => goTrack("products_ezyai_try_free")}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              {t("ezyai_try_free")} <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <Button asChild variant="outline">
+              <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
                 {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Button>

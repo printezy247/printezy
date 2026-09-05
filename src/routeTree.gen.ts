@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
+import { Route as EzyaiRouteImport } from './routes/ezyai'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
@@ -50,6 +51,11 @@ const AuthRoute = AuthRouteImport.update({
 const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout-success',
   path: '/checkout-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EzyaiRoute = EzyaiRouteImport.update({
+  id: '/ezyai',
+  path: '/ezyai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/ezyai'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/ezyai'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/ezyai'
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  EzyaiRoute: typeof EzyaiRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
@@ -296,6 +309,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout-success'
       fullPath: '/checkout-success'
       preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ezyai': {
+      id: '/ezyai'
+      path: '/ezyai'
+      fullPath: '/ezyai'
+      preLoaderRoute: typeof EzyaiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -411,6 +431,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  EzyaiRoute: EzyaiRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,

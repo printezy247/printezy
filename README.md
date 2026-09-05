@@ -91,6 +91,13 @@ supabase/
   and the Telegram bot are intentionally separate systems that don't share
   purchase data — a website sale notifies the team over Telegram for
   manual reconciliation against the bot's own product/license system.
+- **[EzyAi](https://github.com/tradernonymous/EzyAi)** — the `@ezytradeai_bot`
+  Telegram bot (Python): on-demand analysis, live watch alerts, fundamentals
+  and autopilot signals, with Free/PRO tiers billed entirely inside Telegram
+  (Stripe Checkout, Telegram Stars, or USDT with admin approval). The
+  website only markets it (`/ezyai` route + landing card); the `/ezyai`
+  page's CTAs deep-link to the bot and never touch this site's own Stripe
+  checkout or `catalog.ts` — EzyAI's billing is that bot's own webhook.
 
 ## Deployment
 
