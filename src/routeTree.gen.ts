@@ -27,6 +27,9 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
+import { Route as MsIndexRouteImport } from './routes/ms/index'
+import { Route as MsEzyaiRouteImport } from './routes/ms/ezyai'
+import { Route as MsFaqRouteImport } from './routes/ms/faq'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
@@ -121,6 +124,21 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MsIndexRoute = MsIndexRouteImport.update({
+  id: '/ms/',
+  path: '/ms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsEzyaiRoute = MsEzyaiRouteImport.update({
+  id: '/ms/ezyai',
+  path: '/ms/ezyai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsFaqRoute = MsFaqRouteImport.update({
+  id: '/ms/faq',
+  path: '/ms/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -152,6 +170,9 @@ export interface FileRoutesByFullPath {
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/ms/ezyai': typeof MsEzyaiRoute
+  '/ms/faq': typeof MsFaqRoute
+  '/ms/': typeof MsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -173,6 +194,9 @@ export interface FileRoutesByTo {
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/ms/ezyai': typeof MsEzyaiRoute
+  '/ms/faq': typeof MsFaqRoute
+  '/ms': typeof MsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -196,6 +220,9 @@ export interface FileRoutesById {
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
+  '/ms/ezyai': typeof MsEzyaiRoute
+  '/ms/faq': typeof MsFaqRoute
+  '/ms/': typeof MsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -219,6 +246,9 @@ export interface FileRouteTypes {
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
+    | '/ms/ezyai'
+    | '/ms/faq'
+    | '/ms/'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -240,6 +270,9 @@ export interface FileRouteTypes {
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
+    | '/ms/ezyai'
+    | '/ms/faq'
+    | '/ms'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   id:
@@ -262,6 +295,9 @@ export interface FileRouteTypes {
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
+    | '/ms/ezyai'
+    | '/ms/faq'
+    | '/ms/'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -283,6 +319,9 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
+  MsEzyaiRoute: typeof MsEzyaiRoute
+  MsFaqRoute: typeof MsFaqRoute
+  MsIndexRoute: typeof MsIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
@@ -415,6 +454,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ms/': {
+      id: '/ms/'
+      path: '/ms'
+      fullPath: '/ms/'
+      preLoaderRoute: typeof MsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/ezyai': {
+      id: '/ms/ezyai'
+      path: '/ms/ezyai'
+      fullPath: '/ms/ezyai'
+      preLoaderRoute: typeof MsEzyaiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/faq': {
+      id: '/ms/faq'
+      path: '/ms/faq'
+      fullPath: '/ms/faq'
+      preLoaderRoute: typeof MsFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -462,6 +522,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
+  MsEzyaiRoute: MsEzyaiRoute,
+  MsFaqRoute: MsFaqRoute,
+  MsIndexRoute: MsIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }

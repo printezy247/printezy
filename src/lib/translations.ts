@@ -187,6 +187,7 @@ export const translations = {
     faq_g3_a3: "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
     faq_g3_q4: "Who do I contact for help?",
     faq_g3_a4: "Use the 💬 Ask Sarah button in the bot (or /ask) for live chat with our support lead, or reach her directly at t.me/ezysarah.",
+    faq_back_to_home: "Back to home",
 
     final_title: "Start with the free channel today",
     final_body: "No payment, no commitment. See the signals and education for yourself, then upgrade through our bot when it fits your trading.",
@@ -541,6 +542,7 @@ export const translations = {
     faq_g3_a3: "Bot mengesahkan pembayaran anda serta-merta dan papan pemuka anda dibuka: suapan isyarat mengikut peringkat, log dagangan peribadi, statistik prestasi dan sejarah bil anda.",
     faq_g3_q4: "Siapa yang perlu saya hubungi untuk bantuan?",
     faq_g3_a4: "Gunakan butang 💬 Ask Sarah dalam bot (atau /ask) untuk sembang langsung dengan ketua sokongan kami, atau hubungi terus di t.me/ezysarah.",
+    faq_back_to_home: "Kembali ke laman utama",
 
     final_title: "Mula dengan saluran percuma hari ini",
     final_body: "Tiada bayaran, tiada komitmen. Lihat isyarat dan pendidikan sendiri, kemudian naik taraf melalui bot kami apabila ia sesuai dengan dagangan anda.",
@@ -889,6 +891,7 @@ export const translations = {
     faq_g3_a3: "机器人会立即确认您的付款,您的仪表板随即解锁:按套餐分级的信号推送、您的个人交易记录、业绩统计和账单历史。",
     faq_g3_q4: "有问题该联系谁?",
     faq_g3_a4: "使用机器人中的 💬 Ask Sarah 按钮(或输入 /ask)与我们的支持负责人实时聊天,或直接联系 t.me/ezysarah。",
+    faq_back_to_home: "返回首页",
 
     final_title: "今天就从免费频道开始",
     final_body: "无需付款,无需承诺。亲自查看信号和教学内容,待时机合适时再通过我们的机器人升级。",
@@ -1223,6 +1226,7 @@ export const translations = {
     faq_g3_a3: "बॉट तुरंत आपका भुगतान पुष्टि करता है और आपका डैशबोर्ड अनलॉक हो जाता है: टियर-गेटेड सिग्नल फीड, आपका व्यक्तिगत ट्रेड लॉग, प्रदर्शन आंकड़े और बिलिंग इतिहास।",
     faq_g3_q4: "सहायता के लिए मैं किससे संपर्क करूं?",
     faq_g3_a4: "हमारे सपोर्ट लीड के साथ लाइव चैट के लिए बॉट में 💬 Ask Sarah बटन (या /ask) का उपयोग करें, या सीधे t.me/ezysarah पर संपर्क करें।",
+    faq_back_to_home: "होम पर वापस जाएं",
     final_title: "आज ही मुफ़्त चैनल से शुरुआत करें",
     final_body: "कोई भुगतान नहीं, कोई प्रतिबद्धता नहीं। खुद सिग्नल और शिक्षा देखें, फिर जब यह आपकी ट्रेडिंग के अनुकूल हो तो हमारे बॉट के ज़रिए अपग्रेड करें।",
     final_enroll_via_bot: "बॉट के ज़रिए दाखिला लें",
@@ -1552,6 +1556,7 @@ export const translations = {
     faq_g3_a3: "يؤكد البوت دفعتك فورًا ويُفتح لوحة التحكم الخاصة بك: موجز الإشارات حسب المستوى، سجل تداولك الشخصي، إحصائيات الأداء وسجل الفواتير.",
     faq_g3_q4: "بمن أتصل للحصول على المساعدة؟",
     faq_g3_a4: "استخدم زر 💬 Ask Sarah في البوت (أو /ask) للدردشة المباشرة مع رئيسة الدعم لدينا، أو تواصل معها مباشرة عبر t.me/ezysarah.",
+    faq_back_to_home: "العودة إلى الصفحة الرئيسية",
     final_title: "ابدأ بالقناة المجانية اليوم",
     final_body: "لا دفع، لا التزام. شاهد الإشارات والتعليم بنفسك، ثم قم بالترقية عبر البوت عندما يناسب تداولك.",
     final_enroll_via_bot: "سجّل عبر البوت",
@@ -1881,6 +1886,7 @@ export const translations = {
     faq_g3_a3: "Bot inathibitisha malipo yako papo hapo na dashibodi yako inafunguka: mfuatano wa ishara kulingana na kiwango, kumbukumbu yako binafsi ya biashara, takwimu za utendaji na historia ya malipo.",
     faq_g3_q4: "Ninawasiliana na nani kwa msaada?",
     faq_g3_a4: "Tumia kitufe cha 💬 Ask Sarah kwenye bot (au /ask) kwa mazungumzo ya moja kwa moja na kiongozi wetu wa msaada, au mfikie moja kwa moja kupitia t.me/ezysarah.",
+    faq_back_to_home: "Rudi nyumbani",
     final_title: "Anza na kituo cha bure leo",
     final_body: "Hakuna malipo, hakuna ahadi. Jionee ishara na elimu mwenyewe, kisha boresha kupitia bot yetu itakapofaa biashara yako.",
     final_enroll_via_bot: "Jiandikishe kupitia Bot",

@@ -23,7 +23,7 @@ function offerUrlFor(item: CatalogItem): string {
   }
 }
 
-const PRODUCTS_JSON_LD = JSON.stringify({
+export const PRODUCTS_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "ItemList",
   itemListElement: CATALOG.map((item, i) => ({
@@ -63,6 +63,7 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "ms_MY" },
       { property: "og:image", content: `${SITE_URL}${brandLogo}` },
       { property: "og:image:alt", content: "EzyMap ALGO logo" },
       { property: "og:image:width", content: "1200" },
@@ -71,7 +72,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/` },
+      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/` },
+      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms` },
+      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/` },
+    ],
     scripts: [{ type: "application/ld+json", children: PRODUCTS_JSON_LD }],
   }),
   component: Landing,

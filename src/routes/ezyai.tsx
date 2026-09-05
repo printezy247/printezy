@@ -25,6 +25,7 @@ export const Route = createFileRoute("/ezyai")({
       { property: "og:type", content: "website" },
       { property: "og:url", content: `${SITE_URL}/ezyai` },
       { property: "og:locale", content: "en_US" },
+      { property: "og:locale:alternate", content: "ms_MY" },
       { property: "og:image", content: `${SITE_URL}${brandLogo}` },
       { property: "og:image:alt", content: "EzyMap ALGO logo" },
       { property: "og:image:width", content: "1200" },
@@ -33,7 +34,12 @@ export const Route = createFileRoute("/ezyai")({
       { name: "twitter:title", content: "EzyAI — AI Trading Signals on Telegram" },
       { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/ezyai` }],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/ezyai` },
+      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/ezyai` },
+      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms/ezyai` },
+      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/ezyai` },
+    ],
   }),
   component: EzyAiPage,
 });
@@ -59,7 +65,7 @@ const PLANS: PlanTier[] = [
   { labelKey: "ezyai_tier_12m_label", price: "$99.99", badgeKey: "ezyai_tier_12m_badge" },
 ];
 
-function EzyAiPage() {
+export function EzyAiPage() {
   const { t } = useTranslation();
 
   useEffect(() => {

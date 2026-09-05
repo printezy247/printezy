@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useLocation } from "@tanstack/react-router";
 import { translations, type TranslationKey } from "./translations";
 
 export type Locale = "en" | "ms" | "zh" | "hi" | "ar" | "sw";
@@ -32,28 +33,48 @@ const RTL_LOCALES: Locale[] = ["ar"];
 
 const STORAGE_KEY = "pe_locale";
 
+/**
+ * Routes with a real per-locale URL (see src/routes/index.tsx, faq.tsx,
+ * ezyai.tsx and their ms.tsx/ms.faq.tsx/ms.ezyai.tsx twins). On these
+ * specific paths the URL is authoritative — crawlers and the switcher both
+ * need locale to follow the path, not a stored preference. Every other
+ * route (no /ms/ twin yet) keeps the original client-toggle behavior below.
+ */
+const ROUTE_LOCALE: Record<string, Locale> = {
+  "/": "en",
+  "/faq": "en",
+  "/ezyai": "en",
+  "/ms": "ms",
+  "/ms/faq": "ms",
+  "/ms/ezyai": "ms",
+};
+
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
 const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocale: () => {} });
 
 /**
- * Landing-page localization. Persists the visitor's choice in localStorage;
- * no route-based locale prefix, no server-side detection — a client-only
- * preference toggle, scoped to the landing page. Arabic gets text-direction
- * only (document dir flips to rtl so paragraphs/headings read correctly via
- * the browser's native bidi handling) — layout (nav order, grids, icon
- * placement) intentionally stays left-to-right for every locale.
+ * Persists the visitor's choice in localStorage for routes with no locale
+ * URL of their own. Arabic gets text-direction only (document dir flips to
+ * rtl so paragraphs/headings read correctly via the browser's native bidi
+ * handling) — layout (nav order, grids, icon placement) intentionally stays
+ * left-to-right for every locale.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const location = useLocation();
+  const routeLocale = ROUTE_LOCALE[location.pathname];
+  const [storedLocale, setStoredLocale] = useState<Locale>("en");
 
   useEffect(() => {
+    if (routeLocale) return; // URL is authoritative here — ignore any stored preference.
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored && LOCALES.includes(stored as Locale)) setLocaleState(stored as Locale);
+      if (stored && LOCALES.includes(stored as Locale)) setStoredLocale(stored as Locale);
     } catch {
       // Private browsing / storage blocked — default to English.
     }
-  }, []);
+  }, [routeLocale]);
+
+  const locale = routeLocale ?? storedLocale;
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -61,7 +82,13 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   const setLocale = (next: Locale) => {
-    setLocaleState(next);
+    if (routeLocale && (next === "en" || next === "ms")) {
+      const bare = location.pathname.replace(/^\/ms/, "") || "/";
+      const target = next === "ms" ? (bare === "/" ? "/ms" : `/ms${bare}`) : bare;
+      window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
+      return;
+    }
+    setStoredLocale(next);
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {
