@@ -30,6 +30,13 @@ import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as MsIndexRouteImport } from './routes/ms/index'
 import { Route as MsEzyaiRouteImport } from './routes/ms/ezyai'
 import { Route as MsFaqRouteImport } from './routes/ms/faq'
+import { Route as MsFreeChannelRouteImport } from './routes/ms/free-channel'
+import { Route as MsIndicatorsRouteImport } from './routes/ms/indicators'
+import { Route as MsMacroRouteImport } from './routes/ms/macro'
+import { Route as MsPrivacyRouteImport } from './routes/ms/privacy'
+import { Route as MsTermsRouteImport } from './routes/ms/terms'
+import { Route as MsEbooksSlugRouteImport } from './routes/ms/ebooks.$slug'
+import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
@@ -139,6 +146,42 @@ const MsFaqRoute = MsFaqRouteImport.update({
   path: '/ms/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MsFreeChannelRoute = MsFreeChannelRouteImport.update({
+  id: '/ms/free-channel',
+  path: '/ms/free-channel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsIndicatorsRoute = MsIndicatorsRouteImport.update({
+  id: '/ms/indicators',
+  path: '/ms/indicators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsMacroRoute = MsMacroRouteImport.update({
+  id: '/ms/macro',
+  path: '/ms/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsPrivacyRoute = MsPrivacyRouteImport.update({
+  id: '/ms/privacy',
+  path: '/ms/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsTermsRoute = MsTermsRouteImport.update({
+  id: '/ms/terms',
+  path: '/ms/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MsEbooksSlugRoute = MsEbooksSlugRouteImport.update({
+  id: '/ms/ebooks/$slug',
+  path: '/ms/ebooks/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEzyaiEntitlementsRoute =
+  ApiPublicEzyaiEntitlementsRouteImport.update({
+    id: '/api/public/ezyai/entitlements',
+    path: '/api/public/ezyai/entitlements',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -172,7 +215,14 @@ export interface FileRoutesByFullPath {
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
+  '/ms/free-channel': typeof MsFreeChannelRoute
+  '/ms/indicators': typeof MsIndicatorsRoute
+  '/ms/macro': typeof MsMacroRoute
+  '/ms/privacy': typeof MsPrivacyRoute
+  '/ms/terms': typeof MsTermsRoute
   '/ms/': typeof MsIndexRoute
+  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -196,7 +246,14 @@ export interface FileRoutesByTo {
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
+  '/ms/free-channel': typeof MsFreeChannelRoute
+  '/ms/indicators': typeof MsIndicatorsRoute
+  '/ms/macro': typeof MsMacroRoute
+  '/ms/privacy': typeof MsPrivacyRoute
+  '/ms/terms': typeof MsTermsRoute
   '/ms': typeof MsIndexRoute
+  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -222,7 +279,14 @@ export interface FileRoutesById {
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
+  '/ms/free-channel': typeof MsFreeChannelRoute
+  '/ms/indicators': typeof MsIndicatorsRoute
+  '/ms/macro': typeof MsMacroRoute
+  '/ms/privacy': typeof MsPrivacyRoute
+  '/ms/terms': typeof MsTermsRoute
   '/ms/': typeof MsIndexRoute
+  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -248,7 +312,14 @@ export interface FileRouteTypes {
     | '/ebooks/$slug'
     | '/ms/ezyai'
     | '/ms/faq'
+    | '/ms/free-channel'
+    | '/ms/indicators'
+    | '/ms/macro'
+    | '/ms/privacy'
+    | '/ms/terms'
     | '/ms/'
+    | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/entitlements'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -272,7 +343,14 @@ export interface FileRouteTypes {
     | '/ebooks/$slug'
     | '/ms/ezyai'
     | '/ms/faq'
+    | '/ms/free-channel'
+    | '/ms/indicators'
+    | '/ms/macro'
+    | '/ms/privacy'
+    | '/ms/terms'
     | '/ms'
+    | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/entitlements'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   id:
@@ -297,7 +375,14 @@ export interface FileRouteTypes {
     | '/ebooks/$slug'
     | '/ms/ezyai'
     | '/ms/faq'
+    | '/ms/free-channel'
+    | '/ms/indicators'
+    | '/ms/macro'
+    | '/ms/privacy'
+    | '/ms/terms'
     | '/ms/'
+    | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/entitlements'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -321,7 +406,14 @@ export interface RootRouteChildren {
   EbooksSlugRoute: typeof EbooksSlugRoute
   MsEzyaiRoute: typeof MsEzyaiRoute
   MsFaqRoute: typeof MsFaqRoute
+  MsFreeChannelRoute: typeof MsFreeChannelRoute
+  MsIndicatorsRoute: typeof MsIndicatorsRoute
+  MsMacroRoute: typeof MsMacroRoute
+  MsPrivacyRoute: typeof MsPrivacyRoute
+  MsTermsRoute: typeof MsTermsRoute
   MsIndexRoute: typeof MsIndexRoute
+  MsEbooksSlugRoute: typeof MsEbooksSlugRoute
+  ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
@@ -475,6 +567,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MsFaqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ms/free-channel': {
+      id: '/ms/free-channel'
+      path: '/ms/free-channel'
+      fullPath: '/ms/free-channel'
+      preLoaderRoute: typeof MsFreeChannelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/indicators': {
+      id: '/ms/indicators'
+      path: '/ms/indicators'
+      fullPath: '/ms/indicators'
+      preLoaderRoute: typeof MsIndicatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/macro': {
+      id: '/ms/macro'
+      path: '/ms/macro'
+      fullPath: '/ms/macro'
+      preLoaderRoute: typeof MsMacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/privacy': {
+      id: '/ms/privacy'
+      path: '/ms/privacy'
+      fullPath: '/ms/privacy'
+      preLoaderRoute: typeof MsPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/terms': {
+      id: '/ms/terms'
+      path: '/ms/terms'
+      fullPath: '/ms/terms'
+      preLoaderRoute: typeof MsTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ms/ebooks/$slug': {
+      id: '/ms/ebooks/$slug'
+      path: '/ms/ebooks/$slug'
+      fullPath: '/ms/ebooks/$slug'
+      preLoaderRoute: typeof MsEbooksSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ezyai/entitlements': {
+      id: '/api/public/ezyai/entitlements'
+      path: '/api/public/ezyai/entitlements'
+      fullPath: '/api/public/ezyai/entitlements'
+      preLoaderRoute: typeof ApiPublicEzyaiEntitlementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -524,7 +665,14 @@ const rootRouteChildren: RootRouteChildren = {
   EbooksSlugRoute: EbooksSlugRoute,
   MsEzyaiRoute: MsEzyaiRoute,
   MsFaqRoute: MsFaqRoute,
+  MsFreeChannelRoute: MsFreeChannelRoute,
+  MsIndicatorsRoute: MsIndicatorsRoute,
+  MsMacroRoute: MsMacroRoute,
+  MsPrivacyRoute: MsPrivacyRoute,
+  MsTermsRoute: MsTermsRoute,
   MsIndexRoute: MsIndexRoute,
+  MsEbooksSlugRoute: MsEbooksSlugRoute,
+  ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }

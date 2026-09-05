@@ -1,7 +1,7 @@
 // Client-safe product catalogue.
 // Prices mirror config/packages.json in the EzyMap bot repo (USD).
 
-export type CatalogGroup = "package" | "tradingview" | "mt5" | "macro";
+export type CatalogGroup = "package" | "tradingview" | "mt5" | "macro" | "ezyai";
 
 export type CatalogItem = {
   sku: string;
@@ -297,6 +297,37 @@ export const CATALOG: CatalogItem[] = [
     term: "1 Month",
     bullets: ["Best-yield venue tracking", "Risk-adjusted comparison", "Weekly rebalance note"],
   },
+  /* ------------------------------ EzyAI PRO ------------------------------ */
+  // Mirrors PLANS in app/constants.py of the EzyAi bot repo. Delivered to the
+  // buyer's Telegram handle via ezyai_entitlements (see src/lib/ezyai/).
+  {
+    sku: "ezyai_pro_1m",
+    group: "ezyai",
+    name: "EzyAI PRO — 1 Month",
+    description: "Live Watch alerts, Autopilot signals and deep Fundamentals in @ezytradeai_bot.",
+    amountCents: 1499,
+    term: "1 Month",
+    bullets: ["Live per-pair Watch alerts", "Autopilot signals", "Deep Fundamentals: scores, fair value, COT"],
+  },
+  {
+    sku: "ezyai_pro_6m",
+    group: "ezyai",
+    name: "EzyAI PRO — 6 Months",
+    description: "Six months of EzyAI PRO — the most popular plan, save 50%.",
+    amountCents: 4499,
+    term: "6 Months",
+    bullets: ["Everything in PRO", "Save 50% vs monthly", "Stacks on top of any active PRO time"],
+    badge: "Most popular",
+  },
+  {
+    sku: "ezyai_pro_1y",
+    group: "ezyai",
+    name: "EzyAI PRO — 12 Months",
+    description: "A full year of EzyAI PRO, save 44%.",
+    amountCents: 9999,
+    term: "12 Months",
+    bullets: ["Everything in PRO", "Save 44% vs monthly", "Stacks on top of any active PRO time"],
+  },
 ];
 
 export function getCatalogItem(sku: string): CatalogItem | undefined {
@@ -309,4 +340,15 @@ export function formatUsd(amountCents: number): string {
     currency: "USD",
     minimumFractionDigits: amountCents % 100 === 0 ? 0 : 2,
   }).format(amountCents / 100);
+}
+
+/** EzyAI PRO SKUs map to a number of months of PRO in the bot. */
+export const EZYAI_SKU_MONTHS: Record<string, number> = {
+  ezyai_pro_1m: 1,
+  ezyai_pro_6m: 6,
+  ezyai_pro_1y: 12,
+};
+
+export function isEzyAiSku(sku: string | null | undefined): boolean {
+  return !!sku && sku in EZYAI_SKU_MONTHS;
 }

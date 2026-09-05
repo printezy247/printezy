@@ -11,3 +11,10 @@ export function botStartLink(payload: string): string {
 export function usdtBuyLink(sku: string): string {
   return botStartLink(`buy_${sku}`);
 }
+
+export const EZYAI_BOT = "@ezytradeai_bot";
+
+/** Deep link that opens EzyAI with a start payload (PRO claim happens on /start). */
+export function ezyAiStartLink(payload: string): string {
+  return `https://t.me/ezytradeai_bot?start=${encodeURIComponent(payload)}`;
+}

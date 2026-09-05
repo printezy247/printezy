@@ -172,6 +172,51 @@ export type Database = {
           },
         ]
       }
+      ezyai_entitlements: {
+        Row: {
+          amount_cents: number
+          claimed_at: string | null
+          created_at: string
+          currency: string
+          email: string | null
+          id: string
+          months: number
+          sku: string
+          status: string
+          stripe_session_id: string
+          telegram_id: number | null
+          telegram_username: string
+        }
+        Insert: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months: number
+          sku: string
+          status?: string
+          stripe_session_id: string
+          telegram_id?: number | null
+          telegram_username: string
+        }
+        Update: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months?: number
+          sku?: string
+          status?: string
+          stripe_session_id?: string
+          telegram_id?: number | null
+          telegram_username?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string
