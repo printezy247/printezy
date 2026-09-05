@@ -75,6 +75,9 @@ function AccountPage() {
     let cancelled = false;
     (async () => {
       const stored = localStorage.getItem(STORAGE_KEY);
+      // Bearer tokens must not linger in the address bar (history, referrers,
+      // analytics pixels). Consume them, then rewrite the URL.
+      if (s || t) window.history.replaceState(null, "", "/account");
       if (s) {
         localStorage.setItem(STORAGE_KEY, s);
         if (!cancelled) setToken(s);

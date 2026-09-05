@@ -2,7 +2,7 @@
 // and the data each signed-in member is allowed to see.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { escapeLikePattern } from "@/lib/like-escape";
-import { sendMessage } from "./telegram.server";
+import { safeEqual, sendMessage } from "./telegram.server";
 import { getTier, SITE_URL, type TierId } from "./tiers";
 
 const CODE_TTL_MINUTES = 10;
@@ -92,11 +92,14 @@ export async function verifyCode(telegramId: number, code: string): Promise<Veri
   if (row.attempts >= MAX_CODE_ATTEMPTS) return { ok: false, reason: "locked" };
   if (new Date(row.expires_at).getTime() < Date.now()) return { ok: false, reason: "expired" };
 
-  if (row.code !== code.trim()) {
+  if (!safeEqual(row.code, code.trim())) {
+    // Conditional on the attempts value we read, so parallel guesses can't
+    // all see attempts=0 and each get a free try.
     await supabaseAdmin
       .from("login_codes")
       .update({ attempts: row.attempts + 1 } as never)
-      .eq("id", row.id);
+      .eq("id", row.id)
+      .eq("attempts", row.attempts);
     return { ok: false, reason: "invalid" };
   }
 

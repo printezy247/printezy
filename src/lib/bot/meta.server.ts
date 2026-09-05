@@ -124,11 +124,12 @@ export async function reportMetaEvent(args: {
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/${GRAPH_VERSION}/${config.pixelId}/events?access_token=${encodeURIComponent(config.accessToken)}`,
+      `https://graph.facebook.com/${GRAPH_VERSION}/${config.pixelId}/events`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        // Token in the body, not the query string, so it never lands in request logs.
+        body: JSON.stringify({ ...payload, access_token: config.accessToken }),
       },
     );
     const text = await response.text();
@@ -206,11 +207,12 @@ export async function reportSiteEvent(args: {
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/${GRAPH_VERSION}/${config.pixelId}/events?access_token=${encodeURIComponent(config.accessToken)}`,
+      `https://graph.facebook.com/${GRAPH_VERSION}/${config.pixelId}/events`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        // Token in the body, not the query string, so it never lands in request logs.
+        body: JSON.stringify({ ...payload, access_token: config.accessToken }),
       },
     );
     if (!response.ok) {

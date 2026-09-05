@@ -2,13 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const schema = z.object({
-  eventName: z.enum([
-    "PageView",
-    "ViewContent",
-    "Lead",
-    "InitiateCheckout",
-    "StartTrial",
-  ]),
+  eventName: z.enum(["PageView", "ViewContent", "Lead", "InitiateCheckout", "StartTrial"]),
   sessionId: z.string().min(1).max(64),
   eventId: z.string().min(1).max(120),
   path: z.string().max(300).optional().nullable(),
@@ -27,6 +21,16 @@ export const reportSiteMetaEvent = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const { reportSiteEvent } = await import("@/lib/bot/meta.server");
+    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+    const { getCatalogItem } = await import("@/lib/catalog");
+    // Unauthenticated relay into the ad account: cap it, and never trust a
+    // browser-supplied value — the catalog price for the SKU is the value.
+    const allowed = await checkRateLimit("meta_event", data.sessionId, {
+      max: 60,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (!allowed) return { ok: false };
+    const catalogValue = data.contentId ? getCatalogItem(data.contentId)?.amountCents : undefined;
     await reportSiteEvent({
       eventName: data.eventName,
       sessionId: data.sessionId,
@@ -34,7 +38,7 @@ export const reportSiteMetaEvent = createServerFn({ method: "POST" })
       path: data.path ?? undefined,
       contentName: data.contentName ?? undefined,
       contentId: data.contentId ?? undefined,
-      valueCents: data.valueCents ?? undefined,
+      valueCents: catalogValue,
       fbp: data.fbp ?? undefined,
       userAgent: data.userAgent ?? undefined,
     });

@@ -89,7 +89,10 @@ export const claimEbook = createServerFn({ method: "POST" })
           )
           .select("id")
           .single();
-        if (error) throw new Error(error.message);
+        if (error) {
+        console.error("[db] write failed", error);
+        throw new Error("Could not save your changes — please try again.");
+      }
 
         const { notifyVantageClaim } = await import("./bot/ebook-claims.server");
         void notifyVantageClaim({
@@ -113,7 +116,10 @@ export const claimEbook = createServerFn({ method: "POST" })
         } as never,
         { onConflict: "user_id,slug" },
       );
-      if (error) throw new Error(error.message);
+      if (error) {
+        console.error("[db] write failed", error);
+        throw new Error("Could not save your changes — please try again.");
+      }
 
       return { ok: true, status: "approved", pdf: book.pdf };
     },
