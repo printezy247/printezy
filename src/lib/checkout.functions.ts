@@ -85,9 +85,17 @@ export const createCheckout = createServerFn({ method: "POST" })
       const stripe = createStripeClient(data.environment);
 
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
+      // A catalog item with no Stripe price yet gets one created on first
+      // checkout, so adding a SKU to catalog.ts is the only setup step.
       const prices = await stripe.prices.list({ lookup_keys: [item.sku] });
-      if (!prices.data.length) throw new Error("Price not found");
-      const stripePrice = prices.data[0];
+      const stripePrice =
+        prices.data[0] ??
+        (await stripe.prices.create({
+          currency: "usd",
+          unit_amount: item.amountCents,
+          lookup_key: item.sku,
+          product_data: { name: item.name },
+        }));
 
       const productId =
         typeof stripePrice.product === "string" ? stripePrice.product : stripePrice.product.id;
