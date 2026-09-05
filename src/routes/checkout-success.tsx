@@ -11,6 +11,7 @@ import { getCheckoutStatus } from "@/lib/checkout.functions";
 import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
 import { getCatalogItem, formatUsd, type CatalogGroup } from "@/lib/catalog";
 import { REGISTER_BOT, botStartLink } from "@/lib/telegram-links";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 /** 1-2 complementary SKUs to surface after a purchase, by the group just bought. */
 const CROSS_SELL: Record<CatalogGroup, string[]> = {
@@ -35,7 +36,10 @@ export const Route = createFileRoute("/checkout-success")({
         content: "Your EzyMap ALGO purchase is confirmed. Access is delivered in Telegram.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/checkout-success` },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: SuccessPage,
@@ -165,7 +169,9 @@ function SuccessPage() {
                 </a>
               </Button>
               <Button asChild variant="ghost">
-                <Link to="/pricing">Back to pricing</Link>
+                <Link to="/" hash="packages">
+                  Back to pricing
+                </Link>
               </Button>
             </div>
 

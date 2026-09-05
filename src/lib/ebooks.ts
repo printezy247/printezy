@@ -5,6 +5,8 @@ export type Ebook = {
   title: string;
   tagline: string;
   description: string;
+  author: string;
+  language: string;
   image: string;
   pdf: string;
   pages: number;
@@ -24,6 +26,8 @@ export const EBOOK_PAGES: Ebook[] = [
     tagline: "Turn any chart into a decision map — support, resistance and a 20-minute daily routine.",
     description:
       "Stop guessing the next candle. This guide shows you how to mark the levels that actually hold, grade them A/B/C, and pre-write the plan so you only execute decisions you already made calmly.",
+    author: "EzyMap ALGO",
+    language: "en",
     image: ebookMapping,
     pdf: "/ebooks/mapping-like-a-pro.pdf",
     pages: 12,
@@ -55,6 +59,8 @@ export const EBOOK_PAGES: Ebook[] = [
     tagline: "Support & resistance, trendlines, chart patterns and candlesticks — the core toolkit, no fluff.",
     description:
       "The four building blocks every trader uses to read a chart before taking a trade: where price is likely to react, how to draw the lines that matter, the patterns that repeat, and what a single candle is telling you.",
+    author: "EzyMap ALGO",
+    language: "en",
     image: ebookTechnical,
     pdf: "/ebooks/technical-analysis.pdf",
     pages: 21,

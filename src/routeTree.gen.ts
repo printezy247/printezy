@@ -22,6 +22,7 @@ import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
@@ -93,6 +94,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/ads-dashboard'
     | '/site-analytics'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/ads-dashboard'
     | '/site-analytics'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
+    | '/sitemap.xml'
     | '/terms'
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
@@ -268,6 +280,7 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -367,6 +380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -439,6 +459,7 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   EbooksSlugRoute: EbooksSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

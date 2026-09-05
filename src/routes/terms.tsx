@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer, brandLogo } from "@/components/landing/Landing";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -13,8 +14,15 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: "Terms of Service — EzyMap ALGO" },
       { property: "og:description", content: "Terms for using EzyMap ALGO signals and subscriptions." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/terms` },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
+      { property: "og:image:alt", content: "EzyMap ALGO logo" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/terms` }],
   }),
   component: TermsPage,
 });

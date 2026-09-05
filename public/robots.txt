@@ -1,0 +1,80 @@
+# EzyMap ALGO
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+# AI answer engines — explicitly allowed
+User-agent: GPTBot
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: CCBot
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+User-agent: Bytespider
+Allow: /
+Disallow: /account
+Disallow: /auth
+Disallow: /checkout-success
+Disallow: /_authenticated/
+
+Sitemap: https://printezy.money/sitemap.xml

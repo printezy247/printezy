@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer, brandLogo } from "@/components/landing/Landing";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
@@ -13,8 +14,15 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "Privacy Policy — EzyMap ALGO" },
       { property: "og:description", content: "How EzyMap ALGO handles your data." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/privacy` },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
+      { property: "og:image:alt", content: "EzyMap ALGO logo" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/privacy` }],
   }),
   component: PrivacyPage,
 });

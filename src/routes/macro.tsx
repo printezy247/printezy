@@ -44,7 +44,12 @@ export const Route = createFileRoute("/macro")({
           "Economic calendar, central bank divergence, recession odds and crypto desk add-ons from the MacroTrader Telegram desk.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/macro` },
+      { property: "og:locale", content: "en_US" },
       { property: "og:image", content: `${SITE_URL}${macroLogo}` },
+      { property: "og:image:alt", content: "MacroTrader desk logo" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Macro & Crypto Desk — EzyMap Algo" },
       {
@@ -53,6 +58,7 @@ export const Route = createFileRoute("/macro")({
       },
       { name: "twitter:image", content: `${SITE_URL}${macroLogo}` },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/macro` }],
   }),
   component: MacroPage,
 });

@@ -23,6 +23,16 @@ export const Route = createFileRoute("/ebooks/$slug")({
     }
     const { book } = loaderData;
     const title = `${book.title} — Free Trading PDF | EzyMap ALGO`;
+    const canonical = `${SITE_URL}/ebooks/${book.slug}`;
+    const bookJsonLd = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Book",
+      name: book.title,
+      description: book.description,
+      author: { "@type": "Organization", name: book.author },
+      image: `${SITE_URL}${book.image}`,
+      inLanguage: book.language,
+    });
     return {
       meta: [
         { title },
@@ -30,10 +40,17 @@ export const Route = createFileRoute("/ebooks/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: book.tagline },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: canonical },
+        { property: "og:locale", content: "en_US" },
         { property: "og:image", content: `${SITE_URL}${book.image}` },
+        { property: "og:image:alt", content: book.title },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: `${SITE_URL}${book.image}` },
       ],
+      links: [{ rel: "canonical", href: canonical }],
+      scripts: [{ type: "application/ld+json", children: bookJsonLd }],
     };
   },
   notFoundComponent: EbookNotFound,

@@ -1432,7 +1432,7 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
+export const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
   {
     titleKey: "faq_group1_title",
     items: [
