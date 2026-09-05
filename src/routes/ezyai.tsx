@@ -3,10 +3,12 @@ import { useEffect } from "react";
 import { Bell, Bot, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
 import { Nav, Footer, LINKS, brandLogo } from "@/components/landing/Landing";
 import { Button } from "@/components/ui/button";
+import { BuyButton } from "@/components/BuyButton";
 import { useTranslation } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/bot/tiers";
+import { formatUsd, getCatalogItem } from "@/lib/catalog";
 
 export const Route = createFileRoute("/ezyai")({
   head: () => ({
@@ -53,16 +55,17 @@ const FEATURES: { icon: typeof Search; titleKey: TranslationKey; descKey: Transl
 ];
 
 type PlanTier = {
+  sku: string;
   labelKey: TranslationKey;
-  price: string;
   badgeKey?: TranslationKey;
   highlight?: boolean;
 };
 
+// Prices come from the catalog (which mirrors the bot's own PLANS table).
 const PLANS: PlanTier[] = [
-  { labelKey: "ezyai_tier_1m_label", price: "$14.99" },
-  { labelKey: "ezyai_tier_6m_label", price: "$44.99", badgeKey: "ezyai_tier_6m_badge", highlight: true },
-  { labelKey: "ezyai_tier_12m_label", price: "$99.99", badgeKey: "ezyai_tier_12m_badge" },
+  { sku: "ezyai_pro_1m", labelKey: "ezyai_tier_1m_label" },
+  { sku: "ezyai_pro_6m", labelKey: "ezyai_tier_6m_label", badgeKey: "ezyai_tier_6m_badge", highlight: true },
+  { sku: "ezyai_pro_1y", labelKey: "ezyai_tier_12m_label", badgeKey: "ezyai_tier_12m_badge" },
 ];
 
 export function EzyAiPage() {
@@ -155,19 +158,21 @@ export function EzyAiPage() {
                 <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                   {t(p.labelKey)}
                 </h3>
-                <p className="mt-2 font-mono text-2xl font-extrabold tabular-nums text-foreground">{p.price}</p>
+                <p className="mt-2 font-mono text-2xl font-extrabold tabular-nums text-foreground">
+                  {formatUsd(getCatalogItem(p.sku)?.amountCents ?? 0)}
+                </p>
                 {p.badgeKey ? <p className="mt-1 text-[11px] font-medium text-accent">{t(p.badgeKey)}</p> : null}
                 <div className="mt-6">
-                  <Button asChild variant={p.highlight ? "primary" : "outline"} className="w-full">
-                    <a
-                      href={LINKS.ezyai}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => goTrack(`ezyai_pricing_${p.labelKey}`)}
-                    >
-                      {t("ezyai_upgrade_pro")}
-                    </a>
-                  </Button>
+                  <BuyButton sku={p.sku} label={t("ezyai_buy_pro")} variant={p.highlight ? "primary" : "gold"} />
+                  <a
+                    href={LINKS.ezyai}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => goTrack(`ezyai_pricing_${p.labelKey}`)}
+                    className="mt-3 block text-center text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    {t("ezyai_upgrade_pro")}
+                  </a>
                 </div>
               </article>
             ))}

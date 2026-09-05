@@ -3,7 +3,7 @@
 // Telegram handle is known — either instantly (the handle already belongs to a
 // bot user) or when they open @EzyRegisterBot for the first time.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { getCatalogItem } from "@/lib/catalog";
+import { getCatalogItem, isEzyAiSku } from "@/lib/catalog";
 import { escapeLikePattern } from "@/lib/like-escape";
 import { sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
@@ -111,7 +111,9 @@ export async function claimSitePurchases(args: {
     return 0;
   }
 
-  const rows = (data ?? []) as PurchaseRow[];
+  // EzyAI PRO is delivered by @ezytradeai_bot via ezyai_entitlements, not
+  // by this bot — leave those rows alone.
+  const rows = ((data ?? []) as PurchaseRow[]).filter((row) => !isEzyAiSku(row.sku));
   for (const row of rows) await grantPurchase(args.telegramId, row);
   return rows.length;
 }

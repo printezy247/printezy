@@ -4,19 +4,31 @@ import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
 /**
  * Built-in payments webhook (test + live, selected via ?env=).
  *
- * Two purchase flows land here:
+ * Three purchase flows land here:
  * - Website catalog checkouts (metadata.source = "website"): record the
  *   site_purchases row and grant access via EzyRegisterBot.
+ * - Website EzyAI PRO checkouts (same source, sku ezyai_*): record the
+ *   site_purchases row for the books, then hand delivery to the
+ *   ezyai_entitlements bridge polled by @ezytradeai_bot.
  * - In-bot tier checkouts: activate the pending enrollment.
  */
-async function fulfillSession(sessionId: string, source: string | undefined, env: StripeEnv) {
-  if (source === "website") {
+async function fulfillSession(
+  sessionId: string,
+  meta: { source?: string; sku?: string } | null | undefined,
+  env: StripeEnv,
+) {
+  if (meta?.source === "website") {
     const { recordSitePurchase } = await import("@/lib/bot/purchases.server");
     const recorded = await recordSitePurchase(sessionId, env);
-    if (recorded) {
-      const { grantRecordedPurchase } = await import("@/lib/bot/site-access.server");
-      await grantRecordedPurchase(sessionId);
+    if (!recorded) return;
+    const { isEzyAiSku } = await import("@/lib/catalog");
+    if (isEzyAiSku(meta.sku)) {
+      const { recordEzyAiEntitlement } = await import("@/lib/ezyai/entitlements.server");
+      await recordEzyAiEntitlement(sessionId, env);
+      return;
     }
+    const { grantRecordedPurchase } = await import("@/lib/bot/site-access.server");
+    await grantRecordedPurchase(sessionId);
     return;
   }
   // Bot-initiated tier checkout (or legacy session): try enrollment activation.
@@ -43,13 +55,13 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
               const session = event.data.object;
               // Only fulfill once money is final (or nothing is due).
               if (session.payment_status !== "unpaid") {
-                await fulfillSession(session.id, session.metadata?.source, env);
+                await fulfillSession(session.id, session.metadata, env);
               }
               break;
             }
             case "checkout.session.async_payment_succeeded": {
               const session = event.data.object;
-              await fulfillSession(session.id, session.metadata?.source, env);
+              await fulfillSession(session.id, session.metadata, env);
               break;
             }
             default:
