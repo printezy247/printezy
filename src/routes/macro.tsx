@@ -601,7 +601,7 @@ export function MacroPage() {
                 <div className="overflow-x-auto">
                   <div
                     className="grid gap-x-3 text-left text-sm"
-                    style={{ gridTemplateColumns: "minmax(0, 1fr) 72px minmax(90px, 150px) 86px" }}
+                    style={{ gridTemplateColumns: "minmax(0, 1fr) 96px minmax(90px, 150px) 86px" }}
                   >
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_bank")}</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_rate")}</div>
@@ -692,12 +692,12 @@ export function MacroPage() {
                       key={a.name}
                       className="flex flex-col rounded-lg border border-border bg-surface/50 p-4"
                     >
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm font-semibold">{a.name}</p>
-                        <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-accent">{a.price}</span>
-                      </div>
+                      <p className="text-sm font-semibold">{a.name}</p>
                       <p className="mt-1 flex-1 text-xs text-muted-foreground">{a.description}</p>
-                      <BuyButton sku={a.sku} label={t("macro_pay_with_card")} className="mt-3" />
+                      <p className="mt-3 text-center font-mono text-lg font-bold tabular-nums text-accent">
+                        {a.price}
+                      </p>
+                      <BuyButton sku={a.sku} label={t("macro_pay_with_card")} className="mt-2" />
                       <a
                         href={LINKS.macro}
                         target="_blank"
@@ -753,7 +753,7 @@ export function MacroPage() {
               </ul>
             </Card>
 
-            <section className="rounded-xl border border-accent/45 bg-card p-5">
+            <section className="rounded-xl border border-accent/45 bg-card p-5 text-center">
               <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
                 {t("macro_full_desk_label")}
               </p>

@@ -378,3 +378,15 @@
 }
 
 
+
+/* Compact variant used inside pricing cards so the neon button lines up with
+   the centered, fixed-width Buy buttons. */
+.neon-free-btn--compact {
+  width: auto;
+  min-width: 168px;
+}
+.neon-free-btn--compact .neon-free-btn-inner {
+  min-height: 40px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
