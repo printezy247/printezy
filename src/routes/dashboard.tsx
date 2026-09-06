@@ -154,6 +154,34 @@ function PurchasesCard() {
                       ? ` · ${t("dash_delivered_to")} @${p.telegramUsername}`
                       : ""}
                   </p>
+                  {p.redeemCode ? (
+                    <div className="mt-2 rounded-md border border-border bg-surface px-2.5 py-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                          {t("dash_pro_code")}
+                        </span>
+                        <code className="select-all font-mono text-sm font-semibold text-foreground">
+                          {p.redeemCode}
+                        </code>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            void navigator.clipboard.writeText(p.redeemCode!);
+                            toast.success(t("dash_copied"));
+                          }}
+                          aria-label={t("dash_copy")}
+                          className="rounded p-1 text-muted-foreground hover:text-foreground"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </button>
+                      </div>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        {p.redeemed
+                          ? t("dash_pro_code_redeemed")
+                          : t("dash_pro_code_hint").replace("{code}", p.redeemCode)}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
                 <span className="shrink-0 font-mono tabular-nums">{formatUsd(p.amountCents)}</span>
               </li>

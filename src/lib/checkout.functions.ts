@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getCatalogItem } from "./catalog";
+import { getCatalogItem, isEzyAiSku } from "./catalog";
+import { generateRedeemCode } from "./ezyai/redeem-code";
 import {
   type StripeEnv,
   createStripeClient,
@@ -7,7 +8,8 @@ import {
   getStripeErrorMessage,
 } from "./stripe.server";
 
-const ALLOWED_ORIGIN = /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
+const ALLOWED_ORIGIN =
+  /^https?:\/\/(localhost:\d+|127\.0\.0\.1:\d+|[a-z0-9-]+\.lovable\.app|[a-z0-9-]+\.lovableproject\.com|(www\.)?printezy\.money)$/i;
 
 const EXPERIENCE_LEVELS = ["beginner", "intermediate", "advanced"] as const;
 
@@ -108,16 +110,24 @@ export const createCheckout = createServerFn({ method: "POST" })
         typeof stripePrice.product === "string" ? stripePrice.product : stripePrice.product.id;
       const product = await stripe.products.retrieve(productId);
 
+      // EzyAI PRO ships with a redeem code the buyer types into the bot. It
+      // lives on the session (metadata) and on the payment (description), so
+      // the success page, the Stripe receipt and the webhook all see one code.
+      const redeemCode = isEzyAiSku(item.sku) ? generateRedeemCode() : null;
+
       const session = await stripe.checkout.sessions.create({
         line_items: [{ price: stripePrice.id, quantity: 1 }],
         mode: "payment",
         ui_mode: "embedded_page",
         return_url: `${data.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-        payment_intent_data: { description: product.name },
+        payment_intent_data: {
+          description: redeemCode ? `${product.name} · PRO code ${redeemCode}` : product.name,
+        },
         metadata: {
           sku: item.sku,
           source: "website",
           telegram_username: data.telegramUsername,
+          ...(redeemCode ? { redeem_code: redeemCode } : {}),
           ...(data.fullName ? { full_name: data.fullName } : {}),
           ...(data.experienceLevel ? { experience_level: data.experienceLevel } : {}),
           ...(data.mt5Account ? { mt5_account: data.mt5Account } : {}),
@@ -140,12 +150,29 @@ export const getCheckoutStatus = createServerFn({ method: "POST" })
     return input;
   })
   .handler(async ({ data }) => {
-    const stripe = createStripeClient(detectStripeEnv());
+    const env = detectStripeEnv();
+    const stripe = createStripeClient(env);
     const session = await stripe.checkout.sessions.retrieve(data.sessionId);
+    const paid = session.payment_status === "paid";
+    const sku = session.metadata?.sku ?? null;
+
+    // The success page shows the PRO code right away; make sure the bot can
+    // already redeem it even when the webhook is a few seconds behind. Same
+    // idempotent recorder the webhook uses, so no double rows.
+    if (paid && isEzyAiSku(sku)) {
+      try {
+        const { recordEzyAiEntitlement } = await import("@/lib/ezyai/entitlements.server");
+        await recordEzyAiEntitlement(data.sessionId, env);
+      } catch (error) {
+        console.error("[checkout] early entitlement record failed", error);
+      }
+    }
+
     return {
-      paid: session.payment_status === "paid",
-      product: session.metadata?.sku ?? null,
+      paid,
+      product: sku,
       telegramUsername: session.metadata?.telegram_username ?? null,
       email: session.customer_details?.email ?? session.customer_email ?? null,
+      redeemCode: paid ? (session.metadata?.redeem_code ?? null) : null,
     };
   });

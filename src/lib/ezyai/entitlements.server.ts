@@ -6,12 +6,17 @@
 // ezyai_entitlements row per paid EzyAI SKU, and the bot pulls unclaimed rows
 // for a handle (on /start, /plans, /account, PRO gates and a periodic
 // sweep), activates PRO locally, then POSTs the claim back here.
+//
+// Every row also carries a redeem code (EZY-XXXX-XXXX) minted at checkout.
+// A buyer whose handle didn't match types it into the bot with /redeem, and
+// the bot looks the row up by code instead.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { EZYAI_SKU_MONTHS } from "@/lib/catalog";
 import { escapeLikePattern } from "@/lib/like-escape";
 import { normalizeHandle } from "@/lib/bot/site-access.server";
 import { safeEqual } from "@/lib/bot/telegram.server";
 import { createStripeClient, type StripeEnv } from "@/lib/stripe.server";
+import { REDEEM_CODE_RE, generateRedeemCode, normalizeRedeemCode } from "./redeem-code";
 
 export type EntitlementRow = {
   id: string;
@@ -20,13 +25,14 @@ export type EntitlementRow = {
   telegram_username: string;
   telegram_id: number | null;
   stripe_session_id: string;
+  redeem_code: string | null;
   status: "paid" | "claimed" | "revoked";
   claimed_at: string | null;
   created_at: string;
 };
 
 const PUBLIC_COLUMNS =
-  "id, sku, months, telegram_username, telegram_id, stripe_session_id, status, claimed_at, created_at";
+  "id, sku, months, telegram_username, telegram_id, stripe_session_id, redeem_code, status, claimed_at, created_at";
 
 /**
  * Bearer key shared with the bot (EZYAI_ENTITLEMENT_KEY here, EZYAI_SITE_KEY
@@ -68,26 +74,47 @@ export async function recordEzyAiEntitlement(
     .maybeSingle();
   if (existing) return existing as EntitlementRow;
 
-  const { data, error } = await supabaseAdmin
-    .from("ezyai_entitlements")
-    .insert({
-      sku: meta.sku,
-      months,
-      telegram_username: handle,
-      email: session.customer_details?.email ?? session.customer_email ?? null,
-      amount_cents: session.amount_total ?? 0,
-      currency: session.currency ?? "usd",
-      stripe_session_id: stripeSessionId,
-      status: "paid",
-    })
-    .select(PUBLIC_COLUMNS)
-    .single();
+  // Prefer the code the buyer already saw (success page, Stripe receipt).
+  // Sessions created before codes existed get a fresh one here.
+  const minted = meta.redeem_code ?? "";
+  let redeemCode = REDEEM_CODE_RE.test(minted) ? minted : generateRedeemCode();
 
-  if (error) {
+  for (let attempt = 0; ; attempt++) {
+    const { data, error } = await supabaseAdmin
+      .from("ezyai_entitlements")
+      .insert({
+        sku: meta.sku,
+        months,
+        telegram_username: handle,
+        email: session.customer_details?.email ?? session.customer_email ?? null,
+        amount_cents: session.amount_total ?? 0,
+        currency: session.currency ?? "usd",
+        stripe_session_id: stripeSessionId,
+        redeem_code: redeemCode,
+        status: "paid",
+      })
+      .select(PUBLIC_COLUMNS)
+      .single();
+
+    if (!error) return data as EntitlementRow;
+
+    // Unique violation: either a concurrent insert of the same session (the
+    // webhook and the success page can race) or, vanishingly, a code clash.
+    if (error.code === "23505") {
+      const { data: raced } = await supabaseAdmin
+        .from("ezyai_entitlements")
+        .select(PUBLIC_COLUMNS)
+        .eq("stripe_session_id", stripeSessionId)
+        .maybeSingle();
+      if (raced) return raced as EntitlementRow;
+      if (attempt < 2) {
+        redeemCode = generateRedeemCode();
+        continue;
+      }
+    }
     console.error("[ezyai] failed to record entitlement", error);
     throw new Error(error.message);
   }
-  return data as EntitlementRow;
 }
 
 /** Unclaimed paid entitlements — for one handle, or every handle (sweep). */
@@ -111,6 +138,28 @@ export async function listUnclaimedEntitlements(
   const { data, error } = await query;
   if (error) {
     console.error("[ezyai] entitlement lookup failed", error);
+    throw new Error(error.message);
+  }
+  return (data ?? []) as EntitlementRow[];
+}
+
+/**
+ * The unclaimed entitlement behind a redeem code, as a 0-or-1 element list so
+ * the bot can read it with the same shape as the handle lookup. Anything that
+ * isn't a well-formed code is simply "not found".
+ */
+export async function findEntitlementByCode(input: unknown): Promise<EntitlementRow[]> {
+  const code = normalizeRedeemCode(input);
+  if (!code) return [];
+  const { data, error } = await supabaseAdmin
+    .from("ezyai_entitlements")
+    .select(PUBLIC_COLUMNS)
+    .eq("redeem_code", code)
+    .eq("status", "paid")
+    .is("claimed_at", null)
+    .limit(1);
+  if (error) {
+    console.error("[ezyai] code lookup failed", error);
     throw new Error(error.message);
   }
   return (data ?? []) as EntitlementRow[];

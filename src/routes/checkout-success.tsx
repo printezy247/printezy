@@ -56,6 +56,7 @@ function SuccessPage() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referralStats, setReferralStats] = useState<ReferralStats | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [redeemCode, setRedeemCode] = useState<string | null>(null);
   const [signInState, setSignInState] = useState<"idle" | "sending" | "sent">("idle");
 
   useEffect(() => {
@@ -70,6 +71,7 @@ function SuccessPage() {
         setProduct(res.product);
         setHandle(res.telegramUsername);
         setEmail(res.email);
+        setRedeemCode(res.redeemCode);
       })
       .catch(() => setState("pending"));
   }, [check]);
@@ -158,12 +160,41 @@ function SuccessPage() {
               </div>
             ) : null}
 
+            {ezyai && redeemCode ? (
+              <div className="mx-auto mt-6 max-w-md rounded-xl border border-accent/40 bg-accent/5 p-5 text-left">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Your PRO code
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <code className="flex-1 select-all font-mono text-xl font-bold tracking-wider text-foreground">
+                    {redeemCode}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(redeemCode);
+                      toast.success("Code copied");
+                    }}
+                    aria-label="Copy PRO code"
+                    className="shrink-0 rounded-md border border-border p-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
+                </div>
+                <p className="mt-3 text-sm text-body">
+                  Open <span className="text-foreground">{EZYAI_BOT}</span> and send{" "}
+                  <code className="font-mono text-foreground">/redeem {redeemCode}</code>. Keep it —
+                  it also appears on your Stripe receipt and under My account on this site.
+                </p>
+              </div>
+            ) : null}
+
             <p className="mt-6 text-body">
               Access is delivered inside Telegram. Open the{" "}
               <span className="text-foreground">{deliveryBot}</span> bot and press{" "}
               <span className="text-foreground">Start</span> —{" "}
               {ezyai
-                ? "PRO switches on for your Telegram account within a minute."
+                ? "PRO switches on for your Telegram account within a minute, or instantly with the code above."
                 : "your channels, indicators and ebooks are unlocked there within a minute."}
             </p>
 
@@ -182,7 +213,7 @@ function SuccessPage() {
 
             <p className="mt-6 text-xs text-muted-foreground">
               {ezyai
-                ? "Nothing after a few minutes? Make sure the Telegram username you entered matches the account you opened the bot with, then message Sarah and we'll unlock it manually."
+                ? "Nothing after a few minutes? Send /redeem with your PRO code in the bot. Still stuck? Message Sarah and we'll unlock it manually."
                 : "Nothing after a few minutes? Message Sarah in the bot with your Telegram username and we'll unlock it manually."}
             </p>
 

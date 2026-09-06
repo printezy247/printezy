@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * Entitlement bridge for @ezytradeai_bot (tradernonymous/EzyAi).
  *
  *   GET  /api/public/ezyai/entitlements?username=<handle>
+ *   GET  /api/public/ezyai/entitlements?code=<EZY-XXXX-XXXX>  (0 or 1 row)
  *   GET  /api/public/ezyai/entitlements            (all unclaimed — sweep)
  *   POST /api/public/ezyai/entitlements  { id, telegram_id }
  *
@@ -30,9 +31,14 @@ export const Route = createFileRoute("/api/public/ezyai/entitlements")({
         const denied = await guard(request);
         if (denied) return denied;
         try {
-          const username = new URL(request.url).searchParams.get("username");
-          const { listUnclaimedEntitlements } = await import("@/lib/ezyai/entitlements.server");
-          const entitlements = await listUnclaimedEntitlements(username);
+          const params = new URL(request.url).searchParams;
+          const code = params.get("code");
+          const { listUnclaimedEntitlements, findEntitlementByCode } =
+            await import("@/lib/ezyai/entitlements.server");
+          const entitlements =
+            code !== null
+              ? await findEntitlementByCode(code)
+              : await listUnclaimedEntitlements(params.get("username"));
           return Response.json({ entitlements });
         } catch (error) {
           console.error("[ezyai entitlements] GET failed", error);
