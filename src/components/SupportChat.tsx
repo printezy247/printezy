@@ -187,7 +187,7 @@ export function SupportChat() {
             sessionId: getSessionId(),
             text: clean,
             entryId: entryId ?? null,
-            lang: locale === "ms" ? "ms" : "en",
+            lang: locale,
           },
         });
         const kind = "kind" in reply ? reply.kind : null;
