@@ -20,6 +20,8 @@ function offerUrlFor(item: CatalogItem): string {
       return `${SITE_URL}/indicators#${item.sku.replace(/_(1m|6m|1y)$/, "")}`;
     case "macro":
       return `${SITE_URL}/macro`;
+    default:
+      return `${SITE_URL}/pricing`;
   }
 }
 
