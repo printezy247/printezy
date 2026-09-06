@@ -227,9 +227,11 @@ function NeonFreeAccessButton({
   event: string;
 }) {
   return (
-    <a href={href} onClick={() => goTrack(event)} className="neon-free-btn">
-      <span className="neon-free-btn-inner">Get Free Access</span>
-    </a>
+    <div className="flex justify-center">
+      <a href={href} onClick={() => goTrack(event)} className="neon-free-btn neon-free-btn--compact">
+        <span className="neon-free-btn-inner">Get Free Access</span>
+      </a>
+    </div>
   );
 }
 
@@ -950,10 +952,10 @@ export function Pricing() {
               </div>
             )}
             <div className="flex flex-1 flex-col p-6">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <h3 className="text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                 {t.name}
               </h3>
-              <p className="mt-2 flex items-baseline gap-1.5">
+              <p className="mt-2 flex items-baseline justify-center gap-1.5 text-center">
                 <span className="font-mono text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
                   {t.price}
                 </span>
@@ -964,13 +966,13 @@ export function Pricing() {
                 ) : null}
               </p>
               {t.freeAlt ? (
-                <p className="mt-1 text-[11px] font-medium leading-snug text-accent">
+                <p className="mt-1 text-center text-[11px] font-medium leading-snug text-accent">
                   {tt("pricing_free_alt")}
                 </p>
               ) : (
                 <p className="mt-1 h-4" aria-hidden="true" />
               )}
-              <p className="mt-2 text-sm font-semibold text-body">{tt(t.blurbKey).replace("{memberCount}", memberCount)}</p>
+              <p className="mt-2 text-center text-sm font-semibold text-body">{tt(t.blurbKey).replace("{memberCount}", memberCount)}</p>
               <ul className="mt-5 flex-1 space-y-2.5">
                 {t.featureKeys.map((fk) => (
                   <li key={fk} className="flex items-start gap-2 text-sm">
@@ -980,13 +982,15 @@ export function Pricing() {
                 ))}
               </ul>
               {t.openAccountHref ? (
-                <a
-                  href={t.openAccountHref}
-                  onClick={() => goTrack(t.openAccountEvent!)}
-                  className="neon-free-btn neon-pearl mt-6"
-                >
-                  <span className="neon-free-btn-inner">Open Account</span>
-                </a>
+                <div className="mt-6 flex justify-center">
+                  <a
+                    href={t.openAccountHref}
+                    onClick={() => goTrack(t.openAccountEvent!)}
+                    className="neon-free-btn neon-pearl neon-free-btn--compact"
+                  >
+                    <span className="neon-free-btn-inner">Open Account</span>
+                  </a>
+                </div>
               ) : null}
 
               <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
@@ -1004,11 +1008,13 @@ export function Pricing() {
                     />
                   </div>
                 ) : (
-                  <Button asChild variant="outline" className="mt-2 w-full">
-                    <a href={botHref} onClick={() => goTrack(`${t.event}_free_access`)}>
-                      Get Free Access
-                    </a>
-                  </Button>
+                  <div className="mt-2 flex justify-center">
+                    <Button asChild variant="outline" size="sm" className="min-w-[168px]">
+                      <a href={botHref} onClick={() => goTrack(`${t.event}_free_access`)}>
+                        Get Free Access
+                      </a>
+                    </Button>
+                  </div>
                 )
               ) : null}
             </div>

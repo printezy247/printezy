@@ -155,13 +155,15 @@ export function EzyAiPage() {
                 }`}
               >
                 {p.highlight ? <div className="bg-gold absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" /> : null}
-                <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                <h3 className="text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                   {t(p.labelKey)}
                 </h3>
-                <p className="mt-2 font-mono text-2xl font-extrabold tabular-nums text-foreground">
+                <p className="mt-2 text-center font-mono text-2xl font-extrabold tabular-nums text-foreground">
                   {formatUsd(getCatalogItem(p.sku)?.amountCents ?? 0)}
                 </p>
-                {p.badgeKey ? <p className="mt-1 text-[11px] font-medium text-accent">{t(p.badgeKey)}</p> : null}
+                {p.badgeKey ? (
+                  <p className="mt-1 text-center text-[11px] font-medium text-accent">{t(p.badgeKey)}</p>
+                ) : null}
                 <div className="mt-6">
                   <BuyButton sku={p.sku} label={t("ezyai_buy_pro")} variant={p.highlight ? "primary" : "gold"} />
                   <a
