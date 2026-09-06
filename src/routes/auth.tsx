@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +31,6 @@ export const safePath = (value: string | undefined) =>
   value && value.startsWith("/") && !value.startsWith("//") ? value : "/dashboard";
 
 function AuthPage() {
-  const navigate = useNavigate();
   const search = useSearch({ from: "/auth" });
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
@@ -41,21 +40,24 @@ function AuthPage() {
   const destination = safePath(search.redirect);
 
   // Already signed in (or just returned from a magic link / Google): move on.
+  // destination may carry a query string (e.g. /ebooks/x?claim=1), so use a
+  // plain location replace rather than the typed router navigate.
   useEffect(() => {
     let active = true;
+    const go = () => window.location.replace(destination);
     void supabase.auth.getSession().then(({ data }) => {
-      if (active && data.session) navigate({ to: destination, replace: true });
+      if (active && data.session) go();
     });
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active && session) navigate({ to: destination, replace: true });
+      if (active && session) go();
     });
     return () => {
       active = false;
       subscription.unsubscribe();
     };
-  }, [navigate, destination]);
+  }, [destination]);
 
   async function signInWithGoogle() {
     setGoogleBusy(true);
