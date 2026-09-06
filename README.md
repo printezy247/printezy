@@ -110,6 +110,12 @@ supabase/
   `GET/POST /api/public/ezyai/entitlements` (bearer key
   `EZYAI_ENTITLEMENT_KEY`, same value as the bot's `EZYAI_SITE_KEY`) and
   activates PRO itself. See `src/lib/ezyai/entitlements.server.ts`.
+  Every EzyAI checkout also mints a redeem code (`EZY-XXXX-XXXX`,
+  `src/lib/ezyai/redeem-code.ts`) stored on the Stripe session and in the
+  payment description, so it shows on the success page, the Stripe receipt
+  and the My account page. A buyer whose handle didn't match sends
+  `/redeem <code>` to the bot, which looks the row up with
+  `GET /api/public/ezyai/entitlements?code=<code>`.
   Stripe needs one Price per SKU with `lookup_key` = SKU (sandbox + live).
 - **Rate limiting** — `checkCheckout`, `saveLead`, and the support chat
   endpoints are protected by a Supabase-backed fixed-window limiter that

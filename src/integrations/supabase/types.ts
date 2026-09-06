@@ -241,6 +241,7 @@ export type Database = {
           email: string | null
           id: string
           months: number
+          redeem_code: string | null
           sku: string
           status: string
           stripe_session_id: string
@@ -255,6 +256,7 @@ export type Database = {
           email?: string | null
           id?: string
           months: number
+          redeem_code?: string | null
           sku: string
           status?: string
           stripe_session_id: string
@@ -269,6 +271,7 @@ export type Database = {
           email?: string | null
           id?: string
           months?: number
+          redeem_code?: string | null
           sku?: string
           status?: string
           stripe_session_id?: string
