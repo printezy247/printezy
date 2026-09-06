@@ -26,6 +26,7 @@ import {
 } from "@/lib/macro-desk";
 import { useServerFn } from "@tanstack/react-start";
 import { getEconomicCalendar, type EconomicCalendar } from "@/lib/macro-calendar.functions";
+import { getMacroLive, type MacroLive } from "@/lib/macro-live.functions";
 import { formatLocalTime } from "@/lib/local-time";
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
@@ -357,9 +358,11 @@ export function MacroPage() {
   const [desk, setDesk] = useState<MacroDesk | null>(null);
   const [fng, setFng] = useState<FearGreed | null>(null);
   const [cal, setCal] = useState<EconomicCalendar | null>(null);
+  const [live, setLive] = useState<MacroLive>(null);
   const clock = useLocalClock();
   const { t } = useTranslation();
   const fetchCalendar = useServerFn(getEconomicCalendar);
+  const fetchLive = useServerFn(getMacroLive);
 
   useEffect(() => {
     trackPageLoad("macro");
@@ -370,12 +373,60 @@ export function MacroPage() {
     fetchCalendar()
       .then((c) => alive && setCal(c))
       .catch(() => alive && setCal({ day: null, isToday: false, rows: [], updatedAt: null }));
+    fetchLive()
+      .then((l) => alive && setLive(l))
+      .catch(() => {});
     return () => {
       alive = false;
       stop?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Central banks, recession odds, decision dates and the two trend cards
+  // come from the bot when it is connected, else the seeded sample copy.
+  const view = useMemo(() => {
+    const d = live?.desk;
+    const today = new Date().toISOString().slice(0, 10);
+    const toIdx = (s: number) =>
+      Math.max(0, Math.min(7, Math.round(((Math.max(-1, Math.min(1, s)) + 1) / 2) * 7)));
+    const trends = (desk?.trends ?? []).map((seed) => {
+      const src = seed.key === "fed-tone" ? d?.fed_tone : d?.news_sentiment?.aggregate;
+      if (!src) return { ...seed, readout: `${seed.readout} · ${t("macro_sample_short")}` };
+      const scores = src.history.map((h) => h.score);
+      if (scores.length === 0 || src.history[src.history.length - 1]?.date !== today) {
+        scores.push(src.score);
+      }
+      const readout = (
+        seed.key === "fed-tone" ? t("macro_tone_readout") : t("macro_sentiment_readout")
+      ).replace("{label}", t(`macro_label_${src.label}` as TranslationKey));
+      return { ...seed, trend: scores.slice(-7).map(toIdx), readout };
+    });
+    return {
+      centralBanks: d
+        ? d.central_banks.map((b) => ({
+            bank: b.name,
+            rate: b.rate,
+            stance: b.stance,
+            nextMeeting: b.next_meeting,
+          }))
+        : (desk?.centralBanks ?? []),
+      recession: d
+        ? d.recession.map((r) => ({
+            country: r.name,
+            probability: r.probability,
+            driver: r.indicator,
+          }))
+        : (desk?.recession ?? []),
+      rateDecisions: d
+        ? d.rate_decisions.map((r) => ({ bank: r.bank, date: r.date }))
+        : (desk?.rateDecisions ?? []),
+      trends,
+      note: live
+        ? t("macro_live_note").replace("{time}", formatLocalTime(new Date(live.updatedAt)))
+        : t("macro_sample_note"),
+    };
+  }, [live, desk, t]);
 
   const calDayLabel = useMemo(() => {
     if (!cal?.day) return "";
@@ -539,6 +590,7 @@ export function MacroPage() {
             {shows("Central Banks") ? (
               <Card
                 title={t("macro_central_banks_title")}
+                note={view.note}
                 badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
@@ -555,7 +607,7 @@ export function MacroPage() {
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_rate")}</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_stance")}</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_next_meeting")}</div>
-                    {desk?.centralBanks.map((b) => (
+                    {view.centralBanks.map((b) => (
                       <Fragment key={b.bank}>
                         <div className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
                         <div className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
@@ -588,6 +640,7 @@ export function MacroPage() {
               <Card
                 title={t("macro_recession_title")}
                 subtitle={t("macro_recession_subtitle")}
+                note={view.note}
                 badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
@@ -603,7 +656,7 @@ export function MacroPage() {
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_prob")}</div>
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_gauge")}</div>
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_driver")}</div>
-                  {desk?.recession.map((r) => (
+                  {view.recession.map((r) => (
                     <Fragment key={r.country}>
                       <div className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
                       <div
@@ -625,8 +678,8 @@ export function MacroPage() {
 
             {shows("Sentiment") ? (
               <div className="grid gap-7 sm:grid-cols-2">
-                {desk?.trends.map((t) => (
-                  <TrendCard key={t.key} trend={t} />
+                {view.trends.map((trend) => (
+                  <TrendCard key={trend.key} trend={trend} />
                 ))}
               </div>
             ) : null}
@@ -691,7 +744,7 @@ export function MacroPage() {
 
             <Card title={t("macro_next_rate_decisions_title")}>
               <ul className="space-y-2.5 text-sm">
-                {desk?.rateDecisions.map((d) => (
+                {view.rateDecisions.map((d) => (
                   <li key={d.bank} className="flex items-center justify-between gap-3">
                     <span className="text-body">{d.bank}</span>
                     <span className="font-semibold">{d.date}</span>
