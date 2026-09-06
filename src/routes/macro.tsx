@@ -24,7 +24,9 @@ import {
   type Stance,
   type TrendCard,
 } from "@/lib/macro-desk";
-
+import { useServerFn } from "@tanstack/react-start";
+import { getEconomicCalendar, type EconomicCalendar } from "@/lib/macro-calendar.functions";
+import { formatLocalTime } from "@/lib/local-time";
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
@@ -354,8 +356,10 @@ export function MacroPage() {
   const [filter, setFilter] = useState<MacroFilter>("All");
   const [desk, setDesk] = useState<MacroDesk | null>(null);
   const [fng, setFng] = useState<FearGreed | null>(null);
+  const [cal, setCal] = useState<EconomicCalendar | null>(null);
   const clock = useLocalClock();
   const { t } = useTranslation();
+  const fetchCalendar = useServerFn(getEconomicCalendar);
 
   useEffect(() => {
     trackPageLoad("macro");
@@ -363,11 +367,24 @@ export function MacroPage() {
     let alive = true;
     fetchMacroDesk().then((d) => alive && setDesk(d));
     fetchFearGreed().then((f) => alive && setFng(f));
+    fetchCalendar()
+      .then((c) => alive && setCal(c))
+      .catch(() => alive && setCal({ day: null, isToday: false, rows: [], updatedAt: null }));
     return () => {
       alive = false;
       stop?.();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const calDayLabel = useMemo(() => {
+    if (!cal?.day) return "";
+    return new Date(`${cal.day}T12:00:00`).toLocaleDateString(undefined, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  }, [cal?.day]);
 
   const digest = useMemo(() => clock.toLocal("08:00"), [clock]);
   const shows = (f: MacroFilter) => filter === "All" || filter === f;
@@ -439,6 +456,11 @@ export function MacroPage() {
             {shows("Calendar") ? (
               <Card
                 title={t("macro_calendar_title")}
+                subtitle={
+                  cal && cal.day && !cal.isToday
+                    ? t("macro_calendar_next_day").replace("{day}", calDayLabel)
+                    : undefined
+                }
                 badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
                 note={t("macro_calendar_note").replace("{tz}", clock.ready ? clock.tzLabel : "EST")}
                 footer={
@@ -453,6 +475,14 @@ export function MacroPage() {
                           {t(`macro_impact_${i}` as TranslationKey)} {t("macro_impact_suffix")}
                         </span>
                       ))}
+                      {cal?.updatedAt ? (
+                        <span>
+                          {t("macro_calendar_updated").replace(
+                            "{time}",
+                            formatLocalTime(new Date(cal.updatedAt)),
+                          )}
+                        </span>
+                      ) : null}
                     </div>
                     <a
                       href={FOREXFACTORY}
@@ -476,8 +506,8 @@ export function MacroPage() {
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_event")}</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_forecast")}</div>
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_previous")}</div>
-                    {desk?.calendar.map((r) => (
-                      <Fragment key={`${r.nyTime}-${r.event}`}>
+                    {cal?.rows.map((r) => (
+                      <Fragment key={`${r.nyTime}-${r.currency}-${r.event}`}>
                         <div className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
                         <div className="border-t border-border py-2.5 font-semibold">{r.currency}</div>
                         <div className="border-t border-border py-2.5 pr-3">
@@ -495,6 +525,13 @@ export function MacroPage() {
                       </Fragment>
                     ))}
                   </div>
+                  {cal === null ? (
+                    <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>
+                  ) : cal.rows.length === 0 ? (
+                    <p className="border-t border-border py-3 text-sm text-muted-foreground">
+                      {t(cal.updatedAt ? "macro_calendar_empty" : "macro_calendar_unavailable")}
+                    </p>
+                  ) : null}
                 </div>
               </Card>
             ) : null}

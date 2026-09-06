@@ -1,13 +1,16 @@
 /**
  * Typed data layer for the /macro "Macro & Crypto" desk.
  *
- * NOTE: the MacroTrader bot has no public read API for this content —
- * webhook_server.py only exposes POST /webhook/stripe and heatmap messages are
- * built in-process and pushed straight to Telegram by scheduler/tasks.py.
- * So this module is seeded with the bot's real content and every read goes
- * through fetchMacroDesk(), a single swappable client function. Wiring it to
- * live data needs a new JSON endpoint on the bot's Flask app
- * (e.g. GET /api/heatmaps/<key>) plus a subscription check — a bot-side task.
+ * Live parts: the economic calendar (ForexFactory feed via
+ * src/lib/macro-calendar.functions.ts) and the Crypto Fear & Greed index.
+ *
+ * NOTE: everything else is still seeded copy. The MacroTrader bot has no
+ * public read API — webhook_server.py only exposes POST /webhook/stripe and
+ * heatmap messages are built in-process and pushed straight to Telegram by
+ * scheduler/tasks.py. Every seeded read goes through fetchMacroDesk(), a
+ * single swappable client function. Wiring it to live data needs a new JSON
+ * endpoint on the bot's Flask app (e.g. GET /api/heatmaps/<key>) plus a
+ * subscription check — a bot-side task.
  */
 
 /* ------------------------------------------------------------------ */
@@ -100,7 +103,6 @@ export type FearGreed = {
 };
 
 export type MacroDesk = {
-  calendar: CalendarRow[];
   centralBanks: CentralBankRow[];
   recession: RecessionRow[];
   trends: TrendCard[];
@@ -114,40 +116,6 @@ export type MacroDesk = {
 /* ------------------------------------------------------------------ */
 
 const SEED: MacroDesk = {
-  calendar: [
-    {
-      nyTime: "08:30",
-      currency: "USD",
-      event: "Initial Jobless Claims",
-      impact: "medium",
-      forecast: "230K",
-      previous: "227K",
-    },
-    {
-      nyTime: "08:30",
-      currency: "USD",
-      event: "Core CPI m/m",
-      impact: "high",
-      forecast: "0.3%",
-      previous: "0.2%",
-    },
-    {
-      nyTime: "10:00",
-      currency: "EUR",
-      event: "ECB President Speech",
-      impact: "medium",
-      forecast: "—",
-      previous: "—",
-    },
-    {
-      nyTime: "14:00",
-      currency: "GBP",
-      event: "BoE Interest Rate Decision",
-      impact: "high",
-      forecast: "4.75%",
-      previous: "5.00%",
-    },
-  ],
   centralBanks: [
     { bank: "Federal Reserve", rate: "4.50%", stance: "hawkish", nextMeeting: "Sep 17" },
     { bank: "European Central Bank", rate: "3.25%", stance: "dovish", nextMeeting: "Sep 12" },
@@ -193,8 +161,7 @@ const SEED: MacroDesk = {
     },
     {
       name: "Whale Wallet Alerts",
-      description:
-        "Watch up to 5 wallets; large ETH and BTC transfers flagged within 20 minutes",
+      description: "Watch up to 5 wallets; large ETH and BTC transfers flagged within 20 minutes",
       price: MACRO_PRICES.addon,
       sku: "macro_addon",
     },
@@ -206,8 +173,7 @@ const SEED: MacroDesk = {
     },
     {
       name: "Yield Optimizer & Risk Scorer",
-      description:
-        "DeFi yields with risk scoring, TVL trend and an impermanent-loss calculator",
+      description: "DeFi yields with risk scoring, TVL trend and an impermanent-loss calculator",
       price: MACRO_PRICES.yieldOptimizer,
       sku: "macro_yield_optimizer",
     },
