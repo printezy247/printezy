@@ -2,11 +2,14 @@
 // and the data each signed-in member is allowed to see.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { escapeLikePattern } from "@/lib/like-escape";
-import { sendMessage } from "./telegram.server";
+import { safeEqual, sendMessage } from "./telegram.server";
 import { getTier, SITE_URL, type TierId } from "./tiers";
 
 const CODE_TTL_MINUTES = 10;
 const SESSION_TTL_DAYS = 30;
+/** Sessions minted for "My account" links the bot sends. Short on purpose:
+ *  the token travels in a URL (chat history, screenshots, browser history). */
+const LINK_SESSION_TTL_DAYS = 7;
 const MAX_CODE_ATTEMPTS = 5;
 
 export const TIER_RANK: Record<string, number> = {
@@ -92,11 +95,14 @@ export async function verifyCode(telegramId: number, code: string): Promise<Veri
   if (row.attempts >= MAX_CODE_ATTEMPTS) return { ok: false, reason: "locked" };
   if (new Date(row.expires_at).getTime() < Date.now()) return { ok: false, reason: "expired" };
 
-  if (row.code !== code.trim()) {
+  if (!safeEqual(row.code, code.trim())) {
+    // Conditional on the attempts value we read, so parallel guesses can't
+    // all see attempts=0 and each get a free try.
     await supabaseAdmin
       .from("login_codes")
       .update({ attempts: row.attempts + 1 } as never)
-      .eq("id", row.id);
+      .eq("id", row.id)
+      .eq("attempts", row.attempts);
     return { ok: false, reason: "invalid" };
   }
 
@@ -137,12 +143,15 @@ export async function resolveSession(token: string): Promise<number | null> {
 }
 
 /** Mints a browser session for a known member. */
-export async function createMemberSession(telegramId: number): Promise<string | null> {
+export async function createMemberSession(
+  telegramId: number,
+  ttlDays: number = SESSION_TTL_DAYS,
+): Promise<string | null> {
   const token = randomToken();
   const { error } = await supabaseAdmin.from("member_sessions").insert({
     token,
     telegram_id: telegramId,
-    expires_at: new Date(Date.now() + SESSION_TTL_DAYS * 86_400_000).toISOString(),
+    expires_at: new Date(Date.now() + ttlDays * 86_400_000).toISOString(),
   } as never);
   if (error) {
     console.error("[member] session insert failed", error);
@@ -151,26 +160,15 @@ export async function createMemberSession(telegramId: number): Promise<string | 
   return token;
 }
 
-/** Exchanges a bot portal link token for a full member session. */
-export async function sessionFromPortalToken(portalToken: string): Promise<string | null> {
-  const { data } = await supabaseAdmin
-    .from("enrollments")
-    .select("telegram_id")
-    .eq("portal_token", portalToken)
-    .maybeSingle();
-  const row = data as { telegram_id: number } | null;
-  if (!row) return null;
-  const token = randomToken();
-  const { error } = await supabaseAdmin.from("member_sessions").insert({
-    token,
-    telegram_id: row.telegram_id,
-    expires_at: new Date(Date.now() + SESSION_TTL_DAYS * 86_400_000).toISOString(),
-  } as never);
-  if (error) {
-    console.error("[member] portal session insert failed", error);
-    return null;
-  }
-  return token;
+/**
+ * "My account" URL for a bot message or Stripe redirect: a fresh 7-day
+ * session per link. enrollments.portal_token is no longer accepted as a
+ * credential — it only identifies the enrollment in Stripe metadata.
+ * Falls back to the plain /account page (code sign-in) if the insert fails.
+ */
+export async function accountLinkFor(telegramId: number): Promise<string> {
+  const token = await createMemberSession(telegramId, LINK_SESSION_TTL_DAYS);
+  return token ? accountLink(token) : `${SITE_URL}/account`;
 }
 
 export async function destroySession(token: string) {

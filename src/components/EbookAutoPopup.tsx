@@ -8,7 +8,7 @@ const EbookClaimModal = lazy(() =>
   import("./EbookClaimModal").then((m) => ({ default: m.EbookClaimModal })),
 );
 
-const EXCLUDED_PREFIXES = ["/ebooks", "/auth", "/account", "/free-ebook"];
+const EXCLUDED_PREFIXES = ["/ebooks", "/auth", "/account", "/dashboard", "/free-ebook"];
 const TIMED_DELAY_MS = 45000;
 const SESSION_KEY = "pe_ebook_popup_shown";
 

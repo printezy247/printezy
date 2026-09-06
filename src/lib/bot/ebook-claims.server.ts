@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getEbook } from "@/lib/ebooks";
-import { sendMessage } from "./telegram.server";
+import { escapeHtml, sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
 
 type ClaimNotice = {
@@ -23,10 +23,10 @@ export async function notifyVantageClaim(notice: ClaimNotice): Promise<void> {
   const book = getEbook(notice.slug);
   const lines = [
     `📘 <b>Ebook claim — needs approval</b>`,
-    book ? book.title : notice.slug,
-    `Name: ${notice.fullName}`,
-    `Telegram: @${notice.telegramUsername}`,
-    `Vantage account: ${notice.vantageAccount}`,
+    escapeHtml(book ? book.title : notice.slug),
+    `Name: ${escapeHtml(notice.fullName)}`,
+    `Telegram: @${escapeHtml(notice.telegramUsername)}`,
+    `Vantage account: ${escapeHtml(notice.vantageAccount)}`,
   ];
 
   await sendMessage(sarah, lines.join("\n"), [

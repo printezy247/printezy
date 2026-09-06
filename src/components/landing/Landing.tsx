@@ -5,11 +5,12 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import { useTranslation, useLocale, LOCALES, LOCALE_LABELS } from "@/lib/i18n";
+import { useTranslation, useLocale, localizePath, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
 
@@ -17,6 +18,8 @@ const EbookDetailsModal = lazy(() =>
   import("@/components/EbookDetailsModal").then((m) => ({ default: m.EbookDetailsModal })),
 );
 import {
+  LogIn,
+  UserRound,
   Zap,
   GraduationCap,
   Users,
@@ -33,6 +36,7 @@ import {
   X,
   BookOpen,
   Lock,
+  Bot,
 } from "lucide-react";
 import {
   trackPageLoad,
@@ -74,6 +78,7 @@ export const LINKS = {
   ebook: "https://t.me/m/r7Oig5BLMTk9",
   vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
+  ezyai: "https://t.me/ezytradeai_bot",
 };
 
 
@@ -298,6 +303,7 @@ const NAV_ITEMS = [
   { key: "nav_packages", href: "/#packages" },
   { key: "nav_tools", href: "/#tools" },
   { key: "nav_macro", href: "/macro" },
+  { key: "nav_ezyai", href: "/ezyai" },
 ] as const;
 
 /** Not in the header nav — footer-only wayfinding links. */
@@ -308,27 +314,120 @@ const FOOTER_ONLY_ITEMS = [
 
 function LocaleSwitcher({ className = "" }: { className?: string }) {
   const { locale, setLocale } = useLocale();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
+    function onPointerDown(e: MouseEvent) {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
+  }, [open]);
+
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
-      {LOCALES.map((l) => (
-        <button
-          key={l}
-          type="button"
-          onClick={() => setLocale(l)}
-          aria-pressed={locale === l}
-          className={`flex min-h-8 min-w-8 items-center justify-center rounded-md px-1.5 text-xs font-semibold transition-colors ${
-            locale === l ? "bg-primary-tint text-primary" : "text-muted-foreground hover:text-body"
-          }`}
+    <div ref={rootRef} className={`relative ${className}`}>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex min-h-9 items-center gap-1.5 rounded-md border border-border px-2.5 text-xs font-semibold text-body transition-colors hover:bg-surface"
+      >
+        <span aria-hidden="true">{LOCALE_FLAGS[locale]}</span>
+        {LOCALE_LABELS[locale]}
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open ? (
+        <ul
+          role="listbox"
+          className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card py-1 shadow-elevated"
         >
-          {LOCALE_LABELS[l]}
-        </button>
-      ))}
+          {LOCALES.map((l) => (
+            <li key={l}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={locale === l}
+                onClick={() => {
+                  setLocale(l);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors ${
+                  locale === l ? "bg-primary-tint text-primary" : "text-body hover:bg-surface"
+                }`}
+              >
+                <span aria-hidden="true">{LOCALE_FLAGS[l]}</span>
+                <span className="flex-1">{LOCALE_NATIVE_NAMES[l]}</span>
+                {locale === l ? <Check className="h-3.5 w-3.5" /> : null}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
 
-export function Nav() {
+/**
+ * "Sign in" for visitors, "My account" once a Supabase session exists.
+ * Client-only: renders an empty placeholder until the session is known so
+ * SSR and the first client paint agree.
+ */
+function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
   const { t } = useTranslation();
+  const [state, setState] = useState<"unknown" | "out" | "in">("unknown");
+
+  useEffect(() => {
+    let active = true;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active) setState(data.session ? "in" : "out");
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setState(session ? "in" : "out");
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  if (state === "unknown") {
+    return <span aria-hidden="true" className={mobile ? "block h-11" : "inline-block h-8 w-16"} />;
+  }
+  const redirect = typeof window !== "undefined" ? window.location.pathname : "/";
+  return (
+    <Button asChild variant="ghost" size={mobile ? "md" : "sm"} className={mobile ? "w-full justify-start" : ""}>
+      {state === "in" ? (
+        <Link to="/dashboard" onClick={onNavigate}>
+          <UserRound className="h-4 w-4" /> {t("nav_my_account")}
+        </Link>
+      ) : (
+        <Link to="/auth" search={{ redirect }} onClick={onNavigate}>
+          <LogIn className="h-4 w-4" /> {t("nav_sign_in")}
+        </Link>
+      )}
+    </Button>
+  );
+}
+
+export function Nav() {
+  const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
@@ -388,7 +487,7 @@ export function Nav() {
       <header className="sticky top-0 z-50 bg-background">
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link to="/" aria-label="EzyMap Algo home">
+            <Link to={locale === "ms" ? "/ms" : "/"} aria-label="EzyMap Algo home">
               <Logo />
             </Link>
 
@@ -396,7 +495,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
+                    href={localizePath(item.href, locale)}
                     className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
                   >
                     {t(item.key)}
@@ -407,6 +506,7 @@ export function Nav() {
 
             <div className="hidden items-center gap-4 md:flex">
               <LocaleSwitcher />
+              <AuthMenu />
               <Button asChild variant="outline" size="sm">
                 <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah")}>
                   <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
@@ -442,7 +542,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={item.href}
+                    href={localizePath(item.href, locale)}
                     onClick={closeMenu}
                     className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
                   >
@@ -450,6 +550,9 @@ export function Nav() {
                   </a>
                 </li>
               ))}
+              <li className="pt-2">
+                <AuthMenu mobile onNavigate={closeMenu} />
+              </li>
               <li className="pt-2">
                 <Button asChild variant="outline" size="md" className="w-full">
                   <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah_mobile")}>
@@ -1043,7 +1146,7 @@ export function Products() {
         ) : null}
       </AnimatePresence>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* TradingView indicators */}
         <Reveal className="h-full">
         <article className="glass-card flex h-full flex-col rounded-xl p-6">
@@ -1154,6 +1257,40 @@ export function Products() {
             </a>
             <Button asChild variant="outline">
               <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
+                {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </article>
+        </Reveal>
+
+        {/* EzyAI */}
+        <Reveal className="h-full" delay={0.3}>
+        <article className="glass-card flex h-full flex-col rounded-xl p-6">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
+            <Bot className="h-6 w-6" />
+          </span>
+          <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
+          <ul className="mt-4 flex-1 space-y-2.5">
+            {(["ezyai_feature_1", "ezyai_feature_2", "ezyai_feature_3"] as TranslationKey[]).map((fk) => (
+              <li key={fk} className="flex items-start gap-2 text-sm">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <span className="text-body">{t(fk)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-col gap-2 pt-5">
+            <a
+              href={LINKS.ezyai}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => goTrack("products_ezyai_try_free")}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+            >
+              {t("ezyai_try_free")} <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+            <Button asChild variant="outline">
+              <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
                 {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Button>
@@ -1346,7 +1483,7 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
+export const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
   {
     titleKey: "faq_group1_title",
     items: [
@@ -1462,7 +1599,7 @@ function FinalCta() {
 
 export function Footer() {
   const botHref = useBotLink();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   return (
     <footer className="border-t border-border/60 bg-background">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
@@ -1486,7 +1623,7 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
-                  <a href={i.href} className="hover:text-foreground">
+                  <a href={localizePath(i.href, locale)} className="hover:text-foreground">
                     {t(i.key)}
                   </a>
                 </li>
@@ -1513,6 +1650,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <Link to="/dashboard" className="hover:text-foreground">
+                  {t("nav_my_account")}
+                </Link>
+              </li>
+              <li>
                 <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
                   {t("footer_vantage_markets")}
                 </a>
@@ -1524,12 +1666,12 @@ export function Footer() {
             <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/privacy" className="hover:text-foreground">
+                <Link to={locale === "ms" ? "/ms/privacy" : "/privacy"} className="hover:text-foreground">
                   {t("footer_privacy")}
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-foreground">
+                <Link to={locale === "ms" ? "/ms/terms" : "/terms"} className="hover:text-foreground">
                   {t("footer_terms")}
                 </Link>
               </li>

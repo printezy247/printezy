@@ -3,11 +3,12 @@
 // Telegram handle is known — either instantly (the handle already belongs to a
 // bot user) or when they open @EzyRegisterBot for the first time.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { getCatalogItem } from "@/lib/catalog";
+import { getCatalogItem, isEzyAiSku } from "@/lib/catalog";
 import { escapeLikePattern } from "@/lib/like-escape";
 import { sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
-import { FREE_CHANNEL, SUPPORT, newPortalToken, portalUrl } from "./enrollment.server";
+import { FREE_CHANNEL, SUPPORT, newPortalToken } from "./enrollment.server";
+import { accountLinkFor } from "./member.server";
 import { grantMt5License, isMt5Sku } from "./mt5-license.server";
 
 type PurchaseRow = {
@@ -77,7 +78,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
     telegramId,
     `🎉 <b>Purchase confirmed — ${item?.name ?? purchase.sku} is live.</b>\n\nYour access has been approved automatically. Open your account page for your links and status.`,
     [
-      [{ text: "My account", url: portalUrl(token) }],
+      [{ text: "My account", url: await accountLinkFor(telegramId) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
       [{ text: "Need help?", url: SUPPORT }],
     ],
@@ -168,7 +169,9 @@ export async function claimSitePurchases(args: {
     return 0;
   }
 
-  const rows = (data ?? []) as PurchaseRow[];
+  // EzyAI PRO is delivered by @ezytradeai_bot via ezyai_entitlements, not
+  // by this bot — leave those rows alone.
+  const rows = ((data ?? []) as PurchaseRow[]).filter((row) => !isEzyAiSku(row.sku));
   for (const row of rows) {
     if (isMt5Sku(row.sku)) {
       await grantMt5Purchase(row, args.telegramId);

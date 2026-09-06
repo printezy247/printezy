@@ -5,8 +5,9 @@ import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
-import { SITE_URL } from "@/lib/bot/tiers";
 import { useTranslation } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
+import { localizedHead } from "@/lib/seo";
 import type { TranslationKey } from "@/lib/translations";
 import {
   MACRO_FILTERS,
@@ -28,32 +29,22 @@ import {
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
 
+export function macroHead(locale: "en" | "ms") {
+  const t = translations[locale];
+  return localizedHead({
+    path: "/macro",
+    locale,
+    title: t.macro_meta_title,
+    description: t.macro_meta_desc,
+    ogDescription: t.macro_og_desc,
+    image: macroLogo,
+    imageAlt: "MacroTrader desk logo",
+    twitterDescription: t.macro_twitter_desc,
+  });
+}
+
 export const Route = createFileRoute("/macro")({
-  head: () => ({
-    meta: [
-      { title: "Macro & Crypto Desk — EzyMap Algo" },
-      {
-        name: "description",
-        content:
-          "MacroTrader desk: economic calendar, central bank policy divergence, recession odds, Fed tone, news sentiment and crypto add-ons — times in your own timezone.",
-      },
-      { property: "og:title", content: "Macro & Crypto Desk — EzyMap Algo" },
-      {
-        property: "og:description",
-        content:
-          "Economic calendar, central bank divergence, recession odds and crypto desk add-ons from the MacroTrader Telegram desk.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: `${SITE_URL}${macroLogo}` },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Macro & Crypto Desk — EzyMap Algo" },
-      {
-        name: "twitter:description",
-        content: "Macro heatmaps, economic calendar and crypto add-ons, in your own timezone.",
-      },
-      { name: "twitter:image", content: `${SITE_URL}${macroLogo}` },
-    ],
-  }),
+  head: () => macroHead("en"),
   component: MacroPage,
 });
 
@@ -359,7 +350,7 @@ const FILTER_LABEL_KEY: Record<MacroFilter, TranslationKey> = {
   Sentiment: "macro_filter_sentiment",
 };
 
-function MacroPage() {
+export function MacroPage() {
   const [filter, setFilter] = useState<MacroFilter>("All");
   const [desk, setDesk] = useState<MacroDesk | null>(null);
   const [fng, setFng] = useState<FearGreed | null>(null);
@@ -677,7 +668,7 @@ function MacroPage() {
                 {t("macro_full_desk_label")}
               </p>
               <p className="mt-2 text-2xl font-black">
-                $19<span className="text-sm font-semibold text-muted-foreground">/month</span>
+                $19<span className="text-sm font-semibold text-muted-foreground">{t("macro_per_month")}</span>
               </p>
               <p className="mt-2 text-sm text-body">
                 {t("macro_full_desk_desc").replace(

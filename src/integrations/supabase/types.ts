@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_telegram_links: {
+        Row: {
+          linked_at: string
+          telegram_id: number
+          telegram_username: string | null
+          user_id: string
+        }
+        Insert: {
+          linked_at?: string
+          telegram_id: number
+          telegram_username?: string | null
+          user_id: string
+        }
+        Update: {
+          linked_at?: string
+          telegram_id?: number
+          telegram_username?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ad_clicks: {
         Row: {
           created_at: string
@@ -113,6 +134,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ebook_claims: {
+        Row: {
+          approved_at: string | null
+          claimed_at: string
+          full_name: string | null
+          id: string
+          slug: string
+          status: string
+          telegram_username: string | null
+          user_id: string
+          vantage_account: string | null
+          vantage_confirmed: boolean
+        }
+        Insert: {
+          approved_at?: string | null
+          claimed_at?: string
+          full_name?: string | null
+          id?: string
+          slug: string
+          status?: string
+          telegram_username?: string | null
+          user_id: string
+          vantage_account?: string | null
+          vantage_confirmed?: boolean
+        }
+        Update: {
+          approved_at?: string | null
+          claimed_at?: string
+          full_name?: string | null
+          id?: string
+          slug?: string
+          status?: string
+          telegram_username?: string | null
+          user_id?: string
+          vantage_account?: string | null
+          vantage_confirmed?: boolean
+        }
+        Relationships: []
+      }
       enrollments: {
         Row: {
           activated_at: string | null
@@ -171,6 +231,54 @@ export type Database = {
             referencedColumns: ["telegram_id"]
           },
         ]
+      }
+      ezyai_entitlements: {
+        Row: {
+          amount_cents: number
+          claimed_at: string | null
+          created_at: string
+          currency: string
+          email: string | null
+          id: string
+          months: number
+          redeem_code: string | null
+          sku: string
+          status: string
+          stripe_session_id: string
+          telegram_id: number | null
+          telegram_username: string
+        }
+        Insert: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months: number
+          redeem_code?: string | null
+          sku: string
+          status?: string
+          stripe_session_id: string
+          telegram_id?: number | null
+          telegram_username: string
+        }
+        Update: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months?: number
+          redeem_code?: string | null
+          sku?: string
+          status?: string
+          stripe_session_id?: string
+          telegram_id?: number | null
+          telegram_username?: string
+        }
+        Relationships: []
       }
       leads: {
         Row: {
@@ -272,6 +380,87 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          capital_range: string | null
+          created_at: string
+          email: string | null
+          experience_level: string | null
+          full_name: string | null
+          id: string
+          mt5_account: string | null
+          referred_by: string | null
+          telegram_id: number | null
+          telegram_username: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          capital_range?: string | null
+          created_at?: string
+          email?: string | null
+          experience_level?: string | null
+          full_name?: string | null
+          id: string
+          mt5_account?: string | null
+          referred_by?: string | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          capital_range?: string | null
+          created_at?: string
+          email?: string | null
+          experience_level?: string | null
+          full_name?: string | null
+          id?: string
+          mt5_account?: string | null
+          referred_by?: string | null
+          telegram_id?: number | null
+          telegram_username?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          bucket_key: string
+          count: number
+          window_start: string
+        }
+        Insert: {
+          bucket_key: string
+          count?: number
+          window_start?: string
+        }
+        Update: {
+          bucket_key?: string
+          count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       signals: {
         Row: {
           created_at: string
@@ -320,42 +509,63 @@ export type Database = {
       site_purchases: {
         Row: {
           amount_cents: number
+          capital_range: string | null
+          claim_code: string | null
+          claimed_by_telegram_id: number | null
           created_at: string
           currency: string
           email: string | null
+          experience_level: string | null
+          full_name: string | null
           granted_at: string | null
           id: string
+          mt5_account: string | null
           sku: string
           status: string
           stripe_payment_intent: string | null
           stripe_session_id: string
           telegram_username: string | null
+          user_id: string | null
         }
         Insert: {
           amount_cents?: number
+          capital_range?: string | null
+          claim_code?: string | null
+          claimed_by_telegram_id?: number | null
           created_at?: string
           currency?: string
           email?: string | null
+          experience_level?: string | null
+          full_name?: string | null
           granted_at?: string | null
           id?: string
+          mt5_account?: string | null
           sku: string
           status?: string
           stripe_payment_intent?: string | null
           stripe_session_id: string
           telegram_username?: string | null
+          user_id?: string | null
         }
         Update: {
           amount_cents?: number
+          capital_range?: string | null
+          claim_code?: string | null
+          claimed_by_telegram_id?: number | null
           created_at?: string
           currency?: string
           email?: string | null
+          experience_level?: string | null
+          full_name?: string | null
           granted_at?: string | null
           id?: string
+          mt5_account?: string | null
           sku?: string
           status?: string
           stripe_payment_intent?: string | null
           stripe_session_id?: string
           telegram_username?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -407,6 +617,30 @@ export type Database = {
           sarah_message_id?: number | null
           text?: string | null
           web_session_id?: string | null
+        }
+        Relationships: []
+      }
+      telegram_link_codes: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string
+          used_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -509,6 +743,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_rate_limit: {
+        Args: { p_bucket_key: string; p_window_start: string }
+        Returns: number
       }
       record_ad_click: {
         Args: {

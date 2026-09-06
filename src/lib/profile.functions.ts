@@ -110,6 +110,9 @@ export const saveMyProfile = createServerFn({ method: "POST" })
       } as never,
       { onConflict: "id" },
     );
-    if (error) throw new Error(error.message);
+    if (error) {
+        console.error("[db] write failed", error);
+        throw new Error("Could not save your changes — please try again.");
+      }
     return { ok: true };
   });

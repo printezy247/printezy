@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
 import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
-import { getCatalogItem, formatUsd, type CatalogGroup } from "@/lib/catalog";
-import { REGISTER_BOT, botStartLink } from "@/lib/telegram-links";
+import { getCatalogItem, formatUsd, isEzyAiSku, type CatalogGroup } from "@/lib/catalog";
+import { REGISTER_BOT, EZYAI_BOT, botStartLink, ezyAiStartLink } from "@/lib/telegram-links";
+import { SITE_URL } from "@/lib/bot/tiers";
 
 /** 1-2 complementary SKUs to surface after a purchase, by the group just bought. */
 const CROSS_SELL: Record<CatalogGroup, string[]> = {
@@ -18,6 +19,7 @@ const CROSS_SELL: Record<CatalogGroup, string[]> = {
   tradingview: ["macro_full_desk", "mt5_currency_strength_1m"],
   mt5: ["macro_full_desk", "signal_pro"],
   macro: ["mt5_bundle_1m", "signal_pro"],
+  ezyai: ["macro_full_desk", "signal_pro"],
 };
 
 export const Route = createFileRoute("/checkout-success")({
@@ -35,7 +37,10 @@ export const Route = createFileRoute("/checkout-success")({
         content: "Your EzyMap ALGO purchase is confirmed. Access is delivered in Telegram.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/checkout-success` },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: SuccessPage,
@@ -51,6 +56,7 @@ function SuccessPage() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referralStats, setReferralStats] = useState<ReferralStats | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [redeemCode, setRedeemCode] = useState<string | null>(null);
   const [signInState, setSignInState] = useState<"idle" | "sending" | "sent">("idle");
 
   useEffect(() => {
@@ -65,6 +71,7 @@ function SuccessPage() {
         setProduct(res.product);
         setHandle(res.telegramUsername);
         setEmail(res.email);
+        setRedeemCode(res.redeemCode);
       })
       .catch(() => setState("pending"));
   }, [check]);
@@ -117,6 +124,8 @@ function SuccessPage() {
       : null;
 
   const item = product ? getCatalogItem(product) : undefined;
+  const ezyai = isEzyAiSku(product);
+  const deliveryBot = ezyai ? EZYAI_BOT : REGISTER_BOT;
   const crossSell = item
     ? CROSS_SELL[item.group]
         .map((sku) => getCatalogItem(sku))
@@ -151,27 +160,61 @@ function SuccessPage() {
               </div>
             ) : null}
 
+            {ezyai && redeemCode ? (
+              <div className="mx-auto mt-6 max-w-md rounded-xl border border-accent/40 bg-accent/5 p-5 text-left">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Your PRO code
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <code className="flex-1 select-all font-mono text-xl font-bold tracking-wider text-foreground">
+                    {redeemCode}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(redeemCode);
+                      toast.success("Code copied");
+                    }}
+                    aria-label="Copy PRO code"
+                    className="shrink-0 rounded-md border border-border p-2 text-muted-foreground hover:text-foreground"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
+                </div>
+                <p className="mt-3 text-sm text-body">
+                  Open <span className="text-foreground">{EZYAI_BOT}</span> and send{" "}
+                  <code className="font-mono text-foreground">/redeem {redeemCode}</code>. Keep it —
+                  it also appears on your Stripe receipt and under My account on this site.
+                </p>
+              </div>
+            ) : null}
+
             <p className="mt-6 text-body">
               Access is delivered inside Telegram. Open the{" "}
-              <span className="text-foreground">{REGISTER_BOT}</span> bot and press{" "}
-              <span className="text-foreground">Start</span> — your channels, indicators and ebooks
-              are unlocked there within a minute.
+              <span className="text-foreground">{deliveryBot}</span> bot and press{" "}
+              <span className="text-foreground">Start</span> —{" "}
+              {ezyai
+                ? "PRO switches on for your Telegram account within a minute, or instantly with the code above."
+                : "your channels, indicators and ebooks are unlocked there within a minute."}
             </p>
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <a href={botStartLink(product ? `paid_${product}` : "paid")}>
+                <a href={ezyai ? ezyAiStartLink("paid") : botStartLink(product ? `paid_${product}` : "paid")}>
                   <Send className="h-4 w-4" /> Open Telegram & claim access
                 </a>
               </Button>
               <Button asChild variant="ghost">
-                <Link to="/pricing">Back to pricing</Link>
+                <Link to="/" hash="packages">
+                  Back to pricing
+                </Link>
               </Button>
             </div>
 
             <p className="mt-6 text-xs text-muted-foreground">
-              Nothing after a few minutes? Message Sarah in the bot with your Telegram username and
-              we'll unlock it manually.
+              {ezyai
+                ? "Nothing after a few minutes? Send /redeem with your PRO code in the bot. Still stuck? Message Sarah and we'll unlock it manually."
+                : "Nothing after a few minutes? Message Sarah in the bot with your Telegram username and we'll unlock it manually."}
             </p>
 
             {crossSell.length > 0 ? (

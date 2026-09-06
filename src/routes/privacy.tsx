@@ -1,61 +1,52 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Nav, Footer } from "@/components/landing/Landing";
+import { useTranslation } from "@/lib/i18n";
+import { translations } from "@/lib/translations";
+import { localizedHead } from "@/lib/seo";
+
+export function privacyHead(locale: "en" | "ms") {
+  const t = translations[locale];
+  return localizedHead({
+    path: "/privacy",
+    locale,
+    title: t.privacy_meta_title,
+    description: t.privacy_meta_desc,
+    ogDescription: t.privacy_og_desc,
+    twitterCard: "summary",
+  });
+}
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy Policy — EzyMap ALGO" },
-      {
-        name: "description",
-        content:
-          "How EzyMap ALGO collects, uses and protects the limited information gathered from visitors and Telegram subscribers.",
-      },
-      { property: "og:title", content: "Privacy Policy — EzyMap ALGO" },
-      { property: "og:description", content: "How EzyMap ALGO handles your data." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
+  head: () => privacyHead("en"),
   component: PrivacyPage,
 });
 
-function PrivacyPage() {
+export function PrivacyPage() {
+  const { t, locale } = useTranslation();
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto max-w-3xl px-4 pt-10 pb-20 sm:px-6 lg:px-8">
-        <h1 className="text-3xl sm:text-4xl">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: 2026</p>
+        <h1 className="text-3xl sm:text-4xl">{t("privacy_title")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("legal_updated")}</p>
         <div className="mt-8 space-y-6 text-sm leading-relaxed text-muted-foreground">
-          <p>
-            EzyMap ALGO respects your privacy. We collect only the minimum information needed to run
-            this website and deliver our Telegram signal and education services.
-          </p>
+          <p>{t("privacy_intro")}</p>
           <div>
-            <h2 className="text-lg text-foreground">What we collect</h2>
-            <p className="mt-2">
-              Anonymous usage analytics (pages viewed, buttons clicked, session identifier), and any
-              email address you voluntarily submit to our newsletter form.
-            </p>
+            <h2 className="text-lg text-foreground">{t("privacy_collect_title")}</h2>
+            <p className="mt-2">{t("privacy_collect_body")}</p>
           </div>
           <div>
-            <h2 className="text-lg text-foreground">How we use it</h2>
-            <p className="mt-2">
-              To improve the site, understand which content is useful, and send occasional market
-              notes if you subscribed. We do not sell or rent your data.
-            </p>
+            <h2 className="text-lg text-foreground">{t("privacy_use_title")}</h2>
+            <p className="mt-2">{t("privacy_use_body")}</p>
           </div>
           <div>
-            <h2 className="text-lg text-foreground">Telegram</h2>
-            <p className="mt-2">
-              Joining our channels is governed by Telegram's own privacy policy. We only see the
-              public profile information Telegram exposes to channel admins.
-            </p>
+            <h2 className="text-lg text-foreground">{t("privacy_telegram_title")}</h2>
+            <p className="mt-2">{t("privacy_telegram_body")}</p>
           </div>
           <div>
-            <h2 className="text-lg text-foreground">Contact</h2>
+            <h2 className="text-lg text-foreground">{t("privacy_contact_title")}</h2>
             <p className="mt-2">
-              Questions? Message us on Telegram at{" "}
+              {t("privacy_contact_body")}{" "}
               <a href="https://t.me/EzySarah" className="text-primary hover:underline">
                 @EzySarah
               </a>
@@ -63,8 +54,11 @@ function PrivacyPage() {
             </p>
           </div>
         </div>
-        <Link to="/" className="mt-10 inline-block text-sm text-primary hover:underline">
-          ← Back to home
+        <Link
+          to={locale === "ms" ? "/ms" : "/"}
+          className="mt-10 inline-block text-sm text-primary hover:underline"
+        >
+          {t("legal_back_home")}
         </Link>
       </main>
       <Footer />

@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getCatalogItem } from "@/lib/catalog";
 import { type StripeEnv, createStripeClient } from "@/lib/stripe.server";
-import { sendMessage } from "./telegram.server";
+import { escapeHtml, sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
 
 const EXPERIENCE_LABEL: Record<string, string> = {
@@ -28,6 +28,7 @@ async function provisionAccount(
       email_confirm: true,
     });
     let userId = created.data.user?.id ?? null;
+    const freshAccount = userId !== null;
 
     if (!userId) {
       // Most likely "already registered" — look up the existing account.
@@ -55,19 +56,24 @@ async function provisionAccount(
       }
     }
 
-    await supabaseAdmin.from("profiles").upsert(
-      {
-        id: userId,
-        email,
-        ...(meta.full_name ? { full_name: meta.full_name } : {}),
-        telegram_username: meta.telegram_username ?? null,
-        ...(meta.experience_level ? { experience_level: meta.experience_level } : {}),
-        ...(meta.mt5_account ? { mt5_account: meta.mt5_account } : {}),
-        ...(referredBy ? { referred_by: referredBy } : {}),
-        updated_at: new Date().toISOString(),
-      } as never,
-      { onConflict: "id" },
-    );
+    // Checkout metadata is typed by the buyer. Only a brand-new account
+    // gets its profile seeded from it; an existing account's profile must
+    // not be overwritten by whoever types that email into checkout.
+    if (freshAccount) {
+      await supabaseAdmin.from("profiles").upsert(
+        {
+          id: userId,
+          email,
+          ...(meta.full_name ? { full_name: meta.full_name } : {}),
+          telegram_username: meta.telegram_username ?? null,
+          ...(meta.experience_level ? { experience_level: meta.experience_level } : {}),
+          ...(meta.mt5_account ? { mt5_account: meta.mt5_account } : {}),
+          ...(referredBy ? { referred_by: referredBy } : {}),
+          updated_at: new Date().toISOString(),
+        } as never,
+        { onConflict: "id" },
+      );
+    }
 
     return userId;
   } catch (error) {
@@ -87,6 +93,9 @@ export async function recordSitePurchase(
   const stripe = createStripeClient(env);
   const session = await stripe.checkout.sessions.retrieve(stripeSessionId);
   if (session.payment_status !== "paid") return false;
+  // A sandbox session must never be fulfilled by a live deployment (or vice
+  // versa), whatever ?env= the webhook URL carried.
+  if (session.livemode !== (env === "live")) return false;
 
   const meta = (session.metadata as Record<string, string> | null) ?? {};
   if (meta.source !== "website") return false;
@@ -168,9 +177,9 @@ async function notifyReferralConversion(buyerUserId: string, sku: string) {
     sarah,
     [
       `🎁 <b>Referral conversion — reward the referrer</b>`,
-      `Referrer: ${referrer?.full_name ?? "unknown"} (@${referrer?.telegram_username ?? "unknown"})`,
-      `Bought by: ${buyer?.full_name ?? "unknown"} (@${buyer?.telegram_username ?? "unknown"})`,
-      `Product: ${item?.name ?? sku}`,
+      `Referrer: ${escapeHtml(referrer?.full_name ?? "unknown")} (@${escapeHtml(referrer?.telegram_username ?? "unknown")})`,
+      `Bought by: ${escapeHtml(buyer?.full_name ?? "unknown")} (@${escapeHtml(buyer?.telegram_username ?? "unknown")})`,
+      `Product: ${escapeHtml(item?.name ?? sku)}`,
     ].join("\n"),
   );
 }
@@ -194,11 +203,11 @@ async function notifySarah(meta: Record<string, string>, amountCents: number, cu
 
   const lines = [
     `💳 <b>Website purchase — needs manual fulfillment</b>`,
-    `${item?.name ?? meta.sku ?? "Unknown product"} — ${amount}`,
-    `Telegram: @${meta.telegram_username ?? "unknown"}`,
-    meta.full_name ? `Name: ${meta.full_name}` : null,
-    meta.experience_level ? `Experience: ${EXPERIENCE_LABEL[meta.experience_level] ?? meta.experience_level}` : null,
-    meta.mt5_account ? `MT5 account: ${meta.mt5_account}` : null,
+    `${escapeHtml(item?.name ?? meta.sku ?? "Unknown product")} — ${amount}`,
+    `Telegram: @${escapeHtml(meta.telegram_username ?? "unknown")}`,
+    meta.full_name ? `Name: ${escapeHtml(meta.full_name)}` : null,
+    meta.experience_level ? `Experience: ${escapeHtml(EXPERIENCE_LABEL[meta.experience_level] ?? meta.experience_level)}` : null,
+    meta.mt5_account ? `MT5 account: ${escapeHtml(meta.mt5_account)}` : null,
   ].filter(Boolean);
 
   await sendMessage(sarah, lines.join("\n"));

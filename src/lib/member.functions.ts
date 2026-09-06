@@ -65,16 +65,23 @@ export const requestLoginCode = createServerFn({ method: "POST" })
   .inputValidator(z.object({ handle: z.string().min(2).max(64) }))
   .handler(async ({ data }): Promise<{ sent: boolean; message: string }> => {
     const { findMemberByHandle, issueLoginCode } = await import("@/lib/bot/member.server");
-    const member = await findMemberByHandle(data.handle);
-    if (!member) {
-      return {
-        sent: false,
-        message:
-          "We have no member with that Telegram handle yet. Open the enrollment bot and send /start first.",
-      };
+    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+    const handle = data.handle.trim().replace(/^@+/, "").toLowerCase();
+    // Each request DMs a fresh code and invalidates the previous one, so cap
+    // per handle (and per IP inside checkRateLimit) to stop code spam.
+    const allowed = await checkRateLimit("login_code", handle, { max: 3, windowMs: 10 * 60 * 1000 });
+    if (!allowed) {
+      return { sent: false, message: "Too many code requests — wait a few minutes and try again." };
     }
-    await issueLoginCode(member.telegram_id);
-    return { sent: true, message: "Code sent — check your Telegram chat with the bot." };
+    const member = await findMemberByHandle(data.handle);
+    // Same reply whether or not the handle exists, so this endpoint can't be
+    // used to enumerate members.
+    if (member) await issueLoginCode(member.telegram_id);
+    return {
+      sent: true,
+      message:
+        "If that handle belongs to a member, a code is on its way — check your Telegram chat with the bot. New here? Open the bot and send /start first.",
+    };
   });
 
 /** Step 2: exchange the code for a long-lived browser session token. */
@@ -98,14 +105,6 @@ export const verifyLoginCode = createServerFn({ method: "POST" })
       return { ok: false, message };
     }
     return { ok: true, token: result.token };
-  });
-
-/** Turns the bot's personal portal link into a real signed-in session. */
-export const sessionFromPortal = createServerFn({ method: "POST" })
-  .inputValidator(z.object({ portalToken: z.string().min(8).max(100) }))
-  .handler(async ({ data }): Promise<{ token: string | null }> => {
-    const { sessionFromPortalToken } = await import("@/lib/bot/member.server");
-    return { token: await sessionFromPortalToken(data.portalToken) };
   });
 
 export const signOutMember = createServerFn({ method: "POST" })

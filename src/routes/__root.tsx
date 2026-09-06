@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -18,6 +19,8 @@ import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
 import { LocaleProvider } from "../lib/i18n";
+import { SITE_URL } from "../lib/bot/tiers";
+import { brandLogo } from "../components/landing/Landing";
 
 function NotFoundComponent() {
   return (
@@ -89,7 +92,31 @@ t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${META_PIXEL_ID}');
-fbq('track', 'PageView');`;
+if(!/^\\/(account|auth|dashboard|checkout-success)(\\/|$)/.test(location.pathname)){fbq('track', 'PageView');}`;
+
+/**
+ * Site-wide structured data. Only fields backed by real data in the repo —
+ * no aggregateRating/review, no invented sameAs profiles (t.me/ezymap is the
+ * one genuine public-channel URL found in the codebase; the enrollment/
+ * macro/EzyAI bot links are tools, not social profiles).
+ */
+const ORGANIZATION_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "EzyMap ALGO",
+  url: SITE_URL,
+  logo: `${SITE_URL}${brandLogo}`,
+  foundingDate: "2021",
+  sameAs: ["https://t.me/ezymap"],
+});
+
+const WEBSITE_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "EzyMap ALGO",
+  url: SITE_URL,
+  inLanguage: "en",
+});
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
@@ -103,6 +130,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Live signals and education for 640+ traders. Start free on Telegram." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "EzyMap ALGO" },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "EzyMap ALGO — Professional Trading Signals" },
       { name: "twitter:description", content: "Live signals and education for 640+ traders on Telegram." },
@@ -119,6 +147,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       { type: "text/javascript", children: FB_PIXEL_SCRIPT },
+      { type: "application/ld+json", children: ORGANIZATION_JSON_LD },
+      { type: "application/ld+json", children: WEBSITE_JSON_LD },
     ],
   }),
   shellComponent: RootShell,
@@ -128,8 +158,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  const lang = pathname === "/ms" || pathname.startsWith("/ms/") ? "ms" : "en";
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>
