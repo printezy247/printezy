@@ -390,3 +390,50 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
+
+/* ---- Landing polish: glow orbs, card lift, gradient tick, stats strip, hero pill, CTA band ---- */
+.glow-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+}
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(47, 191, 113, 0.45);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 30px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(47, 191, 113, 0.12), 0 20px 60px -20px rgba(47, 191, 113, 0.35);
+}
+.gradient-tick {
+  display: block;
+  width: 38px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(103deg, var(--primary) 0%, var(--accent) 100%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.text-gradient-brand {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-pill {
+  background: linear-gradient(125deg, #1b201d 0%, #0f1311 100%);
+  border: 1px solid rgba(47, 191, 113, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.cta-band {
+  background: linear-gradient(103deg, #2fbf71 0%, #c9a13a 100%);
+  box-shadow: 0 20px 60px -20px rgba(47, 191, 113, 0.45);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-lift,
+  .card-lift:hover {
+    transform: none;
+    transition: none;
+  }
+}

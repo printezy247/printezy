@@ -617,11 +617,19 @@ function Hero() {
   const { formatted: memberCount } = useMemberCount();
   const { t } = useTranslation();
   return (
-    <section className="bg-hero border-b border-border">
-      <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
+    <section className="bg-hero relative overflow-hidden border-b border-border">
+      {/* Blurred colour orbs behind the hero — pure decoration. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="glow-orb animate-float-slow motion-reduce:animate-none left-[-8%] top-[-12%] h-[420px] w-[420px] bg-primary/25" />
+        <div className="glow-orb animate-float-slower motion-reduce:animate-none right-[-6%] top-[8%] h-[380px] w-[380px] bg-accent/20" />
+        <div className="glow-orb bottom-[-30%] left-[38%] h-[360px] w-[360px] bg-primary/15" />
+      </div>
+      <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
         <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-primary-tint px-3 py-1 text-[12.5px] font-bold uppercase tracking-wide text-primary">
-            <span className="font-mono tabular-nums">{memberCount}</span> {t("hero_badge")}
+          <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
+            <Users className="h-3.5 w-3.5 text-primary" />
+            <span className="font-mono font-extrabold tabular-nums text-primary">{memberCount}</span>{" "}
+            {t("hero_badge")}
           </span>
           <h1 className="mt-4 max-w-2xl text-[34px] leading-[1.05] text-foreground sm:text-[44px]">
             {t("hero_title")}
@@ -734,6 +742,154 @@ export function TrustStrip() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Stats strip                                                         */
+/* ------------------------------------------------------------------ */
+
+export function StatsStrip() {
+  const { formatted: memberCount } = useMemberCount();
+  const { t } = useTranslation();
+  const stats: [string, string][] = [
+    [memberCount, t("stats_members")],
+    ["24/5", t("stats_coverage")],
+    ["6", t("stats_languages")],
+    ["2021", t("stats_since")],
+  ];
+  return (
+    <div className="border-b border-border">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-6 px-4 py-8 sm:px-6 md:grid-cols-4 lg:px-8">
+        {stats.map(([value, label]) => (
+          <div key={label} className="flex items-center justify-center gap-3">
+            <span className="font-mono text-3xl font-extrabold tabular-nums text-foreground">{value}</span>
+            <span className="text-gradient-brand max-w-[8.5rem] text-[11px] font-bold uppercase leading-tight tracking-[0.14em]">
+              {label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Showcase — alternating image / text rows                            */
+/* ------------------------------------------------------------------ */
+
+type ShowcaseRow = {
+  image: string;
+  alt: string;
+  titleKey: TranslationKey;
+  bodyKey: TranslationKey;
+  ctaKey: TranslationKey;
+  /** Site path (locale prefix is added) or an in-page anchor. */
+  href: string;
+  event: string;
+};
+
+const SHOWCASE: ShowcaseRow[] = [
+  {
+    image: tierPremium,
+    alt: "Premium signal package preview",
+    titleKey: "show_signals_title",
+    bodyKey: "show_signals_body",
+    ctaKey: "show_signals_cta",
+    href: "#packages",
+    event: "showcase_signals",
+  },
+  {
+    image: ebookTechnical,
+    alt: "Technical Analysis ebook cover",
+    titleKey: "show_learn_title",
+    bodyKey: "show_learn_body",
+    ctaKey: "show_learn_cta",
+    href: "/ebooks/technical-analysis",
+    event: "showcase_ebook",
+  },
+  {
+    image: macroLogo,
+    alt: "MacroTrader desk logo",
+    titleKey: "show_macro_title",
+    bodyKey: "show_macro_body",
+    ctaKey: "show_macro_cta",
+    href: "/macro",
+    event: "showcase_macro",
+  },
+];
+
+export function Showcase() {
+  const { t, locale } = useTranslation();
+  return (
+    <Section id="showcase">
+      <SectionHeading eyebrow={t("show_eyebrow")} title={t("show_title")} />
+      <div className="space-y-14 sm:space-y-20">
+        {SHOWCASE.map((row, i) => {
+          const href = row.href.startsWith("#") ? row.href : localizePath(row.href, locale);
+          return (
+            <Reveal key={row.titleKey}>
+              <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+                <div>
+                  <span className="gradient-tick" aria-hidden="true" />
+                  <h3 className="mt-4 text-2xl sm:text-3xl">{t(row.titleKey)}</h3>
+                  <p className="mt-3 max-w-md text-base text-body">{t(row.bodyKey)}</p>
+                  <a
+                    href={href}
+                    onClick={() => goTrack(row.event)}
+                    className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+                  >
+                    {t(row.ctaKey)} <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+                <div className={i % 2 === 1 ? "md:order-first" : ""}>
+                  <div className="glass-card card-lift flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl bg-[#0a0c0b] p-6">
+                    <img
+                      src={row.image}
+                      alt={row.alt}
+                      loading="lazy"
+                      className="max-h-full max-w-full rounded-lg object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Gradient CTA band                                                   */
+/* ------------------------------------------------------------------ */
+
+export function CtaBand() {
+  const { t, locale } = useTranslation();
+  return (
+    <section id="cta-band" className="py-10 sm:py-12">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <div className="cta-band flex flex-col items-start gap-6 rounded-2xl p-8 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-black/70">
+                {t("band_eyebrow")}
+              </p>
+              <h3 className="mt-2 text-2xl font-bold text-black sm:text-3xl">{t("band_title")}</h3>
+              <p className="mt-2 max-w-xl text-sm text-black/75">{t("band_body")}</p>
+            </div>
+            <a
+              href={localizePath("/ezyai", locale)}
+              onClick={() => goTrack("band_ezyai")}
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0a0c0b] px-6 py-3 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
+            >
+              {t("band_cta")} <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Track record                                                        */
 /* ------------------------------------------------------------------ */
 
@@ -809,11 +965,12 @@ export function Features() {
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((f, i) => (
           <Reveal key={f.titleKey} delay={i * 0.04} className="h-full">
-          <article className="glass-card h-full rounded-xl p-6">
+          <article className="glass-card card-lift h-full rounded-xl p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <f.icon className="h-5 w-5" />
             </span>
-            <h3 className="mt-4 text-lg font-semibold">{t(f.titleKey)}</h3>
+            <span className="gradient-tick mt-4" aria-hidden="true" />
+            <h3 className="mt-2 text-lg font-semibold">{t(f.titleKey)}</h3>
             <p className="mt-2 text-sm text-body">
               {t(f.bodyKey).replace("{memberCount}", memberCount)}
             </p>
@@ -916,7 +1073,7 @@ export function Pricing() {
           <Reveal key={t.name} delay={i * 0.04} className="h-full">
           <article
             id={t.sku}
-            className={`relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
+            className={`card-lift relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
               t.highlight
                 ? "border border-accent/60 bg-surface-elevated shadow-elevated ring-1 ring-accent/15 lg:-translate-y-1.5"
                 : "glass-card"
@@ -1328,13 +1485,14 @@ export function HowItWorks() {
         {STEPS.map((s, i) => (
           <motion.li
             key={s.titleKey}
-            className="glass-card relative flex h-full flex-col rounded-xl p-6"
+            className="glass-card card-lift relative flex h-full flex-col rounded-xl p-6"
             initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }}
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
+            <span className="gradient-tick mt-2" aria-hidden="true" />
             <h3 className="mt-2 text-lg font-semibold">{t(s.titleKey)}</h3>
             <p className="mt-2 flex-1 text-sm text-body">{t(s.bodyKey)}</p>
           </motion.li>
@@ -1726,7 +1884,9 @@ export function Landing() {
     const stopSections = trackSectionVisibility([
       "features",
       "packages",
+      "showcase",
       "products",
+      "cta-band",
       "how-it-works",
       "ambassador",
       
@@ -1747,10 +1907,13 @@ export function Landing() {
         <main>
           <Hero />
           <TrustStrip />
+          <StatsStrip />
           <Features />
           <Pricing />
           <Tools />
+          <Showcase />
           <Products />
+          <CtaBand />
           <HowItWorks />
           <TrackRecord />
           <SocialProof />

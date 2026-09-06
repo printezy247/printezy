@@ -108,7 +108,7 @@ function skuFor(productId: string, term: Term): string {
 function TvCard({ product }: { product: TvProduct }) {
   const { t } = useTranslation();
   return (
-    <article id={product.id} className="glass-card relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
+    <article id={product.id} className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
       {product.highlightKey ? (
         <span className="absolute right-4 top-4 rounded-full border border-[rgba(201,161,58,0.45)] bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
           {t(product.highlightKey)}
@@ -139,7 +139,7 @@ function Mt5Card({ product }: { product: Mt5Product }) {
   const { t } = useTranslation();
 
   return (
-    <article id={product.id} className="glass-card relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
+    <article id={product.id} className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
       {product.highlightKey ? (
         <span className="absolute right-4 top-4 rounded-full border border-[rgba(201,161,58,0.45)] bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
           {t(product.highlightKey)}
