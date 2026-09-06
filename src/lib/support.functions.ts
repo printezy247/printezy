@@ -14,6 +14,8 @@ const sendSchema = z.object({
   name: z.string().max(60).nullable().optional(),
   text: z.string().min(1).max(1500),
   entryId: z.string().max(60).nullable().optional(),
+  /** Site locale mapped onto the reply book's languages (en/ms). */
+  lang: z.enum(["en", "ms"]).optional(),
 });
 
 const fetchSchema = z.object({
@@ -63,7 +65,12 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
       text,
     });
 
-    const answer = data.entryId ? entryAnswer(data.entryId, "en") : answerFor(text, null);
+    // Malay visitors get the Malay reply book; everyone else the English one,
+    // with keyword detection still free to pick Malay when they type Malay.
+    const lang = data.lang ?? "en";
+    const answer = data.entryId
+      ? entryAnswer(data.entryId, lang)
+      : answerFor(text, lang === "ms" ? "ms" : null);
 
     if (answer) {
       await supabaseAdmin.from("support_messages").insert({
@@ -89,6 +96,8 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
 
     return {
       answered: false,
+      // The widget swaps `text` for its own translation of this notice.
+      kind: relayed ? ("relayed" as const) : ("unreachable" as const),
       text: notice,
       links: relayed ? [] : [{ label: "Message Sarah on Telegram", url: "https://t.me/ezysarah" }],
       quick: [],

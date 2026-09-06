@@ -12,6 +12,8 @@ import {
   type SupportQuick,
 } from "@/lib/support.functions";
 import { onOpenSupportChatRequested } from "@/lib/support-chat-trigger";
+import { useTranslation } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/translations";
 
 type Bubble = {
   id: number;
@@ -22,21 +24,29 @@ type Bubble = {
   quick?: SupportQuick[];
 };
 
-const GREETING: Bubble = {
+type T = (key: TranslationKey) => string;
+
+const greetingFor = (t: T): Bubble => ({
   id: -1,
   role: "sarah",
-  author: "Sarah (assistant)",
-  text:
-    "Hi! I'm Sarah. Ask me anything about the routines, packages, payment or getting your account unlocked — I answer instantly, and anything I can't answer goes straight to me on Telegram.",
+  author: t("chat_assistant"),
+  text: t("chat_greeting"),
   quick: [
-    { label: "🛍 Products", entryId: "products" },
-    { label: "❓ FAQ", entryId: "faq" },
+    { label: t("chat_quick_products"), entryId: "products" },
+    { label: t("chat_quick_faq"), entryId: "faq" },
   ],
-};
+});
 
 export function SupportChat() {
+  const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Bubble[]>([GREETING]);
+  const [messages, setMessages] = useState<Bubble[]>(() => [greetingFor(t)]);
+
+  // Re-render the greeting in the newly chosen language; sent bubbles stay.
+  useEffect(() => {
+    setMessages((prev) => prev.map((m) => (m.id === -1 ? greetingFor(t) : m)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [suppressed, setSuppressed] = useState(false);
@@ -170,31 +180,45 @@ export function SupportChat() {
       if (!clean || busy) return;
       setBusy(true);
       setInput("");
-      append({ id: Date.now(), role: "visitor", author: "You", text: clean });
+      append({ id: Date.now(), role: "visitor", author: t("chat_you"), text: clean });
       try {
         const reply = await sendSupportMessage({
-          data: { sessionId: getSessionId(), text: clean, entryId: entryId ?? null },
+          data: {
+            sessionId: getSessionId(),
+            text: clean,
+            entryId: entryId ?? null,
+            lang: locale === "ms" ? "ms" : "en",
+          },
         });
+        const kind = "kind" in reply ? reply.kind : null;
         append({
           id: Date.now() + 1,
           role: "sarah",
-          author: "Sarah (assistant)",
-          text: reply.text,
-          links: reply.links,
+          author: t("chat_assistant"),
+          text:
+            kind === "relayed"
+              ? t("chat_notice_relayed")
+              : kind === "unreachable"
+                ? t("chat_notice_unreachable")
+                : reply.text,
+          links:
+            kind === "unreachable"
+              ? [{ label: t("chat_link_telegram"), url: "https://t.me/ezysarah" }]
+              : reply.links,
           quick: reply.quick,
         });
       } catch {
         append({
           id: Date.now() + 2,
           role: "sarah",
-          author: "Sarah (assistant)",
-          text: "That didn't send. Try again, or message Sarah on Telegram: https://t.me/ezysarah",
+          author: t("chat_assistant"),
+          text: t("chat_error"),
         });
       } finally {
         setBusy(false);
       }
     },
-    [append, busy],
+    [append, busy, locale, t],
   );
 
   return (
@@ -207,13 +231,13 @@ export function SupportChat() {
             setOpen(true);
             track("click", "support_chat_open");
           }}
-          aria-label="Chat with Sarah"
+          aria-label={t("chat_open")}
           className={`fixed right-5 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-[transform,bottom] hover:scale-105 ${
             liftForBuyBar ? "bottom-24 sm:bottom-5" : "bottom-5"
           }`}
         >
           <MessageCircle className="h-5 w-5" />
-          Chat with Sarah
+          {t("chat_open")}
         </button>
       )}
 
@@ -222,21 +246,21 @@ export function SupportChat() {
           ref={panelRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Chat with Sarah"
+          aria-label={t("chat_open")}
           className={`fixed right-5 z-50 flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl ${
             liftForBuyBar ? "bottom-24 sm:bottom-5" : "bottom-5"
           }`}
         >
           <header className="flex items-center justify-between border-b border-border bg-secondary/40 px-4 py-3">
             <div>
-              <p className="text-sm font-semibold text-foreground">Ask Sarah</p>
-              <p className="text-xs text-muted-foreground">Instant answers · human backup</p>
+              <p className="text-sm font-semibold text-foreground">{t("nav_ask_sarah")}</p>
+              <p className="text-xs text-muted-foreground">{t("chat_subtitle")}</p>
             </div>
             <button
               ref={closeBtnRef}
               type="button"
               onClick={close}
-              aria-label="Close chat"
+              aria-label={t("chat_close")}
               className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
             >
               <X className="h-4 w-4" />
@@ -290,7 +314,7 @@ export function SupportChat() {
                 </div>
               </div>
             ))}
-            {busy && <p className="text-xs text-muted-foreground">Sarah is typing…</p>}
+            {busy && <p className="text-xs text-muted-foreground">{t("chat_typing")}</p>}
           </div>
 
           <form
@@ -303,15 +327,15 @@ export function SupportChat() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your question…"
+              placeholder={t("chat_placeholder")}
               maxLength={1500}
-              aria-label="Message Sarah"
+              aria-label={t("nav_ask_sarah")}
               className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
             />
             <button
               type="submit"
               disabled={busy || !input.trim()}
-              aria-label="Send message"
+              aria-label={t("chat_send")}
               className="rounded-lg bg-primary p-2 text-primary-foreground transition-opacity disabled:opacity-40"
             >
               <Send className="h-4 w-4" />

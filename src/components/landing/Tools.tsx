@@ -124,7 +124,7 @@ function TvCard({ product }: { product: TvProduct }) {
           </li>
         ))}
       </ul>
-      <p className="mt-5 text-center font-mono text-2xl font-bold tabular-nums text-foreground">
+      <p className="mt-5 font-mono text-2xl font-bold tabular-nums text-foreground">
         {formatUsd(TV_PRICE[product.id])}
       </p>
       <BuyButton sku={product.id} label={t("tools_buy")} className="mt-3" />

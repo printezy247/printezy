@@ -58,6 +58,15 @@ export type BotDesk = {
     >;
     aggregate: { score: number; label: SentimentLabel; history: { date: string; score: number }[] };
   } | null;
+  /** Bot's 6-factor gold sentiment composite; absent on older cached payloads. */
+  gold_fear_greed?: {
+    score: number;
+    label: "extreme_fear" | "fear" | "neutral" | "greed" | "extreme_greed";
+    components: Record<string, number>;
+    previous: number | null;
+    as_of: string;
+    source: string;
+  } | null;
 };
 
 export type MacroLive = { desk: BotDesk; updatedAt: string } | null;

@@ -428,6 +428,8 @@ export function MacroPage() {
     };
   }, [live, desk, t]);
 
+  const gold = live?.desk.gold_fear_greed ?? null;
+
   const calDayLabel = useMemo(() => {
     if (!cal?.day) return "";
     return new Date(`${cal.day}T12:00:00`).toLocaleDateString(undefined, {
@@ -718,6 +720,41 @@ export function MacroPage() {
 
           {/* Sidebar */}
           <aside className="space-y-7">
+            {gold ? (
+              <Card
+                title={t("macro_gold_fg_title")}
+                badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+                footer={
+                  <p className="text-[11.5px] text-muted-foreground">
+                    {t("macro_updated_daily").replace("{source}", gold.source)}
+                  </p>
+                }
+              >
+                <p className="text-4xl font-black">
+                  {gold.score}
+                  <span className="text-base font-semibold text-muted-foreground">/100</span>
+                </p>
+                <p className="mt-1 text-sm font-bold text-accent">
+                  {t(`macro_fg_${gold.label}` as TranslationKey)}
+                  {typeof gold.previous === "number" ? (
+                    <span className="ml-2 font-medium text-muted-foreground">
+                      {t("macro_gold_fg_delta").replace(
+                        "{delta}",
+                        `${gold.score - gold.previous >= 0 ? "+" : ""}${gold.score - gold.previous}`,
+                      )}
+                    </span>
+                  ) : null}
+                </p>
+                <div className="mt-3">
+                  <FillBar percent={gold.score} color="#c9a13a" height={8} />
+                  <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    <span>{t("macro_fear_label")}</span>
+                    <span>{t("macro_greed_label")}</span>
+                  </div>
+                </div>
+              </Card>
+            ) : null}
+
             <Card
               title={t("macro_fear_greed_title")}
               badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
