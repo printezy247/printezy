@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useSearch } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
@@ -44,7 +44,12 @@ export function ebookHead(book: Ebook | undefined, locale: "en" | "ms") {
   };
 }
 
+/** `?claim=1` is what /auth sends people back with so the claim modal reopens. */
+export const claimSearch = (search: Record<string, unknown>): { claim?: true } =>
+  search.claim === "1" || search.claim === 1 || search.claim === true ? { claim: true } : {};
+
 export const Route = createFileRoute("/ebooks/$slug")({
+  validateSearch: claimSearch,
   loader: ({ params }) => {
     const book = getEbook(params.slug);
     if (!book) throw notFound();
@@ -93,7 +98,14 @@ export function EbookPage({ book: source }: { book: Ebook }) {
   const others = EBOOK_PAGES.filter((b) => b.slug !== book.slug).map((b) =>
     localizeEbook(b, locale),
   );
+  const search = useSearch({ strict: false }) as { claim?: boolean };
   const [claiming, setClaiming] = useState(false);
+
+  useEffect(() => {
+    if (!search.claim) return;
+    setClaiming(true);
+    window.history.replaceState(null, "", window.location.pathname);
+  }, [search.claim]);
 
   useEffect(() => {
     trackPageLoad(`ebook_${book.slug}`);

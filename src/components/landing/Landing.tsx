@@ -10,6 +10,7 @@ import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
 
@@ -17,6 +18,8 @@ const EbookDetailsModal = lazy(() =>
   import("@/components/EbookDetailsModal").then((m) => ({ default: m.EbookDetailsModal })),
 );
 import {
+  LogIn,
+  UserRound,
   Zap,
   GraduationCap,
   Users,
@@ -379,6 +382,50 @@ function LocaleSwitcher({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * "Sign in" for visitors, "My account" once a Supabase session exists.
+ * Client-only: renders an empty placeholder until the session is known so
+ * SSR and the first client paint agree.
+ */
+function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
+  const { t } = useTranslation();
+  const [state, setState] = useState<"unknown" | "out" | "in">("unknown");
+
+  useEffect(() => {
+    let active = true;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active) setState(data.session ? "in" : "out");
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setState(session ? "in" : "out");
+    });
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  if (state === "unknown") {
+    return <span aria-hidden="true" className={mobile ? "block h-11" : "inline-block h-8 w-16"} />;
+  }
+  const redirect = typeof window !== "undefined" ? window.location.pathname : "/";
+  return (
+    <Button asChild variant="ghost" size={mobile ? "md" : "sm"} className={mobile ? "w-full justify-start" : ""}>
+      {state === "in" ? (
+        <Link to="/dashboard" onClick={onNavigate}>
+          <UserRound className="h-4 w-4" /> {t("nav_my_account")}
+        </Link>
+      ) : (
+        <Link to="/auth" search={{ redirect }} onClick={onNavigate}>
+          <LogIn className="h-4 w-4" /> {t("nav_sign_in")}
+        </Link>
+      )}
+    </Button>
+  );
+}
+
 export function Nav() {
   const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -459,6 +506,7 @@ export function Nav() {
 
             <div className="hidden items-center gap-4 md:flex">
               <LocaleSwitcher />
+              <AuthMenu />
               <Button asChild variant="outline" size="sm">
                 <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah")}>
                   <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
@@ -502,6 +550,9 @@ export function Nav() {
                   </a>
                 </li>
               ))}
+              <li className="pt-2">
+                <AuthMenu mobile onNavigate={closeMenu} />
+              </li>
               <li className="pt-2">
                 <Button asChild variant="outline" size="md" className="w-full">
                   <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah_mobile")}>
@@ -1597,6 +1648,11 @@ export function Footer() {
                 <a href={LINKS.macro} onClick={() => goTrack("footer_macro")} className="hover:text-foreground">
                   {t("footer_macro_fundamentals")}
                 </a>
+              </li>
+              <li>
+                <Link to="/dashboard" className="hover:text-foreground">
+                  {t("nav_my_account")}
+                </Link>
               </li>
               <li>
                 <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">

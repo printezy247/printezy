@@ -7,7 +7,8 @@ import { getCatalogItem, isEzyAiSku } from "@/lib/catalog";
 import { escapeLikePattern } from "@/lib/like-escape";
 import { sendMessage } from "./telegram.server";
 import { getSarahChatId } from "./sarah.server";
-import { FREE_CHANNEL, SUPPORT, newPortalToken, portalUrl } from "./enrollment.server";
+import { FREE_CHANNEL, SUPPORT, newPortalToken } from "./enrollment.server";
+import { accountLinkFor } from "./member.server";
 
 type PurchaseRow = {
   id: string;
@@ -73,7 +74,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
     telegramId,
     `🎉 <b>Purchase confirmed — ${item?.name ?? purchase.sku} is live.</b>\n\nYour access has been approved automatically. Open your account page for your links and status.`,
     [
-      [{ text: "My account", url: portalUrl(token) }],
+      [{ text: "My account", url: await accountLinkFor(telegramId) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
       [{ text: "Need help?", url: SUPPORT }],
     ],

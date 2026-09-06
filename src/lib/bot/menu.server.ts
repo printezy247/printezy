@@ -3,7 +3,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { TIER_CATALOG, formatPrice, getTier } from "./tiers";
 import { escapeHtml, sendMessage, telegramCall, type InlineButton } from "./telegram.server";
-import { createMemberSession, accountLink, type EnrollmentRow } from "./member.server";
+import { accountLinkFor, type EnrollmentRow } from "./member.server";
 
 export const SUPPORT = "https://t.me/ezysarah";
 export const FREE_CHANNEL = "https://t.me/ezymap";
@@ -152,21 +152,13 @@ export async function sendPaymentStatus(chatId: number, telegramId: number) {
   await sendMessage(chatId, body, keyboard);
 }
 
-/** Account shortcut with a fresh 30-day sign-in link. */
+/** Account shortcut with a fresh 7-day sign-in link. */
 export async function sendAccountLink(chatId: number, telegramId: number) {
-  const sessionToken = await createMemberSession(telegramId);
+  const url = await accountLinkFor(telegramId);
   await sendMessage(
     chatId,
-    sessionToken
-      ? `🔑 <b>Your trading account</b>\n\nThis link signs you in for 30 days — your signals, your trade log, your stats and your billing history.`
-      : `Something went wrong opening your account. Try again in a moment.`,
-    sessionToken
-      ? [
-          [{ text: "Open my account", url: accountLink(sessionToken) }],
-          navRow(),
-          [BTN_ASK_SARAH],
-        ]
-      : [navRow(), [BTN_ASK_SARAH]],
+    `🔑 <b>Your trading account</b>\n\nThis link signs you in for 7 days — your signals, your trade log, your stats and your billing history. Send /account any time for a fresh one.`,
+    [[{ text: "Open my account", url }], navRow(), [BTN_ASK_SARAH]],
   );
 }
 

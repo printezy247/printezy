@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EzyaiRouteImport } from './routes/ezyai'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
@@ -62,6 +63,11 @@ const AuthRoute = AuthRouteImport.update({
 const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout-success',
   path: '/checkout-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EzyaiRoute = EzyaiRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -231,6 +238,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -264,6 +272,7 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
+  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
+    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -393,6 +405,7 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  DashboardRoute: typeof DashboardRoute
   EzyaiRoute: typeof EzyaiRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
@@ -453,6 +466,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout-success'
       fullPath: '/checkout-success'
       preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ezyai': {
@@ -652,6 +672,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  DashboardRoute: DashboardRoute,
   EzyaiRoute: EzyaiRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,

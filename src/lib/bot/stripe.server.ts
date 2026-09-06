@@ -24,7 +24,8 @@ export async function createCheckoutSession(args: {
   telegramId: number;
   portalToken: string;
   sessionId: string | null;
-  siteUrl: string;
+  /** /account link carrying a short-lived member session. */
+  returnUrl: string;
 }): Promise<CheckoutSession> {
   const stripe = createStripeClient(detectStripeEnv());
 
@@ -40,8 +41,8 @@ export async function createCheckoutSession(args: {
         },
       },
     ],
-    success_url: `${args.siteUrl}/account?t=${args.portalToken}&paid=1`,
-    cancel_url: `${args.siteUrl}/account?t=${args.portalToken}&canceled=1`,
+    success_url: `${args.returnUrl}&paid=1`,
+    cancel_url: `${args.returnUrl}&canceled=1`,
     metadata: {
       telegram_id: String(args.telegramId),
       tier: args.tierId,
