@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Loader2, Download, LogIn, ShieldCheck, X, Clock, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { getMyEbookClaims, claimEbook } from "@/lib/ebook-claims.functions";
+import { getMyEbookClaims, claimEbook, getEbookDownloadUrl } from "@/lib/ebook-claims.functions";
 import { getMyProfile } from "@/lib/profile.functions";
 import { saveLead } from "@/lib/leads.functions";
 import { getEbook } from "@/lib/ebooks";
@@ -34,11 +34,12 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const getClaims = useServerFn(getMyEbookClaims);
   const getProfile = useServerFn(getMyProfile);
   const claim = useServerFn(claimEbook);
+  const fetchLinks = useServerFn(getEbookDownloadUrl);
   const book = getEbook(slug);
   const reducedMotion = usePrefersReducedMotion();
 
   const [gate, setGate] = useState<Gate>("loading");
-  const [pdf, setPdf] = useState<string | null>(null);
+  const [links, setLinks] = useState<{ downloadUrl: string; readUrl: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
 
@@ -52,7 +53,10 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const [leadSaved, setLeadSaved] = useState(false);
 
   const requiresVantage = slug === "mapping-like-a-pro";
-  const currentPath = () => (typeof window !== "undefined" ? window.location.pathname : "/");
+  // After signing in, land on the ebook page with the modal reopened — the
+  // modal is also mounted on landing-page popups, where ?claim= means nothing.
+  const returnPath = () =>
+    `${typeof window !== "undefined" && window.location.pathname.startsWith("/ms") ? "/ms" : ""}/ebooks/${slug}?claim=1`;
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -113,8 +117,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         if (!active) return;
         const existing = claims.find((c) => c.slug === slug);
         if (existing?.status === "approved" && book) {
-          setPdf(book.pdf);
-          setGate("claimed");
+          await unlock();
           return;
         }
         if (existing?.status === "pending") {
@@ -143,6 +146,18 @@ export function EbookClaimModal({ slug, onClose }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Approved claim: ask the server for fresh signed URLs into the private bucket. */
+  async function unlock() {
+    try {
+      const fresh = await fetchLinks({ data: { slug } });
+      setLinks(fresh);
+      setGate("claimed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "The download is temporarily unavailable.");
+      setGate("claimed");
+    }
+  }
+
   async function doClaim() {
     setGate("claiming");
     setError(null);
@@ -158,8 +173,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         goTrack(`ebook_claim_pending_${slug}`);
         return;
       }
-      setPdf(result.pdf);
-      setGate("claimed");
+      await unlock();
       toast.success(`${book?.title ?? "Ebook"} unlocked — download below.`);
       goTrack(`ebook_claim_${slug}`);
     } catch (err) {
@@ -256,7 +270,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                 <button
                   type="button"
                   onClick={() =>
-                    void navigate({ to: "/auth", search: { redirect: currentPath() } })
+                    void navigate({ to: "/auth", search: { redirect: returnPath() } })
                   }
                   className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
                 >
@@ -378,18 +392,21 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               </div>
             ) : null}
 
-            {gate === "claimed" && pdf ? (
+            {gate === "claimed" && !links ? (
+              <p className="text-sm text-destructive">{error ?? "The download is temporarily unavailable."}</p>
+            ) : null}
+
+            {gate === "claimed" && links ? (
               <div className="flex flex-col gap-2">
                 <a
-                  href={pdf}
-                  download
+                  href={links.downloadUrl}
                   onClick={() => goTrack(`ebook_download_${slug}`)}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-background hover:opacity-90"
                 >
                   <Download className="h-4 w-4" /> Download the PDF
                 </a>
                 <a
-                  href={pdf}
+                  href={links.readUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => goTrack(`ebook_preview_${slug}`)}

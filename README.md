@@ -46,6 +46,9 @@ src/
     macro.tsx               Macro & Crypto desk
     ebooks.$slug.tsx         Standalone ebook detail page
     pricing.tsx, faq.tsx, indicators.tsx, free-channel.tsx, ...
+    auth.tsx                 Sign in (Google or email magic link, Supabase Auth)
+    dashboard.tsx            Signed-in account page: purchases, ebooks, referral, profile
+    account.tsx              Telegram member portal (bot-issued 7-day links, handle + code)
     _authenticated/          Admin-only routes (ads dashboard, site analytics)
   components/
     landing/                 Landing.tsx (Nav, Hero, Pricing, FAQ, Footer, …)
@@ -71,6 +74,24 @@ supabase/
 - **Guest checkout** — no account required to buy; an account is created
   from the Stripe webhook after payment, with an optional magic-link
   sign-in offered afterward.
+- **Sign in / My account** — the header, mobile menu and footer carry a
+  Sign in link (`/auth`: Google or email magic link, no passwords) that
+  turns into My account (`/dashboard`) once a Supabase session exists.
+  The dashboard lists the account's `site_purchases`, ebook claims with
+  download buttons, the referral link and a small profile form. Supabase
+  Auth → URL configuration must allow `https://printezy.money/**` (and the
+  Lovable preview hosts) as redirect URLs, because sign-in returns deep
+  links such as `/ebooks/<slug>?claim=1`.
+- **Gated ebooks** — the PDFs live in the private `ebooks` storage bucket
+  (object key `<slug>.pdf`, see `supabase/migrations/20260906090000_*`),
+  not under `public/`. `getEbookDownloadUrl` hands a signed-in user with an
+  approved `ebook_claims` row a one-hour signed URL; nothing else can read
+  the bucket. Uploading a new PDF = drop it into the bucket in Lovable Cloud
+  → Storage and set `file` on the `EBOOK_PAGES` entry.
+- **Telegram portal links** — every "My account" button the bot sends is a
+  fresh 7-day `member_sessions` row (`accountLinkFor`). The permanent
+  `enrollments.portal_token` is only a Stripe correlation id and is no
+  longer accepted as a credential.
 - **Six locales (en/ms/zh/hi/ar/sw)** — switcher in the nav (see
   `src/lib/i18n.tsx`). Every public page has a real Malay URL under `/ms/*`
   (`src/routes/ms/*` re-export the English page component with a Malay

@@ -16,7 +16,8 @@ export type Ebook = EbookCopy & {
   /** Language of the PDF itself (the file is English for every locale). */
   language: string;
   image: string;
-  pdf: string;
+  /** Object key inside the private `ebooks` storage bucket. Never a public URL. */
+  file: string;
   pages: number;
   /** Page copy in Malay; the PDF stays English. */
   ms?: EbookCopy;
@@ -35,7 +36,7 @@ export const EBOOK_PAGES: Ebook[] = [
     author: "EzyMap ALGO",
     language: "en",
     image: ebookMapping,
-    pdf: "/ebooks/mapping-like-a-pro.pdf",
+    file: "mapping-like-a-pro.pdf",
     pages: 12,
     readTime: "15 min read",
     outcomes: [
@@ -95,7 +96,7 @@ export const EBOOK_PAGES: Ebook[] = [
     author: "EzyMap ALGO",
     language: "en",
     image: ebookTechnical,
-    pdf: "/ebooks/technical-analysis.pdf",
+    file: "technical-analysis.pdf",
     pages: 21,
     readTime: "15 min read",
     outcomes: [

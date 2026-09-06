@@ -20,7 +20,6 @@ import {
   getDashboard,
   requestLoginCode,
   saveTrade,
-  sessionFromPortal,
   signOutMember,
   verifyLoginCode,
   type MemberDashboard,
@@ -32,7 +31,6 @@ const STORAGE_KEY = "ezymap_member_session";
 
 export const Route = createFileRoute("/account")({
   validateSearch: (search: Record<string, unknown>) => ({
-    t: typeof search.t === "string" ? search.t : "",
     s: typeof search.s === "string" ? search.s : "",
     canceled: search.canceled === "1" || search.canceled === 1,
   }),
@@ -60,14 +58,13 @@ export const Route = createFileRoute("/account")({
 type Tab = "signals" | "trades" | "billing";
 
 function AccountPage() {
-  const { t, s, canceled } = Route.useSearch();
+  const { s, canceled } = Route.useSearch();
   const [token, setToken] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState<Tab>("signals");
   const queryClient = useQueryClient();
 
   const fetchDashboard = useServerFn(getDashboard);
-  const exchangePortal = useServerFn(sessionFromPortal);
   const endSession = useServerFn(signOutMember);
 
   // Resolve the session once on the client: URL session, bot portal link, or storage.
@@ -77,16 +74,10 @@ function AccountPage() {
       const stored = localStorage.getItem(STORAGE_KEY);
       // Bearer tokens must not linger in the address bar (history, referrers,
       // analytics pixels). Consume them, then rewrite the URL.
-      if (s || t) window.history.replaceState(null, "", "/account");
+      if (s) window.history.replaceState(null, "", "/account");
       if (s) {
         localStorage.setItem(STORAGE_KEY, s);
         if (!cancelled) setToken(s);
-      } else if (t) {
-        const res = await exchangePortal({ data: { portalToken: t } }).catch(() => null);
-        if (res?.token) {
-          localStorage.setItem(STORAGE_KEY, res.token);
-          if (!cancelled) setToken(res.token);
-        }
       } else if (stored) {
         if (!cancelled) setToken(stored);
       }
@@ -95,7 +86,7 @@ function AccountPage() {
     return () => {
       cancelled = true;
     };
-  }, [s, t, exchangePortal]);
+  }, [s]);
 
   const { data, isLoading } = useQuery<MemberDashboard>({
     queryKey: ["dashboard", token],

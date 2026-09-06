@@ -10,6 +10,7 @@ import {
 } from "./tiers";
 import { sendMessage } from "./telegram.server";
 import { createCheckoutSession, retrieveCheckoutSession } from "./stripe.server";
+import { accountLinkFor } from "./member.server";
 import { reportMetaEvent } from "./meta.server";
 
 export const FREE_CHANNEL = "https://t.me/ezymap";
@@ -17,10 +18,6 @@ export const SUPPORT = "https://t.me/ezysarah";
 
 export function newPortalToken(): string {
   return crypto.randomUUID().replace(/-/g, "");
-}
-
-export function portalUrl(token: string): string {
-  return `${SITE_URL}/account?t=${token}`;
 }
 
 export async function upsertBotUser(args: {
@@ -99,7 +96,7 @@ export async function activateFreeTier(telegramId: number) {
     `✅ <b>You're in.</b>\n\nFree community access is active. Join the channel and open your account page any time.`,
     [
       [{ text: "Join the channel", url: FREE_CHANNEL }],
-      [{ text: "My account", url: portalUrl(token) }],
+      [{ text: "My account", url: await accountLinkFor(telegramId) }],
     ],
   );
 }
@@ -191,7 +188,7 @@ export async function activateVantageTrial(telegramId: number) {
     telegramId,
     `✅ <b>Trial unlocked.</b>\n\nPro-level access is live for ${VANTAGE_TRIAL_DAYS} days. Open your account for signals, your trade log and stats — upgrade any time and your trial simply rolls into the paid package.`,
     [
-      [{ text: "My account", url: portalUrl(token) }],
+      [{ text: "My account", url: await accountLinkFor(telegramId) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
     ],
   );
@@ -205,6 +202,9 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
   const token = newPortalToken();
   const sessionId = await getSessionTag(telegramId);
 
+  // Stripe sends the buyer back to /account; give that redirect its own
+  // short-lived session instead of the permanent portal token.
+  const returnUrl = await accountLinkFor(telegramId);
   const checkout = await createCheckoutSession({
     tierId: tier.id,
     tierName: tier.name,
@@ -212,7 +212,7 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
     telegramId,
     portalToken: token,
     sessionId,
-    siteUrl: SITE_URL,
+    returnUrl,
   });
 
   const { error } = await supabaseAdmin.from("enrollments").insert({
@@ -244,7 +244,7 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
       .join("\n")}\n\nComplete your secure payment below. Your account activates the moment it clears.`,
     [
       [{ text: `Pay ${formatPrice(tier.amountCents)} securely`, url: checkout.url ?? SITE_URL }],
-      [{ text: "My account", url: portalUrl(token) }],
+      [{ text: "My account", url: returnUrl }],
       [{ text: "Talk to a human", url: SUPPORT }],
     ],
   );
@@ -289,7 +289,7 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
     row.telegram_id,
     `🎉 <b>Payment confirmed — ${tier?.name ?? row.tier} is live.</b>\n\nYour access is active. Open your account page for your status and access links.`,
     [
-      [{ text: "My account", url: portalUrl(row.portal_token) }],
+      [{ text: "My account", url: await accountLinkFor(row.telegram_id) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
     ],
   );

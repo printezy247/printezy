@@ -59,11 +59,7 @@ export const claimEbook = createServerFn({ method: "POST" })
     },
   )
   .handler(
-    async ({
-      data,
-      context,
-    }): Promise<{ ok: true; status: "pending" | "approved"; pdf: string | null }> => {
-      const book = getEbook(data.slug)!;
+    async ({ data, context }): Promise<{ ok: true; status: "pending" | "approved" }> => {
 
       if (data.slug === "mapping-like-a-pro") {
         const details = data as {
@@ -103,7 +99,7 @@ export const claimEbook = createServerFn({ method: "POST" })
           slug: data.slug,
         });
 
-        return { ok: true, status: "pending", pdf: null };
+        return { ok: true, status: "pending" };
       }
 
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -121,6 +117,45 @@ export const claimEbook = createServerFn({ method: "POST" })
         throw new Error("Could not save your changes — please try again.");
       }
 
-      return { ok: true, status: "approved", pdf: book.pdf };
+      return { ok: true, status: "approved" };
     },
   );
+
+/** Signed URLs live long enough to click, not long enough to share around. */
+const EBOOK_LINK_TTL_SECONDS = 60 * 60;
+
+/**
+ * The PDFs live in the private `ebooks` storage bucket, so the only way to
+ * get one is this signed URL, issued to a signed-in user whose claim for
+ * that slug is approved.
+ */
+export const getEbookDownloadUrl = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { slug: string }) => {
+    if (typeof input?.slug !== "string" || !getEbook(input.slug)) throw new Error("Unknown ebook");
+    return { slug: input.slug };
+  })
+  .handler(async ({ data, context }): Promise<{ downloadUrl: string; readUrl: string }> => {
+    const book = getEbook(data.slug)!;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: claim } = await supabaseAdmin
+      .from("ebook_claims")
+      .select("status")
+      .eq("user_id", context.userId)
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if ((claim as { status: string } | null)?.status !== "approved") {
+      throw new Error("This ebook is not unlocked for your account yet.");
+    }
+
+    const bucket = supabaseAdmin.storage.from("ebooks");
+    const [download, read] = await Promise.all([
+      bucket.createSignedUrl(book.file, EBOOK_LINK_TTL_SECONDS, { download: `${book.slug}.pdf` }),
+      bucket.createSignedUrl(book.file, EBOOK_LINK_TTL_SECONDS),
+    ]);
+    if (download.error || read.error || !download.data || !read.data) {
+      console.error("[ebooks] signed url failed", download.error ?? read.error);
+      throw new Error("The download is temporarily unavailable — please try again in a few minutes.");
+    }
+    return { downloadUrl: download.data.signedUrl, readUrl: read.data.signedUrl };
+  });

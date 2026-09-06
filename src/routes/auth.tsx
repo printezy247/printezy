@@ -1,19 +1,21 @@
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Nav, Footer } from "@/components/landing/Landing";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign In | PrintEzy" },
+      { title: "Sign in — EzyMap ALGO" },
       {
         name: "description",
-        content: "Sign in to your PrintEzy account to manage purchases and access.",
+        content:
+          "Sign in to your EzyMap ALGO account to see your purchases, ebooks and referral link.",
       },
-      { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Sign In | PrintEzy" },
-      { property: "og:description", content: "Sign in to your PrintEzy account." },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Sign in — EzyMap ALGO" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -24,94 +26,81 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const safePath = (value: string | undefined) =>
-  value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
+/** Only same-origin paths may be used as a post-login destination. */
+export const safePath = (value: string | undefined) =>
+  value && value.startsWith("/") && !value.startsWith("//") ? value : "/dashboard";
 
 function AuthPage() {
   const navigate = useNavigate();
   const search = useSearch({ from: "/auth" });
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [googleBusy, setGoogleBusy] = useState(false);
+  const destination = safePath(search.redirect);
 
+  // Already signed in (or just returned from a magic link / Google): move on.
   useEffect(() => {
     let active = true;
     void supabase.auth.getSession().then(({ data }) => {
-      if (active && data.session) navigate({ to: safePath(search.redirect), replace: true });
+      if (active && data.session) navigate({ to: destination, replace: true });
+    });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active && session) navigate({ to: destination, replace: true });
     });
     return () => {
       active = false;
+      subscription.unsubscribe();
     };
-  }, [navigate, search.redirect]);
+  }, [navigate, destination]);
 
   async function signInWithGoogle() {
     setGoogleBusy(true);
     setError(null);
-    setNotice(null);
     try {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: window.location.origin + safePath(search.redirect) },
+        options: { redirectTo: window.location.origin + destination },
       });
       if (oauthError) throw oauthError;
-      // On success the browser is redirected to Google; nothing else to do here.
+      // The browser is now being redirected to Google.
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not sign in with Google.");
+      setError(err instanceof Error ? err.message : t("auth_error_generic"));
       setGoogleBusy(false);
     }
   }
 
-  async function submit(e: React.FormEvent) {
+  async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
+    if (state !== "idle") return;
+    setState("sending");
     setError(null);
-    setNotice(null);
-    try {
-      if (mode === "signup") {
-        const { data, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin + "/auth" },
-        });
-        if (signUpError) throw signUpError;
-        if (!data.session) {
-          setNotice("Account created. Check your email to confirm it, then sign in.");
-          setMode("signin");
-          return;
-        }
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        if (signInError) throw signInError;
-      }
-      navigate({ to: safePath(search.redirect), replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not sign in.");
-    } finally {
-      setBusy(false);
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { emailRedirectTo: window.location.origin + destination },
+    });
+    if (otpError) {
+      setError(otpError.message || t("auth_error_generic"));
+      setState("idle");
+      return;
     }
+    setState("sent");
   }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
       <main className="mx-auto w-full max-w-md px-4 py-24">
-        <h1 className="text-2xl tracking-tight">
-          {mode === "signin" ? "Sign in" : "Create your account"}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {mode === "signin"
-            ? "Sign in to manage your purchases and access."
-            : "Track your purchases and access in one place."}
-        </p>
+        <h1 className="text-2xl tracking-tight">{t("auth_title")}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("auth_subtitle")}</p>
 
         <button
           type="button"
           onClick={signInWithGoogle}
-          disabled={googleBusy || busy}
+          disabled={googleBusy || state === "sending"}
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-surface-elevated disabled:opacity-50"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -132,64 +121,48 @@ function AuthPage() {
               d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.94 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.63l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"
             />
           </svg>
-          {googleBusy ? "Redirecting…" : "Continue with Google"}
+          {googleBusy ? t("auth_google_busy") : t("auth_google")}
         </button>
 
         <div className="mt-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span className="text-xs uppercase tracking-wide text-muted-foreground">or</span>
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">
+            {t("auth_or")}
+          </span>
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        <form onSubmit={submit} className="mt-5 flex flex-col gap-3">
-          <label htmlFor="email" className="text-sm text-muted-foreground">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="you@example.com"
-          />
-          <label htmlFor="password" className="text-sm text-muted-foreground">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="••••••••"
-          />
-          <button
-            type="submit"
-            disabled={busy || email.length === 0 || password.length < 8}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-          >
-            {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
-          </button>
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          {notice && <p className="text-sm text-primary">{notice}</p>}
-        </form>
-        <button
-          type="button"
-          onClick={() => {
-            setMode(mode === "signin" ? "signup" : "signin");
-            setError(null);
-            setNotice(null);
-          }}
-          className="mt-5 text-sm text-muted-foreground underline underline-offset-4"
-        >
-          {mode === "signin" ? "Create an account" : "Back to sign in"}
-        </button>
+        {state === "sent" ? (
+          <div className="mt-5 rounded-md border border-primary/30 bg-primary/8 p-4 text-sm text-body">
+            <Mail className="mb-2 h-5 w-5 text-primary" />
+            {t("auth_link_sent").replace("{email}", email.trim())}
+          </div>
+        ) : (
+          <form onSubmit={sendMagicLink} className="mt-5 flex flex-col gap-3">
+            <label htmlFor="email" className="text-sm text-muted-foreground">
+              {t("auth_email_label")}
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+              placeholder="you@example.com"
+            />
+            <button
+              type="submit"
+              disabled={state === "sending" || email.trim().length === 0}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              {state === "sending" ? t("auth_sending") : t("auth_send_link")}
+            </button>
+            <p className="text-xs text-muted-foreground">{t("auth_no_password")}</p>
+          </form>
+        )}
+        {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
       </main>
       <Footer />
     </div>

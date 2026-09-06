@@ -172,6 +172,45 @@ export type Database = {
           },
         ]
       }
+      ebook_claims: {
+        Row: {
+          approved_at: string | null
+          claimed_at: string
+          full_name: string | null
+          id: string
+          slug: string
+          status: string
+          telegram_username: string | null
+          user_id: string
+          vantage_account: string | null
+          vantage_confirmed: boolean
+        }
+        Insert: {
+          approved_at?: string | null
+          claimed_at?: string
+          full_name?: string | null
+          id?: string
+          slug: string
+          status?: string
+          telegram_username?: string | null
+          user_id: string
+          vantage_account?: string | null
+          vantage_confirmed?: boolean
+        }
+        Update: {
+          approved_at?: string | null
+          claimed_at?: string
+          full_name?: string | null
+          id?: string
+          slug?: string
+          status?: string
+          telegram_username?: string | null
+          user_id?: string
+          vantage_account?: string | null
+          vantage_confirmed?: boolean
+        }
+        Relationships: []
+      }
       ezyai_entitlements: {
         Row: {
           amount_cents: number
@@ -375,6 +414,7 @@ export type Database = {
           stripe_payment_intent: string | null
           stripe_session_id: string
           telegram_username: string | null
+          user_id: string | null
         }
         Insert: {
           amount_cents?: number

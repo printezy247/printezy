@@ -107,14 +107,6 @@ export const verifyLoginCode = createServerFn({ method: "POST" })
     return { ok: true, token: result.token };
   });
 
-/** Turns the bot's personal portal link into a real signed-in session. */
-export const sessionFromPortal = createServerFn({ method: "POST" })
-  .inputValidator(z.object({ portalToken: z.string().min(8).max(100) }))
-  .handler(async ({ data }): Promise<{ token: string | null }> => {
-    const { sessionFromPortalToken } = await import("@/lib/bot/member.server");
-    return { token: await sessionFromPortalToken(data.portalToken) };
-  });
-
 export const signOutMember = createServerFn({ method: "POST" })
   .inputValidator(z.object({ token: z.string().min(8).max(200) }))
   .handler(async ({ data }) => {
