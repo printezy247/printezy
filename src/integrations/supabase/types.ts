@@ -425,6 +425,24 @@ export type Database = {
         }
         Relationships: []
       }
+      macro_calendar_cache: {
+        Row: {
+          fetched_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          fetched_at?: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          fetched_at?: string
+          key?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       rate_limits: {
         Row: {
           bucket_key: string
