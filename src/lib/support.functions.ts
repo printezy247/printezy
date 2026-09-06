@@ -14,8 +14,8 @@ const sendSchema = z.object({
   name: z.string().max(60).nullable().optional(),
   text: z.string().min(1).max(1500),
   entryId: z.string().max(60).nullable().optional(),
-  /** Site locale mapped onto the reply book's languages (en/ms). */
-  lang: z.enum(["en", "ms"]).optional(),
+  /** Site locale; the reply book answers in all six. */
+  lang: z.enum(["en", "ms", "zh", "hi", "ar", "sw"]).optional(),
 });
 
 const fetchSchema = z.object({
@@ -65,12 +65,13 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
       text,
     });
 
-    // Malay visitors get the Malay reply book; everyone else the English one,
-    // with keyword detection still free to pick Malay when they type Malay.
+    // Answer in the visitor's site language. English visitors get keyword
+    // detection (so a Malay question typed on the English site still gets a
+    // Malay answer); every other language answers in that language.
     const lang = data.lang ?? "en";
     const answer = data.entryId
       ? entryAnswer(data.entryId, lang)
-      : answerFor(text, lang === "ms" ? "ms" : null);
+      : answerFor(text, lang === "en" ? null : lang);
 
     if (answer) {
       await supabaseAdmin.from("support_messages").insert({
