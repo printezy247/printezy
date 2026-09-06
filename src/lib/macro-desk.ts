@@ -116,12 +116,14 @@ export type MacroDesk = {
 /* ------------------------------------------------------------------ */
 
 const SEED: MacroDesk = {
+  // Fallback only (shown with a "sample data" note when the bot bridge is
+  // not configured). Values as published at each bank's mid-2026 decisions.
   centralBanks: [
-    { bank: "Federal Reserve", rate: "4.50%", stance: "hawkish", nextMeeting: "Sep 17" },
-    { bank: "European Central Bank", rate: "3.25%", stance: "dovish", nextMeeting: "Sep 12" },
-    { bank: "Bank of England", rate: "4.75%", stance: "neutral", nextMeeting: "Sep 19" },
-    { bank: "Bank of Japan", rate: "0.50%", stance: "hawkish", nextMeeting: "Sep 20" },
-    { bank: "Swiss National Bank", rate: "1.00%", stance: "dovish", nextMeeting: "Sep 26" },
+    { bank: "Federal Reserve", rate: "3.50–3.75%", stance: "dovish", nextMeeting: "Sep 16" },
+    { bank: "European Central Bank", rate: "2.25%", stance: "neutral", nextMeeting: "Sep 10" },
+    { bank: "Bank of England", rate: "3.75%", stance: "dovish", nextMeeting: "Sep 17" },
+    { bank: "Bank of Japan", rate: "1.00%", stance: "hawkish", nextMeeting: "Sep 18" },
+    { bank: "Swiss National Bank", rate: "0.00%", stance: "neutral", nextMeeting: "Sep 24" },
   ],
   recession: [
     { country: "United States", probability: 35, driver: "10Y-2Y yield curve inverted" },
@@ -179,11 +181,11 @@ const SEED: MacroDesk = {
     },
   ],
   rateDecisions: [
-    { bank: "European Central Bank", date: "Sep 12" },
-    { bank: "Federal Reserve", date: "Sep 17" },
-    { bank: "Bank of England", date: "Sep 19" },
-    { bank: "Bank of Japan", date: "Sep 20" },
-    { bank: "Swiss National Bank", date: "Sep 26" },
+    { bank: "European Central Bank", date: "Sep 10" },
+    { bank: "Federal Reserve", date: "Sep 16" },
+    { bank: "Bank of England", date: "Sep 17" },
+    { bank: "Bank of Japan", date: "Sep 18" },
+    { bank: "Swiss National Bank", date: "Sep 24" },
   ],
   fearGreed: { value: 54, label: "Neutral", source: "alternative.me" },
 };

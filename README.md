@@ -117,6 +117,15 @@ supabase/
   `/redeem <code>` to the bot, which looks the row up with
   `GET /api/public/ezyai/entitlements?code=<code>`.
   Stripe needs one Price per SKU with `lookup_key` = SKU (sandbox + live).
+- **Macro desk data** — the economic calendar on `/macro` is read from
+  ForexFactory's weekly feed (`src/lib/macro-calendar.functions.ts`). The
+  central bank rates, recession odds, decision dates and the two trend
+  sparklines come from the MacroTrader bot's `GET /api/desk`
+  (`src/lib/macro-live.functions.ts`; env `MACRO_BOT_URL` +
+  `MACRO_BOT_KEY`, the latter equal to the bot's `SITE_API_KEY`), so the
+  site and the Telegram bot always show the same numbers. Both are cached
+  in `macro_calendar_cache` and fall back to the last good copy; with the
+  bridge unset the cards show the seeded copy with a "sample data" note.
 - **Rate limiting** — `checkCheckout`, `saveLead`, and the support chat
   endpoints are protected by a Supabase-backed fixed-window limiter that
   fails open (never blocks a legitimate purchase or message on a limiter
