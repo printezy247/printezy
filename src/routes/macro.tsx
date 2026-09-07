@@ -551,7 +551,7 @@ export function MacroPage() {
               >
                 <div className="overflow-x-auto">
                   <div
-                    className="grid gap-x-3 text-left text-sm"
+                    className="grid min-w-[520px] gap-x-3 text-left text-sm"
                     style={{ gridTemplateColumns: "56px 52px minmax(0, 1fr) 78px 78px" }}
                   >
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_time")}</div>
@@ -602,7 +602,7 @@ export function MacroPage() {
               >
                 <div className="overflow-x-auto">
                   <div
-                    className="grid gap-x-3 text-left text-sm"
+                    className="grid min-w-[560px] gap-x-3 text-left text-sm"
                     style={{ gridTemplateColumns: "minmax(0, 1fr) 96px minmax(90px, 150px) 86px" }}
                   >
                     <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_bank")}</div>
@@ -650,8 +650,9 @@ export function MacroPage() {
                   </p>
                 }
               >
+                <div className="overflow-x-auto">
                 <div
-                  className="grid gap-x-3 text-left text-sm"
+                  className="grid min-w-[560px] gap-x-3 text-left text-sm"
                   style={{ gridTemplateColumns: "minmax(0, 150px) 52px minmax(80px, 140px) minmax(0, 1fr)" }}
                 >
                   <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_country")}</div>
@@ -674,6 +675,7 @@ export function MacroPage() {
                       <div className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
                     </Fragment>
                   ))}
+                </div>
                 </div>
               </Card>
             ) : null}
