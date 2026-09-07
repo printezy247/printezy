@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ModalPortal } from "@/components/ModalPortal";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { createCheckout } from "@/lib/checkout.functions";
@@ -129,6 +130,7 @@ export function EnrollModal({ sku, onClose }: Props) {
   if (!item) return null;
 
   return (
+    <ModalPortal>
       <motion.div
         key="overlay"
         initial={reducedMotion ? false : { opacity: 0 }}
@@ -230,7 +232,7 @@ export function EnrollModal({ sku, onClose }: Props) {
                 </Select>
 
                 <Button type="submit" disabled={!ready} className="mt-2 w-full">
-                  Continue to payment
+                  Continue
                 </Button>
               </form>
             </>
@@ -267,5 +269,6 @@ export function EnrollModal({ sku, onClose }: Props) {
           )}
         </motion.div>
       </motion.div>
+    </ModalPortal>
   );
 }
