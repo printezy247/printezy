@@ -1151,7 +1151,7 @@ export function Pricing() {
               ) : null}
 
               <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
-                <BuyButton sku={t.sku} label={tt("pricing_cta")} />
+                <BuyButton sku={t.sku} label={tt("pricing_cta")} inlineForm />
               </div>
               <p className="mt-1.5 flex items-center justify-center gap-1 text-center text-[11px] text-muted-foreground">
                 <Lock className="h-3 w-3" /> Secured by Stripe
