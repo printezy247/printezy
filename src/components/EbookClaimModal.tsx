@@ -11,6 +11,7 @@ import { saveLead } from "@/lib/leads.functions";
 import { getEbook } from "@/lib/ebooks";
 import { goTrack, getSessionId } from "@/lib/analytics";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
+import { ModalPortal } from "@/components/ModalPortal";
 
 type Props = {
   slug: string;
@@ -214,6 +215,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   if (!book) return null;
 
   return (
+    <ModalPortal>
       <motion.div
         key="overlay"
         initial={reducedMotion ? false : { opacity: 0 }}
@@ -449,5 +451,6 @@ export function EbookClaimModal({ slug, onClose }: Props) {
           </div>
         </motion.div>
       </motion.div>
+    </ModalPortal>
   );
 }
