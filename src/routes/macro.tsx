@@ -1,5 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
@@ -15,6 +24,7 @@ import {
   fetchFearGreed,
   fetchMacroDesk,
   GAUGE_TRACK,
+  CALENDAR_CURRENCIES,
   IMPACT_COLOR,
   recessionColor,
   stanceColor,
@@ -189,6 +199,21 @@ function CalendarScroller({ children }: { children: ReactNode }) {
 }
 
 /**
+ * The impact marker: a small cut stone that turns on the spot, so the three
+ * grades read as a live gauge rather than three printed dots. Decorative —
+ * every place it appears already names the impact in text beside it.
+ */
+function ImpactGem({ impact, dimmed = false }: { impact: Impact; dimmed?: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className="impact-gem"
+      style={{ "--gem": IMPACT_COLOR[impact], opacity: dimmed ? 0.4 : 1 } as CSSProperties}
+    />
+  );
+}
+
+/**
  * One of the three numbers on a calendar row. On a wide card it is a plain
  * right-aligned column under its header; on a phone the headers are gone, so
  * it carries its own label and sits inline with the other two.
@@ -266,10 +291,7 @@ function CalendarFilters({
             onClick={() => onToggleImpact(i)}
             className={`${chip(impacts.has(i))} inline-flex items-center gap-1.5`}
           >
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{ background: IMPACT_COLOR[i], opacity: impacts.has(i) ? 1 : 0.4 }}
-            />
+            <ImpactGem impact={i} dimmed={!impacts.has(i)} />
             {t(`macro_impact_${i}` as TranslationKey)}
           </button>
         ))}
@@ -644,18 +666,26 @@ export function MacroPage() {
   const [impactFilter, setImpactFilter] = useState<Set<Impact>>(
     () => new Set<Impact>(["high", "medium", "low"]),
   );
-  const [currencyFilter, setCurrencyFilter] = useState<Set<string>>(() => new Set<string>());
-
-  const calCurrencies = useMemo(
-    () => [...new Set((cal?.rows ?? []).map((r) => r.currency))].sort(),
-    [cal],
+  const [currencyFilter, setCurrencyFilter] = useState<Set<string>>(
+    () => new Set<string>(CALENDAR_CURRENCIES),
   );
 
-  // A fresh day brings its own set of currencies; select them all again rather
-  // than carrying yesterday's picks over and hiding rows for no visible reason.
+  // The full list every day, not just the currencies today happens to hold —
+  // a missing chip reads as "not covered" rather than "nothing scheduled".
+  // Anything the feed brings beyond the known set is appended rather than
+  // dropped, since a currency with no chip could never be switched back on.
+  const calCurrencies = useMemo(
+    () =>
+      [...new Set([...CALENDAR_CURRENCIES, ...(cal?.rows ?? []).map((r) => r.currency)])].sort(),
+    [cal],
+  );
+  const calCurrencyKey = calCurrencies.join(",");
+
+  // Only when the set itself changes: re-selecting on every load would throw
+  // away the reader's picks each time the card refreshed.
   useEffect(() => {
-    setCurrencyFilter(new Set(calCurrencies));
-  }, [calCurrencies]);
+    setCurrencyFilter(new Set(calCurrencyKey.split(",")));
+  }, [calCurrencyKey]);
 
   const calRows = useMemo(
     () =>
@@ -780,10 +810,7 @@ export function MacroPage() {
                     <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
                       {(["high", "medium", "low"] as const).map((i) => (
                         <span key={i} className="inline-flex items-center gap-1.5 capitalize">
-                          <span
-                            className="h-2 w-2 rounded-full"
-                            style={{ background: IMPACT_COLOR[i] }}
-                          />
+                          <ImpactGem impact={i} />
                           {t(`macro_impact_${i}` as TranslationKey)} {t("macro_impact_suffix")}
                         </span>
                       ))}
@@ -850,11 +877,7 @@ export function MacroPage() {
                           {clock.toLocal(r.nyTime)}
                         </span>
                         <span className="flex w-11 shrink-0 items-center gap-1">
-                          <span
-                            className="h-2 w-2 shrink-0 rounded-full"
-                            style={{ background: IMPACT_COLOR[r.impact] }}
-                            title={`${r.impact} impact`}
-                          />
+                          <ImpactGem impact={r.impact} />
                           <span className="text-xs font-semibold">{r.currency}</span>
                         </span>
                         <span className="min-w-0 flex-1 text-xs leading-snug text-body sm:text-sm">

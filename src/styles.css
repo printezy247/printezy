@@ -449,3 +449,79 @@
     display: none;
   }
 }
+
+/* Impact marker: a cut stone rather than a flat dot. ::before is the halo it
+   throws, ::after the stone itself — two facet gradients and an inset bevel,
+   slowly turning so it catches the light. The colour arrives as --gem. */
+.impact-gem {
+  position: relative;
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: none;
+  vertical-align: middle;
+}
+.impact-gem::before,
+.impact-gem::after {
+  content: "";
+  position: absolute;
+  border-radius: 1.5px;
+}
+.impact-gem::before {
+  inset: -2px;
+  background: var(--gem);
+  filter: blur(3px);
+  opacity: 0.25;
+  transform: rotate(45deg);
+  animation: gem-halo 2600ms ease-in-out infinite;
+}
+.impact-gem::after {
+  inset: 0;
+  transform: rotate(45deg);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0) 38%,
+      rgba(0, 0, 0, 0.4) 100%
+    ),
+    linear-gradient(
+      315deg,
+      color-mix(in srgb, var(--gem) 55%, #000) 0%,
+      var(--gem) 50%,
+      color-mix(in srgb, var(--gem) 45%, #fff) 100%
+    );
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.35),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.4),
+    inset -1px -1px 1px rgba(0, 0, 0, 0.4);
+  animation: gem-turn 5200ms ease-in-out infinite;
+}
+/* Squeezing one axis of the rotated square reads as the stone turning
+   towards you and away again — the cheapest honest 3D there is. */
+@keyframes gem-turn {
+  0%,
+  100% {
+    transform: rotate(45deg) scaleX(1);
+  }
+  50% {
+    transform: rotate(45deg) scaleX(0.62);
+  }
+}
+@keyframes gem-halo {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: rotate(45deg) scale(0.8);
+  }
+  50% {
+    opacity: 0.5;
+    transform: rotate(45deg) scale(1.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .impact-gem::before,
+  .impact-gem::after {
+    animation: none;
+  }
+}

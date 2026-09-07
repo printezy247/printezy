@@ -253,6 +253,23 @@ export function sparkline(points: number[]): string {
   return points.map((p) => SPARK_RAMP[Math.max(0, Math.min(7, p))]).join("");
 }
 
+/**
+ * Every currency the calendar covers. The filter row lists all of them
+ * whatever today happens to hold, so a quiet day for one of them reads as
+ * "nothing scheduled" rather than "this site does not track it".
+ */
+export const CALENDAR_CURRENCIES = [
+  "AUD",
+  "CAD",
+  "CHF",
+  "CNY",
+  "EUR",
+  "GBP",
+  "JPY",
+  "NZD",
+  "USD",
+] as const;
+
 export const IMPACT_COLOR: Record<Impact, string> = {
   high: "#d9534f",
   medium: "#c9a13a",
