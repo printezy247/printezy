@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,36 @@ import { track } from "@/lib/analytics";
 const EnrollModal = lazy(() =>
   import("@/components/EnrollModal").then((m) => ({ default: m.EnrollModal })),
 );
+
+/**
+ * Closers for whichever buy form is currently open. Each button used to keep
+ * its open state entirely to itself, which went unnoticed while the form was a
+ * centred overlay — two of them simply stacked. Now that the form sits inside
+ * its card, two open at once read as a glitch, and on a phone the second one
+ * is off screen entirely.
+ */
+const openForms = new Set<() => void>();
+
+function useSoleOpenForm(): [boolean, (next: boolean) => void] {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    openForms.add(close);
+    return () => {
+      openForms.delete(close);
+    };
+  }, [open]);
+
+  const set = useCallback((next: boolean) => {
+    // Shut whatever else is open before taking its place.
+    if (next) for (const close of [...openForms]) close();
+    setOpen(next);
+  }, []);
+
+  return [open, set];
+}
 
 type Props = {
   sku: string;
@@ -37,7 +67,7 @@ export function BuyButton({
   inlineForm = false,
   className = "",
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useSoleOpenForm();
 
   function go() {
     track("click", `checkout_${sku}`);
