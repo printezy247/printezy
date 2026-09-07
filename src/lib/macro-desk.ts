@@ -56,9 +56,9 @@ export type CalendarRow = {
   event: string;
   impact: Impact;
   /**
-   * The released number. ForexFactory's weekly feed is forward-looking and
-   * carries no actuals, so this is "—" today; it is parsed when a feed does
-   * provide it, and the column only appears once some row has one.
+   * The released number, or "—" while the event is still ahead. The
+   * ForexFactory feed never carries one, so on that provider the whole
+   * column is "—" and the card hides it; see macro-calendar.functions.ts.
    */
   actual: string;
   forecast: string;
