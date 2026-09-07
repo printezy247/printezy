@@ -59,7 +59,10 @@ export const claimEbook = createServerFn({ method: "POST" })
     },
   )
   .handler(
-    async ({ data, context }): Promise<{ ok: true; status: "pending" | "approved" }> => {
+    async ({
+      data,
+      context,
+    }): Promise<{ ok: true; status: "pending" | "approved"; notified?: boolean }> => {
 
       if (data.slug === "mapping-like-a-pro") {
         const details = data as {
@@ -93,8 +96,9 @@ export const claimEbook = createServerFn({ method: "POST" })
         // Awaited on purpose: the worker is torn down as soon as the response
         // goes out, so a fire-and-forget send never reaches Telegram.
         const { notifyVantageClaim } = await import("./bot/ebook-claims.server");
+        let notified = false;
         try {
-          await notifyVantageClaim({
+          notified = await notifyVantageClaim({
             claimId: (row as { id: string }).id,
             fullName: details.fullName,
             telegramUsername: details.telegramUsername,
@@ -105,7 +109,7 @@ export const claimEbook = createServerFn({ method: "POST" })
           console.error("[ebook-claims] approval notice failed", err);
         }
 
-        return { ok: true, status: "pending" };
+        return { ok: true, status: "pending", notified };
       }
 
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

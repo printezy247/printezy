@@ -47,6 +47,75 @@ export async function autoRegisterSarah(
   return true;
 }
 
+// ---------------------------------------------------------------------------
+// Inbox health
+// ---------------------------------------------------------------------------
+
+/**
+ * Everything the site sends Sarah goes to the single chat id in
+ * `support_config`. When that id is wrong, or Telegram refuses the send, the
+ * old behaviour was silence: the visitor still read "Sent to Sarah" and nobody
+ * found out until someone went looking. Every send now leaves a verdict here,
+ * so the admin dashboard can show the inbox as broken and the ebook claim
+ * screen can offer a direct Telegram link instead of a promise it cannot keep.
+ */
+const SEND_HEALTH_KEY = "sarah_send_health";
+
+export type SarahInboxHealth = {
+  ok: boolean;
+  chatId: number | null;
+  failedAt: string | null;
+  /** Which send broke, e.g. "ebook claim". Plain text, safe to render. */
+  source: string | null;
+  detail: string | null;
+};
+
+export async function recordSarahSendFailure(source: string, detail: string): Promise<void> {
+  const { error } = await supabaseAdmin.from("support_config").upsert({
+    key: SEND_HEALTH_KEY,
+    value: JSON.stringify({
+      failedAt: new Date().toISOString(),
+      source,
+      detail: detail.slice(0, 400),
+    }),
+    updated_at: new Date().toISOString(),
+  });
+  if (error) console.error("[sarah] health write failed", error);
+}
+
+/** A send landed, so whatever was broken is not any more. */
+export async function clearSarahSendFailure(): Promise<void> {
+  const { error } = await supabaseAdmin.from("support_config").delete().eq("key", SEND_HEALTH_KEY);
+  if (error) console.error("[sarah] health clear failed", error);
+}
+
+export async function getSarahInboxHealth(): Promise<SarahInboxHealth> {
+  const chatId = await getSarahChatId();
+  const { data } = await supabaseAdmin
+    .from("support_config")
+    .select("value")
+    .eq("key", SEND_HEALTH_KEY)
+    .maybeSingle();
+
+  const raw = (data as { value?: string } | null)?.value;
+  if (!raw) {
+    // No recorded failure. An unregistered inbox is still broken, just in a
+    // way no send has had the chance to report yet.
+    return { ok: chatId !== null, chatId, failedAt: null, source: null, detail: null };
+  }
+  try {
+    const parsed = JSON.parse(raw) as { failedAt?: string; source?: string; detail?: string };
+    return {
+      ok: false,
+      chatId,
+      failedAt: parsed.failedAt ?? null,
+      source: parsed.source ?? null,
+      detail: parsed.detail ?? null,
+    };
+  } catch {
+    return { ok: false, chatId, failedAt: null, source: null, detail: raw.slice(0, 400) };
+  }
+}
 
 async function setChatMode(telegramId: number, on: boolean) {
   // Upsert: the member may reach this from a button tap before any message,
@@ -111,7 +180,10 @@ export async function relayToSarah(
   text: string,
 ): Promise<boolean> {
   const sarahChatId = await getSarahChatId();
-  if (!sarahChatId) return false;
+  if (!sarahChatId) {
+    await recordSarahSendFailure("member relay", "Sarah's chat id is not registered.");
+    return false;
+  }
 
   const header = `📩 <b>${escapeHtml(member.firstName ?? "Member")}</b>${
     member.username ? ` (@${escapeHtml(member.username)})` : ""
@@ -121,8 +193,10 @@ export async function relayToSarah(
   const sent = await sendMessage(sarahChatId, `${header}\n\n${text}`);
   if (!sent.ok) {
     console.error("[sarah] forward failed", sent.error);
+    await recordSarahSendFailure("member relay", sent.error ?? "unknown Telegram error");
     return false;
   }
+  await clearSarahSendFailure();
 
   const sarahMessageId = (sent.result as { message_id?: number } | undefined)?.message_id;
   const { error } = await supabaseAdmin.from("support_messages").insert({
@@ -172,7 +246,6 @@ export async function relayFromSarah(
   const memberId = data?.member_telegram_id;
   if (!memberId) return false;
 
-
   const sent = await sendMessage(memberId, `💬 <b>Sarah:</b>\n\n${text}`, [
     [{ text: "✖️ End chat", callback_data: "sarah:end" }],
   ]);
@@ -207,16 +280,17 @@ export async function alertMissedMessage(
     .maybeSingle();
   if (data?.missed_alert_sent) return;
 
-  const relayed = await relayToSarah(member, `❓ <i>No keyword matched:</i>\n\n${escapeHtml(text)}`);
+  const relayed = await relayToSarah(
+    member,
+    `❓ <i>No keyword matched:</i>\n\n${escapeHtml(text)}`,
+  );
   if (!relayed) return;
 
-  const { error } = await supabaseAdmin
-    .from("bot_users")
-    .upsert({
-      telegram_id: member.telegramId,
-      missed_alert_sent: true,
-      updated_at: new Date().toISOString(),
-    });
+  const { error } = await supabaseAdmin.from("bot_users").upsert({
+    telegram_id: member.telegramId,
+    missed_alert_sent: true,
+    updated_at: new Date().toISOString(),
+  });
   if (error) console.error("[sarah] missed alert flag failed", error);
 }
 
@@ -249,7 +323,10 @@ export async function requestPurchase(
   product: string,
   plan: string,
 ): Promise<void> {
-  await relayToSarah(member, `🛒 <b>Purchase request</b> — <code>${escapeHtml(product)}</code> · ${escapeHtml(plan)}`);
+  await relayToSarah(
+    member,
+    `🛒 <b>Purchase request</b> — <code>${escapeHtml(product)}</code> · ${escapeHtml(plan)}`,
+  );
   await sendMessage(
     member.telegramId,
     `🛒 Noted: <b>${escapeHtml(product.replace(/_/g, " "))}</b> (${escapeHtml(plan)}). Sarah will send you the payment details right here — tap below if you'd like to add anything.`,
@@ -271,14 +348,19 @@ export async function relayWebToSarah(
   text: string,
 ): Promise<boolean> {
   const sarahChatId = await getSarahChatId();
-  if (!sarahChatId) return false;
+  if (!sarahChatId) {
+    await recordSarahSendFailure("website chat", "Sarah's chat id is not registered.");
+    return false;
+  }
 
   const header = `🌐 <b>${escapeHtml(visitorName)}</b> · website chat`;
   const sent = await sendMessage(sarahChatId, `${header}\n\n${escapeHtml(text)}`);
   if (!sent.ok) {
     console.error("[sarah] website forward failed", sent.error);
+    await recordSarahSendFailure("website chat", sent.error ?? "unknown Telegram error");
     return false;
   }
+  await clearSarahSendFailure();
 
   const sarahMessageId = (sent.result as { message_id?: number } | undefined)?.message_id;
   const { error } = await supabaseAdmin.from("support_messages").insert({

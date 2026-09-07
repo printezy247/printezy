@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { getEventSummary, getCampaignEngagement, type CampaignEngagementRow } from "@/lib/analytics.functions";
+import { getSupportInboxHealth, type SupportInboxHealth } from "@/lib/admin.functions";
 import { AdminGate } from "@/components/AdminGate";
 
 export const Route = createFileRoute("/_authenticated/site-analytics")({
@@ -23,6 +24,80 @@ export const Route = createFileRoute("/_authenticated/site-analytics")({
 });
 
 type SummaryRow = { event_type: string; event_name: string; total: number };
+
+/**
+ * Every notice the site sends Sarah goes to one Telegram chat. A wrong chat id
+ * fails silently, so this is the readout that makes it impossible to miss.
+ */
+function SupportInboxCard() {
+  const load = useServerFn(getSupportInboxHealth);
+  const [health, setHealth] = useState<SupportInboxHealth | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void load({ data: undefined })
+      .then((h) => {
+        if (active) setHealth(h);
+      })
+      .catch(() => {
+        // The card is a diagnostic; it must never break the page.
+      });
+    return () => {
+      active = false;
+    };
+  }, [load]);
+
+  if (!health) return null;
+
+  if (health.ok) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Support inbox reachable — Telegram chat <span className="font-mono">{health.chatId}</span>.
+      </p>
+    );
+  }
+
+  return (
+    <section className="rounded-xl border border-destructive/50 bg-destructive/5 p-5">
+      <h2 className="text-lg font-semibold text-destructive">Support inbox is not delivering</h2>
+      <p className="mt-2 text-sm text-body">
+        Messages to Sarah are failing, so ebook approval requests, website chat relays and purchase
+        notices are not reaching her. Visitors are being shown a direct Telegram link instead.
+      </p>
+      <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+        <div>
+          <dt className="text-xs uppercase tracking-wide text-muted-foreground">Chat id in use</dt>
+          <dd className="font-mono">{health.chatId ?? "not registered"}</dd>
+        </div>
+        {health.source ? (
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">Failing send</dt>
+            <dd>{health.source}</dd>
+          </div>
+        ) : null}
+        {health.failedAt ? (
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">Last failure</dt>
+            <dd>{new Date(health.failedAt).toLocaleString()}</dd>
+          </div>
+        ) : null}
+        {health.detail ? (
+          <div className="sm:col-span-2">
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">Telegram said</dt>
+            <dd className="font-mono text-xs break-words">{health.detail}</dd>
+          </div>
+        ) : null}
+      </dl>
+      <p className="mt-4 text-sm text-muted-foreground">
+        Usual cause is a wrong chat id. Compare the value above with{" "}
+        <span className="font-mono">bot_users.telegram_id</span> for{" "}
+        <span className="font-mono">ezysarah</span>, which Telegram itself wrote, and correct{" "}
+        <span className="font-mono">support_config.sarah_chat_id</span> to match. The next
+        successful send clears this card.
+      </p>
+    </section>
+  );
+}
 
 const SCROLL_STEPS = ["scroll_25", "scroll_50", "scroll_75", "scroll_90"];
 const ENGAGEMENT_EVENTS = ["engaged_15s", "engaged_scroll"];
@@ -92,6 +167,8 @@ function SiteAnalyticsPage() {
             ))}
           </div>
         </header>
+
+        <SupportInboxCard />
 
         {error && <p className="text-sm text-destructive">{error}</p>}
         {!rows && !error && <p className="text-sm text-muted-foreground">Loading…</p>}

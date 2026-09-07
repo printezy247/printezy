@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getEbook } from "@/lib/ebooks";
 import { escapeHtml, sendMessage } from "./telegram.server";
-import { getSarahChatId } from "./sarah.server";
+import { clearSarahSendFailure, getSarahChatId, recordSarahSendFailure } from "./sarah.server";
 
 type ClaimNotice = {
   claimId: string;
@@ -14,11 +14,17 @@ type ClaimNotice = {
 /**
  * Website and bot don't share data, and a self-reported Vantage account is
  * not itself proof — Sarah checks it and approves from Telegram before the
- * download unlocks. Callers await this but never let it fail the claim.
+ * download unlocks. Callers await this but never let it fail the claim, so the
+ * return value is how they find out: `false` means the claim is saved but
+ * nobody has been told, and the visitor is shown a direct Telegram link
+ * instead of "Sarah will review this shortly".
  */
-export async function notifyVantageClaim(notice: ClaimNotice): Promise<void> {
+export async function notifyVantageClaim(notice: ClaimNotice): Promise<boolean> {
   const sarah = await getSarahChatId();
-  if (!sarah) return;
+  if (!sarah) {
+    await recordSarahSendFailure("ebook claim", "Sarah's chat id is not registered.");
+    return false;
+  }
 
   const book = getEbook(notice.slug);
   const lines = [
@@ -29,9 +35,16 @@ export async function notifyVantageClaim(notice: ClaimNotice): Promise<void> {
     `Vantage account: ${escapeHtml(notice.vantageAccount)}`,
   ];
 
-  await sendMessage(sarah, lines.join("\n"), [
+  const sent = await sendMessage(sarah, lines.join("\n"), [
     [{ text: "✅ Approve download", callback_data: `ebook:approve:${notice.claimId}` }],
   ]);
+  if (!sent.ok) {
+    console.error("[ebook-claims] approval notice failed", sent.error);
+    await recordSarahSendFailure("ebook claim", sent.error ?? "unknown Telegram error");
+    return false;
+  }
+  await clearSarahSendFailure();
+  return true;
 }
 
 /** Sarah tapped Approve — unlock the download for that claim. */

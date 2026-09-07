@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Loader2, Download, LogIn, ShieldCheck, X, Clock, Mail } from "lucide-react";
+import { Loader2, Download, LogIn, ShieldCheck, X, Clock, Mail, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyEbookClaims, claimEbook, getEbookDownloadUrl } from "@/lib/ebook-claims.functions";
 import { getMyProfile } from "@/lib/profile.functions";
@@ -42,6 +42,10 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const [links, setLinks] = useState<{ downloadUrl: string; readUrl: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pulse, setPulse] = useState(0);
+  // False only when the claim saved but the Telegram notice to Sarah did not
+  // go out. Existing pending claims were already announced, so they default to
+  // true rather than nagging about a send that happened days ago.
+  const [notified, setNotified] = useState(true);
 
   const [fullName, setFullName] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
@@ -168,9 +172,16 @@ export function EbookClaimModal({ slug, onClose }: Props) {
           : { slug },
       });
       if (result.status === "pending") {
+        const reached = result.notified !== false;
+        setNotified(reached);
         setGate("pending_review");
-        toast.success("Submitted — Sarah will review and approve it shortly.");
-        goTrack(`ebook_claim_pending_${slug}`);
+        if (reached) {
+          toast.success("Submitted — Sarah will review and approve it shortly.");
+          goTrack(`ebook_claim_pending_${slug}`);
+        } else {
+          toast.success("Submitted — message Sarah on Telegram to speed it up.");
+          goTrack(`ebook_claim_pending_unnotified_${slug}`);
+        }
         return;
       }
       await unlock();
@@ -376,13 +387,32 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               </div>
             ) : null}
 
-            {gate === "pending_review" ? (
+            {gate === "pending_review" && notified ? (
               <div className="flex flex-col items-center gap-2 py-4 text-center">
                 <Clock className="h-6 w-6 text-accent" />
                 <p className="text-sm text-body">
                   Submitted — Sarah checks your Vantage account and approves it, usually within a
                   few hours. Come back to this page once approved and the download will be here.
                 </p>
+              </div>
+            ) : null}
+
+            {gate === "pending_review" && !notified ? (
+              <div className="flex flex-col items-center gap-3 py-4 text-center">
+                <AlertTriangle className="h-6 w-6 text-accent" />
+                <p className="text-sm text-body">
+                  Your details are saved, but we could not reach Sarah automatically just now.
+                  Send her a quick message and she will approve it from there.
+                </p>
+                <a
+                  href="https://t.me/ezysarah"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => goTrack(`ebook_claim_telegram_fallback_${slug}`)}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[rgba(201,161,58,0.45)] px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/10"
+                >
+                  Message Sarah on Telegram
+                </a>
               </div>
             ) : null}
 
