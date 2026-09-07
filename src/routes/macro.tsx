@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
@@ -21,6 +21,7 @@ import {
   type FearGreed,
   type MacroDesk,
   type MacroFilter,
+  type CalendarRow,
   type Stance,
   type TrendCard,
 } from "@/lib/macro-desk";
@@ -28,6 +29,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getEconomicCalendar, type EconomicCalendar } from "@/lib/macro-calendar.functions";
 import { getMacroLive, type MacroLive } from "@/lib/macro-live.functions";
 import { formatLocalTime } from "@/lib/local-time";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
@@ -103,6 +105,86 @@ function Card({
 }
 
 const mono = "font-mono text-[13px] tracking-tight tabular-nums";
+
+const CAL_ROW_H = 56;
+const CAL_VISIBLE = 3;
+const CAL_STEP_MS = 3600;
+const CAL_SLIDE_MS = 600;
+
+/**
+ * A weekday can carry eighty releases. Three at a time in a viewport that
+ * rolls on its own keeps the card short without hiding any of them, and drops
+ * the sideways scroll the old five-column table needed to fit.
+ */
+function CalendarRoll({
+  rows,
+  renderRow,
+}: {
+  rows: CalendarRow[];
+  renderRow: (row: CalendarRow, key: string) => ReactNode;
+}) {
+  const reducedMotion = usePrefersReducedMotion();
+  const [index, setIndex] = useState(0);
+  const [animate, setAnimate] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const rolls = rows.length > CAL_VISIBLE && !reducedMotion;
+  const snapping = useRef(false);
+
+  useEffect(() => {
+    setIndex(0);
+  }, [rows]);
+
+  useEffect(() => {
+    if (!rolls || paused) return;
+    const timer = setInterval(() => setIndex((i) => i + 1), CAL_STEP_MS);
+    return () => clearInterval(timer);
+  }, [rolls, paused]);
+
+  // The list ends with a copy of its own first rows, so the last step slides
+  // onto that copy and then jumps back to the real top with the transition
+  // off — the seam is invisible instead of rewinding the whole list.
+  useEffect(() => {
+    if (index < rows.length || snapping.current) return;
+    snapping.current = true;
+    const timer = setTimeout(() => {
+      setAnimate(false);
+      setIndex(0);
+    }, CAL_SLIDE_MS);
+    return () => clearTimeout(timer);
+  }, [index, rows.length]);
+
+  useEffect(() => {
+    if (animate) return;
+    const raf = requestAnimationFrame(() => {
+      setAnimate(true);
+      snapping.current = false;
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [animate]);
+
+  if (!rolls) return <div>{rows.map((r, i) => renderRow(r, `row-${i}`))}</div>;
+
+  const loop = [...rows, ...rows.slice(0, CAL_VISIBLE)];
+  return (
+    <div
+      className="overflow-hidden"
+      style={{ height: CAL_VISIBLE * CAL_ROW_H }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div
+        style={{
+          transform: `translateY(-${index * CAL_ROW_H}px)`,
+          transition: animate ? `transform ${CAL_SLIDE_MS}ms ease` : "none",
+        }}
+      >
+        {loop.map((r, i) => renderRow(r, `row-${i}`))}
+      </div>
+    </div>
+  );
+}
 
 /**
  * Rendered bars replace the monospace gauges: only the fill / marker carries
@@ -549,43 +631,59 @@ export function MacroPage() {
                   </div>
                 }
               >
-                <div className="overflow-x-auto">
-                  <div
-                    className="grid min-w-[520px] gap-x-3 text-left text-sm"
-                    style={{ gridTemplateColumns: "56px 52px minmax(0, 1fr) 78px 78px" }}
-                  >
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_time")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_ccy")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_event")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_forecast")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_previous")}</div>
-                    {cal?.rows.map((r) => (
-                      <Fragment key={`${r.nyTime}-${r.currency}-${r.event}`}>
-                        <div className={`border-t border-border py-2.5 ${mono}`}>{clock.toLocal(r.nyTime)}</div>
-                        <div className="border-t border-border py-2.5 font-semibold">{r.currency}</div>
-                        <div className="border-t border-border py-2.5 pr-3">
-                          <span className="inline-flex items-center gap-2">
-                            <span
-                              className="h-2 w-2 shrink-0 rounded-full"
-                              style={{ background: IMPACT_COLOR[r.impact] }}
-                              title={`${r.impact} impact`}
-                            />
-                            {r.event}
-                          </span>
-                        </div>
-                        <div className={`border-t border-border py-2.5 text-right ${mono}`}>{r.forecast}</div>
-                        <div className={`border-t border-border py-2.5 text-right text-muted-foreground ${mono}`}>{r.previous}</div>
-                      </Fragment>
-                    ))}
-                  </div>
-                  {cal === null ? (
-                    <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>
-                  ) : cal.rows.length === 0 ? (
-                    <p className="border-t border-border py-3 text-sm text-muted-foreground">
-                      {t(cal.updatedAt ? "macro_calendar_empty" : "macro_calendar_unavailable")}
-                    </p>
-                  ) : null}
+                <div className="flex items-center gap-2 pb-2 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                  <span className="w-10 shrink-0">{t("macro_col_time")}</span>
+                  <span className="w-12 shrink-0">{t("macro_col_ccy")}</span>
+                  <span className="min-w-0 flex-1">{t("macro_col_event")}</span>
+                  <span className="w-[74px] shrink-0 text-right leading-tight">
+                    <span className="block">{t("macro_col_forecast")}</span>
+                    <span className="block text-[9px] font-semibold normal-case tracking-normal opacity-70">
+                      {t("macro_col_previous")}
+                    </span>
+                  </span>
                 </div>
+                {cal?.rows.length ? (
+                  <CalendarRoll
+                    rows={cal.rows}
+                    renderRow={(r, key) => (
+                      <div
+                        key={key}
+                        className="flex items-center gap-2 border-t border-border"
+                        style={{ height: CAL_ROW_H }}
+                      >
+                        <span className={`w-10 shrink-0 text-xs ${mono}`}>
+                          {clock.toLocal(r.nyTime)}
+                        </span>
+                        <span className="flex w-12 shrink-0 items-center gap-1.5">
+                          <span
+                            className="h-2 w-2 shrink-0 rounded-full"
+                            style={{ background: IMPACT_COLOR[r.impact] }}
+                            title={`${r.impact} impact`}
+                          />
+                          <span className="text-xs font-semibold">{r.currency}</span>
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-sm text-body" title={r.event}>
+                          {r.event}
+                        </span>
+                        <span className="w-[74px] shrink-0 text-right">
+                          <span className="block text-[13px] font-semibold tabular-nums">
+                            {r.forecast}
+                          </span>
+                          <span className="block text-[11px] tabular-nums text-muted-foreground">
+                            {r.previous}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                  />
+                ) : null}
+                {cal === null ? (
+                  <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>
+                ) : cal.rows.length === 0 ? (
+                  <p className="border-t border-border py-3 text-sm text-muted-foreground">
+                    {t(cal.updatedAt ? "macro_calendar_empty" : "macro_calendar_unavailable")}
+                  </p>
+                ) : null}
               </Card>
             ) : null}
 
