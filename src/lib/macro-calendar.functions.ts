@@ -18,6 +18,7 @@ type FeedEvent = {
   country?: string;
   date?: string;
   impact?: string;
+  actual?: string;
   forecast?: string;
   previous?: string;
 };
@@ -106,6 +107,7 @@ export const getEconomicCalendar = createServerFn({ method: "GET" }).handler(
         currency: (e.country ?? "").trim().toUpperCase() || "—",
         event: (e.title ?? "").trim() || "—",
         impact,
+        actual: (e.actual ?? "").trim() || "—",
         forecast: (e.forecast ?? "").trim() || "—",
         previous: (e.previous ?? "").trim() || "—",
       });

@@ -22,6 +22,7 @@ import {
   type MacroDesk,
   type MacroFilter,
   type CalendarRow,
+  type Impact,
   type Stance,
   type TrendCard,
 } from "@/lib/macro-desk";
@@ -106,82 +107,159 @@ function Card({
 
 const mono = "font-mono text-[13px] tracking-tight tabular-nums";
 
-const CAL_ROW_H = 56;
-const CAL_VISIBLE = 3;
+const CAL_VISIBLE = 4;
 const CAL_STEP_MS = 3600;
-const CAL_SLIDE_MS = 600;
+const CAL_RESUME_MS = 9000;
 
 /**
- * A weekday can carry eighty releases. Three at a time in a viewport that
- * rolls on its own keeps the card short without hiding any of them, and drops
- * the sideways scroll the old five-column table needed to fit.
+ * A weekday can carry eighty releases. The list keeps every one of them in a
+ * viewport a few rows tall and scrolls on its own, so the card stays short
+ * without hiding anything.
+ *
+ * The scroll is real, not a transform: the reader can flick through the whole
+ * day whenever they want, and the auto-advance simply steps the same
+ * scrollTop. It backs off the moment they touch it and picks up again once
+ * they have been idle, so the two never fight over the same gesture.
  */
-function CalendarRoll({
-  rows,
-  renderRow,
-}: {
-  rows: CalendarRow[];
-  renderRow: (row: CalendarRow, key: string) => ReactNode;
-}) {
+function CalendarScroller({ children }: { children: ReactNode }) {
   const reducedMotion = usePrefersReducedMotion();
-  const [index, setIndex] = useState(0);
-  const [animate, setAnimate] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const rolls = rows.length > CAL_VISIBLE && !reducedMotion;
-  const snapping = useRef(false);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [rowHeight, setRowHeight] = useState(56);
+  const idleUntil = useRef(0);
 
   useEffect(() => {
-    setIndex(0);
-  }, [rows]);
+    const first = viewportRef.current?.firstElementChild as HTMLElement | null;
+    if (first?.offsetHeight) setRowHeight(first.offsetHeight);
+  }, [children]);
 
   useEffect(() => {
-    if (!rolls || paused) return;
-    const timer = setInterval(() => setIndex((i) => i + 1), CAL_STEP_MS);
+    if (reducedMotion) return;
+    const timer = setInterval(() => {
+      const el = viewportRef.current;
+      if (!el || Date.now() < idleUntil.current) return;
+      const end = el.scrollHeight - el.clientHeight;
+      if (end <= 0) return;
+      const next = el.scrollTop + rowHeight;
+      el.scrollTo({ top: next > end + 1 ? 0 : next, behavior: "smooth" });
+    }, CAL_STEP_MS);
     return () => clearInterval(timer);
-  }, [rolls, paused]);
+  }, [reducedMotion, rowHeight]);
 
-  // The list ends with a copy of its own first rows, so the last step slides
-  // onto that copy and then jumps back to the real top with the transition
-  // off — the seam is invisible instead of rewinding the whole list.
-  useEffect(() => {
-    if (index < rows.length || snapping.current) return;
-    snapping.current = true;
-    const timer = setTimeout(() => {
-      setAnimate(false);
-      setIndex(0);
-    }, CAL_SLIDE_MS);
-    return () => clearTimeout(timer);
-  }, [index, rows.length]);
+  const hold = () => {
+    idleUntil.current = Date.now() + CAL_RESUME_MS;
+  };
 
-  useEffect(() => {
-    if (animate) return;
-    const raf = requestAnimationFrame(() => {
-      setAnimate(true);
-      snapping.current = false;
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [animate]);
-
-  if (!rolls) return <div>{rows.map((r, i) => renderRow(r, `row-${i}`))}</div>;
-
-  const loop = [...rows, ...rows.slice(0, CAL_VISIBLE)];
   return (
     <div
-      className="overflow-hidden"
-      style={{ height: CAL_VISIBLE * CAL_ROW_H }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      ref={viewportRef}
+      // Scrolled by hand as well as on its own, so it needs to be reachable
+      // from the keyboard and announced as its own scrollable region.
+      tabIndex={0}
+      role="group"
+      className="overflow-y-auto overscroll-contain rounded-md outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      style={{ maxHeight: CAL_VISIBLE * rowHeight }}
+      onPointerEnter={hold}
+      onPointerDown={hold}
+      onWheel={hold}
+      onTouchStart={hold}
+      onFocus={hold}
+      onScroll={hold}
     >
-      <div
-        style={{
-          transform: `translateY(-${index * CAL_ROW_H}px)`,
-          transition: animate ? `transform ${CAL_SLIDE_MS}ms ease` : "none",
-        }}
-      >
-        {loop.map((r, i) => renderRow(r, `row-${i}`))}
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Impact and currency filters, the two ForexFactory itself offers. Both start
+ * with everything on, so the card reads the same as before until someone
+ * narrows it. Currencies are drawn from the day's own releases rather than a
+ * fixed list, so the row never offers a code that isn't there.
+ */
+function CalendarFilters({
+  currencies,
+  impacts,
+  onToggleImpact,
+  selected,
+  onToggleCurrency,
+  onReset,
+  shown,
+  total,
+}: {
+  currencies: string[];
+  impacts: Set<Impact>;
+  onToggleImpact: (impact: Impact) => void;
+  selected: Set<string>;
+  onToggleCurrency: (currency: string) => void;
+  onReset: () => void;
+  shown: number;
+  total: number;
+}) {
+  const { t } = useTranslation();
+  const chip = (active: boolean) =>
+    `rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-colors ${
+      active
+        ? "border-primary/50 bg-primary/10 text-primary"
+        : "border-border text-muted-foreground hover:text-foreground"
+    }`;
+  const filtered = shown !== total;
+
+  return (
+    <div className="mb-3 space-y-2 border-b border-border pb-3">
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+          {t("macro_filter_impact")}
+        </span>
+        {(["high", "medium", "low"] as const).map((i) => (
+          <button
+            key={i}
+            type="button"
+            aria-pressed={impacts.has(i)}
+            onClick={() => onToggleImpact(i)}
+            className={`${chip(impacts.has(i))} inline-flex items-center gap-1.5`}
+          >
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ background: IMPACT_COLOR[i], opacity: impacts.has(i) ? 1 : 0.4 }}
+            />
+            {t(`macro_impact_${i}` as TranslationKey)}
+          </button>
+        ))}
       </div>
+
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+          {t("macro_filter_currency")}
+        </span>
+        {currencies.map((c) => (
+          <button
+            key={c}
+            type="button"
+            aria-pressed={selected.has(c)}
+            onClick={() => onToggleCurrency(c)}
+            className={chip(selected.has(c))}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+
+      {filtered ? (
+        <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+          <span>
+            {t("macro_calendar_count")
+              .replace("{shown}", String(shown))
+              .replace("{total}", String(total))}
+          </span>
+          <button
+            type="button"
+            onClick={onReset}
+            className="font-semibold text-primary hover:underline"
+          >
+            {t("macro_filter_reset")}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -512,6 +590,54 @@ export function MacroPage() {
 
   const gold = live?.desk.gold_fear_greed ?? null;
 
+  // Calendar filters. Everything is on until the reader narrows it, so the
+  // card looks untouched by default.
+  const [impactFilter, setImpactFilter] = useState<Set<Impact>>(
+    () => new Set<Impact>(["high", "medium", "low"]),
+  );
+  const [currencyFilter, setCurrencyFilter] = useState<Set<string>>(() => new Set<string>());
+
+  const calCurrencies = useMemo(
+    () => [...new Set((cal?.rows ?? []).map((r) => r.currency))].sort(),
+    [cal],
+  );
+
+  // A fresh day brings its own set of currencies; select them all again rather
+  // than carrying yesterday's picks over and hiding rows for no visible reason.
+  useEffect(() => {
+    setCurrencyFilter(new Set(calCurrencies));
+  }, [calCurrencies]);
+
+  const calRows = useMemo(
+    () =>
+      (cal?.rows ?? []).filter(
+        (r) => impactFilter.has(r.impact) && (currencyFilter.size === 0 || currencyFilter.has(r.currency)),
+      ),
+    [cal, impactFilter, currencyFilter],
+  );
+  const calHasActual = useMemo(() => calRows.some((r) => r.actual !== "—"), [calRows]);
+
+  const toggleImpact = (impact: Impact) =>
+    setImpactFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(impact)) next.delete(impact);
+      else next.add(impact);
+      return next;
+    });
+
+  const toggleCurrency = (currency: string) =>
+    setCurrencyFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(currency)) next.delete(currency);
+      else next.add(currency);
+      return next;
+    });
+
+  const resetCalFilters = () => {
+    setImpactFilter(new Set<Impact>(["high", "medium", "low"]));
+    setCurrencyFilter(new Set(calCurrencies));
+  };
+
   const calDayLabel = useMemo(() => {
     if (!cal?.day) return "";
     return new Date(`${cal.day}T12:00:00`).toLocaleDateString(undefined, {
@@ -631,30 +757,47 @@ export function MacroPage() {
                   </div>
                 }
               >
-                <div className="flex items-center gap-2 pb-2 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                <CalendarFilters
+                  currencies={calCurrencies}
+                  impacts={impactFilter}
+                  onToggleImpact={toggleImpact}
+                  selected={currencyFilter}
+                  onToggleCurrency={toggleCurrency}
+                  onReset={resetCalFilters}
+                  shown={calRows.length}
+                  total={cal?.rows.length ?? 0}
+                />
+
+                {/* 9px with tight tracking so the longest translated headers
+                    ("Iliyotangulia", "Sebelumnya") still land inside the fixed
+                    number columns instead of running into their neighbour. */}
+                <div className="flex items-end gap-1.5 pb-2 text-[9px] font-bold uppercase leading-tight tracking-[0.05em] text-muted-foreground sm:gap-2">
                   <span className="w-10 shrink-0">{t("macro_col_time")}</span>
-                  <span className="w-12 shrink-0">{t("macro_col_ccy")}</span>
+                  <span className="w-11 shrink-0 break-words">{t("macro_col_ccy")}</span>
                   <span className="min-w-0 flex-1">{t("macro_col_event")}</span>
-                  <span className="w-[74px] shrink-0 text-right leading-tight">
-                    <span className="block">{t("macro_col_forecast")}</span>
-                    <span className="block text-[9px] font-semibold normal-case tracking-normal opacity-70">
-                      {t("macro_col_previous")}
+                  {calHasActual ? (
+                    <span className="w-16 shrink-0 break-words text-right">
+                      {t("macro_col_actual")}
                     </span>
+                  ) : null}
+                  <span className="w-16 shrink-0 break-words text-right">
+                    {t("macro_col_forecast")}
+                  </span>
+                  <span className="w-16 shrink-0 break-words text-right">
+                    {t("macro_col_previous")}
                   </span>
                 </div>
-                {cal?.rows.length ? (
-                  <CalendarRoll
-                    rows={cal.rows}
-                    renderRow={(r, key) => (
+                {calRows.length ? (
+                  <CalendarScroller>
+                    {calRows.map((r) => (
                       <div
-                        key={key}
-                        className="flex items-center gap-2 border-t border-border"
-                        style={{ height: CAL_ROW_H }}
+                        key={`${r.nyTime}-${r.currency}-${r.event}`}
+                        className="flex min-h-[3.5rem] items-center gap-1.5 border-t border-border py-2 sm:gap-2"
                       >
                         <span className={`w-10 shrink-0 text-xs ${mono}`}>
                           {clock.toLocal(r.nyTime)}
                         </span>
-                        <span className="flex w-12 shrink-0 items-center gap-1.5">
+                        <span className="flex w-11 shrink-0 items-center gap-1">
                           <span
                             className="h-2 w-2 shrink-0 rounded-full"
                             style={{ background: IMPACT_COLOR[r.impact] }}
@@ -662,20 +805,27 @@ export function MacroPage() {
                           />
                           <span className="text-xs font-semibold">{r.currency}</span>
                         </span>
-                        <span className="min-w-0 flex-1 truncate text-sm text-body" title={r.event}>
+                        <span className="min-w-0 flex-1 text-xs leading-snug text-body sm:text-sm">
                           {r.event}
                         </span>
-                        <span className="w-[74px] shrink-0 text-right">
-                          <span className="block text-[13px] font-semibold tabular-nums">
-                            {r.forecast}
+                        {calHasActual ? (
+                          <span className="w-16 shrink-0 text-right text-xs font-semibold tabular-nums text-foreground sm:text-[13px]">
+                            {r.actual}
                           </span>
-                          <span className="block text-[11px] tabular-nums text-muted-foreground">
-                            {r.previous}
-                          </span>
+                        ) : null}
+                        <span className="w-16 shrink-0 text-right text-xs font-semibold tabular-nums sm:text-[13px]">
+                          {r.forecast}
+                        </span>
+                        <span className="w-16 shrink-0 text-right text-xs tabular-nums text-muted-foreground sm:text-[13px]">
+                          {r.previous}
                         </span>
                       </div>
-                    )}
-                  />
+                    ))}
+                  </CalendarScroller>
+                ) : cal?.rows.length ? (
+                  <p className="border-t border-border py-3 text-sm text-muted-foreground">
+                    {t("macro_calendar_filtered_empty")}
+                  </p>
                 ) : null}
                 {cal === null ? (
                   <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>

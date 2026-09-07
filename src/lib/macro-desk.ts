@@ -55,6 +55,12 @@ export type CalendarRow = {
   currency: string;
   event: string;
   impact: Impact;
+  /**
+   * The released number. ForexFactory's weekly feed is forward-looking and
+   * carries no actuals, so this is "—" today; it is parsed when a feed does
+   * provide it, and the column only appears once some row has one.
+   */
+  actual: string;
   forecast: string;
   previous: string;
 };
