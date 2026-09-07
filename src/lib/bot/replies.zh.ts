@@ -16,7 +16,7 @@ export const ZH: Translation = {
       "我们有几款产品可能很适合你。先看看，告诉我哪一个吸引你 ✨",
       "看你想要什么啦亲。这是我们的产品，从下面挑一个吧。",
     ],
-    buttons: [["🎯 信号套餐"], ["📈 TradingView", "🖥 MT5 工具"]],
+    buttons: [["🎯 signal 套餐"], ["📈 TradingView", "🖥 MT5 工具"]],
   },
   tv_products: {
     match: [
@@ -33,20 +33,22 @@ export const ZH: Translation = {
   tv_lite: {
     match: ["tv lite", "ezymap lite", "tradingview lite", "lite版", "lite 版", "精简版"],
     replies: [
-      "TradingView EzyMap Lite 为你提供 TradingView 上的绘图和结构标注工具，不含实时信号，是更实惠的入门选择。一次付费，终身使用。",
+      "TradingView EzyMap Lite 为你提供 TradingView 上的绘图和结构标注工具，不含实时 signal，是更实惠的入门选择。一次付费，终身使用。",
     ],
     buttons: [["终身 – $49"], ["⬅ 返回"]],
   },
   tv_pro: {
     match: ["tv pro", "ezymap pro", "tradingview pro", "pro版", "pro 版", "专业版"],
     replies: [
-      "TradingView EzyMap Pro 为你提供完整指标，含从 M1 到 H4 的实时信号，如果你已经在 TradingView 上交易，这款非常合适。一次付费，终身使用。",
+      "TradingView EzyMap Pro 为你提供完整 indicator，含从 M1 到 H4 的实时 signal，如果你已经在 TradingView 上交易，这款非常合适。一次付费，终身使用。",
     ],
     buttons: [["终身 – $249"], ["⬅ 返回"]],
   },
   mt5_products: {
     match: ["mt5", "mt5指标", "mt5 指标", "mt5工具", "mt5 工具", "mt5套装", "mt5 套装", "mt5全套"],
-    replies: ["这是我们 MT5 上的全部产品。完整套装包含全部 17 个指标，也可以只选你需要的那一个。"],
+    replies: [
+      "这是我们 MT5 上的全部产品。完整套装包含全部 17 个 indicator，也可以只选你需要的那一个。",
+    ],
     buttons: [
       ["MT5 完整套装（价值 $999）"],
       ["Bulk Close", "Drawdown Guardian"],
@@ -66,13 +68,15 @@ export const ZH: Translation = {
       "full bundle",
     ],
     replies: [
-      "完整套装一次性为你提供全部 17 个 MT5 EzyMap 指标，想要全部功能的话这是最划算的选择。",
+      "完整套装一次性为你提供全部 17 个 MT5 EzyMap indicator，想要全部功能的话这是最划算的选择。",
     ],
     buttons: [["1 个月 – $99"], ["6 个月 – $499"], ["1 年 – $999"], ["🎁 试用 3 天"], ["⬅ 返回"]],
   },
   mt5_bulk_close: {
     match: ["bulk close", "layer close", "批量平仓", "一键平仓", "分层平仓", "部分止盈"],
-    replies: ["Bulk Close 让你快速在任意数量的分层仓位上部分止盈平仓。我们的销量冠军，名副其实。"],
+    replies: [
+      "Bulk Close 让你快速在任意数量的分层仓位上部分 take profit 平仓。我们的销量冠军，名副其实。",
+    ],
     buttons: [["1 个月 – $19"], ["6 个月 – $109"], ["1 年 – $199"], ["🎁 试用 3 天"], ["⬅ 返回"]],
   },
   mt5_drawdown_guardian: {
@@ -87,7 +91,7 @@ export const ZH: Translation = {
       "考核",
     ],
     replies: [
-      "Drawdown Guardian 随时提醒你当前的回撤情况，让你不会在 prop firm 考核中被淘汰。深受我们 prop firm 交易者的喜爱。",
+      "Drawdown Guardian 随时提醒你当前的 drawdown 情况，让你不会在 prop firm 考核中被淘汰。深受我们 prop firm 交易者的喜爱。",
     ],
     buttons: [["1 个月 – $9"], ["6 个月 – $49"], ["1 年 – $99"], ["🎁 试用 3 天"], ["⬅ 返回"]],
   },
@@ -150,7 +154,7 @@ export const ZH: Translation = {
       "elite circle",
     ],
     replies: [
-      "我们的交易合作经纪商是 Vantage Markets，Jack 用了他们好多年，出金快、执行也快。在他的 IB 下开户还能解锁免费福利：电子书、信号、指标，具体看你的等级，无需额外付费。",
+      "我们的交易合作经纪商是 Vantage Markets，Jack 用了他们好多年，出金快、执行也快。在他的 IB 下开户还能解锁免费福利：电子书、signal、indicator，具体看你的等级，无需额外付费。",
     ],
     buttons: [
       ["🎁 查看套餐"],
@@ -179,7 +183,7 @@ export const ZH: Translation = {
   faq_free: {
     match: ["加入免费吗", "免费的吗", "真的免费吗", "免费加入", "是免费的吗", "要收费吗"],
     replies: [
-      "是的！Free 等级和 30 天 Vantage 试用完全免费 —— 试用只需要在 Jack 的 IB 下开一个 Vantage Markets 账户。只有付费套餐（Pro $49、Premium $99、Elite $299）和 EzyMap 指标才需要付费。",
+      "是的！Free 等级和 30 天 Vantage 试用完全免费 —— 试用只需要在 Jack 的 IB 下开一个 Vantage Markets 账户。只有付费套餐（Pro $49、Premium $99、Elite $299）和 EzyMap indicator 才需要付费。",
     ],
     buttons: [["🎁 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -193,7 +197,7 @@ export const ZH: Translation = {
       "区别",
     ],
     replies: [
-      "Free 等级和 Vantage 试用是根据你在 Jack 的 IB 下的经纪商账户状态解锁的。Pro、Premium 和 Elite 是付费会员，包含完整的交易流程和信号推送。EzyMap 指标（TradingView / MT5）是单独的一次性购买产品。",
+      "Free 等级和 Vantage 试用是根据你在 Jack 的 IB 下的经纪商账户状态解锁的。Pro、Premium 和 Elite 是付费会员，包含完整的交易流程和 signal 推送。EzyMap indicator（TradingView / MT5）是单独的一次性购买产品。",
     ],
     buttons: [["⬅ 返回常见问题"]],
   },
@@ -215,7 +219,7 @@ export const ZH: Translation = {
       "elite福利",
     ],
     replies: [
-      "包含 Premium 的全部内容，再加上完整的 EzyMap MT5 指标套装（Drawdown Guardian、Bulk Close 含 Layer Close、Auto TPSL 等），以及 Ezy Elite Circle，可获得 Jack 的一对一支持。",
+      "包含 Premium 的全部内容，再加上完整的 EzyMap MT5 indicator 套装（Drawdown Guardian、Bulk Close 含 Layer Close、Auto TPSL 等），以及 Ezy Elite Circle，可获得 Jack 的一对一支持。",
     ],
     buttons: [["🎁 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -245,7 +249,7 @@ export const ZH: Translation = {
   faq_how_to_pay: {
     match: ["怎么付款", "如何付款", "怎么支付", "支付方式", "付款方式", "指标怎么付款", "怎么买"],
     replies: [
-      "套餐通过机器人发给你的安全结账链接用银行卡支付 —— 付款到账后权限会自动开通。EzyMap 指标的话，告诉我你要哪一款，Sarah 会在这里把付款信息发给你。",
+      "套餐通过机器人发给你的安全结账链接用银行卡支付 —— 付款到账后权限会自动开通。EzyMap indicator 的话，告诉我你要哪一款，Sarah 会在这里把付款信息发给你。",
     ],
     buttons: [["🎯 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -264,7 +268,7 @@ export const ZH: Translation = {
       "没有tradingview",
     ],
     replies: [
-      "TradingView EzyMap 指标（Lite/Pro）需要一个免费或付费的 TradingView 账户。MT5 套装和单个指标（Drawdown Guardian、Bulk Close、Auto TPSL、Currency Strength Meter、MTF Bias）则在 MT5 上运行，这些不需要 TradingView。",
+      "TradingView EzyMap indicator（Lite/Pro）需要一个免费或付费的 TradingView 账户。MT5 套装和单个 indicator（Drawdown Guardian、Bulk Close、Auto TPSL、Currency Strength Meter、MTF Bias）则在 MT5 上运行，这些不需要 TradingView。",
     ],
     buttons: [["📊 免费获取 TradingView"], ["⬅ 返回常见问题"]],
   },

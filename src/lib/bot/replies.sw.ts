@@ -76,7 +76,7 @@ export const SW: Translation = {
       "kiashiria kamili",
     ],
     replies: [
-      "TradingView EzyMap Pro inakupa kiashiria kamili chenye live signals kuanzia M1 hadi H4, inafaa sana kama tayari unafanya trading kwenye TradingView. Lipa mara moja tu, utumie maisha yote.",
+      "TradingView EzyMap Pro inakupa indicator kamili chenye live signals kuanzia M1 hadi H4, inafaa sana kama tayari unafanya trading kwenye TradingView. Lipa mara moja tu, utumie maisha yote.",
     ],
     buttons: [["Maisha Yote – $249"], ["⬅ Rudi"]],
   },
@@ -92,7 +92,7 @@ export const SW: Translation = {
       "kifurushi cha mt5",
     ],
     replies: [
-      "Hivi ndivyo vyote tulivyo navyo kwa MT5. Bundle kamili inajumuisha viashiria vyote 17, au chagua kimoja tu unachohitaji.",
+      "Hivi ndivyo vyote tulivyo navyo kwa MT5. Bundle kamili inajumuisha indicators vyote 17, au chagua kimoja tu unachohitaji.",
     ],
     buttons: [
       ["MT5 Bundle Kamili (thamani $999)"],
@@ -113,7 +113,7 @@ export const SW: Translation = {
       "viashiria vyote vya mt5",
     ],
     replies: [
-      "Bundle kamili inakupa viashiria vyote 17 vya MT5 EzyMap kwa mara moja, thamani bora zaidi kama unataka kila kitu.",
+      "Bundle kamili inakupa indicators vyote 17 vya MT5 EzyMap kwa mara moja, thamani bora zaidi kama unataka kila kitu.",
     ],
     buttons: [
       ["Mwezi 1 – $99"],
@@ -242,7 +242,7 @@ export const SW: Translation = {
       "ebook ya bure",
     ],
     replies: [
-      "Tunashirikiana na Vantage Markets kwa trading, Jack amewatumia kwa miaka mingi kwa sababu ya withdrawals za haraka na executions za haraka. Kufungua akaunti chini ya IB yake kunafungua pia faida za bure: ebooks, signals, viashiria, kulingana na tier yako, bila malipo ya ziada.",
+      "Tunashirikiana na Vantage Markets kwa trading, Jack amewatumia kwa miaka mingi kwa sababu ya withdrawals za haraka na executions za haraka. Kufungua akaunti chini ya IB yake kunafungua pia faida za bure: ebooks, signals, indicators, kulingana na tier yako, bila malipo ya ziada.",
     ],
     buttons: [
       ["🎁 Angalia Vifurushi"],
@@ -287,7 +287,7 @@ export const SW: Translation = {
       "inalipiwa",
     ],
     replies: [
-      "Ndiyo! Tier ya Free na Vantage Trial ya siku 30 hazigharimu chochote — trial inahitaji tu akaunti chini ya IB ya Jack kwenye Vantage Markets. Vifurushi vya kulipia (Pro $49, Premium $99, Elite $299) na viashiria vya EzyMap ndivyo pekee unavyolipia.",
+      "Ndiyo! Tier ya Free na Vantage Trial ya siku 30 hazigharimu chochote — trial inahitaji tu akaunti chini ya IB ya Jack kwenye Vantage Markets. Vifurushi vya kulipia (Pro $49, Premium $99, Elite $299) na indicators vya EzyMap ndivyo pekee unavyolipia.",
     ],
     buttons: [["🎁 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -301,7 +301,7 @@ export const SW: Translation = {
       "bure na kulipia",
     ],
     replies: [
-      "Tier ya Free na Vantage Trial hufunguliwa kutokana na hali ya akaunti yako ya broker chini ya IB ya Jack. Pro, Premium na Elite ni uanachama wa kulipia wenye routines kamili na mtiririko wa signals. Viashiria vya EzyMap (TradingView / MT5) ni bidhaa tofauti za kulipia mara moja.",
+      "Tier ya Free na Vantage Trial hufunguliwa kutokana na hali ya akaunti yako ya broker chini ya IB ya Jack. Pro, Premium na Elite ni uanachama wa kulipia wenye routines kamili na mtiririko wa signals. indicators vya EzyMap (TradingView / MT5) ni bidhaa tofauti za kulipia mara moja.",
     ],
     buttons: [["⬅ Rudi kwa Maswali"]],
   },
@@ -329,7 +329,7 @@ export const SW: Translation = {
       "pakiti ya elite",
     ],
     replies: [
-      "Kila kitu kilicho kwenye Premium, pamoja na seti kamili ya viashiria vya EzyMap MT5 (Drawdown Guardian, Bulk Close yenye Layer Close, Auto TPSL, na zaidi), na Ezy Elite Circle yenye msaada wa 1-on-1 kutoka kwa Jack.",
+      "Kila kitu kilicho kwenye Premium, pamoja na seti kamili ya indicators vya EzyMap MT5 (Drawdown Guardian, Bulk Close yenye Layer Close, Auto TPSL, na zaidi), na Ezy Elite Circle yenye msaada wa 1-on-1 kutoka kwa Jack.",
     ],
     buttons: [["🎁 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -375,7 +375,7 @@ export const SW: Translation = {
       "malipo",
     ],
     replies: [
-      "Vifurushi hulipiwa kwa kadi kupitia link salama ya checkout ambayo bot itakutumia — ufikiaji hufunguliwa wenyewe mara malipo yanapokamilika. Kwa viashiria vya EzyMap, niambie unataka kipi na Sarah atakutumia maelezo ya malipo hapa hapa.",
+      "Vifurushi hulipiwa kwa kadi kupitia link salama ya checkout ambayo bot itakutumia — ufikiaji hufunguliwa wenyewe mara malipo yanapokamilika. Kwa indicators vya EzyMap, niambie unataka kipi na Sarah atakutumia maelezo ya malipo hapa hapa.",
     ],
     buttons: [["🎯 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -404,7 +404,7 @@ export const SW: Translation = {
       "sina tradingview",
     ],
     replies: [
-      "Viashiria vya TradingView EzyMap (Lite/Pro) vinahitaji akaunti ya TradingView ya bure au ya kulipia. Bundle ya MT5 na viashiria vya mmoja mmoja (Drawdown Guardian, Bulk Close, Auto TPSL, Currency Strength Meter, MTF Bias) vinafanya kazi kwenye MT5 badala yake, hivyo havihitaji TradingView.",
+      "Indicators vya TradingView EzyMap (Lite/Pro) vinahitaji akaunti ya TradingView ya bure au ya kulipia. Bundle ya MT5 na indicators vya mmoja mmoja (Drawdown Guardian, Bulk Close, Auto TPSL, Currency Strength Meter, MTF Bias) vinafanya kazi kwenye MT5 badala yake, hivyo havihitaji TradingView.",
     ],
     buttons: [["📊 Pata TradingView BURE"], ["⬅ Rudi kwa Maswali"]],
   },
