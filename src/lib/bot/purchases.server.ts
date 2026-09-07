@@ -135,7 +135,14 @@ export async function recordSitePurchase(
   }
 
   await notifySarah(meta, session.amount_total ?? 0, session.currency ?? "usd");
-  if (userId) void notifyReferralConversion(userId, meta.sku ?? "unknown");
+  if (userId) {
+    // Awaited: an un-awaited send is dropped when the worker finishes the request.
+    try {
+      await notifyReferralConversion(userId, meta.sku ?? "unknown");
+    } catch (err) {
+      console.error("[purchases] referral notice failed", err);
+    }
+  }
   return true;
 }
 

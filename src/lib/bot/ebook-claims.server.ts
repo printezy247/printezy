@@ -14,7 +14,7 @@ type ClaimNotice = {
 /**
  * Website and bot don't share data, and a self-reported Vantage account is
  * not itself proof — Sarah checks it and approves from Telegram before the
- * download unlocks. Fire-and-forget; never blocks or fails the claim.
+ * download unlocks. Callers await this but never let it fail the claim.
  */
 export async function notifyVantageClaim(notice: ClaimNotice): Promise<void> {
   const sarah = await getSarahChatId();
