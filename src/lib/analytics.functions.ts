@@ -60,12 +60,8 @@ export const getEventSummary = createServerFn({ method: "POST" })
   .inputValidator(summarySchema)
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
-    if (isAdmin !== true) throw new Error("Admin access required.");
+    const { assertAdmin } = await import("@/lib/admin-check.server");
+    await assertAdmin(context.userId);
 
     const { data: rows, error } = await supabaseAdmin.rpc("analytics_summary", {
       p_days: data.days,
@@ -97,12 +93,8 @@ export const getCampaignEngagement = createServerFn({ method: "POST" })
   .inputValidator(summarySchema)
   .handler(async ({ data, context }): Promise<{ rows: CampaignEngagementRow[] }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
-    if (isAdmin !== true) throw new Error("Admin access required.");
+    const { assertAdmin } = await import("@/lib/admin-check.server");
+    await assertAdmin(context.userId);
 
     const since = new Date(Date.now() - data.days * 24 * 60 * 60 * 1000).toISOString();
 
