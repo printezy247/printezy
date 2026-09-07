@@ -76,6 +76,26 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
     };
   }, [inCard]);
 
+  // The TradingView and MT5 cards are shorter than this form, so the panel has
+  // to spill past them. Sibling cards would paint over that spill the moment
+  // the pointer sits on this one, because .card-lift's transform turns the
+  // hovered card into its own stacking context and traps the panel inside it.
+  // Raising the whole card for as long as the form is open settles the order
+  // regardless of where the pointer happens to be.
+  useEffect(() => {
+    if (!inCard) return;
+    const card = dialogRef.current?.closest<HTMLElement>("article");
+    if (!card) return;
+    const prevZ = card.style.zIndex;
+    const prevPos = card.style.position;
+    card.style.zIndex = "40";
+    if (getComputedStyle(card).position === "static") card.style.position = "relative";
+    return () => {
+      card.style.zIndex = prevZ;
+      card.style.position = prevPos;
+    };
+  }, [inCard]);
+
   // Focus trap + Escape to close; focus returns to the trigger on close via onClose.
   useEffect(() => {
     closeBtnRef.current?.focus();
@@ -227,8 +247,9 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
         initial={reducedMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.18 } }}
         exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.12 } }}
-        className="absolute inset-0 z-40 flex items-center justify-center bg-background/95 p-3"
+        className="absolute inset-0 z-40"
       >
+        <div className="absolute inset-0 rounded-xl bg-background/95" aria-hidden="true" />
         <motion.div
           ref={dialogRef}
           role="dialog"
@@ -240,7 +261,7 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
             scale: !reducedMotion && pulse ? [1, 1.02, 1] : 1,
             transition: { duration: reducedMotion ? 0 : 0.18, ease: "easeOut" },
           }}
-          className="relative max-h-full w-full overflow-y-auto rounded-xl border border-primary/25 bg-background p-4 shadow-elevated"
+          className="absolute left-1/2 top-1/2 max-h-[85vh] w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-primary/25 bg-background p-4 shadow-elevated"
         >
           <div className="bg-green absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
           {closeButton}
