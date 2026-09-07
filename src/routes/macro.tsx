@@ -342,12 +342,27 @@ function FillBar({
   percent,
   color,
   height = 6,
+  live = false,
 }: {
   percent: number;
   color: string;
   height?: number;
+  /** Runs a light along the fill — for the two gauges that read as live. */
+  live?: boolean;
 }) {
   const pct = Math.max(0, Math.min(100, percent));
+  const reducedMotion = usePrefersReducedMotion();
+
+  // Draw the fill in from empty on the first paint, so the bar arrives by
+  // running up the scale rather than appearing at its answer. One frame is
+  // enough to have the transition pick the change up.
+  const [drawn, setDrawn] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setDrawn(true));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  const width = drawn || reducedMotion ? pct : 0;
+
   return (
     <div
       role="meter"
@@ -358,9 +373,11 @@ function FillBar({
       style={{ height, backgroundColor: GAUGE_TRACK }}
     >
       <div
-        className="h-full rounded-full transition-[width] duration-500 ease-out"
+        className={`h-full rounded-full transition-[width] duration-700 ease-out ${
+          live ? "fg-live" : ""
+        }`}
         style={{
-          width: `${pct}%`,
+          width: `${width}%`,
           backgroundColor: color,
           boxShadow: `0 0 0 1px ${color}33`,
         }}
@@ -1078,7 +1095,7 @@ export function MacroPage() {
                   ) : null}
                 </p>
                 <div className="mt-3">
-                  <FillBar percent={gold.score} color="#c9a13a" height={8} />
+                  <FillBar percent={gold.score} color="#c9a13a" height={8} live />
                   <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     <span>{t("macro_fear_label")}</span>
                     <span>{t("macro_greed_label")}</span>
@@ -1102,7 +1119,7 @@ export function MacroPage() {
               </p>
               <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? t("macro_loading")}</p>
               <div className="mt-3">
-                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} />
+                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} live />
                 <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   <span>{t("macro_fear_label")}</span>
                   <span>{t("macro_greed_label")}</span>
