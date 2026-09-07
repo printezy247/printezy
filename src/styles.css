@@ -525,3 +525,57 @@
     animation: none;
   }
 }
+
+/* Fear & Greed gauge: a band of light that runs along the filled part of the
+   bar, in the same direction the scale reads — fear on the near end, greed on
+   the far one — so the sweep tracks the way the score is meant to be read.
+   It sweeps for the first half of the cycle and rests for the rest, which
+   keeps a permanently-on-screen card from twitching. */
+.fg-live {
+  position: relative;
+  overflow: hidden;
+}
+.fg-live::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 32%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: fg-sweep 2800ms cubic-bezier(0.4, 0, 0.5, 1) infinite;
+}
+@keyframes fg-sweep {
+  0% {
+    transform: translateX(-130%);
+  }
+  55%,
+  100% {
+    transform: translateX(420%);
+  }
+}
+/* In Arabic the bar fills from the right, so the light has to run that way
+   too — otherwise it would sweep away from greed instead of towards it. */
+[dir="rtl"] .fg-live::after {
+  animation-name: fg-sweep-rtl;
+}
+@keyframes fg-sweep-rtl {
+  0% {
+    transform: translateX(130%);
+  }
+  55%,
+  100% {
+    transform: translateX(-420%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fg-live::after {
+    animation: none;
+    opacity: 0;
+  }
+}
