@@ -19,7 +19,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Props = { sku: string; onClose: () => void };
+type Props = {
+  sku: string;
+  onClose: () => void;
+  /**
+   * Open the details step inside the card the button lives in, rather than as
+   * a centred overlay. The card must be `relative`; the panel covers it. The
+   * Stripe step always goes centred — a card column is too narrow for it.
+   */
+  inline?: boolean;
+};
 type Step = "details" | "checkout";
 
 const inputClass =
@@ -30,13 +39,15 @@ const inputClass =
  * into the Stripe step inside the same dialog — no modal stacked on a
  * modal. Guest checkout — no account required up front.
  */
-export function EnrollModal({ sku, onClose }: Props) {
+export function EnrollModal({ sku, onClose, inline = false }: Props) {
   const item = getCatalogItem(sku);
   const requireMt5 = item?.group === "mt5";
   const checkout = useServerFn(createCheckout);
   const reducedMotion = usePrefersReducedMotion();
 
   const [step, setStep] = useState<Step>("details");
+  // Only the details step sits in the card; payment needs the full width.
+  const inCard = inline && step === "details";
   const [fullName, setFullName] = useState("");
   const [telegramUsername, setTelegramUsername] = useState("");
   const [experienceLevel, setExperienceLevel] = useState("");
@@ -54,14 +65,16 @@ export function EnrollModal({ sku, onClose }: Props) {
   // Body scroll lock while the dialog is open, and a signal other
   // proactive popups (e.g. EbookAutoPopup) check to stay suppressed.
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     document.body.setAttribute("data-checkout-open", "true");
+    // An in-card panel leaves the rest of the page visible and usable, so
+    // freezing the scroll would only strand the reader.
+    const prev = document.body.style.overflow;
+    if (!inCard) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
       document.body.removeAttribute("data-checkout-open");
     };
-  }, []);
+  }, [inCard]);
 
   // Focus trap + Escape to close; focus returns to the trigger on close via onClose.
   useEffect(() => {
@@ -129,6 +142,114 @@ export function EnrollModal({ sku, onClose }: Props) {
 
   if (!item) return null;
 
+  const closeButton = (
+    <button
+      ref={closeBtnRef}
+      type="button"
+      onClick={onClose}
+      aria-label="Close"
+      className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
+    >
+      <X className="h-5 w-5" />
+    </button>
+  );
+
+  const detailsBody = (
+    <>
+          <>
+            <h2 className="pr-8 text-lg text-foreground">{item.name}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Access is delivered to this Telegram account.
+            </p>
+
+            <form onSubmit={submitDetails} className="mt-5 flex flex-col gap-3">
+              <label className="text-sm text-muted-foreground">Telegram username</label>
+              <input
+                value={telegramUsername}
+                onChange={(e) => setTelegramUsername(e.target.value)}
+                placeholder="your_telegram"
+                autoComplete="off"
+                spellCheck={false}
+                className={inputClass}
+              />
+
+              {requireMt5 ? (
+                <>
+                  <label className="text-sm text-muted-foreground">MT5 account number</label>
+                  <input
+                    value={mt5Account}
+                    onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}
+                    placeholder="12345678"
+                    inputMode="numeric"
+                    className={inputClass}
+                  />
+                </>
+              ) : null}
+
+              <label className="text-sm text-muted-foreground">Full name (optional)</label>
+              <input
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Your name"
+                className={inputClass}
+              />
+
+              <label className="text-sm text-muted-foreground">Trading experience (optional)</label>
+              <Select
+                value={experienceLevel || "unspecified"}
+                onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
+              >
+                <SelectTrigger className={inputClass}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unspecified">Prefer not to say</SelectItem>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button type="submit" disabled={!ready} className="mt-2 w-full">
+                Continue
+              </Button>
+            </form>
+          </>
+    </>
+  );
+
+  // The details step, drawn over the card it was opened from: the card's own
+  // copy fades out behind it and the form takes its place in the grid.
+  if (inCard) {
+    return (
+      <motion.div
+        key="inline"
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.18 } }}
+        exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.12 } }}
+        className="absolute inset-0 z-40 flex items-center justify-center bg-background/95 p-3"
+      >
+        <motion.div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Purchase details"
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.97 }}
+          animate={{
+            opacity: 1,
+            scale: !reducedMotion && pulse ? [1, 1.02, 1] : 1,
+            transition: { duration: reducedMotion ? 0 : 0.18, ease: "easeOut" },
+          }}
+          className="relative max-h-full w-full overflow-y-auto rounded-xl border border-primary/25 bg-background p-4 shadow-elevated"
+        >
+          <div className="bg-green absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
+          {closeButton}
+          {detailsBody}
+        </motion.div>
+      </motion.div>
+    );
+  }
+
   return (
     <ModalPortal>
       <motion.div
@@ -166,106 +287,40 @@ export function EnrollModal({ sku, onClose }: Props) {
           }`}
         >
           <div className="bg-green absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
-          <button
-            ref={closeBtnRef}
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          {closeButton}
 
           {step === "details" ? (
-            <>
-              <h2 className="pr-8 text-lg text-foreground">{item.name}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Access is delivered to this Telegram account.
-              </p>
-
-              <form onSubmit={submitDetails} className="mt-5 flex flex-col gap-3">
-                <label className="text-sm text-muted-foreground">Telegram username</label>
-                <input
-                  value={telegramUsername}
-                  onChange={(e) => setTelegramUsername(e.target.value)}
-                  placeholder="your_telegram"
-                  autoComplete="off"
-                  spellCheck={false}
-                  className={inputClass}
-                />
-
-                {requireMt5 ? (
-                  <>
-                    <label className="text-sm text-muted-foreground">MT5 account number</label>
-                    <input
-                      value={mt5Account}
-                      onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}
-                      placeholder="12345678"
-                      inputMode="numeric"
-                      className={inputClass}
-                    />
-                  </>
-                ) : null}
-
-                <label className="text-sm text-muted-foreground">Full name (optional)</label>
-                <input
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Your name"
-                  className={inputClass}
-                />
-
-                <label className="text-sm text-muted-foreground">Trading experience (optional)</label>
-                <Select
-                  value={experienceLevel || "unspecified"}
-                  onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
-                >
-                  <SelectTrigger className={inputClass}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="unspecified">Prefer not to say</SelectItem>
-                    <SelectItem value="beginner">Beginner</SelectItem>
-                    <SelectItem value="intermediate">Intermediate</SelectItem>
-                    <SelectItem value="advanced">Advanced</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Button type="submit" disabled={!ready} className="mt-2 w-full">
-                  Continue
-                </Button>
-              </form>
-            </>
+            detailsBody
           ) : (
-            <div className="relative min-h-[280px]">
-              {checkoutError ? (
-                <div className="flex flex-col items-center gap-3 p-8 text-center">
-                  <p className="text-sm text-destructive">{checkoutError}</p>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setCheckoutError(null);
-                      setStep("details");
-                    }}
-                  >
-                    Back
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  {checkoutLoading ? (
-                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
-                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    </div>
-                  ) : null}
-                  <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
-                    <EmbeddedCheckout />
-                  </EmbeddedCheckoutProvider>
-                </>
-              )}
-            </div>
+          <div className="relative min-h-[280px]">
+            {checkoutError ? (
+              <div className="flex flex-col items-center gap-3 p-8 text-center">
+                <p className="text-sm text-destructive">{checkoutError}</p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setCheckoutError(null);
+                    setStep("details");
+                  }}
+                >
+                  Back
+                </Button>
+              </div>
+            ) : (
+              <>
+                {checkoutLoading ? (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : null}
+                <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+                  <EmbeddedCheckout />
+                </EmbeddedCheckoutProvider>
+              </>
+            )}
+          </div>
           )}
         </motion.div>
       </motion.div>

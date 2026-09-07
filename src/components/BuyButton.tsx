@@ -19,6 +19,12 @@ type Props = {
   size?: "sm" | "md";
   /** Centered, fixed-width button by default; "left" hugs the left edge; "stretch" fills the container. */
   align?: "center" | "left" | "stretch";
+  /**
+   * Open the details step inside the surrounding card instead of as a centred
+   * overlay. Only for buttons sitting in a `relative` card tall enough to hold
+   * the form — the pricing tiers. Payment still opens centred.
+   */
+  inlineForm?: boolean;
   className?: string;
 };
 
@@ -28,6 +34,7 @@ export function BuyButton({
   variant = "primary",
   size = "sm",
   align = "center",
+  inlineForm = false,
   className = "",
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -58,7 +65,7 @@ export function BuyButton({
       <AnimatePresence>
         {open ? (
           <Suspense fallback={null}>
-            <EnrollModal sku={sku} onClose={() => setOpen(false)} />
+            <EnrollModal sku={sku} inline={inlineForm} onClose={() => setOpen(false)} />
           </Suspense>
         ) : null}
       </AnimatePresence>
