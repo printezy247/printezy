@@ -83,21 +83,29 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const routeLocale = routeLocaleFor(location.pathname);
   const [storedLocale, setStoredLocale] = useState<Locale>("en");
 
+  // Read the stored preference once on mount, whatever the route. Reading it
+  // only on non-localized paths made the locale flip mid-visit: a stored `zh`
+  // was ignored on `/`, picked up on `/dashboard`, and then leaked back onto
+  // `/` on the way home, so one page rendered in two languages depending on
+  // how the visitor arrived at it.
   useEffect(() => {
-    if (routeLocale) return; // URL is authoritative here — ignore any stored preference.
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && LOCALES.includes(stored as Locale)) setStoredLocale(stored as Locale);
     } catch {
       // Private browsing / storage blocked — default to English.
     }
-  }, [routeLocale]);
+  }, []);
 
-  // On a route-locked page, en/ms stay tied to the URL — but zh/hi/ar/sw
-  // have no URL of their own anywhere, so an explicit pick of one of those
-  // still needs to work as a client-side preview (as it always has).
+  // `/ms/*` is an explicit locale URL, so it outranks any stored preference and
+  // a shared Malay link reads as Malay for whoever opens it. Every other path
+  // is the default URL rather than an explicit pick of English, so a stored
+  // zh/hi/ar/sw preview applies there — those four have no URL of their own
+  // anywhere. Stored `ms` is the exception: Malay has its own URL, and serving
+  // it from an English one would duplicate every page for crawlers.
   const isPreviewLocale = storedLocale !== "en" && storedLocale !== "ms";
-  const locale = isPreviewLocale ? storedLocale : (routeLocale ?? storedLocale);
+  const locale =
+    routeLocale === "ms" ? "ms" : isPreviewLocale ? storedLocale : (routeLocale ?? storedLocale);
 
   useEffect(() => {
     document.documentElement.lang = locale;
