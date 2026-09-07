@@ -127,7 +127,7 @@ function TvCard({ product }: { product: TvProduct }) {
       <p className="mt-5 font-mono text-2xl font-bold tabular-nums text-foreground">
         {formatUsd(TV_PRICE[product.id])}
       </p>
-      <BuyButton sku={product.id} label={t("tools_buy")} align="left" className="mt-3" />
+      <BuyButton sku={product.id} label={t("tools_buy")} align="left" inlineForm className="mt-3" />
     </article>
   );
 }
@@ -174,7 +174,7 @@ function Mt5Card({ product }: { product: Mt5Product }) {
       <p className="mt-4 flex-1 text-center font-mono text-2xl font-bold tabular-nums text-foreground">
         {item ? formatUsd(item.amountCents) : "—"}
       </p>
-      <BuyButton sku={sku} label={t("tools_buy")} className="mt-3" />
+      <BuyButton sku={sku} label={t("tools_buy")} inlineForm className="mt-3" />
     </article>
   );
 }
