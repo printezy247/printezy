@@ -17,8 +17,8 @@ type Props = {
   variant?: "primary" | "gold";
   /** Compact by default; "md" for hero-sized placements. */
   size?: "sm" | "md";
-  /** Centered, fixed-width button by default; "stretch" fills the container. */
-  align?: "center" | "stretch";
+  /** Centered, fixed-width button by default; "left" hugs the left edge; "stretch" fills the container. */
+  align?: "center" | "left" | "stretch";
   className?: string;
 };
 
@@ -38,13 +38,19 @@ export function BuyButton({
   }
 
   return (
-    <div className={cn(align === "center" && "flex justify-center", className)}>
+    <div
+      className={cn(
+        align === "center" && "flex justify-center",
+        align === "left" && "flex justify-start",
+        className,
+      )}
+    >
       <Button
         type="button"
         onClick={go}
         variant={variant === "gold" ? "outline" : "primary"}
         size={size}
-        className={align === "center" ? "w-auto min-w-[168px]" : "w-full"}
+        className={align === "stretch" ? "w-full" : "w-auto min-w-[168px]"}
       >
         <CreditCard className="h-4 w-4" />
         {label}

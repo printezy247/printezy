@@ -493,7 +493,7 @@ export function Nav() {
               <Logo />
             </Link>
 
-            <ul className="hidden items-center gap-6 md:flex">
+            <ul className="hidden items-center gap-6 lg:flex">
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
@@ -506,7 +506,7 @@ export function Nav() {
               ))}
             </ul>
 
-            <div className="hidden items-center gap-4 md:flex">
+            <div className="hidden items-center gap-4 lg:flex">
               <LocaleSwitcher />
               <AuthMenu />
               <Button asChild variant="outline" size="sm">
@@ -516,7 +516,7 @@ export function Nav() {
               </Button>
             </div>
 
-            <div className="flex items-center gap-2 md:hidden">
+            <div className="flex items-center gap-2 lg:hidden">
               <LocaleSwitcher />
               <button
                 ref={toggleBtnRef}
@@ -538,7 +538,7 @@ export function Nav() {
             role="dialog"
             aria-modal="true"
             aria-label={t("nav_site_menu")}
-            className="border-b border-border bg-background md:hidden"
+            className="border-b border-border bg-background lg:hidden"
           >
             <ul className="space-y-1 px-4 py-4">
               {NAV_ITEMS.map((item) => (

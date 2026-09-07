@@ -232,12 +232,12 @@ export function SupportChat() {
             track("click", "support_chat_open");
           }}
           aria-label={t("chat_open")}
-          className={`fixed right-5 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-[transform,bottom] hover:scale-105 ${
+          className={`fixed right-4 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary p-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-[transform,bottom] hover:scale-105 sm:right-5 sm:px-4 sm:py-3 ${
             liftForBuyBar ? "bottom-24 sm:bottom-5" : "bottom-5"
           }`}
         >
           <MessageCircle className="h-5 w-5" />
-          {t("chat_open")}
+          <span className="hidden sm:inline">{t("chat_open")}</span>
         </button>
       )}
 
