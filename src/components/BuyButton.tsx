@@ -57,6 +57,10 @@ export function BuyButton({
         onClick={go}
         variant={variant === "gold" ? "outline" : "primary"}
         size={size}
+        // Marks a real buy call to action on the page. The mobile sticky bar
+        // watches these and steps aside while one is on screen, so it never
+        // covers the button a visitor is reaching for.
+        data-buy-cta=""
         className={align === "stretch" ? "w-full" : "w-auto min-w-[168px]"}
       >
         <CreditCard className="h-4 w-4" />
