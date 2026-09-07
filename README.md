@@ -213,6 +213,20 @@ Ebook page copy is localized via the `ms` field on each `EBOOK_PAGES` entry
 (`src/lib/ebooks.ts`). The PDFs and the Macro desk data (`src/lib/macro-desk.ts`)
 stay English.
 
+📗 **Trading terms stay in English in every locale.** Traders learn this
+vocabulary in English, and translating it makes copy harder to follow, not
+easier — so `signal`, `entry`, `stop loss`, `take profit`, `target`, `support`,
+`resistance`, `breakout`, `trend`, `scalp`, `intraday`, `swing`, `timeframe`,
+`indicator`, `macro`, `bullish`/`bearish`, `hawkish`/`dovish`, `forex`,
+`crypto`, `pair`, `drawdown`, `position`, `chart`, `level`, `setup` and `pip`
+are left as-is inside the translated sentence. Two things are deliberately
+_not_ converted: words that carry a second everyday meaning in that language
+(Arabic `دعم` is also customer support, `دخول` is also signing in), and the
+`match` arrays in the reply-book layers — those are the phrases a visitor
+types in their own language, so translating them would stop the bot
+recognising them. Button labels are safe: `localize` keeps the English
+entry's keyword and URL and swaps only the visible text.
+
 ---
 
 ### 🤖 EzyAI PRO checkout

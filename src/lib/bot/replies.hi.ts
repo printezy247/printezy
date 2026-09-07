@@ -341,7 +341,7 @@ export const HI: Translation = {
       "एलीट पैकेज",
     ],
     replies: [
-      "Premium की हर चीज़, साथ में पूरा EzyMap MT5 indicator set (Drawdown Guardian, Bulk Close with Layer Close, Auto TPSL, और भी बहुत कुछ), और Ezy Elite Circle जिसमें Jack से 1-on-1 सपोर्ट मिलता है।",
+      "Premium की हर चीज़, साथ में पूरा EzyMap MT5 indicator set (Drawdown Guardian, Bulk Close with Layer Close, Auto TPSL, और भी बहुत कुछ), और Ezy Elite Circle जिसमें Jack से 1-on-1 support मिलता है।",
     ],
     buttons: [["🎁 पैकेज देखें"], ["⬅ FAQ पर वापस"]],
   },
