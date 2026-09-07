@@ -78,7 +78,6 @@ export const getMacroLive = createServerFn({ method: "GET" }).handler(
   async (): Promise<MacroLive> => {
     const base = (process.env.MACRO_BOT_URL ?? "").trim().replace(/\/+$/, "");
     const key = (process.env.MACRO_BOT_KEY ?? "").trim();
-    if (!base || !key) return null;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: cached } = await supabaseAdmin
@@ -86,9 +85,20 @@ export const getMacroLive = createServerFn({ method: "GET" }).handler(
       .select("payload, fetched_at")
       .eq("key", CACHE_KEY)
       .maybeSingle();
+    const asCached = (): MacroLive =>
+      cached ? { desk: cached.payload as unknown as BotDesk, updatedAt: cached.fetched_at } : null;
 
     const fresh = cached && Date.now() - new Date(cached.fetched_at).getTime() < FRESH_MS;
-    if (fresh) return { desk: cached.payload as unknown as BotDesk, updatedAt: cached.fetched_at };
+    if (fresh) return asCached();
+
+    // The credentials only buy a refresh. Losing them used to drop the whole
+    // desk — central banks, recession odds, both sentiment trends and the gold
+    // Fear & Greed card all disappeared — while a perfectly good payload sat
+    // in the cache. Serve that instead; the card carries its own timestamp.
+    if (!base || !key) {
+      if (cached) console.error("[macro] MACRO_BOT_URL/MACRO_BOT_KEY unset — serving cached desk");
+      return asCached();
+    }
 
     try {
       const res = await fetch(`${base}/api/desk`, {
@@ -109,9 +119,7 @@ export const getMacroLive = createServerFn({ method: "GET" }).handler(
       return { desk, updatedAt: fetchedAt };
     } catch (error) {
       console.error("[macro] bot desk fetch failed", error);
-      if (cached)
-        return { desk: cached.payload as unknown as BotDesk, updatedAt: cached.fetched_at };
-      return null;
+      return asCached();
     }
   },
 );
