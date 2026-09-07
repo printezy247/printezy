@@ -348,6 +348,24 @@ export type Database = {
           },
         ]
       }
+      macro_calendar_cache: {
+        Row: {
+          fetched_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          fetched_at?: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          fetched_at?: string
+          key?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       member_sessions: {
         Row: {
           created_at: string
@@ -422,24 +440,6 @@ export type Database = {
           telegram_id?: number | null
           telegram_username?: string | null
           updated_at?: string
-        }
-        Relationships: []
-      }
-      macro_calendar_cache: {
-        Row: {
-          fetched_at: string
-          key: string
-          payload: Json
-        }
-        Insert: {
-          fetched_at?: string
-          key: string
-          payload: Json
-        }
-        Update: {
-          fetched_at?: string
-          key?: string
-          payload?: Json
         }
         Relationships: []
       }
