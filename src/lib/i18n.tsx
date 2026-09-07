@@ -113,17 +113,26 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   const setLocale = (next: Locale) => {
-    if (routeLocale && (next === "en" || next === "ms")) {
-      const bare = "/" + location.pathname.replace(/^\/ms/, "").replace(/^\/+/, "");
-      const target = next === "ms" ? (bare === "/" ? "/ms" : `/ms${bare}`) : bare;
-      window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
-      return;
-    }
+    // Record the pick before any navigation. en and ms used to return early
+    // and store nothing, which left two holes: choosing English on an English
+    // URL reloaded the same page and the previous preference won again, so
+    // English became unreachable; and pages without a locale URL kept serving
+    // whichever non-English language had last been stored.
     setStoredLocale(next);
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {
       // Non-critical — the in-memory selection still works for this visit.
+    }
+
+    // en and ms have real URLs, so move to the right one when we are not
+    // already on it. Same-URL picks just re-render from the value above.
+    if (routeLocale && (next === "en" || next === "ms")) {
+      const bare = "/" + location.pathname.replace(/^\/ms/, "").replace(/^\/+/, "");
+      const target = next === "ms" ? (bare === "/" ? "/ms" : `/ms${bare}`) : bare;
+      if (target !== location.pathname) {
+        window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
+      }
     }
   };
 
