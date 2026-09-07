@@ -90,14 +90,20 @@ export const claimEbook = createServerFn({ method: "POST" })
         throw new Error("Could not save your changes — please try again.");
       }
 
+        // Awaited on purpose: the worker is torn down as soon as the response
+        // goes out, so a fire-and-forget send never reaches Telegram.
         const { notifyVantageClaim } = await import("./bot/ebook-claims.server");
-        void notifyVantageClaim({
-          claimId: (row as { id: string }).id,
-          fullName: details.fullName,
-          telegramUsername: details.telegramUsername,
-          vantageAccount: details.vantageAccount,
-          slug: data.slug,
-        });
+        try {
+          await notifyVantageClaim({
+            claimId: (row as { id: string }).id,
+            fullName: details.fullName,
+            telegramUsername: details.telegramUsername,
+            vantageAccount: details.vantageAccount,
+            slug: data.slug,
+          });
+        } catch (err) {
+          console.error("[ebook-claims] approval notice failed", err);
+        }
 
         return { ok: true, status: "pending" };
       }
