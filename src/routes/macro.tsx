@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Send } from "lucide-react";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { BuyButton } from "@/components/BuyButton";
@@ -110,6 +110,7 @@ const mono = "font-mono text-[13px] tracking-tight tabular-nums";
 const CAL_VISIBLE = 4;
 const CAL_STEP_MS = 3600;
 const CAL_RESUME_MS = 9000;
+const CAL_FADE = "linear-gradient(to bottom, #000 calc(100% - 2rem), transparent 100%)";
 
 /**
  * A weekday can carry eighty releases. The list keeps every one of them in a
@@ -125,12 +126,19 @@ function CalendarScroller({ children }: { children: ReactNode }) {
   const reducedMotion = usePrefersReducedMotion();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [rowHeight, setRowHeight] = useState(56);
+  const [atEnd, setAtEnd] = useState(true);
   const idleUntil = useRef(0);
 
+  const syncEdge = useCallback((el: HTMLElement) => {
+    setAtEnd(el.scrollTop >= el.scrollHeight - el.clientHeight - 2);
+  }, []);
+
   useEffect(() => {
-    const first = viewportRef.current?.firstElementChild as HTMLElement | null;
+    const el = viewportRef.current;
+    const first = el?.firstElementChild as HTMLElement | null;
     if (first?.offsetHeight) setRowHeight(first.offsetHeight);
-  }, [children]);
+    if (el) syncEdge(el);
+  }, [children, syncEdge]);
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -145,6 +153,8 @@ function CalendarScroller({ children }: { children: ReactNode }) {
     return () => clearInterval(timer);
   }, [reducedMotion, rowHeight]);
 
+  // Only a gesture stands the auto-advance down. Listening to scroll itself
+  // would count the auto-advance's own scrolling as a gesture and stall it.
   const hold = () => {
     idleUntil.current = Date.now() + CAL_RESUME_MS;
   };
@@ -156,17 +166,55 @@ function CalendarScroller({ children }: { children: ReactNode }) {
       // from the keyboard and announced as its own scrollable region.
       tabIndex={0}
       role="group"
-      className="overflow-y-auto overscroll-contain rounded-md outline-none focus-visible:ring-1 focus-visible:ring-ring"
-      style={{ maxHeight: CAL_VISIBLE * rowHeight }}
+      className="no-scrollbar overflow-y-auto overscroll-contain rounded-md outline-none focus-visible:ring-1 focus-visible:ring-ring"
+      style={{
+        maxHeight: CAL_VISIBLE * rowHeight,
+        // Softens the last visible row into the card instead of cutting it,
+        // which is the only cue left once the scrollbar is gone. Dropped at
+        // the foot of the list so the final row is never dimmed.
+        maskImage: atEnd ? undefined : CAL_FADE,
+        WebkitMaskImage: atEnd ? undefined : CAL_FADE,
+      }}
       onPointerEnter={hold}
       onPointerDown={hold}
       onWheel={hold}
       onTouchStart={hold}
+      onKeyDown={hold}
       onFocus={hold}
-      onScroll={hold}
+      onScroll={(e) => syncEdge(e.currentTarget)}
     >
       {children}
     </div>
+  );
+}
+
+/**
+ * One of the three numbers on a calendar row. On a wide card it is a plain
+ * right-aligned column under its header; on a phone the headers are gone, so
+ * it carries its own label and sits inline with the other two.
+ */
+function CalendarValue({
+  label,
+  tone,
+  children,
+}: {
+  label: string;
+  tone: "actual" | "forecast" | "previous";
+  children: ReactNode;
+}) {
+  const value =
+    tone === "previous"
+      ? "tabular-nums text-muted-foreground"
+      : tone === "actual"
+        ? "font-semibold tabular-nums text-foreground"
+        : "font-semibold tabular-nums";
+  return (
+    <span className="inline-flex items-baseline gap-1 text-xs sm:w-16 sm:shrink-0 sm:justify-end sm:text-[13px]">
+      <span className="text-[9px] font-bold uppercase tracking-[0.05em] text-muted-foreground sm:hidden">
+        {label}
+      </span>
+      <span className={value}>{children}</span>
+    </span>
   );
 }
 
@@ -499,7 +547,6 @@ function TrendCard({ trend }: { trend: TrendCard }) {
   );
 }
 
-
 /* ------------------------------------------------------------------ */
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
@@ -532,7 +579,9 @@ export function MacroPage() {
     fetchFearGreed().then((f) => alive && setFng(f));
     fetchCalendar()
       .then((c) => alive && setCal(c))
-      .catch(() => alive && setCal({ day: null, isToday: false, rows: [], updatedAt: null }));
+      .catch(() => {
+        if (alive) setCal({ day: null, isToday: false, rows: [], source: null, updatedAt: null });
+      });
     fetchLive()
       .then((l) => alive && setLive(l))
       .catch(() => {});
@@ -611,7 +660,9 @@ export function MacroPage() {
   const calRows = useMemo(
     () =>
       (cal?.rows ?? []).filter(
-        (r) => impactFilter.has(r.impact) && (currencyFilter.size === 0 || currencyFilter.has(r.currency)),
+        (r) =>
+          impactFilter.has(r.impact) &&
+          (currencyFilter.size === 0 || currencyFilter.has(r.currency)),
       ),
     [cal, impactFilter, currencyFilter],
   );
@@ -738,10 +789,9 @@ export function MacroPage() {
                       ))}
                       {cal?.updatedAt ? (
                         <span>
-                          {t("macro_calendar_updated").replace(
-                            "{time}",
-                            formatLocalTime(new Date(cal.updatedAt)),
-                          )}
+                          {t("macro_calendar_updated")
+                            .replace("{source}", cal.source ?? "ForexFactory")
+                            .replace("{time}", formatLocalTime(new Date(cal.updatedAt)))}
                         </span>
                       ) : null}
                     </div>
@@ -770,20 +820,22 @@ export function MacroPage() {
 
                 {/* 9px with tight tracking so the longest translated headers
                     ("Iliyotangulia", "Sebelumnya") still land inside the fixed
-                    number columns instead of running into their neighbour. */}
+                    number columns instead of running into their neighbour.
+                    Below sm the numbers move under the event and carry their
+                    own labels, so these three headers step aside there. */}
                 <div className="flex items-end gap-1.5 pb-2 text-[9px] font-bold uppercase leading-tight tracking-[0.05em] text-muted-foreground sm:gap-2">
                   <span className="w-10 shrink-0">{t("macro_col_time")}</span>
                   <span className="w-11 shrink-0 break-words">{t("macro_col_ccy")}</span>
                   <span className="min-w-0 flex-1">{t("macro_col_event")}</span>
                   {calHasActual ? (
-                    <span className="w-16 shrink-0 break-words text-right">
+                    <span className="hidden w-16 shrink-0 break-words text-right sm:block">
                       {t("macro_col_actual")}
                     </span>
                   ) : null}
-                  <span className="w-16 shrink-0 break-words text-right">
+                  <span className="hidden w-16 shrink-0 break-words text-right sm:block">
                     {t("macro_col_forecast")}
                   </span>
-                  <span className="w-16 shrink-0 break-words text-right">
+                  <span className="hidden w-16 shrink-0 break-words text-right sm:block">
                     {t("macro_col_previous")}
                   </span>
                 </div>
@@ -792,7 +844,7 @@ export function MacroPage() {
                     {calRows.map((r) => (
                       <div
                         key={`${r.nyTime}-${r.currency}-${r.event}`}
-                        className="flex min-h-[3.5rem] items-center gap-1.5 border-t border-border py-2 sm:gap-2"
+                        className="flex min-h-[3.5rem] flex-wrap items-center gap-1.5 border-t border-border py-2 sm:flex-nowrap sm:gap-2"
                       >
                         <span className={`w-10 shrink-0 text-xs ${mono}`}>
                           {clock.toLocal(r.nyTime)}
@@ -808,16 +860,23 @@ export function MacroPage() {
                         <span className="min-w-0 flex-1 text-xs leading-snug text-body sm:text-sm">
                           {r.event}
                         </span>
-                        {calHasActual ? (
-                          <span className="w-16 shrink-0 text-right text-xs font-semibold tabular-nums text-foreground sm:text-[13px]">
-                            {r.actual}
-                          </span>
-                        ) : null}
-                        <span className="w-16 shrink-0 text-right text-xs font-semibold tabular-nums sm:text-[13px]">
-                          {r.forecast}
-                        </span>
-                        <span className="w-16 shrink-0 text-right text-xs tabular-nums text-muted-foreground sm:text-[13px]">
-                          {r.previous}
+                        {/* Three number columns on a wide card. Below sm they
+                            wrap to their own line under the event — six
+                            columns will not fit a phone — and `sm:contents`
+                            dissolves this wrapper so the cells become row
+                            children again at the breakpoint. */}
+                        <span className="flex w-full flex-wrap items-baseline justify-end gap-x-4 gap-y-1 sm:contents">
+                          {calHasActual ? (
+                            <CalendarValue label={t("macro_col_actual")} tone="actual">
+                              {r.actual}
+                            </CalendarValue>
+                          ) : null}
+                          <CalendarValue label={t("macro_col_forecast")} tone="forecast">
+                            {r.forecast}
+                          </CalendarValue>
+                          <CalendarValue label={t("macro_col_previous")} tone="previous">
+                            {r.previous}
+                          </CalendarValue>
                         </span>
                       </div>
                     ))}

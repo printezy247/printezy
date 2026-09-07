@@ -437,3 +437,15 @@
     transition: none;
   }
 }
+
+/* Scroll without the platform scrollbar, which paints in system grey and
+   reads as a control bolted onto the dark card rather than part of it. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
