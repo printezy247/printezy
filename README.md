@@ -82,12 +82,46 @@ supabase/
   Auth → URL configuration must allow `https://printezy.money/**` (and the
   Lovable preview hosts) as redirect URLs, because sign-in returns deep
   links such as `/ebooks/<slug>?claim=1`.
+  The name on the Google consent screen comes from the OAuth client, not
+  from this repo. To show "EzyMap ALGO" instead of the raw
+  `<project-ref>.supabase.co` host, own the client: verify `printezy.money`
+  in Google Search Console, then in Google Cloud Console → Google Auth
+  Platform set Branding (app name, logo, home/privacy/terms URLs,
+  `printezy.money` as an authorized domain), set Audience to External and
+  publish, and create a Web application client whose redirect URI is
+  `https://<project-ref>.supabase.co/auth/v1/callback`. Paste that client id
+  and secret into Lovable Cloud → Auth → Google. Sign-in only needs the
+  non-sensitive `openid`, `userinfo.email` and `userinfo.profile` scopes, so
+  no verification review is required — uploading a logo does trigger one,
+  though sign-in keeps working while it is pending.
 - **Gated ebooks** — the PDFs live in the private `ebooks` storage bucket
   (object key `<slug>.pdf`, see `supabase/migrations/20260906090000_*`),
   not under `public/`. `getEbookDownloadUrl` hands a signed-in user with an
   approved `ebook_claims` row a one-hour signed URL; nothing else can read
   the bucket. Uploading a new PDF = drop it into the bucket in Lovable Cloud
   → Storage and set `file` on the `EBOOK_PAGES` entry.
+  Most slugs approve themselves on claim. `mapping-like-a-pro` is a real
+  approval gate: the visitor submits full name, Telegram handle and Vantage
+  account number, the row is saved `pending`, and `notifyVantageClaim`
+  (`src/lib/bot/ebook-claims.server.ts`) sends Sarah an Approve button.
+  Only her chat may act on the `ebook:approve:<claimId>` callback. The send
+  is awaited, never fire-and-forget — the worker is torn down as soon as the
+  response is returned, so an un-awaited notice is silently dropped.
+- **Support inbox (`support_config.sarah_chat_id`)** — one numeric Telegram
+  chat id is the destination for everything the site sends Sarah: website
+  "Ask Sarah" relays, ebook approval requests, trial and purchase requests,
+  and referral-conversion notices. `autoRegisterSarah`
+  (`src/lib/bot/sarah.server.ts`) writes it the first time she messages the
+  bot from `@ezysarah`, then refuses to re-bind, because a released Telegram
+  handle could otherwise be re-registered by someone else. Moving the inbox
+  therefore means editing that row by hand.
+  Get that number wrong and every send fails silently: Telegram rejects the
+  chat, the visitor still sees "Sent to Sarah", and nothing surfaces. The
+  diagnostic is `support_messages.sarah_message_id` — it is `NULL` on every
+  row when the id is wrong, and populated once a send lands. Cross-check the
+  value against `bot_users.telegram_id` for `ezysarah`, which the webhook
+  writes straight from a real Telegram update and is therefore
+  authoritative.
 - **Telegram portal links** — every "My account" button the bot sends is a
   fresh 7-day `member_sessions` row (`accountLinkFor`). The permanent
   `enrollments.portal_token` is only a Stripe correlation id and is no
@@ -150,9 +184,22 @@ supabase/
   `ezyai_entitlements` bridge described above. The bot keeps its own plan
   state; the website never reads it.
 
+- **[ASAP-TeleBot](https://github.com/printezy247/ASAP-TeleBot)** — the
+  button-driven product bot (Python): signal-community tiers, the paid tool
+  catalog, USDT/Stripe/Telegram Stars payments and MT5 trial licensing. It
+  runs its own admin approvals against `EZYMAP_ADMIN_CHAT_ID`, which is a
+  separate setting from this site's `sarah_chat_id`; if the same person
+  admins both, the two numbers should match.
+
 ## Deployment
 
 Changes are pushed to `main`, built by Lovable Cloud, and published via
 `deploy_project`. There is no separate staging environment — verify
 locally (`bun run dev` + a manual pass, or Playwright against
 `127.0.0.1`) before pushing.
+
+`deploy_project` returns `pending` and does not always land. When the
+Lovable editor still reports the project as unpublished, open it and click
+Publish → Update, then hard-refresh printezy.money. Note that anything
+stored in the database — the support inbox id, entitlement rows, cached
+macro payloads — takes effect immediately and needs no publish at all.
