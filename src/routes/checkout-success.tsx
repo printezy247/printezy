@@ -11,6 +11,8 @@ import { getCheckoutStatus } from "@/lib/checkout.functions";
 import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
 import { getCatalogItem, formatUsd, isEzyAiSku, type CatalogGroup } from "@/lib/catalog";
 import { REGISTER_BOT, EZYAI_BOT, botStartLink, ezyAiStartLink } from "@/lib/telegram-links";
+import { claimCheckoutWithTelegram, getTelegramLoginConfig } from "@/lib/telegram-login.functions";
+import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 import { SITE_URL } from "@/lib/bot/tiers";
 
 /** 1-2 complementary SKUs to surface after a purchase, by the group just bought. */
@@ -59,12 +61,55 @@ function SuccessPage() {
   const [redeemCode, setRedeemCode] = useState<string | null>(null);
   const [signInState, setSignInState] = useState<"idle" | "sending" | "sent">("idle");
 
+  // Delivery by verified Telegram account, rather than by the handle typed at
+  // checkout. This is the buyer's own way out of a typo without waiting on
+  // support: they hold the session id, and Telegram vouches for who they are.
+  const loadTelegramConfig = useServerFn(getTelegramLoginConfig);
+  const claimWithTelegram = useServerFn(claimCheckoutWithTelegram);
+  const [botUsername, setBotUsername] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [claim, setClaim] = useState<"idle" | "working" | "done" | "failed">("idle");
+
+  useEffect(() => {
+    let alive = true;
+    void loadTelegramConfig()
+      .then((res) => alive && setBotUsername(res.botUsername))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [loadTelegramConfig]);
+
+  function deliverToTelegram(payload: TelegramAuthPayload) {
+    if (!sessionId) return;
+    setClaim("working");
+    claimWithTelegram({ data: { ...payload, sessionId } })
+      .then((res) => {
+        if (!res.ok) {
+          setClaim("failed");
+          toast.error(res.message ?? "Could not verify that sign-in.");
+          return;
+        }
+        setClaim("done");
+        toast.success(
+          res.claimed
+            ? "Delivered — check your Telegram."
+            : "Telegram confirmed. Open the bot to pick it up.",
+        );
+      })
+      .catch(() => {
+        setClaim("failed");
+        toast.error("Could not deliver it just now — try again.");
+      });
+  }
+
   useEffect(() => {
     const sessionId = new URLSearchParams(window.location.search).get("session_id");
     if (!sessionId) {
       setState("pending");
       return;
     }
+    setSessionId(sessionId);
     check({ data: { sessionId } })
       .then((res) => {
         setState(res.paid ? "paid" : "pending");
@@ -197,6 +242,44 @@ function SuccessPage() {
                 ? "PRO switches on for your Telegram account within a minute, or instantly with the code above."
                 : "your channels, indicators and ebooks are unlocked there within a minute."}
             </p>
+
+            {botUsername && !ezyai && state === "paid" ? (
+              <div className="mt-6 rounded-xl border border-primary/25 bg-primary/5 p-4 text-left">
+                {claim === "done" ? (
+                  <p className="text-sm text-body">
+                    <span className="font-semibold text-foreground">Telegram confirmed.</span> Your
+                    access is attached to that account — open the bot and it is there.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-foreground">
+                      Deliver it to the right account
+                    </p>
+                    <p className="mt-1 text-sm text-body">
+                      Sign in with Telegram and we attach this purchase to your real account — no
+                      handle to mistype
+                      {handle ? (
+                        <>
+                          {" "}
+                          (we have <span className="text-foreground">@{handle}</span> on file)
+                        </>
+                      ) : null}
+                      .
+                    </p>
+                    <div className="mt-4">
+                      <TelegramLoginButton
+                        botUsername={botUsername}
+                        onAuth={deliverToTelegram}
+                        onUnavailable={() => setBotUsername(null)}
+                      />
+                    </div>
+                    {claim === "working" ? (
+                      <p className="mt-3 text-center text-sm text-muted-foreground">Delivering…</p>
+                    ) : null}
+                  </>
+                )}
+              </div>
+            ) : null}
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button asChild size="lg">
