@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" width="1000" height="320" role="img" aria-label="EzyMap ALGO mission control - live signal board, macro desk and Telegram autopilot">
+  <title>EzyMap ALGO mission control - live signal board, macro desk and Telegram autopilot</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1613"/>
+      <stop offset="55%" stop-color="#0a0c0b"/>
+      <stop offset="100%" stop-color="#12100a"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fbf71"/>
+      <stop offset="100%" stop-color="#c9a13a"/>
+    </linearGradient>
+    <linearGradient id="slabTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5fe6a0"/>
+      <stop offset="100%" stop-color="#2fbf71"/>
+    </linearGradient>
+    <linearGradient id="goldTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6c766"/>
+      <stop offset="100%" stop-color="#c9a13a"/>
+    </linearGradient>
+    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="45%" r="70%">
+      <stop offset="60%" stop-color="#0a0c0b" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0a0c0b" stop-opacity="1"/>
+    </radialGradient>
+    <pattern id="iso" width="60" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0 17 L30 0 L60 17 L30 34 Z" fill="none" stroke="#2fbf71" stroke-width=".5" opacity=".14"/>
+    </pattern>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#f2f4f2" opacity=".025"/>
+    </pattern>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+  </defs>
+
+  <style>
+    /* Position lives on the outer group's transform attribute; animation lives
+       on an inner group. A CSS transform on the same element would override
+       that attribute outright and collapse everything onto the origin. */
+    text { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .rise { animation: rise 3.6s ease-in-out infinite alternate; }
+    .d1 { animation-delay: 0s; }
+    .d2 { animation-delay: .5s; }
+    .d3 { animation-delay: 1s; }
+    .d4 { animation-delay: 1.5s; }
+    .draw { stroke-dasharray: 460; stroke-dashoffset: 460; animation: draw 5s ease-out infinite; }
+    .glow { animation: breathe 5s ease-in-out infinite; }
+    .tick { animation: tick 5s ease-out infinite; }
+    .ping { animation: ping 1.9s ease-out infinite; }
+    .drift { animation: drift 12s linear infinite; }
+
+    @keyframes rise    { from { transform: translateY(5px); } to { transform: translateY(-5px); } }
+    @keyframes draw    { 0% { stroke-dashoffset: 460; } 60%,100% { stroke-dashoffset: 0; } }
+    @keyframes breathe { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+    @keyframes ping    { 0% { r: 4; opacity: .9; } 70%,100% { r: 14; opacity: 0; } }
+    @keyframes drift   { from { transform: translateX(0); } to { transform: translateX(60px); } }
+
+    /* The marker rides the polyline's own vertices. A straight translateX
+       under a zigzag stroke visibly drifts off the line. */
+    @keyframes tick {
+      0%           { transform: translate(0px, 0px); }
+      8.6%         { transform: translate(43px, -18px); }
+      17.1%        { transform: translate(86px, -12px); }
+      25.7%        { transform: translate(129px, -38px); }
+      34.3%        { transform: translate(172px, -30px); }
+      42.9%        { transform: translate(215px, -66px); }
+      51.4%        { transform: translate(258px, -58px); }
+      60%, 100%    { transform: translate(300px, -96px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise, .draw, .glow, .tick, .ping, .drift { animation: none; }
+      .draw { stroke-dashoffset: 0; }
+    }
+  </style>
+
+  <rect width="1000" height="320" fill="url(#sky)"/>
+  <g class="drift"><rect x="-60" y="0" width="1120" height="320" fill="url(#iso)"/></g>
+  <g class="glow">
+    <ellipse cx="230" cy="220" rx="200" ry="95" fill="#2fbf71" opacity=".07" filter="url(#soft)"/>
+    <ellipse cx="790" cy="120" rx="180" ry="85" fill="#c9a13a" opacity=".06" filter="url(#soft)"/>
+  </g>
+  <rect width="1000" height="320" fill="url(#vig)"/>
+
+  <!-- Telemetry gutter: every value is counted from the code -->
+  <g class="mono" font-size="13" letter-spacing="1.6" fill="#8b948f" text-anchor="start">
+    <text x="40" y="26">ROUTES 31</text>
+    <text x="190" y="26">MIGRATIONS 33</text>
+    <text x="345" y="26">TABLES 22</text>
+    <text x="475" y="26">LOCALES 6</text>
+    <text x="600" y="26">STRINGS 3366</text>
+    <text x="755" y="26">SKUS 30</text>
+  </g>
+  <g stroke="#2fbf71" stroke-width="1" opacity=".25">
+    <path d="M175 15 L175 31"/><path d="M330 15 L330 31"/><path d="M460 15 L460 31"/>
+    <path d="M585 15 L585 31"/><path d="M740 15 L740 31"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g transform="translate(40 118)">
+    <text x="0" y="0" font-size="38" font-weight="700" fill="#f2f4f2">EzyMap <tspan fill="#c9a13a">ALGO</tspan></text>
+    <text class="mono" x="2" y="28" font-size="13" letter-spacing="2.6" fill="#8b948f" text-anchor="start">SIGNALS &#183; MACRO &#183; AUTOPILOT</text>
+  </g>
+
+  <!-- Status strip -->
+  <g transform="translate(40 166)">
+    <rect x="0" y="0" width="425" height="30" rx="6" fill="#141817" stroke="#2fbf71" stroke-opacity=".35"/>
+    <g transform="translate(18 15)">
+      <circle class="ping" cx="0" cy="0" r="4" fill="none" stroke="#2fbf71" stroke-width="2"/>
+      <circle cx="0" cy="0" r="4.5" fill="#5fe6a0"/>
+    </g>
+    <text class="mono" x="34" y="19" font-size="11.5" letter-spacing="1.1" fill="#8b948f" text-anchor="start">BOARD PUBLIC &#183; REFRESH 60s &#183; BATCH &#8804;50</text>
+  </g>
+
+  <!-- An order book stepping up, in isometric slabs -->
+  <g transform="translate(380 262)">
+    <g transform="translate(0 0)"><g class="rise d1">
+      <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#slabTop)"/>
+      <path d="M0 0 L30 17 L30 46 L0 29 Z" fill="#1c7a47"/>
+      <path d="M60 0 L30 17 L30 46 L60 29 Z" fill="#13603a"/>
+    </g></g>
+    <g transform="translate(66 -24)"><g class="rise d2">
+      <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#slabTop)"/>
+      <path d="M0 0 L30 17 L30 52 L0 35 Z" fill="#1c7a47"/>
+      <path d="M60 0 L30 17 L30 52 L60 35 Z" fill="#13603a"/>
+    </g></g>
+    <g transform="translate(132 -48)"><g class="rise d3">
+      <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#goldTop)"/>
+      <path d="M0 0 L30 17 L30 58 L0 41 Z" fill="#9c7c2c"/>
+      <path d="M60 0 L30 17 L30 58 L60 41 Z" fill="#7d6323"/>
+    </g></g>
+    <g transform="translate(198 -74)"><g class="rise d4">
+      <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#slabTop)"/>
+      <path d="M0 0 L30 17 L30 66 L0 49 Z" fill="#1c7a47"/>
+      <path d="M60 0 L30 17 L30 66 L60 49 Z" fill="#13603a"/>
+    </g></g>
+  </g>
+
+  <!-- The desk's line, drawing itself, with the price riding its vertices -->
+  <g transform="translate(660 160)">
+    <path d="M0 0 L43 -18 L86 -12 L129 -38 L172 -30 L215 -66 L258 -58 L300 -96 L300 40 L0 40 Z" fill="url(#areaFill)"/>
+    <path class="draw" d="M0 0 L43 -18 L86 -12 L129 -38 L172 -30 L215 -66 L258 -58 L300 -96"
+          fill="none" stroke="url(#brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <g class="tick">
+      <circle class="ping" cx="0" cy="0" r="4" fill="none" stroke="#2fbf71" stroke-width="2"/>
+      <circle cx="0" cy="0" r="4.5" fill="#5fe6a0"/>
+    </g>
+  </g>
+
+  <!-- HUD corner brackets -->
+  <g stroke="#2fbf71" stroke-width="1.5" opacity=".45" fill="none">
+    <path d="M12 12 l30 0 M12 12 l0 30"/>
+    <path d="M988 12 l-30 0 M988 12 l0 30"/>
+    <path d="M12 308 l30 0 M12 308 l0 -30"/>
+    <path d="M988 308 l-30 0 M988 308 l0 -30"/>
+  </g>
+
+  <rect width="1000" height="320" fill="url(#scan)"/>
+  <rect x="0" y="315" width="1000" height="5" fill="url(#brand)"/>
+</svg>

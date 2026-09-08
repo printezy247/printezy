@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="An EzyAI signal card and its equity curve - setup score, entry to target progress, live R and the win-rate formula">
+  <title>An EzyAI signal card and its equity curve, drawn the way the live board renders one</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1613"/>
+      <stop offset="55%" stop-color="#0a0c0b"/>
+      <stop offset="100%" stop-color="#12100a"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fbf71"/>
+      <stop offset="100%" stop-color="#c9a13a"/>
+    </linearGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#5fe6a0" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="vig" cx="50%" cy="45%" r="70%">
+      <stop offset="60%" stop-color="#0a0c0b" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0a0c0b" stop-opacity="1"/>
+    </radialGradient>
+    <pattern id="iso" width="60" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0 17 L30 0 L60 17 L30 34 Z" fill="none" stroke="#2fbf71" stroke-width=".5" opacity=".12"/>
+    </pattern>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#f2f4f2" opacity=".025"/>
+    </pattern>
+    <clipPath id="barClip"><rect x="64" y="140" width="440" height="8" rx="4"/></clipPath>
+  </defs>
+
+  <style>
+    text { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .fill  { transform-origin: 64px 144px; animation: grow 4.5s ease-out infinite; }
+    .sheen { animation: sheen 4.5s ease-out infinite; }
+    .draw  { stroke-dasharray: 380; stroke-dashoffset: 380; animation: draw 5s ease-out infinite; }
+    .ping  { animation: ping 1.9s ease-out infinite; }
+    .drift { animation: drift 12s linear infinite; }
+
+    @keyframes grow  { 0% { transform: scaleX(0); } 55%,100% { transform: scaleX(1); } }
+    @keyframes sheen { 0% { transform: translateX(-120px); } 55%,100% { transform: translateX(460px); } }
+    @keyframes draw  { 0% { stroke-dashoffset: 380; } 60%,100% { stroke-dashoffset: 0; } }
+    @keyframes ping  { 0% { r: 4; opacity: .9; } 70%,100% { r: 14; opacity: 0; } }
+    @keyframes drift { from { transform: translateX(0); } to { transform: translateX(60px); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fill, .sheen, .draw, .ping, .drift { animation: none; }
+      .draw { stroke-dashoffset: 0; }
+      .fill { transform: scaleX(1); }
+      .sheen { opacity: 0; }
+    }
+  </style>
+
+  <rect width="1000" height="300" fill="url(#sky)"/>
+  <g class="drift"><rect x="-60" y="0" width="1120" height="300" fill="url(#iso)"/></g>
+  <rect width="1000" height="300" fill="url(#vig)"/>
+
+  <!-- The card, drawn the way /ezyai renders one -->
+  <rect x="40" y="50" width="560" height="200" rx="10" fill="#141817" stroke="#2fbf71" stroke-opacity=".3"/>
+
+  <text x="64" y="90" font-size="22" font-weight="700" fill="#f2f4f2">XAUUSD</text>
+  <g transform="translate(168 72)">
+    <rect x="0" y="0" width="46" height="22" rx="5" fill="#0f7a4a"/>
+    <text class="mono" x="11" y="15" font-size="11" fill="#f2f4f2" text-anchor="start">BUY</text>
+  </g>
+  <g transform="translate(224 72)">
+    <rect x="0" y="0" width="74" height="22" rx="5" fill="#161a18" stroke="#2fbf71" stroke-opacity=".45"/>
+    <text class="mono" x="10" y="15" font-size="11" fill="#5fe6a0" text-anchor="start">RUNNING</text>
+  </g>
+  <g transform="translate(308 72)">
+    <rect x="0" y="0" width="66" height="22" rx="5" fill="#161a18" stroke="#8b948f" stroke-opacity=".45"/>
+    <text class="mono" x="10" y="15" font-size="11" fill="#8b948f" text-anchor="start">SAMPLE</text>
+  </g>
+
+  <!-- progressPercent(): stop to target mapped 0-100, inverted for sells -->
+  <text class="mono" x="64" y="130" font-size="11" fill="#8b948f" text-anchor="start">SL</text>
+  <text class="mono" x="484" y="130" font-size="11" fill="#8b948f" text-anchor="start">TP</text>
+  <rect x="64" y="140" width="440" height="8" rx="4" fill="#161a18"/>
+  <g clip-path="url(#barClip)">
+    <g class="fill"><rect x="64" y="140" width="273" height="8" rx="4" fill="url(#brand)"/></g>
+    <g class="sheen"><rect x="64" y="140" width="120" height="8" fill="url(#sweep)"/></g>
+  </g>
+  <rect x="335" y="136" width="2" height="16" rx="1" fill="#5fe6a0"/>
+
+  <g class="mono" text-anchor="start">
+    <text x="64" y="182" font-size="11" letter-spacing="1.4" fill="#8b948f">SETUP</text>
+    <text x="64" y="204" font-size="15" fill="#f2f4f2">78 / 100</text>
+    <text x="224" y="182" font-size="11" letter-spacing="1.4" fill="#8b948f">LIVE R</text>
+    <text x="224" y="204" font-size="15" fill="#5fe6a0">+1.4R</text>
+    <text x="384" y="182" font-size="11" letter-spacing="1.4" fill="#8b948f">TF</text>
+    <text x="384" y="204" font-size="15" fill="#f2f4f2">H1</text>
+    <text x="224" y="226" font-size="10.5" fill="#8b948f">derived from the last price</text>
+  </g>
+
+  <!-- Cumulative R, oldest first. The caption is the formula, never a number. -->
+  <rect x="640" y="50" width="320" height="200" rx="10" fill="#141817" stroke="#2fbf71" stroke-opacity=".3"/>
+  <g class="mono" text-anchor="start">
+    <text x="664" y="80" font-size="11" letter-spacing="1.4" fill="#8b948f">WIN RATE</text>
+    <text x="664" y="214" font-size="10.5" fill="#8b948f">wins / (wins + losses)</text>
+    <text x="664" y="230" font-size="10.5" fill="#8b948f">break-even excluded</text>
+  </g>
+  <g transform="translate(664 190)">
+    <path d="M0 -6 L38 -14 L76 -10 L114 -34 L152 -26 L190 -52 L228 -70 L272 -88 L272 6 L0 6 Z" fill="url(#areaFill)"/>
+    <path class="draw" d="M0 -6 L38 -14 L76 -10 L114 -34 L152 -26 L190 -52 L228 -70 L272 -88"
+          fill="none" stroke="url(#brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(272 -88)">
+      <circle class="ping" cx="0" cy="0" r="4" fill="none" stroke="#c9a13a" stroke-width="2"/>
+      <circle cx="0" cy="0" r="4" fill="#e6c766"/>
+    </g>
+  </g>
+
+  <!-- The enforced status vocabulary, all six of it -->
+  <g class="mono" font-size="11" letter-spacing="1.1" text-anchor="start">
+    <text x="40" y="276" fill="#8b948f">pending</text>
+    <text x="118" y="276" fill="#8b948f">running</text>
+    <text x="196" y="276" fill="#5fe6a0">tp</text>
+    <text x="232" y="276" fill="#e6c766">be</text>
+    <text x="268" y="276" fill="#8b948f">sl</text>
+    <text x="304" y="276" fill="#8b948f" opacity=".55">cancelled</text>
+    <text x="400" y="276" fill="#8b948f" opacity=".55">NEVER COUNTED</text>
+  </g>
+
+  <g stroke="#2fbf71" stroke-width="1.5" opacity=".45" fill="none">
+    <path d="M12 12 l30 0 M12 12 l0 30"/>
+    <path d="M988 12 l-30 0 M988 12 l0 30"/>
+    <path d="M12 288 l30 0 M12 288 l0 -30"/>
+    <path d="M988 288 l-30 0 M988 288 l0 -30"/>
+  </g>
+
+  <rect width="1000" height="300" fill="url(#scan)"/>
+  <rect x="0" y="295" width="1000" height="5" fill="url(#brand)"/>
+</svg>
