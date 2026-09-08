@@ -757,3 +757,117 @@
     transition: none;
   }
 }
+
+/* --- Hero pointer glyphs -------------------------------------------------
+   A field of market marks behind the hero that leans toward the cursor. The
+   component writes --gx/--gy/--gs/--go per glyph from a rAF loop; everything
+   here is the resting state and the idle drift it falls back to. */
+.pointer-glyphs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.pointer-glyph {
+  --gx: 0px;
+  --gy: 0px;
+  --gs: 1;
+  --go: 0.1;
+  position: absolute;
+  display: block;
+  line-height: 1;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--primary);
+  opacity: var(--go);
+  /* The drift keyframe owns translate; the pointer's offset rides on top as a
+     second translate, so neither one clobbers the other. */
+  transform: translate(-50%, -50%) translate(var(--gx), var(--gy)) scale(var(--gs));
+  transition:
+    opacity 420ms ease-out,
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+.pointer-glyph:nth-child(3n + 2) {
+  color: var(--accent);
+}
+.pointer-glyph--d0 {
+  animation: glyph-drift 13s ease-in-out infinite;
+}
+.pointer-glyph--d1 {
+  animation: glyph-drift 17s ease-in-out infinite -3s;
+}
+.pointer-glyph--d2 {
+  animation: glyph-drift 15s ease-in-out infinite -7s;
+}
+.pointer-glyph--d3 {
+  animation: glyph-drift 19s ease-in-out infinite -11s;
+}
+
+@keyframes glyph-drift {
+  0%,
+  100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -14px;
+  }
+}
+
+/* --- Hero chart ---------------------------------------------------------- */
+.hero-candle {
+  transition:
+    y 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 600ms ease-out;
+}
+.hero-wick {
+  transition:
+    y1 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    y2 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    stroke 600ms ease-out;
+}
+.hero-series {
+  transition: d 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-marker {
+  transition:
+    cx 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    cy 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero-marker-halo {
+  animation: hero-ping 1.9s ease-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes hero-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.85;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer-glyph,
+  .pointer-glyph--d0,
+  .pointer-glyph--d1,
+  .pointer-glyph--d2,
+  .pointer-glyph--d3,
+  .hero-marker-halo {
+    animation: none;
+    transition: none;
+  }
+  .hero-candle,
+  .hero-wick,
+  .hero-series,
+  .hero-marker {
+    transition: none;
+  }
+}
