@@ -2,7 +2,8 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Bell, Bot, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
+import { Bell, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
+import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { Nav, Footer, LINKS, brandLogo } from "@/components/landing/Landing";
 import { Button } from "@/components/ui/button";
 import { BuyButton } from "@/components/BuyButton";
@@ -167,23 +168,30 @@ export function EzyAiPage() {
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
         <header className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
-              <Bot className="h-3.5 w-3.5 text-primary" /> {t("ezyai_desk_label")}
-            </span>
-            <h1 className="mt-4 text-3xl sm:text-4xl">{t("ezyai_page_title")}</h1>
-            <p className="mt-3 text-sm text-body sm:text-base">{t("ezyai_page_desc")}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild>
-                <a
-                  href={LINKS.ezyai}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => goTrack("ezyai_hero_open_bot")}
-                >
-                  <Send className="h-4 w-4" /> {t("ezyai_cta_open_bot")}
-                </a>
-              </Button>
+          <div className="flex max-w-2xl gap-5">
+            <EzyAiLogo
+              className="hidden h-20 w-20 shrink-0 rounded-full ring-1 ring-primary/25 sm:block"
+              withWordmark
+              title="EzyAI"
+            />
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted-foreground">
+                <EzyAiLogo className="h-4 w-4" /> {t("ezyai_desk_label")}
+              </span>
+              <h1 className="mt-4 text-3xl sm:text-4xl">{t("ezyai_page_title")}</h1>
+              <p className="mt-3 text-sm text-body sm:text-base">{t("ezyai_page_desc")}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button asChild>
+                  <a
+                    href={LINKS.ezyai}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => goTrack("ezyai_hero_open_bot")}
+                  >
+                    <Send className="h-4 w-4" /> {t("ezyai_cta_open_bot")}
+                  </a>
+                </Button>
+              </div>
             </div>
           </div>
         </header>

@@ -1,5 +1,6 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
+import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -37,7 +38,6 @@ import {
   X,
   BookOpen,
   Lock,
-  Bot,
 } from "lucide-react";
 import {
   trackPageLoad,
@@ -1403,10 +1403,9 @@ export function Products() {
 
         {/* EzyAI */}
         <Reveal className="h-full" delay={0.3}>
-        <article className="glass-card flex h-full flex-col rounded-xl p-6">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
-            <Bot className="h-6 w-6" />
-          </span>
+        <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
+          <EzyAiLogo className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-15" />
+          <EzyAiLogo className="h-12 w-12 rounded-full ring-1 ring-primary/30" title="EzyAI" />
           <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
             {(["ezyai_feature_1", "ezyai_feature_2", "ezyai_feature_3"] as TranslationKey[]).map((fk) => (
