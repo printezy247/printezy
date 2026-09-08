@@ -176,6 +176,77 @@ export const linkTelegramAccount = createServerFn({ method: "POST" })
   );
 
 /**
+ * Sign in on /auth with Telegram.
+ *
+ * Telegram issues no email, and website accounts are keyed on one — every
+ * purchase is matched to an account by the address Stripe charged. Minting a
+ * website account from a Telegram id would therefore mean inventing an email,
+ * and the buyer would end up with two accounts: the invented one they signed
+ * in to, and the real one their purchases landed in. So this never creates an
+ * account. It resolves to one of two things:
+ *
+ *   - "website": this Telegram account is already linked to a website
+ *     account, so a real Supabase session is minted for it. The token handed
+ *     back is the same one a magic link would carry in its URL, issued only
+ *     after Telegram's signature proved ownership of the linked account.
+ *   - "member": nothing is linked yet, so they get a member-area session
+ *     instead — which is keyed on Telegram anyway, and is a real destination
+ *     rather than a dead end. Linking is offered on the dashboard.
+ */
+export const signInWithTelegramToWebsite = createServerFn({ method: "POST" })
+  .inputValidator(loginPayload)
+  .handler(
+    async ({
+      data,
+    }): Promise<
+      | { ok: true; mode: "website"; tokenHash: string }
+      | { ok: true; mode: "member"; token: string; claimed: number }
+      | { ok: false; message: string }
+    > => {
+      const { verifyTelegramLogin } = await import("@/lib/telegram-login.server");
+      const user = await verifyTelegramLogin(signedFields(data));
+      if (!user) return { ok: false, message: REJECTED };
+
+      await rememberBotUser({ id: user.id, username: user.username, firstName: user.firstName });
+
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: linked } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("telegram_id", user.id)
+        .maybeSingle();
+
+      const linkedId = (linked as { id: string } | null)?.id ?? null;
+      if (linkedId) {
+        const { data: account } = await supabaseAdmin.auth.admin.getUserById(linkedId);
+        const email = account?.user?.email ?? null;
+        if (email) {
+          const { data: link, error } = await supabaseAdmin.auth.admin.generateLink({
+            type: "magiclink",
+            email,
+          });
+          const tokenHash = link?.properties?.hashed_token ?? null;
+          if (tokenHash) return { ok: true, mode: "website", tokenHash };
+          console.error("[telegram-login] magic link generation failed", error);
+        }
+      }
+
+      const { createMemberSession } = await import("@/lib/bot/member.server");
+      const token = await createMemberSession(user.id);
+      if (!token) return { ok: false, message: "Could not start your session — please try again." };
+
+      const { claimSitePurchases } = await import("@/lib/bot/site-access.server");
+      let claimed = 0;
+      try {
+        claimed = await claimSitePurchases({ telegramId: user.id, username: user.username });
+      } catch (error) {
+        console.error("[telegram-login] claim on sign-in failed", error);
+      }
+      return { ok: true, mode: "member", token, claimed };
+    },
+  );
+
+/**
  * Deliver the purchase a checkout session just paid for, straight from the
  * success page. The buyer holds the session id and proves a Telegram account
  * in the same request, so nothing here depends on a handle being right.

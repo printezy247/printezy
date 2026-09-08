@@ -136,11 +136,26 @@ the buyer waited on support.
 Telegram's Login Widget replaces that typed string with an id **Telegram signs
 for**, so delivery has nothing left to get wrong.
 
-| Where                 | What it does                                                                                                                         |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/account`            | One-click sign-in, above the 6-digit code flow. Claims anything already paid for under that handle.                                  |
-| `/checkout-success`   | "Deliver it to the right account" — attaches the purchase to a verified account, by Stripe session id, with no handle in the middle. |
-| `linkTelegramAccount` | Writes `profiles.telegram_id` and claims every purchase on the website account, whatever was typed at checkout.                      |
+| Where               | What it does                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `/auth`             | A third sign-in option beside Google and email. See the two paths below.                                                             |
+| `/account`          | One-click sign-in, above the 6-digit code flow. Claims anything already paid for under that handle.                                  |
+| `/checkout-success` | "Deliver it to the right account" — attaches the purchase to a verified account, by Stripe session id, with no handle in the middle. |
+| `/dashboard`        | A card that links Telegram to the website account and claims every purchase on it.                                                   |
+
+Telegram issues no email, and website accounts are keyed on one — every purchase
+is matched to an account by the address Stripe charged. Minting an account from a
+Telegram id would mean inventing an email, and the buyer would end up with two
+accounts: the invented one they signed in to, and the real one their purchases
+landed in. So `/auth` never creates an account. It resolves one of two ways:
+
+- **Linked** (`profiles.telegram_id` matches a website account) → a real Supabase
+  session for that account, and on to `/dashboard`. The token handed to the browser
+  is the same one a magic link carries in its URL, issued only after Telegram's
+  signature proved ownership of the linked account.
+- **Not linked yet** → a member-area session instead, and on to `/account`, which is
+  keyed on Telegram anyway. Linking is offered on the dashboard, which is what turns
+  a visitor into the first case next time.
 
 The signature check lives in `src/lib/telegram-login.server.ts`: HMAC-SHA256 over
 Telegram's data-check-string, keyed on `SHA256(bot_token)`, in constant time, with
