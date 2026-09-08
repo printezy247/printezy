@@ -1,16 +1,42 @@
+<div align="center">
+
+<img src="./docs/assets/hero.svg" alt="EzyMap ALGO — signals, macro and autopilot, delivered on Telegram" width="100%">
+
+<br>
+
 # 📈 EzyMap ALGO
 
-> Marketing site, checkout, and member tooling for EzyMap ALGO — a trading signals
-> service delivered over Telegram, built with guest-friendly Stripe checkout, a
-> Supabase backend, and a companion Telegram bot ecosystem.
+**A trading desk that lives inside Telegram — and a website that proves it works.**
 
-|                 |                                                                         |
-| --------------- | ----------------------------------------------------------------------- |
-| 🌐 **Live**     | [printezy.money](https://printezy.money)                                |
-| ☁️ **Hosting**  | [Lovable Cloud](https://lovable.dev) — builds and publishes from `main` |
-| 🗄️ **Backend**  | Supabase (Postgres + Auth + Storage)                                    |
-| 💳 **Payments** | Stripe, through Lovable's connector gateway                             |
-| 💬 **Bots**     | `@EzyRegisterBot`, `@ezytradeai_bot`, ASAP-TeleBot, MacroTrader         |
+Signals, a macro desk, gated ebooks and an AI autopilot, sold through guest-friendly
+Stripe checkout and delivered to a Telegram account the buyer never has to type.
+
+<br>
+
+[![Live](https://img.shields.io/badge/live-printezy.money-2fbf71?style=for-the-badge&labelColor=0a0c0b)](https://printezy.money)
+[![Signal board](https://img.shields.io/badge/watch_the_desk-live_signals-c9a13a?style=for-the-badge&labelColor=0a0c0b)](https://printezy.money/ezyai?tab=live)
+[![Telegram](https://img.shields.io/badge/telegram-@EzyRegisterBot-229ED9?style=for-the-badge&logo=telegram&logoColor=white&labelColor=0a0c0b)](https://t.me/EzyRegisterBot)
+
+![TanStack Start](https://img.shields.io/badge/TanStack_Start-React_19-ff4154?style=flat-square&labelColor=1a1d1b)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres_·_Auth-3ecf8e?style=flat-square&logo=supabase&logoColor=white&labelColor=1a1d1b)
+![Stripe](https://img.shields.io/badge/Stripe-checkout-635bff?style=flat-square&logo=stripe&logoColor=white&labelColor=1a1d1b)
+![Tailwind](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white&labelColor=1a1d1b)
+![Locales](https://img.shields.io/badge/locales-6-c9a13a?style=flat-square&labelColor=1a1d1b)
+
+</div>
+
+<br>
+
+|                 |                                                                               |
+| --------------- | ----------------------------------------------------------------------------- |
+| 🌐 **Live**     | [printezy.money](https://printezy.money)                                      |
+| 📡 **Signals**  | [Live autopilot board](https://printezy.money/ezyai?tab=live) — free to watch |
+| ☁️ **Hosting**  | [Lovable Cloud](https://lovable.dev) — builds and publishes from `main`       |
+| 🗄️ **Backend**  | Supabase (Postgres + Auth + Storage)                                          |
+| 💳 **Payments** | Stripe, through Lovable's connector gateway                                   |
+| 💬 **Bots**     | `@EzyRegisterBot`, `@ezytradeai_bot`, ASAP-TeleBot, MacroTrader               |
+
+<br>
 
 ---
 
@@ -82,6 +108,33 @@ supabase/
 ---
 
 ## ✨ How it works
+
+```mermaid
+flowchart LR
+    V(["🧑 Visitor"]) -->|guest checkout| S["🌐 printezy.money<br/>TanStack Start"]
+    S -->|Stripe session| P["💳 Stripe"]
+    P -->|webhook| S
+    S <-->|service role| DB[("🗄️ Supabase")]
+
+    S -->|verified telegram id| TG["✈️ Telegram login"]
+    TG --> DB
+
+    BOT["🤖 @EzyRegisterBot"] -->|/start| DB
+    DB -->|entitlement| BOT
+    BOT -->|access + files| V
+
+    AI["🧠 @ezytradeai_bot<br/>autopilot"] -->|POST /api/public/ezyai/signals| S
+    S -->|live board| V
+
+    MB["📊 MacroTrader"] -->|desk JSON| S
+
+    classDef site fill:#12241b,stroke:#2fbf71,color:#e8f2ec
+    classDef bot fill:#1c1a10,stroke:#c9a13a,color:#f3ecd8
+    classDef store fill:#101414,stroke:#4a5450,color:#cfd6d2
+    class S site
+    class BOT,AI,MB,TG bot
+    class DB,P store
+```
 
 ### 🛒 Guest checkout
 
@@ -443,6 +496,43 @@ catalog, USDT/Stripe/Telegram Stars payments and MT5 trial licensing.
 > ⚠️ It runs its own admin approvals against `EZYMAP_ADMIN_CHAT_ID`, a separate
 > setting from this site's `sarah_chat_id`. If the same person admins both, the two
 > numbers should match.
+
+---
+
+## 💛 Sponsor
+
+<div align="center">
+
+<img src="./docs/assets/hero.svg" alt="" width="100%">
+
+</div>
+
+Everything above runs on free public data feeds and a single small Cloudflare
+Worker. No paid market API, no scraped terminal, no ghost-written track record —
+the signal board is fed by the same autopilot that trades the maintainer's own
+account, and the win rate on `/ezyai` counts break-even trades honestly rather
+than the flattering way.
+
+If that is the sort of thing you would like more of, sponsorship goes to the
+parts that cost money rather than the parts that are fun:
+
+| What                                | Why it costs                                                                                                                                              |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📡 **Market data with actuals**     | ForexFactory's free feed publishes forecast and previous but never the released number. A feed that does is the single biggest upgrade to the macro desk. |
+| 🖥️ **A dedicated VPS for the bots** | Four Telegram bots on one hobby box is a single point of failure for every delivery on this list.                                                         |
+| 🌍 **Native translators**           | Six locales ship today; four of them were translated by a machine and deserve a human pass.                                                               |
+| 🧪 **A staging Supabase project**   | Every migration here is applied to production because there is nowhere else to apply it.                                                                  |
+
+<div align="center">
+
+<br>
+
+[![Sponsor](https://img.shields.io/badge/sponsor-this_work-c9a13a?style=for-the-badge&logo=githubsponsors&logoColor=white&labelColor=0a0c0b)](https://github.com/sponsors/printezy247)
+[![Talk to us](https://img.shields.io/badge/talk_to_us-@ezymap-229ED9?style=for-the-badge&logo=telegram&logoColor=white&labelColor=0a0c0b)](https://t.me/ezymap)
+
+<sub>Or just open the board and watch it work — that costs nothing and helps most.</sub>
+
+</div>
 
 ---
 
