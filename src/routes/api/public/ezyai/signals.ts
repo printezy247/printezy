@@ -107,12 +107,21 @@ async function guard(request: Request): Promise<Response | null> {
  */
 async function diagnose(): Promise<Response> {
   const { key, source } = boundKey();
+  const signal = normalise(process.env.EZYAI_SIGNAL_KEY);
+  const entitlement = normalise(process.env.EZYAI_ENTITLEMENT_KEY);
   return Response.json({
     configured: Boolean(key),
     compared_against: source,
-    signal_key_present: Boolean(normalise(process.env.EZYAI_SIGNAL_KEY)),
-    entitlement_key_present: Boolean(normalise(process.env.EZYAI_ENTITLEMENT_KEY)),
+    signal_key_present: Boolean(signal),
+    entitlement_key_present: Boolean(entitlement),
     expected_fingerprint: await fingerprint(key),
+    // The two secrets are separate on purpose — pushing signals and redeeming
+    // paid entitlements are different privileges — but nothing stops someone
+    // pasting one value into both fields, and then rotating one leaves the
+    // other still carrying the old secret. That is invisible from outside and
+    // exactly the kind of thing you want to find out before you rely on it.
+    entitlement_fingerprint: await fingerprint(entitlement),
+    keys_identical: Boolean(signal) && signal === entitlement,
   });
 }
 
