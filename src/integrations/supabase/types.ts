@@ -280,6 +280,84 @@ export type Database = {
         }
         Relationships: []
       }
+      ezyai_signals: {
+        Row: {
+          closed_at: string | null
+          created_at: string
+          direction: string
+          entry_fill: number | null
+          entry_high: number | null
+          entry_low: number | null
+          external_id: string
+          id: string
+          last_price: number | null
+          note: string | null
+          opened_at: string
+          result_pips: number | null
+          result_r: number | null
+          rr: number | null
+          setup: string | null
+          setup_score: number | null
+          status: string
+          stop_price: number | null
+          symbol: string
+          timeframe: string | null
+          tp1: number | null
+          tp2: number | null
+          updated_at: string
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string
+          direction?: string
+          entry_fill?: number | null
+          entry_high?: number | null
+          entry_low?: number | null
+          external_id: string
+          id?: string
+          last_price?: number | null
+          note?: string | null
+          opened_at?: string
+          result_pips?: number | null
+          result_r?: number | null
+          rr?: number | null
+          setup?: string | null
+          setup_score?: number | null
+          status?: string
+          stop_price?: number | null
+          symbol: string
+          timeframe?: string | null
+          tp1?: number | null
+          tp2?: number | null
+          updated_at?: string
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string
+          direction?: string
+          entry_fill?: number | null
+          entry_high?: number | null
+          entry_low?: number | null
+          external_id?: string
+          id?: string
+          last_price?: number | null
+          note?: string | null
+          opened_at?: string
+          result_pips?: number | null
+          result_r?: number | null
+          rr?: number | null
+          setup?: string | null
+          setup_score?: number | null
+          status?: string
+          stop_price?: number | null
+          symbol?: string
+          timeframe?: string | null
+          tp1?: number | null
+          tp2?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string

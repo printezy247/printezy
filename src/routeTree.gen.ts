@@ -38,6 +38,7 @@ import { Route as MsPrivacyRouteImport } from './routes/ms/privacy'
 import { Route as MsTermsRouteImport } from './routes/ms/terms'
 import { Route as MsEbooksSlugRouteImport } from './routes/ms/ebooks.$slug'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
+import { Route as ApiPublicEzyaiSignalsRouteImport } from './routes/api/public/ezyai/signals'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/public/telegram/webhook'
 
@@ -188,6 +189,11 @@ const ApiPublicEzyaiEntitlementsRoute =
     path: '/api/public/ezyai/entitlements',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicEzyaiSignalsRoute = ApiPublicEzyaiSignalsRouteImport.update({
+  id: '/api/public/ezyai/signals',
+  path: '/api/public/ezyai/signals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -230,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/ms/': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/ms': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -296,6 +304,7 @@ export interface FileRoutesById {
   '/ms/': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/telegram/webhook': typeof ApiPublicTelegramWebhookRoute
 }
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/ms/'
     | '/ms/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/ms'
     | '/ms/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   id:
@@ -395,6 +406,7 @@ export interface FileRouteTypes {
     | '/ms/'
     | '/ms/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
     | '/api/public/telegram/webhook'
   fileRoutesById: FileRoutesById
@@ -427,6 +439,7 @@ export interface RootRouteChildren {
   MsIndexRoute: typeof MsIndexRoute
   MsEbooksSlugRoute: typeof MsEbooksSlugRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
+  ApiPublicEzyaiSignalsRoute: typeof ApiPublicEzyaiSignalsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicTelegramWebhookRoute: typeof ApiPublicTelegramWebhookRoute
 }
@@ -636,6 +649,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicEzyaiEntitlementsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ezyai/signals': {
+      id: '/api/public/ezyai/signals'
+      path: '/api/public/ezyai/signals'
+      fullPath: '/api/public/ezyai/signals'
+      preLoaderRoute: typeof ApiPublicEzyaiSignalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -694,6 +714,7 @@ const rootRouteChildren: RootRouteChildren = {
   MsIndexRoute: MsIndexRoute,
   MsEbooksSlugRoute: MsEbooksSlugRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
+  ApiPublicEzyaiSignalsRoute: ApiPublicEzyaiSignalsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicTelegramWebhookRoute: ApiPublicTelegramWebhookRoute,
 }
