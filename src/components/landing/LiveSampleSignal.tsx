@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
-import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
+import { DEMO, type DemoPrice } from "@/lib/use-demo-price";
 import { goTrack } from "@/lib/analytics";
 
 /**
@@ -15,39 +15,6 @@ import { goTrack } from "@/lib/analytics";
  * ones that actually are.
  */
 
-const ENTRY = 4598.7;
-const STOP = 4596.7;
-const TARGET = 4600.61;
-const TICK_MS = 1400;
-
-/** A gentle wander inside the entry → target band, never past either end. */
-function useDemoPrice(): { price: number; rising: boolean } {
-  const reducedMotion = usePrefersReducedMotion();
-  const [price, setPrice] = useState(ENTRY + 0.34);
-  const [rising, setRising] = useState(true);
-  const previous = useRef(price);
-
-  useEffect(() => {
-    if (reducedMotion) return;
-    const timer = setInterval(() => {
-      setPrice((current) => {
-        // Pulled gently back towards the middle of the band, so it wanders
-        // rather than walking off one end and sticking there.
-        const middle = (ENTRY + TARGET) / 2;
-        const drift = (middle - current) * 0.18;
-        const noise = (Math.random() - 0.5) * 0.55;
-        const next = Math.min(TARGET - 0.02, Math.max(ENTRY - 0.4, current + drift + noise));
-        setRising(next >= previous.current);
-        previous.current = next;
-        return next;
-      });
-    }, TICK_MS);
-    return () => clearInterval(timer);
-  }, [reducedMotion]);
-
-  return { price, rising };
-}
-
 function Cell({ label, value, tone }: { label: string; value: ReactNode; tone: string }) {
   return (
     <div className="bg-secondary px-3 py-3 text-center">
@@ -59,13 +26,16 @@ function Cell({ label, value, tone }: { label: string; value: ReactNode; tone: s
   );
 }
 
-export function LiveSampleSignal({ chart }: { chart: ReactNode }) {
+export function LiveSampleSignal({ chart, live }: { chart: ReactNode; live: DemoPrice }) {
   const { t } = useTranslation();
-  const { price, rising } = useDemoPrice();
+  const { price, rising } = live;
 
   // Same stop → target rail the real board draws, so the hero and /ezyai read
   // as one thing rather than two different products.
-  const travelled = Math.max(0, Math.min(100, ((price - STOP) / (TARGET - STOP)) * 100));
+  const travelled = Math.max(
+    0,
+    Math.min(100, ((price - DEMO.stop) / (DEMO.target - DEMO.stop)) * 100),
+  );
 
   return (
     <div>
@@ -108,11 +78,11 @@ export function LiveSampleSignal({ chart }: { chart: ReactNode }) {
             <span
               className="signal-rail__fill"
               data-live="true"
-              style={{ width: `${travelled}%`, transitionDuration: `${TICK_MS}ms` }}
+              style={{ width: `${travelled}%`, transitionDuration: `${DEMO.tickMs}ms` }}
             />
             <span
               className="signal-entry-mark"
-              style={{ left: `${((ENTRY - STOP) / (TARGET - STOP)) * 100}%` }}
+              style={{ left: `${((DEMO.entry - DEMO.stop) / (DEMO.target - DEMO.stop)) * 100}%` }}
             />
           </div>
         </div>
