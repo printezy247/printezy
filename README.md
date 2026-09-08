@@ -411,6 +411,29 @@ and a field the payload omits keeps whatever it already had:
 | `result_r`    | Realised R: `+2.4` at target, `-1` at stop. Drives every performance number. |
 | `closed_at`   | Filled in automatically on a closing status if omitted                       |
 
+**A ready-made client is in this repo:** [`docs/ezyai_signal_client.py`](./docs/ezyai_signal_client.py).
+Standard library only, so it adds no dependency to the bot. Drop it in, set
+`EZYAI_SIGNAL_KEY`, and call it from wherever the autopilot already decides to
+open, move and close a trade:
+
+```python
+from ezyai_signal_client import open_signal, tick, close_signal
+
+open_signal("auto-8842", "XAUUSD", "buy", status="running",
+            entry_low=4590.2, entry_high=4593.0, stop_price=4585.0,
+            tp1=4604.0, tp2=4612.0, rr=2.4, setup_score=82,
+            setup="London continuation", timeframe="M15")
+
+tick("auto-8842", 4597.1)                        # while it runs
+
+close_signal("auto-8842", "tp", result_r=2.4)    # at target / break-even / stop
+```
+
+Nothing there raises: a failed push returns `ok=False` and logs, because the
+board is a shop window and must never be able to take the bot down with it.
+Running the file directly (`python ezyai_signal_client.py`) fires a probe signal
+and cancels it again, which is the quickest way to prove the key works.
+
 Batch up to 50 with `{ "signals": [ ... ] }`. A mixed batch answers **207** with
 a per-signal `results` array, so one malformed row cannot lose the other
 forty-nine. `GET` the same URL returns the live board for reconciliation.
