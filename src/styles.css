@@ -579,3 +579,179 @@
     opacity: 0;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* EzyAI signal board                                                  */
+/* ------------------------------------------------------------------ */
+
+/* Status flag. The dot is the state made visible: a running trade breathes,
+   one still waiting for its entry blinks slowly, a closed one holds steady.
+   Colour arrives as --flag so one class serves every status. */
+.signal-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--flag) 45%, transparent);
+  background: color-mix(in srgb, var(--flag) 12%, transparent);
+  color: var(--flag);
+  padding: 0.125rem 0.5rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.signal-flag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+}
+.signal-flag[data-pulse="running"]::before {
+  animation: sig-pulse 1800ms ease-out infinite;
+}
+.signal-flag[data-pulse="pending"]::before {
+  animation: sig-blink 2400ms ease-in-out infinite;
+}
+
+@keyframes sig-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 70%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+@keyframes sig-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Stop → target rail. The fill is the distance travelled, so a winning trade
+   grows to the right whichever way it is pointing. */
+.signal-rail {
+  position: relative;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--gauge-track, #3a403c);
+  overflow: hidden;
+}
+.signal-rail__fill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--rail) 55%, transparent) 0%,
+    var(--rail) 100%
+  );
+  transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* A live trade gets a light running along the distance it has covered —
+   the same sweep-then-rest cadence as the Fear & Greed gauges, so a board
+   left open on a second monitor does not twitch. */
+.signal-rail__fill[data-live="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: sig-sweep 2600ms cubic-bezier(0.4, 0, 0.5, 1) infinite;
+}
+@keyframes sig-sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  55%,
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+/* Nothing to place the price against yet — say so with motion rather than
+   parking a bar at zero, which would read as a losing trade. */
+.signal-rail__idle {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--rail) 45%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: sig-idle 2200ms linear infinite;
+}
+@keyframes sig-idle {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+/* Entry marker: where the trade got in, pinned on the same rail. */
+.signal-entry-mark {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--foreground) 65%, transparent);
+}
+
+/* Setup score as a filled ring. --score is a 0-100 number set inline; the
+   conic gradient turns it into an arc and the transition sweeps it round on
+   first paint. */
+.score-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: conic-gradient(
+    var(--ring) calc(var(--score) * 1%),
+    color-mix(in srgb, var(--gauge-track, #3a403c) 80%, transparent) 0
+  );
+  transition: background 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.score-ring::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 9999px;
+  background: var(--card);
+}
+.score-ring > * {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-flag[data-pulse]::before,
+  .signal-rail__fill[data-live="true"]::after,
+  .signal-rail__idle {
+    animation: none;
+  }
+  .signal-rail__fill,
+  .score-ring {
+    transition: none;
+  }
+}

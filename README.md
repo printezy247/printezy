@@ -310,6 +310,80 @@ row up with `GET /api/public/ezyai/entitlements?code=<code>`.
 
 ---
 
+### 🛰️ EzyAI autopilot signal board
+
+`/ezyai` is three tabs: **Live signals**, **Performance** and **About EzyAI** (the
+marketing that used to be the whole page). The first two are fed by the
+autopilot running on the admin's own account.
+
+The board is **public on this site by design** — anyone can watch the desk work,
+which is the proof that sells PRO. The paywall stays where it always was, inside
+the bot, on the alerts that arrive while a trade is still worth taking.
+
+A card carries status, entry zone, SL, TP1/TP2, R:R and the setup score, and it
+stays on the board until the trade actually closes at target, break-even or stop
+— nothing is quietly removed. The rail under each card maps the last reported
+price onto the stop → target span, so both directions read left-to-right and
+"further right is better" whichever way the trade points.
+
+#### The bot contract
+
+```
+POST /api/public/ezyai/signals      Authorization: Bearer <EZYAI_SIGNAL_KEY>
+```
+
+Three shapes, all the same call. Every field except `external_id` is optional,
+and a field the payload omits keeps whatever it already had:
+
+```jsonc
+// open
+{ "external_id": "auto-8842", "symbol": "XAUUSD", "direction": "buy",
+  "status": "pending", "setup": "London continuation", "timeframe": "M15",
+  "entry_low": 4590.2, "entry_high": 4593.0, "stop_price": 4585.0,
+  "tp1": 4604.0, "tp2": 4612.0, "rr": 2.4, "setup_score": 82 }
+
+// tick — as often as you like while it runs
+{ "external_id": "auto-8842", "status": "running", "last_price": 4597.1 }
+
+// close
+{ "external_id": "auto-8842", "status": "tp", "result_r": 2.4, "result_pips": 138 }
+```
+
+| Field         | Notes                                                                        |
+| ------------- | ---------------------------------------------------------------------------- |
+| `external_id` | The bot's own id for the trade. Makes every push idempotent.                 |
+| `status`      | `pending` · `running` · `tp` · `be` · `sl` · `cancelled`                     |
+| `direction`   | `buy` · `sell`                                                               |
+| `setup_score` | 0–100, rendered as the ring on the card                                      |
+| `result_r`    | Realised R: `+2.4` at target, `-1` at stop. Drives every performance number. |
+| `closed_at`   | Filled in automatically on a closing status if omitted                       |
+
+Batch up to 50 with `{ "signals": [ ... ] }`. A mixed batch answers **207** with
+a per-signal `results` array, so one malformed row cannot lose the other
+forty-nine. `GET` the same URL returns the live board for reconciliation.
+
+> ⚠️ Set **`EZYAI_SIGNAL_KEY`** in Lovable Cloud. It falls back to
+> `EZYAI_ENTITLEMENT_KEY` if unset, so the bridge works with one secret and can
+> be split onto its own later without a code change. While neither is set the
+> endpoint answers 503 and the board simply stays empty.
+
+Performance counts closed signals only; `cancelled` never counts. Win rate is
+wins over wins + losses — **break-even is excluded from the denominator** rather
+than counted as half a win, so the number cannot be flattered by moving stops to
+entry.
+
+Note the ingest is an explicit update-or-insert, not an upsert: Postgres builds
+the candidate row and checks its NOT NULL columns _before_ it notices the
+conflict, so an upsert of a price tick — which carries no `symbol` — is rejected
+even though the row it means to update already exists.
+
+Code: `src/lib/ezyai/signals.ts` (types + the arithmetic, isomorphic),
+`signals.server.ts` (database), `signals.functions.ts` (what the page reads),
+`src/routes/api/public/ezyai/signals.ts` (the bridge),
+`src/components/ezyai/` (the cards and the performance panel).
+
+---
+
 ### 📊 Macro desk data
 
 The economic calendar on `/macro` is read from ForexFactory's weekly feed
