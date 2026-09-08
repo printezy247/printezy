@@ -69,7 +69,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
 
   const { error: markError } = await supabaseAdmin
     .from("site_purchases")
-    .update({ granted_at: nowIso } as never)
+    .update({ granted_at: nowIso, claimed_by_telegram_id: telegramId } as never)
     .eq("id", purchase.id)
     .is("granted_at", null);
   if (markError) console.error("[site-access] granted_at update failed", markError);
@@ -116,7 +116,10 @@ async function grantMt5Purchase(purchase: PurchaseRow, telegramId: number | null
   if (granted) {
     const { error: markError } = await supabaseAdmin
       .from("site_purchases")
-      .update({ granted_at: nowIso } as never)
+      .update({
+        granted_at: nowIso,
+        ...(telegramId ? { claimed_by_telegram_id: telegramId } : {}),
+      } as never)
       .eq("id", purchase.id)
       .is("granted_at", null);
     if (markError) console.error("[site-access] granted_at update failed", markError);
@@ -169,17 +172,74 @@ export async function claimSitePurchases(args: {
     return 0;
   }
 
+  return grantRows((data ?? []) as PurchaseRow[], args.telegramId);
+}
+
+/** Grants each row this bot is responsible for, and reports how many. */
+async function grantRows(rows: PurchaseRow[], telegramId: number): Promise<number> {
   // EzyAI PRO is delivered by @ezytradeai_bot via ezyai_entitlements, not
   // by this bot — leave those rows alone.
-  const rows = ((data ?? []) as PurchaseRow[]).filter((row) => !isEzyAiSku(row.sku));
-  for (const row of rows) {
+  const mine = rows.filter((row) => !isEzyAiSku(row.sku));
+  for (const row of mine) {
     if (isMt5Sku(row.sku)) {
-      await grantMt5Purchase(row, args.telegramId);
+      await grantMt5Purchase(row, telegramId);
     } else {
-      await grantPurchase(args.telegramId, row);
+      await grantPurchase(telegramId, row);
     }
   }
-  return rows.length;
+  return mine.length;
+}
+
+/**
+ * Claim every ungranted paid purchase belonging to a website account.
+ *
+ * The handle path above only works if the buyer typed their Telegram handle
+ * correctly at checkout. This one does not care what they typed: the purchase
+ * is tied to their website account by the email Stripe charged, and the
+ * Telegram id is one Telegram itself vouched for, so a typo or a later rename
+ * cannot strand the delivery.
+ */
+export async function claimPurchasesForUser(args: {
+  userId: string;
+  telegramId: number;
+}): Promise<number> {
+  const { data, error } = await supabaseAdmin
+    .from("site_purchases")
+    .select(PURCHASE_ROW_COLUMNS)
+    .eq("status", "paid")
+    .is("granted_at", null)
+    .eq("user_id", args.userId);
+
+  if (error) {
+    console.error("[site-access] account claim lookup failed", error);
+    return 0;
+  }
+  return grantRows((data ?? []) as PurchaseRow[], args.telegramId);
+}
+
+/**
+ * Claim the one purchase a Stripe checkout session paid for. Used straight
+ * off the success page, where the buyer holds the session id and can prove a
+ * Telegram account in the same breath — the shortest path there is from
+ * "paid" to "delivered", with no handle in the middle.
+ */
+export async function claimPurchaseBySession(args: {
+  stripeSessionId: string;
+  telegramId: number;
+}): Promise<number> {
+  const { data, error } = await supabaseAdmin
+    .from("site_purchases")
+    .select(PURCHASE_ROW_COLUMNS)
+    .eq("status", "paid")
+    .is("granted_at", null)
+    .eq("stripe_session_id", args.stripeSessionId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[site-access] session claim lookup failed", error);
+    return 0;
+  }
+  return data ? grantRows([data as PurchaseRow], args.telegramId) : 0;
 }
 
 /**

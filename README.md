@@ -125,6 +125,49 @@ does trigger one, though sign-in keeps working while it is pending.
 
 ---
 
+### ✈️ Sign in with Telegram
+
+Everything this site sells is delivered **inside Telegram**, and for a long time
+the only thing tying a payment to a Telegram account was the handle the buyer
+typed at checkout. One typo, one later rename, or an account with no username at
+all, and the purchase sat in `site_purchases` with `granted_at` still null while
+the buyer waited on support.
+
+Telegram's Login Widget replaces that typed string with an id **Telegram signs
+for**, so delivery has nothing left to get wrong.
+
+| Where                 | What it does                                                                                                                         |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `/account`            | One-click sign-in, above the 6-digit code flow. Claims anything already paid for under that handle.                                  |
+| `/checkout-success`   | "Deliver it to the right account" — attaches the purchase to a verified account, by Stripe session id, with no handle in the middle. |
+| `linkTelegramAccount` | Writes `profiles.telegram_id` and claims every purchase on the website account, whatever was typed at checkout.                      |
+
+The signature check lives in `src/lib/telegram-login.server.ts`: HMAC-SHA256 over
+Telegram's data-check-string, keyed on `SHA256(bot_token)`, in constant time, with
+payloads older than 15 minutes rejected so a captured one is not replayable
+forever. Everything else is in `src/lib/telegram-login.functions.ts`; the button
+itself is `src/components/TelegramLoginButton.tsx`.
+
+> ⚠️ **Two manual steps, or the button does nothing.** Both are for the _same_
+> bot — by default `@EzyRegisterBot`, the one that owns `bot_users` and delivers
+> access.
+>
+> 1. **BotFather → `/setdomain` → `printezy.money`.** Telegram refuses to render
+>    the button on a domain the bot has not claimed. Nothing appears, no error.
+> 2. **`TELEGRAM_LOGIN_BOT_TOKEN`** in Lovable Cloud, set to that bot's token.
+>    The rest of the bot code never sees a raw token — the Lovable connector
+>    gateway injects it — but signature verification cannot work without it.
+>
+> Optional: `TELEGRAM_LOGIN_BOT_USERNAME` if the login bot is not
+> `@EzyRegisterBot`.
+
+Until the token is set, `getTelegramLoginConfig` returns `botUsername: null`, no
+button is rendered anywhere, and the code-based sign-in carries on as before. The
+button also removes itself if Telegram's script fails to load, so a missing
+`/setdomain` degrades to the old flow rather than to a dead end.
+
+---
+
 ### 📘 Gated ebooks
 
 The PDFs live in the private `ebooks` storage bucket (object key `<slug>.pdf`, see

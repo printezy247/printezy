@@ -24,6 +24,8 @@ import {
   verifyLoginCode,
   type MemberDashboard,
 } from "@/lib/member.functions";
+import { getTelegramLoginConfig, signInWithTelegram } from "@/lib/telegram-login.functions";
+import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 import { formatPrice } from "@/lib/bot/tiers";
 import { LINKS } from "@/components/landing/Landing";
 
@@ -218,6 +220,30 @@ function SignIn({ onSignedIn }: { onSignedIn: (token: string) => void }) {
 
   const askCode = useServerFn(requestLoginCode);
   const verify = useServerFn(verifyLoginCode);
+  const loadConfig = useServerFn(getTelegramLoginConfig);
+  const telegramSignIn = useServerFn(signInWithTelegram);
+
+  // Null until we know whether the widget is usable at all, so the fallback
+  // heading doesn't flash "or" above a button that never arrives.
+  const [botUsername, setBotUsername] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void loadConfig()
+      .then((res) => alive && setBotUsername(res.botUsername))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [loadConfig]);
+
+  const telegram = useMutation({
+    mutationFn: (payload: TelegramAuthPayload) => telegramSignIn({ data: payload }),
+    onSuccess: (res) => {
+      if (res.ok && res.token) onSignedIn(res.token);
+      else setMessage(res.message ?? "That sign-in could not be verified.");
+    },
+    onError: () => setMessage("Something went wrong. Try again."),
+  });
 
   const request = useMutation({
     mutationFn: () => askCode({ data: { handle } }),
@@ -240,9 +266,30 @@ function SignIn({ onSignedIn }: { onSignedIn: (token: string) => void }) {
   return (
     <Panel>
       <p className="text-sm text-muted-foreground">
-        Your account is tied to your Telegram. Enter your handle and the enrollment bot
-        sends you a 6-digit sign-in code.
+        Your account is tied to your Telegram.
+        {botUsername
+          ? " Sign in with it directly — anything you have already paid for is delivered the moment you do."
+          : " Enter your handle and the enrollment bot sends you a 6-digit sign-in code."}
       </p>
+
+      {botUsername ? (
+        <div className="mt-6">
+          <TelegramLoginButton
+            botUsername={botUsername}
+            onAuth={(payload) => {
+              setMessage(null);
+              telegram.mutate(payload);
+            }}
+            onUnavailable={() => setBotUsername(null)}
+          />
+          {telegram.isPending ? (
+            <p className="mt-3 text-center text-sm text-muted-foreground">Signing you in…</p>
+          ) : null}
+          <p className="mt-6 text-center text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            or use a sign-in code
+          </p>
+        </div>
+      ) : null}
 
       <form
         className="mt-6 space-y-4"
