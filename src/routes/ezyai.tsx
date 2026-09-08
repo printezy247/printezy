@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -17,6 +17,14 @@ import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
 
 export const Route = createFileRoute("/ezyai")({
+  // Deep-linkable tabs, so the hero card (and anything else) can point
+  // straight at the live board rather than at the page and a hope.
+  validateSearch: (search: Record<string, unknown>): { tab?: EzyAiTab } => ({
+    tab:
+      search.tab === "live" || search.tab === "history" || search.tab === "about"
+        ? search.tab
+        : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo" },
@@ -127,7 +135,8 @@ function TabButton({
 
 export function EzyAiPage() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<EzyAiTab>("live");
+  const search = useSearch({ from: "/ezyai", shouldThrow: false });
+  const [tab, setTab] = useState<EzyAiTab>(search?.tab ?? "live");
 
   const loadBoard = useServerFn(getEzyAiBoard);
   const loadHistory = useServerFn(getEzyAiHistory);

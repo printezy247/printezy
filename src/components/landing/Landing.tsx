@@ -6,6 +6,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { useTranslation, useLocale, localizePath, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
+import { LiveSampleSignal } from "./LiveSampleSignal";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
@@ -683,34 +684,7 @@ function Hero() {
         </div>
 
         <div>
-          <div className="rounded-md border border-border bg-card shadow-elevated">
-            <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-              <span className="text-sm font-bold text-foreground">{t("hero_sample_symbol")}</span>
-              <span className="rounded bg-accent-tint px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-accent">
-                {t("hero_sample_badge")}
-              </span>
-            </div>
-            <div className="h-40 px-2 py-3 sm:h-48">
-              <ChartGraphic />
-            </div>
-            <div className="grid grid-cols-3 gap-px border-t border-border bg-border">
-              {[
-                [t("hero_sample_entry"), "4,598.70", "text-foreground"],
-                [t("hero_sample_stop"), "4,596.70", "text-accent"],
-                [t("hero_sample_target"), "4,600.61", "text-primary"],
-              ].map(([label, value, tone]) => (
-                <div key={label} className="bg-secondary px-3 py-3 text-center">
-                  <p className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-                    {label}
-                  </p>
-                  <p className={`mt-1 font-mono text-sm font-extrabold tabular-nums ${tone}`}>{value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <p className="mt-2.5 text-[11.5px] leading-relaxed text-muted-foreground">
-            {t("hero_disclaimer")}
-          </p>
+          <LiveSampleSignal chart={<ChartGraphic />} />
         </div>
       </div>
     </section>
