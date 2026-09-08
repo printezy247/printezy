@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./docs/assets/console.svg" alt="EzyMap ALGO mission control — live signal board, macro desk and Telegram autopilot" width="100%">
+<img src="./docs/assets/console.svg" alt="EzyMap ALGO — counted-from-code telemetry, an isometric order book stepping up into gold, and a cumulative-R curve drawing itself" width="100%">
 
 <br>
 
@@ -19,7 +19,7 @@ Stripe checkout and delivered to a Telegram account the buyer never has to type.
 [![Sponsor](https://img.shields.io/badge/sponsor-this_work-c9a13a?style=for-the-badge&logo=githubsponsors&logoColor=white&labelColor=0a0c0b)](https://github.com/sponsors/printezy247)
 
 ![TanStack Start](https://img.shields.io/badge/TanStack_Start-React_19-ff4154?style=flat-square&labelColor=1a1d1b)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres_·_Auth-3ecf8e?style=flat-square&logo=supabase&logoColor=white&labelColor=1a1d1b)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres_%C2%B7_Auth-3ecf8e?style=flat-square&logo=supabase&logoColor=white&labelColor=1a1d1b)
 ![Stripe](https://img.shields.io/badge/Stripe-checkout-635bff?style=flat-square&logo=stripe&logoColor=white&labelColor=1a1d1b)
 ![Tailwind](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white&labelColor=1a1d1b)
 ![Locales](https://img.shields.io/badge/locales-6-c9a13a?style=flat-square&labelColor=1a1d1b)
@@ -37,7 +37,7 @@ Every number on this page is counted from the code, and the third column says wh
 | **Routes**           | `31` registered paths — 24 rendered pages, 4 API, 2 redirects, 1 XML             | [`src/routeTree.gen.ts`](./src/routeTree.gen.ts)                                     |
 | **Malay twins**      | `9` — one per English public page, 1:1                                           | [`src/routes/ms/`](./src/routes/ms) ↔ `LOCALIZED_PATHS`                              |
 | **Migrations**       | `33`                                                                             | [`supabase/migrations/`](./supabase/migrations)                                      |
-| **Tables**           | `22`, every one denying `anon` and `authenticated`                               | [`src/integrations/supabase/types.ts`](./src/integrations/supabase/types.ts)         |
+| **Tables**           | `22`, none readable by `anon`; 6 user-owned tables allow a self-scoped read      | [`src/integrations/supabase/types.ts`](./src/integrations/supabase/types.ts)         |
 | **RPC**              | `4` — `analytics_summary`, `has_role`, `increment_rate_limit`, `record_ad_click` | same file                                                                            |
 | **Server functions** | `37` exported (plus one unused Lovable scaffold)                                 | [`src/lib/`](./src/lib) — `*.functions.ts`                                           |
 | **Catalog**          | `30` SKUs in 5 groups                                                            | [`src/lib/catalog.ts`](./src/lib/catalog.ts)                                         |
@@ -56,7 +56,7 @@ Every number on this page is counted from the code, and the third column says wh
 
 ## 📡 The board — the proof
 
-<img src="./docs/assets/board-panel.svg" alt="An EzyAI signal card and its equity curve — setup score, entry-to-target progress, live R, and the win-rate formula" width="100%">
+<img src="./docs/assets/board-panel.svg" alt="An EzyAI signal card and its equity curve — setup score, stop-to-target progress, live R, the win-rate formula, and the six enforced status words" width="100%">
 
 [`/ezyai`](https://printezy.money/ezyai?tab=live) is **public on purpose**. Anyone can watch the
 desk work, which is the proof that sells PRO. The paywall stays where it always was — inside the
@@ -116,12 +116,14 @@ flowchart LR
 
 Four trust boundaries the diagram implies but cannot draw:
 
-- **No raw Stripe or Telegram secret is handled by app code** — both route through Lovable's
-  connector gateway.
+- **No Stripe API key or bot token is used for outbound calls** — those route through Lovable's
+  connector gateway on connection keys. The two secrets app code does handle are the Stripe webhook
+  signing secret and `TELEGRAM_LOGIN_BOT_TOKEN`, both used only to verify inbound signatures.
 - Because the Stripe SDK is proxied, the webhook signature is verified **by hand** with WebCrypto
   HMAC-SHA256: 300-second timestamp tolerance, constant-time compare across every `v1` signature.
 - The Telegram webhook secret is **derived, not stored**:
-  `base64url(SHA-256("telegram-webhook:" + key))`. `setWebhook` and the route compute the same
+  `base64url(SHA-256("telegram-webhook:" + key))`. The route derives it from `TELEGRAM_API_KEY`;
+  whoever calls `setWebhook` (done by hand against the gateway, not from this repo) derives the same
   value, so there is nothing extra to rotate.
 - Two independent env guards mean a sandbox Stripe event can never grant live access.
 
@@ -236,7 +238,7 @@ and `/free-ebook` redirects to `/ebooks/technical-analysis`.
 </details>
 
 <details>
-<summary><b><code>CH 02</code> · Checkout and fulfilment</b> — guest Stripe checkout, `createCheckout`, and the auto-grant path through the MT5 licence server</summary>
+<summary><b><code>CH 02</code> · Checkout and fulfilment</b> — guest Stripe checkout, <code>createCheckout</code>, and the auto-grant path through the MT5 licence server</summary>
 
 <br>
 
@@ -250,8 +252,8 @@ it does not exist** — adding a SKU to `catalog.ts` is genuinely the only setup
 `payment`, not `subscription`: every price is a one-time charge for a stated term, so "$19/mo" in
 the macro UI is a term label, not a Stripe subscription.
 
-**Idempotency** is by unique `stripe_session_id`, with an explicit `23505` re-read for the race
-between the webhook and the success page.
+**Idempotency** is by unique `stripe_session_id`: `recordSitePurchase` re-reads the row before
+inserting, so a Stripe retry records the sale once.
 
 **Fulfilment is automatic, not manual.** `site-access.server.ts` creates the enrollment and DMs the
 buyer. For MT5 SKUs, `mt5-license.server.ts` POSTs `/admin/grant` to the EzyMap License Server with
@@ -261,16 +263,17 @@ not parsed from the SKU string, so the two vocabularies can diverge without a si
 the licence server is unconfigured it is a silent no-op that falls back to manual fulfilment; it
 never throws and never blocks the purchase confirmation.
 
-🎟️ **Redeem codes** (`EZY-XXXX-XXXX`, `src/lib/ezyai/redeem-code.ts`) are minted at checkout and
-stored on the Stripe session metadata _and_ in the payment description, so the success page, the
-Stripe receipt and the entitlement row all carry the same code. The alphabet is 32 symbols with no
+🎟️ **Redeem codes** (`EZY-XXXX-XXXX`, `src/lib/ezyai/redeem-code.ts`) are minted at checkout **for
+the three `ezyai_pro_*` SKUs** and stored on the Stripe session metadata _and_ in the payment
+description, so the success page, the Stripe receipt and the entitlement row all carry the same
+code. The alphabet is 32 symbols with no
 `O`, `I`, `0` or `1`, so a code cannot be mis-read off a printed receipt; `normalizeRedeemCode()`
 folds `O→0` and `I→1` and makes the prefix and dashes optional.
 
 </details>
 
 <details>
-<summary><b><code>CH 03</code> · Accounts</b> — `/auth` offers three sign-in paths, and `/dashboard` and `/account` are two different identity systems</summary>
+<summary><b><code>CH 03</code> · Accounts</b> — <code>/auth</code> offers three sign-in paths, and <code>/dashboard</code> and <code>/account</code> are two different identity systems</summary>
 
 <br>
 
@@ -318,7 +321,7 @@ while it is pending.
 </details>
 
 <details>
-<summary><b><code>CH 04</code> · Telegram sign-in</b> — four surfaces, one identity Telegram signs for, verified in `src/lib/telegram-login.server.ts`</summary>
+<summary><b><code>CH 04</code> · Telegram sign-in</b> — four surfaces, one identity Telegram signs for, verified in <code>src/lib/telegram-login.server.ts</code></summary>
 
 <br>
 
@@ -332,7 +335,8 @@ while it is pending.
 **The verification.** HMAC-SHA256 over Telegram's sorted data-check-string, keyed on
 `SHA256(bot_token)`, compared in constant time, with payloads older than **15 minutes** rejected —
 Telegram never expires these, so without a window a captured payload is replayable forever.
-`photo_url` is forced to `https://` and the username re-validated against `^[A-Za-z0-9_]{3,32}$`.
+`photo_url` is dropped unless it is already `https://` (and clamped to 500 chars), and the
+username re-validated against `^[A-Za-z0-9_]{3,32}$`.
 Every rejection is silent, so a forgery and an expiry look identical from outside.
 
 The button renders only when a sign-in could actually be verified, and it removes itself if
@@ -389,7 +393,9 @@ ways:
 `@EzyRegisterBot` is served by `POST /api/public/telegram/webhook`. All calls go out through the
 Lovable connector gateway, so **the bot token is never handled by app code**, and the webhook
 secret is _derived_ rather than stored: `base64url(SHA-256("telegram-webhook:" + TELEGRAM_API_KEY))`
-— `setWebhook` and the route compute the same value, so there is no extra secret to rotate.
+— the route derives the secret from `TELEGRAM_API_KEY`, and whoever calls `setWebhook` (a manual
+step against the gateway, not code in this repo) derives the same value, so there is no extra secret
+to rotate.
 
 - **14 commands**, aliases included — `/start`, `/packages`, `/products`, `/enroll`, `/status`,
   `/account`, `/dashboard`, `/ask`, `/sarah`, `/end`, `/language`, `/bahasa`, `/faq`, `/help` — and
@@ -411,7 +417,7 @@ as the bot does. An untranslated entry falls back to English, never to a blank.
 </details>
 
 <details>
-<summary><b><code>CH 06</code> · The signal bridge API</b> — `POST /api/public/ezyai/signals`, one merge keyed on `external_id`, batches of 50 answering 200 / 207 / 400</summary>
+<summary><b><code>CH 06</code> · The signal bridge API</b> — <code>POST /api/public/ezyai/signals</code>, one merge keyed on <code>external_id</code>, batches of 50 answering 200 / 207 / 400</summary>
 
 <br>
 
@@ -419,10 +425,11 @@ as the bot does. An untranslated entry falls back to English, never to a blank.
 POST /api/public/ezyai/signals      Authorization: Bearer <EZYAI_SIGNAL_KEY>
 ```
 
-<img src="./docs/assets/contract.svg" alt="The merge: an absent field leaves the column, null or empty string clears it, a value is parsed and clamped" width="100%">
+<img src="./docs/assets/contract.svg" alt="The merge: one payload keyed on external_id fans out to three outcomes — an absent field leaves the column (hollow cube), null or empty string clears it (emptied cube), a value is parsed and clamped (solid live cube)" width="100%">
 
-Three shapes, all the same call. Every field except `external_id` is optional, and a field the
-payload omits keeps whatever it already had:
+Three shapes, all the same call. Every field except `external_id` is optional on an update
+(`symbol` is also required on the first push that creates a card), and a field the payload omits
+keeps whatever it already had:
 
 ```jsonc
 // open
@@ -489,7 +496,7 @@ from a concurrent insert is retried as the update it should have been, rather th
 > the running site's environment until the project deploys again.
 
 <details>
-<summary>🩺 <b>When the key is refused</b> — `?diagnose=1`, the 401 body, and the symptom matrix</summary>
+<summary>🩺 <b>When the key is refused</b> — <code>?diagnose=1</code>, the 401 body, and the symptom matrix</summary>
 
 <br>
 
@@ -544,13 +551,15 @@ comparing, so a secret pasted into a dashboard as `"abc"` still authenticates a 
 </details>
 
 <details>
-<summary><b><code>CH 07</code> · EzyAI PRO entitlements</b> — three `ezyai_pro_*` SKUs, one row per sale, `claimEntitlement` guarded on `claimed_at IS NULL`</summary>
+<summary><b><code>CH 07</code> · EzyAI PRO entitlements</b> — three <code>ezyai_pro_*</code> SKUs, one row per sale, <code>claimEntitlement</code> guarded on <code>claimed_at IS NULL</code></summary>
 
 <br>
 
 `ezyai_pro_{1m,6m,1y}` go through the same guest Stripe checkout as every other product. The
 webhook records the `site_purchases` row, then writes one `ezyai_entitlements` row **keyed on the
 unique `stripe_session_id`**, so a repeated GET can never grant a second period.
+`recordEzyAiEntitlement` catches the `23505` and re-reads the winning row, which is the webhook and
+the success page resolving at the same moment.
 
 `@ezytradeai_bot` pulls unclaimed rows for a handle from
 `GET/POST /api/public/ezyai/entitlements` (bearer key `EZYAI_ENTITLEMENT_KEY`, the same value as the
@@ -567,7 +576,7 @@ A buyer whose handle did not match sends `/redeem <code>` to the bot, which look
 </details>
 
 <details>
-<summary><b><code>CH 08</code> · Macro desk data</b> — TradingView is the primary calendar provider because it is the one that carries `actual`; ForexFactory is the fallback</summary>
+<summary><b><code>CH 08</code> · Macro desk data</b> — TradingView is the primary calendar provider because it is the one that carries <code>actual</code>; ForexFactory is the fallback</summary>
 
 <br>
 
@@ -582,8 +591,8 @@ On the fallback provider the Actual column is **hidden rather than faked**, and 
 stitched across providers: a row's actual / forecast / previous always come from one source and
 cannot disagree. TradingView sends raw numbers (`237000`), so `formatValue()` re-abbreviates to
 K/M/B/T using the `unit` and `scale` fields, so the column reads the way ForexFactory prints it.
-Requests carry matching `origin`/`referer` headers, an 8-second `AbortSignal.timeout` and a
-project-identifying user agent.
+The TradingView request carries matching `origin`/`referer` headers; both providers use an 8-second
+`AbortSignal.timeout` and a project-identifying user agent.
 
 **Three independent graceful degradations, so the desk goes stale but never empty:**
 
@@ -594,14 +603,15 @@ project-identifying user agent.
   a prior outage.
 - Crypto Fear & Greed is a keyless live read with a seeded fallback.
 
-`src/lib/macro-desk.ts` says in its own header comment exactly which cards are still seed data, why
-(the MacroTrader bot exposes no public read API for heatmaps), and that `fetchMacroDesk()` is the
-single swap point. Those cards are labelled "sample data" in the UI too.
+`src/lib/macro-desk.ts` says in its own header comment that everything outside the calendar and
+Fear & Greed is still seed data, why (the MacroTrader bot exposes no public read API for heatmaps),
+and that `fetchMacroDesk()` is the single swap point. Those cards are labelled "sample data" in the
+UI too.
 
 </details>
 
 <details>
-<summary><b><code>CH 09</code> · Gated ebooks and the support inbox</b> — a private bucket with 1-hour signed URLs, and one `sarah_chat_id` that self-registers once and then refuses to re-bind</summary>
+<summary><b><code>CH 09</code> · Gated ebooks and the support inbox</b> — a private bucket with 1-hour signed URLs, and one <code>sarah_chat_id</code> that self-registers once and then refuses to re-bind</summary>
 
 <br>
 
@@ -613,9 +623,10 @@ the bucket.
 📥 **To add a PDF:** drop it into the bucket in Lovable Cloud → Storage, then set `file` on the
 `EBOOK_PAGES` entry.
 
-🚦 **The approval gate.** Most slugs approve themselves on claim. `mapping-like-a-pro` is a real
-human gate: the visitor submits full name, Telegram handle and Vantage account number, the row is
-saved `pending`, and `notifyVantageClaim` (`src/lib/bot/ebook-claims.server.ts`) sends Sarah an
+🚦 **The approval gate.** Of the two ebook slugs, `technical-analysis` approves itself on claim;
+`mapping-like-a-pro` is a real human gate: the visitor submits full name, Telegram handle and
+Vantage account number, the row is saved `pending`, and `notifyVantageClaim`
+(`src/lib/bot/ebook-claims.server.ts`) sends Sarah an
 Approve button. Only her chat may act on the `ebook:approve:<claimId>` callback.
 
 > ⚠️ That send is awaited, never fire-and-forget. The worker is torn down as soon as the response is
@@ -655,7 +666,7 @@ authoritative.
 </details>
 
 <details>
-<summary><b><code>CH 10</code> · Six locales</b> — `TranslationKey` makes 3,366 strings a compile-time contract, and `/ms/*` are real URLs while the other four are a stored preview</summary>
+<summary><b><code>CH 10</code> · Six locales</b> — <code>TranslationKey</code> makes 3,366 strings a compile-time contract, and <code>/ms/*</code> are real URLs while the other four are a stored preview</summary>
 
 <br>
 
@@ -698,18 +709,20 @@ visible text.
 </details>
 
 <details>
-<summary><b><code>CH 11</code> · Security posture</b> — 22 tables denying anon and authenticated, six rate-limit keys on two axes, and `20260905200000_security_hardening.sql` as a published postmortem</summary>
+<summary><b><code>CH 11</code> · Security posture</b> — no table readable by anon, six rate-limit keys on two axes, and <code>20260905200000_security_hardening.sql</code> as a published postmortem</summary>
 
 <br>
 
-**Row level security.** Every one of the **22 tables denies `anon` and `authenticated`.** Seven
-service-role-only tables additionally carry `AS RESTRICTIVE ... USING (false) WITH CHECK (false)`
-plus `REVOKE ALL` / `GRANT ALL TO service_role` applied in a `DO $$` loop. User-owned tables
+**Row level security.** **No table in the 22 is openly readable by `anon`.** Seven
+service-role-only tables carry `AS RESTRICTIVE ... USING (false) WITH CHECK (false)` plus
+`REVOKE ALL` / `GRANT ALL TO service_role` applied in a `DO $$` loop. Six user-owned tables
 (`site_purchases`, `ebook_claims`, `profiles`, `referral_codes`, `account_telegram_links`,
-`user_roles`) get narrow self-scoped read policies. `storage.objects` carries a RESTRICTIVE policy
-denying anon and authenticated on `bucket_id = 'ebooks'`. Every `SECURITY DEFINER` function ships an
-explicit `REVOKE ... FROM PUBLIC, anon, authenticated` plus a targeted `GRANT` to the role that
-calls it.
+`user_roles`) get narrow self-scoped read policies for `authenticated`. `analytics_events` accepts a
+constrained `anon` INSERT and denies reads. `storage.objects` carries a RESTRICTIVE policy denying
+anon and authenticated on `bucket_id = 'ebooks'`. Every `SECURITY DEFINER` function is revoked from
+`PUBLIC` and `anon`, and granted only to the role that calls it — `service_role` for
+`analytics_summary`, `increment_rate_limit` and `record_ad_click`; `authenticated` for `has_role`,
+which the RLS policies call as the signed-in user.
 
 **Four independent constant-time comparisons, one hand-rolled HMAC.** The signals guard
 (`src/routes/api/public/ezyai/signals.ts`), `telegram.server.safeEqual` (webhook secret and
@@ -736,7 +749,7 @@ on the caller-supplied identifier (usually the analytics session id) **and** on 
 support-chat history — and the Zod schema pins it to exactly `^[a-f0-9]{32}$` to reject the short
 guessable ids a probe would try. `escapeLikePattern` guards every `ilike`.
 
-**Consent is region-gated across 33 countries and fails open to _more_ privacy.** Country is read
+**Consent is region-gated across 38 countries and fails open to _more_ privacy.** Country is read
 client-side from Cloudflare's same-origin `/cdn-cgi/trace` with a 2-second abort; any doubt (network
 error, `XX`, `T1`, non-OK) shows the banner. Events raised before a regulated visitor decides are
 queued in memory and flushed only on accept, dropped on deny.
@@ -753,7 +766,8 @@ and a rendered error page.
 `granted_at` updates guarded on `.is("granted_at", null)`; `ebook_claims` upserted on
 `(user_id, slug)`; portal tokens reused rather than re-minted for an active enrollment.
 
-📄 [`20260905200000_security_hardening.sql`](./supabase/migrations) is a published postmortem naming
+📄 [`20260905200000_security_hardening.sql`](./supabase/migrations/20260905200000_security_hardening.sql)
+is a published postmortem naming
 three closed holes: `increment_rate_limit` had been callable by anyone holding the publishable key;
 `ad_clicks` had anon INSERT policies letting anyone pollute the attribution dashboard; and the
 "first signup becomes admin" bootstrap trigger was dropped, because website purchases auto-create

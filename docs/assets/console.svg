@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 320" width="1000" height="320" role="img" aria-label="EzyMap ALGO mission control - live signal board, macro desk and Telegram autopilot">
-  <title>EzyMap ALGO mission control - live signal board, macro desk and Telegram autopilot</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 360" width="1000" height="360" role="img" aria-label="EzyMap ALGO - counted-from-code telemetry, an isometric order book stepping up into gold, and a cumulative-R curve drawing itself">
+  <title>EzyMap ALGO - counted-from-code telemetry, an isometric order book stepping up into gold, and a cumulative-R curve drawing itself</title>
 
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
@@ -23,6 +23,15 @@
       <stop offset="0%" stop-color="#2fbf71" stop-opacity="0.30"/>
       <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
     </linearGradient>
+    <!-- Alpha ramp so the area fill fades out instead of ending on a hard edge. -->
+    <linearGradient id="fadeR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="80%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="fadeMask" maskUnits="userSpaceOnUse" x="-12" y="-110" width="326" height="158">
+      <rect x="-12" y="-110" width="326" height="158" fill="url(#fadeR)"/>
+    </mask>
     <radialGradient id="vig" cx="50%" cy="45%" r="70%">
       <stop offset="60%" stop-color="#0a0c0b" stop-opacity="0"/>
       <stop offset="100%" stop-color="#0a0c0b" stop-opacity="1"/>
@@ -43,84 +52,96 @@
        on an inner group. A CSS transform on the same element would override
        that attribute outright and collapse everything onto the origin. */
     text { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    /* .mono must also win on descendants: the bare `text` type selector above
+       beats plain inheritance, so a group carrying .mono alone silently
+       rendered its text children in the sans stack. */
+    .mono, .mono text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
     .rise { animation: rise 3.6s ease-in-out infinite alternate; }
     .d1 { animation-delay: 0s; }
     .d2 { animation-delay: .5s; }
     .d3 { animation-delay: 1s; }
-    .d4 { animation-delay: 1.5s; }
-    .draw { stroke-dasharray: 460; stroke-dashoffset: 460; animation: draw 5s ease-out infinite; }
+    /* 340.5 is the path's real length, measured with getTotalLength(). A longer
+       dasharray would finish the stroke early and strand the price marker. */
+    .draw { stroke-dasharray: 341; stroke-dashoffset: 341; animation: draw 5s linear infinite; }
     .glow { animation: breathe 5s ease-in-out infinite; }
-    .tick { animation: tick 5s ease-out infinite; }
+    .tick { animation: tick 5s linear infinite; }
     .ping { animation: ping 1.9s ease-out infinite; }
     .drift { animation: drift 12s linear infinite; }
 
     @keyframes rise    { from { transform: translateY(5px); } to { transform: translateY(-5px); } }
-    @keyframes draw    { 0% { stroke-dashoffset: 460; } 60%,100% { stroke-dashoffset: 0; } }
+    @keyframes draw    { 0% { stroke-dashoffset: 341; } 60%,100% { stroke-dashoffset: 0; } }
     @keyframes breathe { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
     @keyframes ping    { 0% { r: 4; opacity: .9; } 70%,100% { r: 14; opacity: 0; } }
     @keyframes drift   { from { transform: translateX(0); } to { transform: translateX(60px); } }
 
-    /* The marker rides the polyline's own vertices. A straight translateX
-       under a zigzag stroke visibly drifts off the line. */
+    /* The marker rides the polyline's own vertices, and the stops are spaced by
+       CUMULATIVE ARC LENGTH, not evenly - the seven segments differ in length,
+       so evenly spaced stops drift off the stroke's leading edge. */
     @keyframes tick {
       0%           { transform: translate(0px, 0px); }
-      8.6%         { transform: translate(43px, -18px); }
-      17.1%        { transform: translate(86px, -12px); }
-      25.7%        { transform: translate(129px, -38px); }
-      34.3%        { transform: translate(172px, -30px); }
-      42.9%        { transform: translate(215px, -66px); }
-      51.4%        { transform: translate(258px, -58px); }
+      8.21%        { transform: translate(43px, -18px); }
+      15.87%       { transform: translate(86px, -12px); }
+      24.72%       { transform: translate(129px, -38px); }
+      32.43%       { transform: translate(172px, -30px); }
+      42.31%       { transform: translate(215px, -66px); }
+      50.02%       { transform: translate(258px, -58px); }
       60%, 100%    { transform: translate(300px, -96px); }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .rise, .draw, .glow, .tick, .ping, .drift { animation: none; }
       .draw { stroke-dashoffset: 0; }
+      /* Park the price marker at the LAST vertex - the latest price - not at
+         the untransformed origin, which is the oldest point on the chart. */
+      .tick { transform: translate(300px, -96px); }
     }
   </style>
 
-  <rect width="1000" height="320" fill="url(#sky)"/>
-  <g class="drift"><rect x="-60" y="0" width="1120" height="320" fill="url(#iso)"/></g>
+  <rect width="1000" height="360" fill="url(#sky)"/>
+  <g class="drift"><rect x="-60" y="0" width="1120" height="360" fill="url(#iso)"/></g>
   <g class="glow">
-    <ellipse cx="230" cy="220" rx="200" ry="95" fill="#2fbf71" opacity=".07" filter="url(#soft)"/>
-    <ellipse cx="790" cy="120" rx="180" ry="85" fill="#c9a13a" opacity=".06" filter="url(#soft)"/>
+    <ellipse cx="250" cy="250" rx="210" ry="100" fill="#2fbf71" opacity=".07" filter="url(#soft)"/>
+    <ellipse cx="800" cy="150" rx="190" ry="90" fill="#c9a13a" opacity=".06" filter="url(#soft)"/>
   </g>
-  <rect width="1000" height="320" fill="url(#vig)"/>
+  <rect width="1000" height="360" fill="url(#vig)"/>
 
-  <!-- Telemetry gutter: every value is counted from the code -->
-  <g class="mono" font-size="13" letter-spacing="1.6" fill="#8b948f" text-anchor="start">
-    <text x="40" y="26">ROUTES 31</text>
-    <text x="190" y="26">MIGRATIONS 33</text>
-    <text x="345" y="26">TABLES 22</text>
-    <text x="475" y="26">LOCALES 6</text>
-    <text x="600" y="26">STRINGS 3366</text>
-    <text x="755" y="26">SKUS 30</text>
+  <!-- Telemetry gutter: every value is counted from the code. Four items only,
+       so nothing here drops below 9 CSS px on a 480px phone. -->
+  <g class="mono" font-size="20" letter-spacing="1.2" fill="#8b948f" text-anchor="start">
+    <text x="40" y="34">ROUTES 31</text>
+    <text x="200" y="34">TABLES 22</text>
+    <text x="360" y="34">LOCALES 6</text>
+    <text x="520" y="34">STRINGS 3366</text>
   </g>
   <g stroke="#2fbf71" stroke-width="1" opacity=".25">
-    <path d="M175 15 L175 31"/><path d="M330 15 L330 31"/><path d="M460 15 L460 31"/>
-    <path d="M585 15 L585 31"/><path d="M740 15 L740 31"/>
+    <path d="M178 20 L178 40"/><path d="M338 20 L338 40"/><path d="M498 20 L498 40"/>
   </g>
 
   <!-- Wordmark -->
-  <g transform="translate(40 118)">
-    <text x="0" y="0" font-size="38" font-weight="700" fill="#f2f4f2">EzyMap <tspan fill="#c9a13a">ALGO</tspan></text>
-    <text class="mono" x="2" y="28" font-size="13" letter-spacing="2.6" fill="#8b948f" text-anchor="start">SIGNALS &#183; MACRO &#183; AUTOPILOT</text>
+  <g transform="translate(40 120)" text-anchor="start">
+    <text x="0" y="0" font-size="46" font-weight="700" fill="#f2f4f2">EzyMap <tspan fill="#c9a13a">ALGO</tspan></text>
+    <text class="mono" x="2" y="34" font-size="19" letter-spacing="2" fill="#8b948f">SIGNALS &#183; MACRO &#183; AUTOPILOT</text>
   </g>
 
   <!-- Status strip -->
-  <g transform="translate(40 166)">
-    <rect x="0" y="0" width="425" height="30" rx="6" fill="#141817" stroke="#2fbf71" stroke-opacity=".35"/>
-    <g transform="translate(18 15)">
+  <g transform="translate(40 186)" text-anchor="start">
+    <rect x="0" y="0" width="520" height="36" rx="8" fill="#141817" stroke="#2fbf71" stroke-opacity=".35"/>
+    <g transform="translate(22 18)">
       <circle class="ping" cx="0" cy="0" r="4" fill="none" stroke="#2fbf71" stroke-width="2"/>
-      <circle cx="0" cy="0" r="4.5" fill="#5fe6a0"/>
+      <circle cx="0" cy="0" r="5" fill="#5fe6a0"/>
     </g>
-    <text class="mono" x="34" y="19" font-size="11.5" letter-spacing="1.1" fill="#8b948f" text-anchor="start">BOARD PUBLIC &#183; REFRESH 60s &#183; BATCH &#8804;50</text>
+    <text class="mono" x="42" y="24" font-size="19" letter-spacing=".8" fill="#8b948f">BOARD PUBLIC &#183; REFRESH 60s &#183; BATCH &#8804;50</text>
   </g>
 
-  <!-- An order book stepping up, in isometric slabs -->
-  <g transform="translate(380 262)">
+  <!-- The rest of the count, as selectable-sized type rather than 6px dust -->
+  <g class="mono" font-size="19" letter-spacing=".8" fill="#8b948f" text-anchor="start">
+    <text x="40" y="262">MIGRATIONS 33 &#183; SKUS 30</text>
+    <text x="40" y="300">REPLIES 29 &#183; COUNTED FROM CODE</text>
+  </g>
+
+  <!-- An order book stepping up into gold, in isometric slabs -->
+  <g transform="translate(440 286)">
     <g transform="translate(0 0)"><g class="rise d1">
       <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#slabTop)"/>
       <path d="M0 0 L30 17 L30 46 L0 29 Z" fill="#1c7a47"/>
@@ -136,21 +157,16 @@
       <path d="M0 0 L30 17 L30 58 L0 41 Z" fill="#9c7c2c"/>
       <path d="M60 0 L30 17 L30 58 L60 41 Z" fill="#7d6323"/>
     </g></g>
-    <g transform="translate(198 -74)"><g class="rise d4">
-      <path d="M0 0 L30 -17 L60 0 L30 17 Z" fill="url(#slabTop)"/>
-      <path d="M0 0 L30 17 L30 66 L0 49 Z" fill="#1c7a47"/>
-      <path d="M60 0 L30 17 L30 66 L60 49 Z" fill="#13603a"/>
-    </g></g>
   </g>
 
   <!-- The desk's line, drawing itself, with the price riding its vertices -->
-  <g transform="translate(660 160)">
-    <path d="M0 0 L43 -18 L86 -12 L129 -38 L172 -30 L215 -66 L258 -58 L300 -96 L300 40 L0 40 Z" fill="url(#areaFill)"/>
+  <g transform="translate(660 195)">
+    <path mask="url(#fadeMask)" d="M0 0 L43 -18 L86 -12 L129 -38 L172 -30 L215 -66 L258 -58 L300 -96 L300 40 L0 40 Z" fill="url(#areaFill)"/>
     <path class="draw" d="M0 0 L43 -18 L86 -12 L129 -38 L172 -30 L215 -66 L258 -58 L300 -96"
           fill="none" stroke="url(#brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
     <g class="tick">
       <circle class="ping" cx="0" cy="0" r="4" fill="none" stroke="#2fbf71" stroke-width="2"/>
-      <circle cx="0" cy="0" r="4.5" fill="#5fe6a0"/>
+      <circle cx="0" cy="0" r="5" fill="#5fe6a0"/>
     </g>
   </g>
 
@@ -158,10 +174,10 @@
   <g stroke="#2fbf71" stroke-width="1.5" opacity=".45" fill="none">
     <path d="M12 12 l30 0 M12 12 l0 30"/>
     <path d="M988 12 l-30 0 M988 12 l0 30"/>
-    <path d="M12 308 l30 0 M12 308 l0 -30"/>
-    <path d="M988 308 l-30 0 M988 308 l0 -30"/>
+    <path d="M12 348 l30 0 M12 348 l0 -30"/>
+    <path d="M988 348 l-30 0 M988 348 l0 -30"/>
   </g>
 
-  <rect width="1000" height="320" fill="url(#scan)"/>
-  <rect x="0" y="315" width="1000" height="5" fill="url(#brand)"/>
+  <rect width="1000" height="360" fill="url(#scan)"/>
+  <rect x="0" y="355" width="1000" height="5" fill="url(#brand)"/>
 </svg>
