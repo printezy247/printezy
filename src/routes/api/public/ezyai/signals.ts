@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * Signal bridge for @ezytradeai_bot (tradernonymous/EzyAi).
  *
  *   GET  /api/public/ezyai/signals              → { signals } still on the board
+ *   GET  /api/public/ezyai/signals?diagnose=1   → which key is bound (no auth)
  *   POST /api/public/ezyai/signals  { ...one signal }
  *   POST /api/public/ezyai/signals  { signals: [ ... ] }   (batch, max 50)
  *
@@ -19,10 +20,45 @@ import { createFileRoute } from "@tanstack/react-router";
  * results rather than failing whole, so one malformed row cannot lose the
  * other forty-nine.
  */
-function signalKey(): string {
-  return (
-    (process.env.EZYAI_SIGNAL_KEY ?? "").trim() || (process.env.EZYAI_ENTITLEMENT_KEY ?? "").trim()
-  );
+
+type KeySource = "EZYAI_SIGNAL_KEY" | "EZYAI_ENTITLEMENT_KEY" | null;
+
+/**
+ * Secrets reach us through dashboard fields and shell variables, and both are
+ * happy to carry the punctuation around a value into it. Trim, then drop one
+ * matched pair of surrounding quotes: a key pasted as "abc" is meant to be
+ * abc, and the difference between the two is invisible in every UI that shows
+ * it back to you.
+ */
+function normalise(raw: string | undefined): string {
+  const value = (raw ?? "").trim();
+  const quoted =
+    value.length >= 2 &&
+    ((value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'")));
+  return quoted ? value.slice(1, -1).trim() : value;
+}
+
+/** The key the guard will compare against, and which variable it came from. */
+function boundKey(): { key: string; source: KeySource } {
+  const signal = normalise(process.env.EZYAI_SIGNAL_KEY);
+  if (signal) return { key: signal, source: "EZYAI_SIGNAL_KEY" };
+  const entitlement = normalise(process.env.EZYAI_ENTITLEMENT_KEY);
+  if (entitlement) return { key: entitlement, source: "EZYAI_ENTITLEMENT_KEY" };
+  return { key: "", source: null };
+}
+
+/**
+ * First four bytes of SHA-256, in hex. Enough to say "these two secrets are
+ * not the same one" in a bug report; 32 bits of a digest is far too little to
+ * work backwards from, and a colliding string still fails the real comparison.
+ */
+async function fingerprint(value: string): Promise<string> {
+  if (!value) return "none";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(digest).slice(0, 4))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /** Constant-time compare so a wrong key can't be narrowed byte by byte. */
@@ -33,17 +69,51 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-function guard(request: Request): Response | null {
-  const key = signalKey();
+async function guard(request: Request): Promise<Response | null> {
+  const { key, source } = boundKey();
   if (!key) {
-    return Response.json({ error: "signal bridge not configured" }, { status: 503 });
+    return Response.json(
+      {
+        error: "signal bridge not configured",
+        hint: "neither EZYAI_SIGNAL_KEY nor EZYAI_ENTITLEMENT_KEY is bound to the deployed site",
+      },
+      { status: 503 },
+    );
   }
   const header = request.headers.get("authorization") ?? "";
-  const presented = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+  const presented = normalise(header.startsWith("Bearer ") ? header.slice(7) : "");
   if (!presented || !safeEqual(presented, key)) {
-    return Response.json({ error: "unauthorized" }, { status: 401 });
+    // A bare 401 cannot tell "wrong secret" from "right secret, but the
+    // fallback variable is the one actually bound" — and the two have
+    // opposite fixes. Name the variable compared and a truncated digest of
+    // each side: it ends the guessing without putting a secret in a response.
+    return Response.json(
+      {
+        error: "unauthorized",
+        compared_against: source,
+        expected_fingerprint: await fingerprint(key),
+        presented_fingerprint: await fingerprint(presented),
+      },
+      { status: 401 },
+    );
   }
   return null;
+}
+
+/**
+ * Unauthenticated on purpose: it exists for the case where authentication is
+ * exactly what is broken, and it says only whether each variable is bound and
+ * a 32-bit digest of the winner — never a value, never a length.
+ */
+async function diagnose(): Promise<Response> {
+  const { key, source } = boundKey();
+  return Response.json({
+    configured: Boolean(key),
+    compared_against: source,
+    signal_key_present: Boolean(normalise(process.env.EZYAI_SIGNAL_KEY)),
+    entitlement_key_present: Boolean(normalise(process.env.EZYAI_ENTITLEMENT_KEY)),
+    expected_fingerprint: await fingerprint(key),
+  });
 }
 
 const MAX_BATCH = 50;
@@ -52,7 +122,12 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const denied = guard(request);
+        // Before the guard, deliberately: this is the one question you still
+        // need answered when the guard is the thing refusing you.
+        if (new URL(request.url).searchParams.get("diagnose") === "1") {
+          return diagnose();
+        }
+        const denied = await guard(request);
         if (denied) return denied;
         try {
           const { listLiveSignals } = await import("@/lib/ezyai/signals.server");
@@ -64,7 +139,7 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
       },
 
       POST: async ({ request }) => {
-        const denied = guard(request);
+        const denied = await guard(request);
         if (denied) return denied;
         try {
           const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

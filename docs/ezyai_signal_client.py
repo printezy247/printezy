@@ -11,6 +11,11 @@ Standard library only, so it adds no dependency to the bot.
     export EZYAI_SIGNAL_KEY=...        # the same value set in Lovable Cloud
     export EZYMAP_SITE_URL=https://printezy.money   # optional, this is the default
 
+If a push comes back 401, call `diagnose()` (or open
+`/api/public/ezyai/signals?diagnose=1` in a browser): it reports which variable
+the site is checking and a fingerprint of it, which separates "wrong key" from
+"the key is not in the deployed environment".
+
 Three calls cover the whole life of a trade, and every one of them is safe to
 repeat: the site merges on `external_id`, so a retry after a crash updates the
 card it already made rather than making a second one.
@@ -127,6 +132,10 @@ def push(**fields: Any) -> PushResult:
             # 401/403/400 will not improve by asking again; 5xx and 429 might.
             if error.code < 500 and error.code != 429:
                 log.error("push rejected for %s — %s", fields.get("external_id"), last_error)
+                if error.code == 401:
+                    # The body names the variable the site compared against and
+                    # fingerprints both sides; without it a 401 is just a shrug.
+                    log.error("key check says: %s", diagnose())
                 return PushResult(ok=False, status=error.code, error=last_error)
 
         except (urllib.error.URLError, TimeoutError, OSError) as error:
@@ -205,6 +214,26 @@ def close_signal(
         last_price=last_price,
         closed_at=closed_at,
     )
+
+
+def diagnose() -> PushResult:
+    """Ask the site which key it is actually checking. No auth, no secrets.
+
+    Use it the moment a push comes back 401: the answer says whether the site
+    has EZYAI_SIGNAL_KEY at all, which variable it compared against, and a
+    truncated digest of it — enough to tell "wrong secret" from "the secret
+    never reached the deployed site", which have opposite fixes.
+    """
+    request = urllib.request.Request(
+        _endpoint() + "?diagnose=1",
+        method="GET",
+        headers={"User-Agent": "EzyAi-autopilot/1.0"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT_S) as response:
+            return PushResult(ok=True, **json.loads(response.read() or b"{}"))
+    except (urllib.error.URLError, TimeoutError, OSError) as error:
+        return PushResult(ok=False, error=str(error))
 
 
 def push_many(signals: list[dict[str, Any]]) -> PushResult:
