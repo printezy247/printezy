@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 240" width="1000" height="240" role="img" aria-label="The signal bridge merge: an absent field leaves the column, null or empty string clears it, a value is parsed">
+  <title>The signal bridge merge - absent leaves the column, null clears it, a value is parsed</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1613"/>
+      <stop offset="55%" stop-color="#0a0c0b"/>
+      <stop offset="100%" stop-color="#12100a"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fbf71"/>
+      <stop offset="100%" stop-color="#c9a13a"/>
+    </linearGradient>
+    <linearGradient id="goldTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e6c766"/>
+      <stop offset="100%" stop-color="#c9a13a"/>
+    </linearGradient>
+    <pattern id="iso" width="60" height="34" patternUnits="userSpaceOnUse">
+      <path d="M0 17 L30 0 L60 17 L30 34 Z" fill="none" stroke="#2fbf71" stroke-width=".5" opacity=".12"/>
+    </pattern>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#f2f4f2" opacity=".025"/>
+    </pattern>
+    <g id="cube">
+      <path d="M0 -24 L42 0 L0 24 L-42 0 Z" fill="url(#goldTop)"/>
+      <path d="M-42 0 L0 24 L0 72 L-42 48 Z" fill="#9c7c2c"/>
+      <path d="M42 0 L0 24 L0 72 L42 48 Z" fill="#7d6323"/>
+    </g>
+  </defs>
+
+  <style>
+    text { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    .rise { animation: rise 3.6s ease-in-out infinite alternate; }
+    .d1 { animation-delay: 0s; }
+    .d2 { animation-delay: .45s; }
+    .d3 { animation-delay: .9s; }
+    .flow { animation: flow 4s ease-in-out infinite; }
+    .drift { animation: drift 12s linear infinite; }
+
+    @keyframes rise { from { transform: translateY(4px); } to { transform: translateY(-4px); } }
+    @keyframes flow { 0% { transform: translateX(0); opacity: 0; }
+                      15% { opacity: 1; }
+                      55%,100% { transform: translateX(500px); opacity: 0; } }
+    @keyframes drift { from { transform: translateX(0); } to { transform: translateX(60px); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise, .flow, .drift { animation: none; }
+      .flow { opacity: 0; }
+    }
+  </style>
+
+  <rect width="1000" height="240" fill="url(#sky)"/>
+  <g class="drift"><rect x="-60" y="0" width="1120" height="240" fill="url(#iso)"/></g>
+
+  <text class="mono" x="40" y="26" font-size="11" letter-spacing="1.6" fill="#8b948f" text-anchor="start">ONE MERGE KEYED ON external_id &#183; OPEN, TICK AND CLOSE ARE THE SAME CALL</text>
+
+  <!-- The payload -->
+  <rect x="40" y="46" width="290" height="118" rx="10" fill="#141817" stroke="#2fbf71" stroke-opacity=".3"/>
+  <g class="mono" font-size="12" text-anchor="start" fill="#8b948f">
+    <text x="58" y="76">{ <tspan fill="#f2f4f2">"external_id"</tspan>: "auto-8842",</text>
+    <text x="58" y="100">&#160;&#160;<tspan fill="#f2f4f2">"status"</tspan>: "running",</text>
+    <text x="58" y="124">&#160;&#160;<tspan fill="#f2f4f2">"last_price"</tspan>: 4597.1 }</text>
+  </g>
+  <text class="mono" x="58" y="150" font-size="10.5" fill="#8b948f" text-anchor="start">no symbol &#8212; and none is needed</text>
+
+  <!-- Payload travelling into the merge -->
+  <g transform="translate(340 105)">
+    <path d="M0 0 L520 0" stroke="#2fbf71" stroke-opacity=".22" stroke-width="1" stroke-dasharray="4 6"/>
+    <g class="flow"><circle cx="0" cy="0" r="3.5" fill="#5fe6a0"/></g>
+  </g>
+
+  <!-- Three states, three cubes. Type is never set on an isometric plane. -->
+  <g transform="translate(430 78)"><g class="rise d1"><use href="#cube"/></g></g>
+  <g transform="translate(600 78)"><g class="rise d2"><use href="#cube"/></g></g>
+  <g transform="translate(770 78)"><g class="rise d3"><use href="#cube"/></g></g>
+
+  <g class="mono" text-anchor="start">
+    <text x="388" y="192" font-size="12" fill="#f2f4f2">undefined</text>
+    <text x="388" y="208" font-size="10.5" fill="#8b948f">leave the column</text>
+    <text x="558" y="192" font-size="12" fill="#f2f4f2">null &#183; ""</text>
+    <text x="558" y="208" font-size="10.5" fill="#8b948f">clear it</text>
+    <text x="728" y="192" font-size="12" fill="#f2f4f2">value</text>
+    <text x="728" y="208" font-size="10.5" fill="#8b948f">parse and clamp</text>
+  </g>
+
+  <g stroke="#2fbf71" stroke-width="1.5" opacity=".45" fill="none">
+    <path d="M12 12 l30 0 M12 12 l0 30"/>
+    <path d="M988 12 l-30 0 M988 12 l0 30"/>
+    <path d="M12 228 l30 0 M12 228 l0 -30"/>
+    <path d="M988 228 l-30 0 M988 228 l0 -30"/>
+  </g>
+
+  <rect width="1000" height="240" fill="url(#scan)"/>
+  <rect x="0" y="235" width="1000" height="5" fill="url(#brand)"/>
+</svg>
