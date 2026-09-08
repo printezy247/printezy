@@ -442,6 +442,43 @@ forty-nine. `GET` the same URL returns the live board for reconciliation.
 > `EZYAI_ENTITLEMENT_KEY` if unset, so the bridge works with one secret and can
 > be split onto its own later without a code change. While neither is set the
 > endpoint answers 503 and the board simply stays empty.
+>
+> Secrets bind at **deploy** time, not at save time — a key added after the last
+> deploy is not in the running site's environment until the project deploys
+> again.
+
+#### 🩺 When the key is refused
+
+Open this in a browser — no key, no tooling, nothing secret comes back:
+
+```
+https://printezy.money/api/public/ezyai/signals?diagnose=1
+```
+
+```jsonc
+{
+  "configured": true,
+  "compared_against": "EZYAI_SIGNAL_KEY", // ← the variable actually being checked
+  "signal_key_present": true,
+  "entitlement_key_present": true,
+  "expected_fingerprint": "118ccb6a",
+} // first 4 bytes of SHA-256
+```
+
+A 401 carries the same three facts, plus the fingerprint of what you sent, so
+the two can be compared without either of them being printed:
+
+| What you see                                | What it means                                                        |
+| ------------------------------------------- | -------------------------------------------------------------------- |
+| `"signal_key_present": false`               | The signal key is not in the deployed environment — **deploy again** |
+| `compared_against: "EZYAI_ENTITLEMENT_KEY"` | The fallback is doing the work; the signal key never arrived         |
+| Fingerprints differ                         | Two different secrets — the bot's copy is stale, or was re-generated |
+| `"presented_fingerprint": "none"`           | No `Authorization: Bearer …` header reached the site                 |
+| 503                                         | Neither variable is bound at all                                     |
+
+Surrounding whitespace and one matched pair of quotes are stripped from both
+sides before comparing, so a secret pasted into a dashboard as `"abc"` still
+authenticates a bot sending `abc`.
 
 Performance counts closed signals only; `cancelled` never counts. Win rate is
 wins over wins + losses — **break-even is excluded from the denominator** rather
