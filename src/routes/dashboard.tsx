@@ -10,6 +10,7 @@ import {
   Gift,
   Loader2,
   LogOut,
+  Send,
   ShoppingBag,
   UserRound,
 } from "lucide-react";
@@ -23,6 +24,8 @@ import { getMyPurchases } from "@/lib/purchases.functions";
 import { getMyEbookClaims, getEbookDownloadUrl } from "@/lib/ebook-claims.functions";
 import { getMyProfile, saveMyProfile } from "@/lib/profile.functions";
 import { getOrCreateReferralCode, getMyReferralStats } from "@/lib/referral.functions";
+import { getTelegramLoginConfig, linkTelegramAccount } from "@/lib/telegram-login.functions";
+import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 
 export const Route = createFileRoute("/dashboard")({
   ssr: false,
@@ -87,6 +90,7 @@ function DashboardPage() {
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <PurchasesCard />
+              <TelegramCard />
               <EbooksCard />
               <ReferralCard />
               <ProfileCard />
@@ -115,6 +119,89 @@ function Card({
       </h2>
       <div className="mt-4">{children}</div>
     </section>
+  );
+}
+
+/**
+ * Links a verified Telegram account to this website account. Doing so is what
+ * makes delivery independent of the handle typed at checkout — purchases are
+ * matched to the account, and the Telegram id came from Telegram — and it is
+ * also what lets the sign-in page open this account from Telegram next time.
+ */
+function TelegramCard() {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const loadConfig = useServerFn(getTelegramLoginConfig);
+  const link = useServerFn(linkTelegramAccount);
+
+  const [botUsername, setBotUsername] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [linkedHandle, setLinkedHandle] = useState<string | null>(null);
+
+  // Shares ProfileCard's cache entry rather than fetching the profile twice.
+  const profile = useQuery({ queryKey: ["my-profile"], queryFn: () => getMyProfile() });
+
+  useEffect(() => {
+    let alive = true;
+    void loadConfig()
+      .then((res) => alive && setBotUsername(res.botUsername))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [loadConfig]);
+
+  if (!botUsername && !linkedHandle) return null;
+
+  const handle = linkedHandle ?? profile.data?.telegramUsername ?? null;
+
+  async function connect(payload: TelegramAuthPayload) {
+    setBusy(true);
+    try {
+      const res = await link({ data: payload });
+      if (!res.ok) {
+        toast.error(res.message ?? t("auth_error_generic"));
+        return;
+      }
+      setLinkedHandle(res.username ?? handle ?? "");
+      toast.success(
+        res.claimed
+          ? t("dash_tg_claimed").replace("{count}", String(res.claimed))
+          : t("dash_saved"),
+      );
+      await queryClient.invalidateQueries({ queryKey: ["my-purchases"] });
+      await queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+    } catch {
+      toast.error(t("auth_error_generic"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Card icon={Send} title={t("dash_tg_link")}>
+      {linkedHandle !== null ? (
+        <p className="text-sm text-body">
+          {t("dash_tg_linked").replace("{handle}", handle ? `@${handle}` : "Telegram")}
+        </p>
+      ) : (
+        <>
+          <p className="text-xs text-muted-foreground">{t("dash_tg_link_hint")}</p>
+          <div className="mt-4">
+            <TelegramLoginButton
+              botUsername={botUsername}
+              onAuth={connect}
+              onUnavailable={() => setBotUsername(null)}
+            />
+          </div>
+          {busy ? (
+            <p className="mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" /> {t("auth_sending")}
+            </p>
+          ) : null}
+        </>
+      )}
+    </Card>
   );
 }
 

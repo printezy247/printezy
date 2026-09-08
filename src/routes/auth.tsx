@@ -2,7 +2,13 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
 import { Nav, Footer } from "@/components/landing/Landing";
+import {
+  getTelegramLoginConfig,
+  signInWithTelegramToWebsite,
+} from "@/lib/telegram-login.functions";
+import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth")({
@@ -37,7 +43,53 @@ function AuthPage() {
   const [error, setError] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [telegramBusy, setTelegramBusy] = useState(false);
+  const [botUsername, setBotUsername] = useState<string | null>(null);
   const destination = safePath(search.redirect);
+
+  const loadTelegramConfig = useServerFn(getTelegramLoginConfig);
+  const telegramSignIn = useServerFn(signInWithTelegramToWebsite);
+
+  useEffect(() => {
+    let alive = true;
+    void loadTelegramConfig()
+      .then((res) => alive && setBotUsername(res.botUsername))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [loadTelegramConfig]);
+
+  // Telegram issues no email, and website accounts are keyed on one, so this
+  // never creates an account. A linked Telegram opens the website account it
+  // is linked to; an unlinked one opens the member area, which is keyed on
+  // Telegram in the first place.
+  async function signInWithTelegramAccount(payload: TelegramAuthPayload) {
+    setTelegramBusy(true);
+    setError(null);
+    try {
+      const res = await telegramSignIn({ data: payload });
+      if (!res.ok) {
+        setError(res.message);
+        setTelegramBusy(false);
+        return;
+      }
+      if (res.mode === "website") {
+        const { error: otpError } = await supabase.auth.verifyOtp({
+          token_hash: res.tokenHash,
+          type: "magiclink",
+        });
+        if (otpError) throw otpError;
+        window.location.replace(destination);
+        return;
+      }
+      // The member area consumes a token from the query string and clears it.
+      window.location.replace(`/account?s=${encodeURIComponent(res.token)}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("auth_error_generic"));
+      setTelegramBusy(false);
+    }
+  }
 
   // Already signed in (or just returned from a magic link / Google): move on.
   // destination may carry a query string (e.g. /ebooks/x?claim=1), so use a
@@ -125,6 +177,19 @@ function AuthPage() {
           </svg>
           {googleBusy ? t("auth_google_busy") : t("auth_google")}
         </button>
+
+        {botUsername ? (
+          <div className="mt-4">
+            <TelegramLoginButton
+              botUsername={botUsername}
+              onAuth={signInWithTelegramAccount}
+              onUnavailable={() => setBotUsername(null)}
+            />
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              {telegramBusy ? t("auth_sending") : t("auth_telegram_hint")}
+            </p>
+          </div>
+        ) : null}
 
         <div className="mt-5 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
