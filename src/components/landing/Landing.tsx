@@ -3,6 +3,8 @@ import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
+import { getTicker } from "@/lib/ticker.functions";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -257,26 +259,51 @@ function Logo() {
 /* Market ticker (static reference quotes)                             */
 /* ------------------------------------------------------------------ */
 
-const TICKER: { symbol: string; price: string; change: string; up: boolean }[] = [
-  { symbol: "XAU/USD", price: "4,598.70", change: "+0.42%", up: true },
-  { symbol: "XAG/USD", price: "32.15", change: "+0.55%", up: true },
-  { symbol: "EUR/USD", price: "1.0912", change: "-0.18%", up: false },
-  { symbol: "GBP/USD", price: "1.2985", change: "+0.31%", up: true },
-  { symbol: "USD/JPY", price: "152.36", change: "+0.21%", up: true },
-  { symbol: "AUD/USD", price: "0.6745", change: "-0.12%", up: false },
-  { symbol: "USD/CAD", price: "1.3560", change: "+0.08%", up: true },
-  { symbol: "BTC/USD", price: "94,240", change: "+1.86%", up: true },
-  { symbol: "ETH/USD", price: "3,512.80", change: "+2.14%", up: true },
-  { symbol: "SOL/USD", price: "142.35", change: "+3.42%", up: true },
-  { symbol: "US30", price: "43,118", change: "-0.24%", up: false },
-  { symbol: "US500", price: "5,980.25", change: "-0.11%", up: false },
-  { symbol: "NAS100", price: "21,245", change: "+0.38%", up: true },
-  { symbol: "USOIL", price: "71.84", change: "-0.63%", up: false },
-  { symbol: "UKOIL", price: "75.20", change: "-0.45%", up: false },
+/**
+ * The symbols the header shows, in order. Prices come from the live feed; this
+ * list only decides what is asked for and how it is ordered.
+ *
+ * Until the feed answers, each row shows its symbol and a dash. It previously
+ * showed fifteen hardcoded prices — real-looking numbers that had not moved
+ * since the day they were typed — and a placeholder that admits it is a
+ * placeholder is worth more than one that lies convincingly.
+ */
+const TICKER_SYMBOLS = [
+  "XAU/USD",
+  "XAG/USD",
+  "EUR/USD",
+  "GBP/USD",
+  "USD/JPY",
+  "AUD/USD",
+  "USD/CAD",
+  "BTC/USD",
+  "ETH/USD",
+  "SOL/USD",
+  "US30",
+  "US500",
+  "NAS100",
+  "USOIL",
+  "UKOIL",
 ];
 
 export function Ticker() {
-  const items = [...TICKER, ...TICKER];
+  const loadTicker = useServerFn(getTicker);
+  // Fetched after mount, never during render: this bar sits on every page, and
+  // a header that waits on a market feed is a site that waits on a market feed.
+  const { data } = useQuery({
+    queryKey: ["header-ticker"],
+    queryFn: () => loadTicker(),
+    refetchInterval: 60_000,
+    staleTime: 55_000,
+  });
+
+  const quotes = data?.quotes ?? [];
+  const rows = quotes.length
+    ? quotes
+    : TICKER_SYMBOLS.map((symbol) => ({ symbol, price: "—", change: "", up: true }));
+  // Doubled so the marquee can loop without a visible seam.
+  const items = [...rows, ...rows];
+
   return (
     <div className="w-full border-b border-border bg-surface-elevated text-foreground">
       <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
@@ -285,12 +312,14 @@ export function Ticker() {
             <span key={`${t.symbol}-${i}`} className="flex shrink-0 items-baseline gap-1.5">
               <span className="font-semibold text-body">{t.symbol}</span>
               <span className="font-mono tabular-nums text-foreground">{t.price}</span>
-              <span
-                className="font-mono tabular-nums font-semibold"
-                style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
-              >
-                {t.change}
-              </span>
+              {t.change ? (
+                <span
+                  className="font-mono tabular-nums font-semibold"
+                  style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+                >
+                  {t.change}
+                </span>
+              ) : null}
             </span>
           ))}
         </div>

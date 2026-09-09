@@ -489,6 +489,24 @@ export type Database = {
           },
         ]
       }
+      market_quote_cache: {
+        Row: {
+          fetched_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          fetched_at?: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          fetched_at?: string
+          key?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       macro_calendar_cache: {
         Row: {
           fetched_at: string
