@@ -280,6 +280,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ezyai_autopilot_runs: {
+        Row: {
+          advanced: number
+          closed: number
+          detail: string | null
+          errors: number
+          finished_at: string | null
+          id: string
+          opened: number
+          scanned: number
+          started_at: string
+        }
+        Insert: {
+          advanced?: number
+          closed?: number
+          detail?: string | null
+          errors?: number
+          finished_at?: string | null
+          id?: string
+          opened?: number
+          scanned?: number
+          started_at?: string
+        }
+        Update: {
+          advanced?: number
+          closed?: number
+          detail?: string | null
+          errors?: number
+          finished_at?: string | null
+          id?: string
+          opened?: number
+          scanned?: number
+          started_at?: string
+        }
+        Relationships: []
+      }
       ezyai_bridge_hits: {
         Row: {
           at: string

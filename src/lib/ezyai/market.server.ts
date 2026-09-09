@@ -1,0 +1,181 @@
+import type { Candle } from "./indicators";
+import type { Instrument } from "./autopilot";
+
+/**
+ * Candle feeds for the website's own autopilot.
+ *
+ * The same two sources the Telegram desk reads, so a signal published here is
+ * comparable with one published there: Yahoo for FX, metals and energy, Binance
+ * for crypto. Both are public and keyless, which matters — a feed that needs a
+ * secret is a feed that silently stops working when the secret expires.
+ *
+ * Every fetch is bounded and every failure is contained: a provider that is
+ * down costs its own instrument and nothing else.
+ */
+
+export type Feed = "yahoo" | "binance";
+
+export type WatchedInstrument = Instrument & {
+  feed: Feed;
+  /** The provider's own ticker, which is rarely the display symbol. */
+  feedSymbol: string;
+  /** Shown on the card, e.g. "Intraday · 15m". */
+  timeframe: string;
+};
+
+/**
+ * The watchlist. Kept deliberately short: every instrument is a network call on
+ * every run, and a board with forty half-considered markets is worth less than
+ * one with eight the desk actually watches.
+ */
+export const WATCHLIST: WatchedInstrument[] = [
+  { symbol: "XAUUSD", feed: "yahoo", feedSymbol: "GC=F", decimals: 2, pip: 0.1, timeframe: "15m" },
+  { symbol: "XAGUSD", feed: "yahoo", feedSymbol: "SI=F", decimals: 3, pip: 0.01, timeframe: "15m" },
+  {
+    symbol: "EURUSD",
+    feed: "yahoo",
+    feedSymbol: "EURUSD=X",
+    decimals: 5,
+    pip: 0.0001,
+    timeframe: "15m",
+  },
+  {
+    symbol: "GBPUSD",
+    feed: "yahoo",
+    feedSymbol: "GBPUSD=X",
+    decimals: 5,
+    pip: 0.0001,
+    timeframe: "15m",
+  },
+  {
+    symbol: "USDJPY",
+    feed: "yahoo",
+    feedSymbol: "USDJPY=X",
+    decimals: 3,
+    pip: 0.01,
+    timeframe: "15m",
+  },
+  { symbol: "WTIUSD", feed: "yahoo", feedSymbol: "CL=F", decimals: 2, pip: 0.01, timeframe: "15m" },
+  {
+    symbol: "BTCUSD",
+    feed: "binance",
+    feedSymbol: "BTCUSDT",
+    decimals: 1,
+    pip: 1,
+    timeframe: "15m",
+  },
+  {
+    symbol: "ETHUSD",
+    feed: "binance",
+    feedSymbol: "ETHUSDT",
+    decimals: 2,
+    pip: 0.1,
+    timeframe: "15m",
+  },
+];
+
+/**
+ * Short on purpose: a page load waits on this, so a provider having a slow
+ * minute must cost a second or two, not the reader's patience. A missed bar is
+ * recoverable; a board that takes half a minute to appear is not.
+ */
+const TIMEOUT_MS = 5000;
+
+async function getJson(url: string): Promise<unknown | null> {
+  try {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+      headers: {
+        // Yahoo answers 4xx to a request with no user agent.
+        "user-agent": "Mozilla/5.0 (compatible; EzyMapALGO/1.0; +https://printezy.money)",
+        accept: "application/json",
+      },
+    });
+    if (!response.ok) {
+      console.error(`[autopilot] ${url} -> ${response.status}`);
+      return null;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`[autopilot] ${url} failed`, error);
+    return null;
+  }
+}
+
+function finite(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+/** Yahoo's chart endpoint, which returns parallel arrays rather than records. */
+async function yahooCandles(feedSymbol: string, bars: number): Promise<Candle[]> {
+  const url =
+    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(feedSymbol)}` +
+    `?interval=15m&range=5d`;
+  const body = (await getJson(url)) as {
+    chart?: {
+      result?: {
+        timestamp?: number[];
+        indicators?: {
+          quote?: {
+            open?: (number | null)[];
+            high?: (number | null)[];
+            low?: (number | null)[];
+            close?: (number | null)[];
+          }[];
+        };
+      }[];
+    };
+  } | null;
+
+  const result = body?.chart?.result?.[0];
+  const quote = result?.indicators?.quote?.[0];
+  const times = result?.timestamp;
+  if (!result || !quote || !times) return [];
+
+  const candles: Candle[] = [];
+  for (let i = 0; i < times.length; i += 1) {
+    // Yahoo pads its arrays with nulls for bars it has no data for; those are
+    // holes in the series, not zeroes, so they are dropped rather than filled.
+    const open = finite(quote.open?.[i]);
+    const high = finite(quote.high?.[i]);
+    const low = finite(quote.low?.[i]);
+    const close = finite(quote.close?.[i]);
+    if (open === null || high === null || low === null || close === null) continue;
+    candles.push({ time: times[i] * 1000, open, high, low, close });
+  }
+  return candles.slice(-bars);
+}
+
+/** Binance klines: an array of arrays, prices as strings. */
+async function binanceCandles(feedSymbol: string, bars: number): Promise<Candle[]> {
+  const url =
+    `https://api.binance.com/api/v3/klines` +
+    `?symbol=${encodeURIComponent(feedSymbol)}&interval=15m&limit=${bars}`;
+  const body = (await getJson(url)) as unknown[][] | null;
+  if (!Array.isArray(body)) return [];
+
+  const candles: Candle[] = [];
+  for (const row of body) {
+    if (!Array.isArray(row) || row.length < 5) continue;
+    const time = finite(row[0]);
+    const open = Number(row[1]);
+    const high = Number(row[2]);
+    const low = Number(row[3]);
+    const close = Number(row[4]);
+    if (time === null || ![open, high, low, close].every(Number.isFinite)) continue;
+    candles.push({ time, open, high, low, close });
+  }
+  return candles;
+}
+
+/** Bars for one instrument, newest last. Empty when the feed is unavailable. */
+export async function loadCandles(instrument: WatchedInstrument, bars = 200): Promise<Candle[]> {
+  const candles =
+    instrument.feed === "yahoo"
+      ? await yahooCandles(instrument.feedSymbol, bars)
+      : await binanceCandles(instrument.feedSymbol, bars);
+
+  // The final bar on both feeds is the one still forming. Publishing levels off
+  // a half-built candle means the levels move under the reader, so it goes.
+  return candles.slice(0, -1);
+}
