@@ -284,3 +284,63 @@ export async function pushSignal(payload: SignalPush): Promise<PushResult> {
 
   return { ok: true, id: (data as { id: string } | null)?.id ?? "", created: true };
 }
+
+/* ------------------------------ Bridge log ------------------------------ */
+
+export type BridgeOutcome =
+  | "accepted"
+  | "partial"
+  | "rejected"
+  | "unauthorized"
+  | "not_configured"
+  | "bad_request";
+
+export type BridgeHit = {
+  outcome: BridgeOutcome;
+  at: string;
+  external_id: string | null;
+  detail: string | null;
+  user_agent: string | null;
+};
+
+/**
+ * Record that the bridge was called, whatever the answer was.
+ *
+ * ezyai_signals only holds pushes that succeeded, so "the bot never called" and
+ * "the bot called and was turned away" both look like an empty table from
+ * outside. This is what tells them apart.
+ *
+ * Never throws and is never awaited on the response path: a failure to log must
+ * not turn a good push into a 500.
+ */
+export function recordBridgeHit(
+  outcome: BridgeOutcome,
+  meta: { externalId?: string | null; detail?: string | null; userAgent?: string | null } = {},
+): void {
+  void supabaseAdmin
+    .from("ezyai_bridge_hits")
+    .insert({
+      outcome,
+      external_id: meta.externalId ?? null,
+      // Bounded: this is a public endpoint, and an attacker controls both.
+      detail: meta.detail ? meta.detail.slice(0, 200) : null,
+      user_agent: meta.userAgent ? meta.userAgent.slice(0, 120) : null,
+    } as never)
+    .then(({ error }) => {
+      if (error) console.error("[ezyai-signals] bridge log failed", error.message);
+    });
+}
+
+/** The most recent attempts, newest first — for the unauthenticated diagnose. */
+export async function recentBridgeHits(limit = 5): Promise<BridgeHit[]> {
+  const { data, error } = await supabaseAdmin
+    .from("ezyai_bridge_hits")
+    .select("outcome, at, external_id, detail, user_agent")
+    .order("at", { ascending: false })
+    .limit(limit);
+  if (error) {
+    console.error("[ezyai-signals] bridge log read failed", error.message);
+    return [];
+  }
+  return (data ?? []) as unknown as BridgeHit[];
+}
