@@ -871,3 +871,233 @@
     transition: none;
   }
 }
+
+/* --- Hero signal card: the holographic shell ----------------------------- */
+
+/* The card tilts inside a perspective box, so the lean reads as depth rather
+   than a skew. Every custom property below has a resting default, which is what
+   a card that never meets a pointer renders with — touch, reduced motion, or
+   the moment before hydration. Nothing here is required for the card to be
+   legible; it is all surface. */
+.holo-stage {
+  perspective: 1100px;
+}
+.holo-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --hx: 50%;
+  --hy: 50%;
+  --hi: 0;
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-md, 0.5rem);
+  background: linear-gradient(
+    158deg,
+    color-mix(in srgb, var(--card) 88%, #0e2c1d) 0%,
+    var(--card) 52%,
+    color-mix(in srgb, var(--card) 90%, #241f0c) 100%
+  );
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow:
+    var(--shadow-elevated),
+    0 0 0 1px rgba(47, 191, 113, 0.1),
+    0 28px 64px -34px rgba(47, 191, 113, 0.5);
+}
+
+/* Prismatic edge. A gradient painted into a 1px ring by masking out the middle,
+   which keeps the card's own background free for the tint above. */
+.holo-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(47, 191, 113, 0.7) 0%,
+    rgba(201, 161, 58, 0.5) 36%,
+    rgba(90, 200, 255, 0.38) 62%,
+    rgba(47, 191, 113, 0.65) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* Instrument grid, fading out down the card so it never fights the numbers.
+   It doubles as the clipping box for the scan line, which is why it, and not
+   the card, carries the overflow — the card has to stay unclipped for the
+   layers lifted towards the viewer. */
+.holo-card__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size:
+    100% 26px,
+    26px 100%;
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 12%, transparent 80%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 12%, transparent 80%);
+}
+
+/* A readout line drifting down the surface. Slow on purpose: the card sits on
+   the landing page all day and anything faster becomes a flicker in the corner
+   of the eye. */
+.holo-card__scan {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 78px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(47, 191, 113, 0.09) 45%,
+    rgba(140, 225, 255, 0.07) 60%,
+    transparent 100%
+  );
+  animation: holo-scan 8.5s linear infinite;
+}
+@keyframes holo-scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(560px);
+  }
+}
+
+/* Iridescence gathered under the pointer. --hx/--hy follow the cursor and --hi
+   fades the whole layer in on enter, so an untouched card carries none of it. */
+.holo-card__sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--hi);
+  mix-blend-mode: screen;
+  transition: opacity 320ms ease-out;
+  background:
+    radial-gradient(130px 130px at var(--hx) var(--hy), rgba(255, 255, 255, 0.13), transparent 70%),
+    radial-gradient(
+      440px 280px at var(--hx) var(--hy),
+      rgba(47, 191, 113, 0.2) 0%,
+      rgba(201, 161, 58, 0.13) 38%,
+      rgba(90, 200, 255, 0.1) 62%,
+      transparent 78%
+    );
+}
+
+/* HUD corner brackets, eight one-pixel strips painted as backgrounds so the
+   frame costs one element rather than four. */
+.holo-card__corners {
+  --bracket: color-mix(in srgb, var(--primary) 62%, transparent);
+  position: absolute;
+  inset: 6px;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--bracket), var(--bracket)) 0 0 / 1px 13px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 0 0 / 13px 1px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 100% 0 / 1px 13px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 100% 0 / 13px 1px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 0 100% / 1px 13px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 0 100% / 13px 1px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 100% 100% / 1px 13px no-repeat,
+    linear-gradient(var(--bracket), var(--bracket)) 100% 100% / 13px 1px no-repeat;
+}
+
+/* Everything readable sits above the decoration. */
+.holo-content {
+  position: relative;
+  z-index: 2;
+}
+/* Floated a little towards the viewer, so the chart parts company with the
+   frame as the card leans. Small on purpose: perspective turns any lift into a
+   scale, and a chart that grows past its own padding clips at the edge. */
+.holo-lift {
+  transform: translateZ(10px);
+}
+
+/* The preset views. A selected tab is lit rather than merely filled — the point
+   is that the card looks like a readout being switched, not a form. */
+.holo-tab {
+  position: relative;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.25rem;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--secondary) 55%, transparent);
+  border: 1px solid transparent;
+  transition:
+    color 180ms ease-out,
+    background 180ms ease-out,
+    border-color 180ms ease-out,
+    box-shadow 180ms ease-out;
+  cursor: pointer;
+}
+.holo-tab:hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--secondary) 85%, transparent);
+}
+.holo-tab[aria-selected="true"] {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 14px -2px color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+/* Panels arrive rather than appear, so switching reads as the card responding
+   to the click. Keyed on the view id in the markup, which restarts it. */
+.holo-panel {
+  animation: holo-panel-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes holo-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-card {
+    transform: none;
+    transition: none;
+  }
+  .holo-card__scan {
+    animation: none;
+    opacity: 0;
+  }
+  .holo-lift {
+    transform: none;
+  }
+  .holo-panel {
+    animation: none;
+  }
+  .holo-tab {
+    transition: none;
+  }
+}

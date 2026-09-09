@@ -54,6 +54,45 @@ Every number on this page is counted from the code, and the third column says wh
 
 ---
 
+## 🪟 The hero card — the format, before the sign-up
+
+<img src="./docs/assets/hero-card.svg" alt="The hero signal card and its four preset views - levels, analysis, risk and plan - cycling through a holographic panel, beside a legend of what each view carries" width="100%">
+
+The card in the site header is the first thing a visitor sees, and for a long time it said what
+every signal service's hero says: **here is a price**. It now says _why_.
+
+Four preset views sit under the rail — a real `tablist`, arrow-key navigable, that changes what the
+card reports without leaving the page.
+
+| View         | What it carries                                                                                                                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Levels**   | Entry zone, stop and both targets, each with its distance in pips **and in R**                                                                       |
+| **Analysis** | The autopilot's own gates — structure, EMA21 vs EMA50, MACD line, extension — with the readings that earned them, and the setup score they add up to |
+| **Risk**     | Reward-to-risk, the stop measured in pips _and_ in ATR, and a worked position size at 1% of a $5,000 account                                         |
+| **Plan**     | The four management rules: fill in the zone, stop on with the fill, half at TP1 with the stop to break-even, trail the rest to TP2                   |
+
+**One setup, derived once.** Every figure on every panel comes out of the single sample in
+[`src/lib/use-demo-price.ts`](src/lib/use-demo-price.ts) — pip distances, R multiples,
+reward-to-risk, lot size and the chart's own entry and target rules are all computed from it, never
+typed a second time. A card that quotes a level its analysis disagrees with is not a possible state.
+
+**And the sample is one the strategy would actually have published.** Run the numbers against the
+real `intraday` profile in [`src/lib/ezyai/autopilot.ts`](src/lib/ezyai/autopilot.ts) and every gate
+passes: ATR/price `0.0010` inside the `0.0004 – 0.05` band, EMA21 above EMA50 with structure
+agreeing, MACD line above zero, entry `0.50` ATR off the EMA21 against a cap of 3, stop `0.74` ATR
+against a cap of 4, and a first target at `1.5 R` against a floor of `1.3`. The score is **42/100** —
+the same score the desk's first real XAUUSD signal earned. A sample card advertising 90 would be
+printing a number the board never prints.
+
+**The holographic shell is decoration, and behaves like it.** Pointer tilt and the iridescent sheen
+are written straight to the DOM inside a `requestAnimationFrame` loop, because a `pointermove` that
+re-renders the hero is a stutter you can feel. Both are skipped entirely under
+`prefers-reduced-motion` and on any device without a fine pointer — where a tilt would only ever
+fire under a thumb. The card renders flat, complete and server-side without any of it, and every
+panel is held to one height so switching views never jolts the page below.
+
+---
+
 ## 📡 The board — the proof
 
 <img src="./docs/assets/board-panel.svg" alt="An EzyAI signal card and its equity curve — setup score, stop-to-target progress, live R, the win-rate formula, and the six enforced status words" width="100%">
