@@ -606,84 +606,169 @@ export function Nav() {
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
+/* The hero chart's own frame. The plot band is inset from the viewBox so wicks
+   and the level tags have room, and the aspect matches the 16/7 box the card
+   gives it — which is what lets the SVG fill edge to edge instead of sitting
+   letterboxed inside its own padding at wide widths. */
+const CHART = { w: 480, h: 210, top: 40, bottom: 178, left: 20, right: 460 };
+
+/* The price window the chart draws. Headroom under the entry and over the
+   target, so neither level tag sits welded to an edge. */
+const BAND = DEMO.target - DEMO.entry;
+const CHART_LO = DEMO.entry - BAND * 0.35;
+const CHART_HI = DEMO.target + BAND * 0.12;
+
+/** A plausible approach into the entry, so the chart opens mid-story. */
+const SEED = [
+  4598.05, 4598.42, 4598.28, 4598.9, 4599.15, 4599.02, 4599.6, 4599.95, 4599.78, 4600.4, 4600.72,
+  4600.5,
+];
+
 function ChartGraphic({ live }: { live: DemoPrice }) {
   // A rolling window over the same walk the card's rail is reading. Each tick
   // pushes the newest price on the right and drops the oldest off the left, so
   // the series slides rather than redrawing from nothing — and the last candle
   // is always the price shown above it.
-  const series = useRef<number[]>([38, 52, 44, 66, 58, 78, 70, 92, 84, 108, 100, 124]);
+  //
+  // It stores prices rather than plot heights, which is what lets the entry and
+  // target rules below be drawn from the same numbers the panels quote instead
+  // of from a second set that has to be kept in step by hand.
+  const series = useRef<number[]>(SEED);
   const lastTick = useRef(-1);
 
   if (live.tick !== lastTick.current) {
     lastTick.current = live.tick;
-    if (live.tick > 0) {
-      // Map the price band onto the chart's own vertical range, so the shape
-      // the visitor sees is the number they are watching.
-      const span = DEMO.target - (DEMO.stop - 1);
-      const mapped = 30 + ((live.price - (DEMO.stop - 1)) / span) * 100;
-      series.current = [...series.current.slice(1), Math.max(24, Math.min(134, mapped))];
-    }
+    if (live.tick > 0) series.current = [...series.current.slice(1), live.price];
   }
 
-  const bars = series.current;
-  const x = (i: number) => i * 36 + 12;
-  const y = (b: number) => 170 - b;
-  const line = bars.map((b, i) => `L${x(i)},${y(b)}`).join(" ");
-  const lastX = x(bars.length - 1);
-  const lastY = y(bars[bars.length - 1]);
+  const prices = series.current;
+  const step = (CHART.right - CHART.left) / (prices.length - 1);
+  const x = (i: number) => CHART.left + i * step;
+  const y = (price: number) =>
+    CHART.bottom -
+    ((Math.max(CHART_LO, Math.min(CHART_HI, price)) - CHART_LO) / (CHART_HI - CHART_LO)) *
+      (CHART.bottom - CHART.top);
+
+  const line = prices.map((p, i) => `${i === 0 ? "M" : "L"}${x(i)},${y(p)}`).join(" ");
+  const lastX = x(prices.length - 1);
+  const lastY = y(prices[prices.length - 1]);
+  const entryY = y(DEMO.entry);
+  const targetY = y(DEMO.target);
 
   return (
     <svg
-      viewBox="0 0 420 180"
+      viewBox={`0 0 ${CHART.w} ${CHART.h}`}
       className="h-full w-full"
       role="img"
-      aria-label="Uptrend candlestick chart"
+      aria-label="Sample uptrend, with the entry and first target marked"
     >
       <defs>
         <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.32" />
           <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
         </linearGradient>
       </defs>
-      {[36, 72, 108, 144].map((gy) => (
-        <line key={gy} x1="0" y1={gy} x2="420" y2={gy} stroke="var(--border)" strokeWidth="1" />
+
+      {/* Instrument grid, kept faint: it is there to give the prices a frame,
+          not to be read off. */}
+      {[52, 94, 136, 178].map((gy) => (
+        <line key={gy} x1="0" y1={gy} x2={CHART.w} y2={gy} stroke="var(--border)" strokeWidth="1" />
       ))}
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <line
+          key={`v${i}`}
+          x1={(CHART.w / 5) * i}
+          y1="0"
+          x2={(CHART.w / 5) * i}
+          y2={CHART.h}
+          stroke="var(--border)"
+          strokeWidth="1"
+          opacity="0.4"
+        />
+      ))}
+
+      {/* The two levels the card quotes, drawn where they actually fall. */}
+      <line
+        x1="0"
+        y1={entryY}
+        x2={CHART.right - 62}
+        y2={entryY}
+        stroke="var(--foreground)"
+        strokeWidth="1"
+        strokeDasharray="3 4"
+        opacity="0.4"
+      />
+      <text
+        x={CHART.w - 8}
+        y={entryY - 5}
+        textAnchor="end"
+        fontSize="10"
+        fontWeight="700"
+        letterSpacing="0.08em"
+        fill="var(--muted-foreground)"
+      >
+        ENTRY
+      </text>
+      <line
+        x1="0"
+        y1={targetY}
+        x2={CHART.right - 62}
+        y2={targetY}
+        stroke="var(--primary)"
+        strokeWidth="1"
+        strokeDasharray="3 4"
+        opacity="0.55"
+      />
+      <text
+        x={CHART.w - 8}
+        y={targetY - 5}
+        textAnchor="end"
+        fontSize="10"
+        fontWeight="700"
+        letterSpacing="0.08em"
+        fill="var(--primary)"
+      >
+        TP1
+      </text>
+
       <path
         className="hero-series"
-        d={`M0,150 ${line} L420,${lastY} L420,180 L0,180 Z`}
+        d={`${line} L${lastX},${CHART.h} L${CHART.left},${CHART.h} Z`}
         fill="url(#areaFill)"
       />
       <path
         className="hero-series"
-        d={`M0,150 ${line} L420,${lastY}`}
+        d={line}
         fill="none"
         stroke="var(--primary)"
         strokeWidth="2.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      {bars.map((b, i) => {
+
+      {prices.map((p, i) => {
         // The newest candle takes the direction of the live tick; the rest keep
         // a stable pattern so the history does not flicker colour every second.
-        const up = i === bars.length - 1 ? live.rising : i % 3 !== 1;
+        const up = i === prices.length - 1 ? live.rising : i % 3 !== 1;
         const color = up ? "var(--primary)" : "var(--accent)";
         return (
           <g key={i}>
             <line
               className="hero-wick"
               x1={x(i)}
-              y1={y(b) - 14}
+              y1={y(p) - 13}
               x2={x(i)}
-              y2={y(b) + 14}
+              y2={y(p) + 13}
               stroke={color}
               strokeWidth="1.5"
-              opacity="0.7"
+              opacity="0.65"
             />
             <rect
               className="hero-candle"
-              x={x(i) - 5}
-              y={y(b) - 8}
-              width="10"
-              height="16"
+              x={x(i) - 4.5}
+              y={y(p) - 7}
+              width="9"
+              height="14"
               rx="2"
               fill={color}
               opacity="0.85"
@@ -691,6 +776,7 @@ function ChartGraphic({ live }: { live: DemoPrice }) {
           </g>
         );
       })}
+
       <circle
         className="hero-marker hero-marker-halo"
         cx={lastX}
@@ -719,7 +805,7 @@ function Hero() {
         <div className="glow-orb bottom-[-30%] left-[38%] h-[360px] w-[360px] bg-primary/15" />
       </div>
       <PointerGlyphs />
-      <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
+      <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:py-16">
         <div>
           <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
             <Users className="h-3.5 w-3.5 text-primary" />

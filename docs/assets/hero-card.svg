@@ -1,0 +1,276 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420" role="img" aria-label="The hero signal card and its four preset views - levels, analysis, risk and plan - cycling through a holographic panel">
+  <title>The hero signal card: one sample setup, four views, every figure derived from the same numbers</title>
+
+  <defs>
+    <linearGradient id="hcSky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0e1613"/>
+      <stop offset="55%" stop-color="#0a0c0b"/>
+      <stop offset="100%" stop-color="#12100a"/>
+    </linearGradient>
+    <linearGradient id="hcCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12211a"/>
+      <stop offset="55%" stop-color="#0f1512"/>
+      <stop offset="100%" stop-color="#16140d"/>
+    </linearGradient>
+    <linearGradient id="hcEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity=".75"/>
+      <stop offset="38%" stop-color="#c9a13a" stop-opacity=".55"/>
+      <stop offset="64%" stop-color="#5ac8ff" stop-opacity=".42"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity=".7"/>
+    </linearGradient>
+    <linearGradient id="hcArea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity=".32"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="hcRail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#2fbf71"/>
+    </linearGradient>
+    <linearGradient id="hcScan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2fbf71" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#8ce1ff" stop-opacity=".16"/>
+      <stop offset="100%" stop-color="#2fbf71" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="hcVig" cx="50%" cy="45%" r="72%">
+      <stop offset="58%" stop-color="#0a0c0b" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0a0c0b" stop-opacity="1"/>
+    </radialGradient>
+    <pattern id="hcGrid" width="26" height="26" patternUnits="userSpaceOnUse">
+      <path d="M26 0 L0 0 L0 26" fill="none" stroke="#f2f4f2" stroke-width=".5" opacity=".05"/>
+    </pattern>
+    <clipPath id="hcClip"><rect x="40" y="26" width="430" height="368" rx="10"/></clipPath>
+  </defs>
+
+  <style>
+    text { font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    /* .mono must also win on descendants: the bare `text` type selector above
+       beats plain inheritance, so a group carrying .mono alone silently
+       rendered its text children in the sans stack. */
+    .mono, .mono text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .lbl  { fill: #8c9a93; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+    .val  { fill: #e8f2ec; font-size: 13px; font-weight: 800; }
+    .row  { fill: #c3cec8; font-size: 11.5px; }
+    .note { fill: #7d8a84; font-size: 10px; }
+    .up   { fill: #2fbf71; }
+    .gold { fill: #c9a13a; }
+
+    /* One 16s loop, four 4s slots. Negative delays park views 1-3 partway into
+       a cycle they have already faded out of, so the very first frame - the one
+       a static renderer keeps - shows the levels view rather than nothing. */
+    .view, .tabOn, .legOn { animation: hcCycle 16s ease-in-out infinite; }
+    .s1 { animation-delay: -12s; }
+    .s2 { animation-delay: -8s; }
+    .s3 { animation-delay: -4s; }
+    @keyframes hcCycle {
+      0%   { opacity: 1 }
+      22%  { opacity: 1 }
+      25%  { opacity: 0 }
+      97%  { opacity: 0 }
+      100% { opacity: 1 }
+    }
+
+    .scan { animation: hcScanDrift 8.5s linear infinite; }
+    @keyframes hcScanDrift {
+      0%   { transform: translateY(-70px) }
+      100% { transform: translateY(400px) }
+    }
+    .pulse { animation: hcPulse 1.9s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes hcPulse {
+      0%   { transform: scale(.6); opacity: .85 }
+      70%  { transform: scale(2.6); opacity: 0 }
+      100% { transform: scale(2.6); opacity: 0 }
+    }
+    .ringArc { stroke-dasharray: 0 999; animation: hcArc 16s ease-out infinite; }
+    @keyframes hcArc {
+      0%   { stroke-dasharray: 0 999 }
+      12%  { stroke-dasharray: 63 999 }
+      100% { stroke-dasharray: 63 999 }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .view, .tabOn, .legOn, .scan, .pulse, .ringArc { animation: none }
+      .s1, .s2, .s3 { opacity: 0 }
+      .ringArc { stroke-dasharray: 63 999 }
+    }
+  </style>
+
+  <rect width="1000" height="420" fill="url(#hcSky)"/>
+  <rect width="1000" height="420" fill="url(#hcVig)"/>
+
+  <!-- ============================ the card ============================ -->
+  <rect x="40" y="26" width="430" height="368" rx="10" fill="url(#hcCard)"/>
+  <g clip-path="url(#hcClip)">
+    <rect x="40" y="26" width="430" height="368" fill="url(#hcGrid)" opacity=".8"/>
+    <rect class="scan" x="40" y="26" width="430" height="70" fill="url(#hcScan)"/>
+  </g>
+  <rect x="40" y="26" width="430" height="368" rx="10" fill="none" stroke="url(#hcEdge)" stroke-width="1.2"/>
+
+  <!-- HUD corner brackets -->
+  <g stroke="#2fbf71" stroke-width="1.1" opacity=".6" fill="none">
+    <path d="M52 46 L52 33 L65 33"/>
+    <path d="M445 33 L458 33 L458 46"/>
+    <path d="M458 374 L458 387 L445 387"/>
+    <path d="M65 387 L52 387 L52 374"/>
+  </g>
+
+  <!-- header -->
+  <text x="64" y="60" fill="#e8f2ec" font-size="14.5" font-weight="800">XAU/USD · Gold Spot</text>
+  <g>
+    <rect x="64" y="70" width="114" height="17" rx="8.5" fill="#2fbf71" fill-opacity=".12" stroke="#2fbf71" stroke-opacity=".45"/>
+    <circle class="pulse" cx="76" cy="78.5" r="3" fill="#2fbf71"/>
+    <circle cx="76" cy="78.5" r="3" fill="#2fbf71"/>
+    <text x="85" y="82" class="lbl up">LIVE FORMAT</text>
+  </g>
+  <text x="190" y="82" class="lbl up">↗ BUY · 15M</text>
+  <rect x="356" y="48" width="90" height="18" rx="4" fill="#c9a13a" fill-opacity=".14"/>
+  <text x="401" y="61" class="lbl gold" text-anchor="middle">SAMPLE SIGNAL</text>
+  <line x1="40" y1="98" x2="470" y2="98" stroke="#2a322d"/>
+
+  <!-- chart: the same two levels the panels quote, drawn where they fall -->
+  <line x1="40" y1="120" x2="410" y2="120" stroke="#2fbf71" stroke-opacity=".5" stroke-width="1" stroke-dasharray="3 4"/>
+  <text x="458" y="117" class="lbl up" text-anchor="end">TP1</text>
+  <line x1="40" y1="176" x2="410" y2="176" stroke="#8c9a93" stroke-opacity=".5" stroke-width="1" stroke-dasharray="3 4"/>
+  <text x="458" y="173" class="lbl" text-anchor="end">ENTRY</text>
+  <path d="M62,182 L96,172 L130,177 L164,160 L198,152 L232,157 L266,142 L300,134 L334,139 L368,128 L402,132 L402,200 L62,200 Z" fill="url(#hcArea)"/>
+  <path d="M62,182 L96,172 L130,177 L164,160 L198,152 L232,157 L266,142 L300,134 L334,139 L368,128 L402,132" fill="none" stroke="#2fbf71" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g opacity=".85">
+    <rect x="58" y="176" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="92" y="166" width="8" height="12" rx="2" fill="#c9a13a"/>
+    <rect x="126" y="171" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="160" y="154" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="194" y="146" width="8" height="12" rx="2" fill="#c9a13a"/>
+    <rect x="228" y="151" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="262" y="136" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="296" y="128" width="8" height="12" rx="2" fill="#c9a13a"/>
+    <rect x="330" y="133" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="364" y="122" width="8" height="12" rx="2" fill="#2fbf71"/>
+    <rect x="398" y="126" width="8" height="12" rx="2" fill="#2fbf71"/>
+  </g>
+  <circle class="pulse" cx="402" cy="132" r="4" fill="none" stroke="#2fbf71" stroke-width="2"/>
+  <circle cx="402" cy="132" r="4" fill="#2fbf71"/>
+
+  <!-- price + rail -->
+  <text x="64" y="222" class="lbl">PRICE NOW</text>
+  <text x="446" y="223" class="mono up" font-size="13" font-weight="800" text-anchor="end">4,600.83</text>
+  <rect x="64" y="230" width="382" height="6" rx="3" fill="#3a403c"/>
+  <rect x="64" y="230" width="232" height="6" rx="3" fill="url(#hcRail)"/>
+  <rect x="147" y="227" width="2" height="12" rx="1" fill="#e8f2ec" fill-opacity=".65"/>
+
+  <!-- tabs: the lit one cycles with the panel below it -->
+  <line x1="40" y1="252" x2="470" y2="252" stroke="#2a322d"/>
+  <g class="mono">
+    <rect x="60" y="262" width="94" height="24" rx="6" fill="#1a1f1c"/>
+    <text x="107" y="277" class="lbl" text-anchor="middle">LEVELS</text>
+    <rect x="162" y="262" width="94" height="24" rx="6" fill="#1a1f1c"/>
+    <text x="209" y="277" class="lbl" text-anchor="middle">ANALYSIS</text>
+    <rect x="264" y="262" width="94" height="24" rx="6" fill="#1a1f1c"/>
+    <text x="311" y="277" class="lbl" text-anchor="middle">RISK</text>
+    <rect x="366" y="262" width="94" height="24" rx="6" fill="#1a1f1c"/>
+    <text x="413" y="277" class="lbl" text-anchor="middle">PLAN</text>
+
+    <g class="tabOn">
+      <rect x="60" y="262" width="94" height="24" rx="6" fill="#2fbf71" fill-opacity=".14" stroke="#2fbf71" stroke-opacity=".42"/>
+      <text x="107" y="277" class="lbl up" text-anchor="middle">LEVELS</text>
+    </g>
+    <g class="tabOn s1">
+      <rect x="162" y="262" width="94" height="24" rx="6" fill="#2fbf71" fill-opacity=".14" stroke="#2fbf71" stroke-opacity=".42"/>
+      <text x="209" y="277" class="lbl up" text-anchor="middle">ANALYSIS</text>
+    </g>
+    <g class="tabOn s2">
+      <rect x="264" y="262" width="94" height="24" rx="6" fill="#2fbf71" fill-opacity=".14" stroke="#2fbf71" stroke-opacity=".42"/>
+      <text x="311" y="277" class="lbl up" text-anchor="middle">RISK</text>
+    </g>
+    <g class="tabOn s3">
+      <rect x="366" y="262" width="94" height="24" rx="6" fill="#2fbf71" fill-opacity=".14" stroke="#2fbf71" stroke-opacity=".42"/>
+      <text x="413" y="277" class="lbl up" text-anchor="middle">PLAN</text>
+    </g>
+  </g>
+  <line x1="40" y1="296" x2="470" y2="296" stroke="#2a322d"/>
+
+  <!-- ==== the four views, one 4s slot each ==== -->
+  <g class="view">
+    <text x="64" y="314" class="row">Entry zone</text>
+    <text x="446" y="314" class="mono val" text-anchor="end">4,597.90 – 4,598.70</text>
+    <text x="64" y="333" class="row">Stop loss</text>
+    <text x="352" y="333" class="mono note" text-anchor="end">−34 pips · 1R</text>
+    <text x="446" y="333" class="mono val gold" text-anchor="end">4,595.30</text>
+    <text x="64" y="352" class="row">Target 1</text>
+    <text x="352" y="352" class="mono note" text-anchor="end">+51 pips · 1.5R</text>
+    <text x="446" y="352" class="mono val up" text-anchor="end">4,603.80</text>
+    <text x="64" y="371" class="row">Target 2</text>
+    <text x="352" y="371" class="mono note" text-anchor="end">+85 pips · 2.5R</text>
+    <text x="446" y="371" class="mono val up" text-anchor="end">4,607.20</text>
+  </g>
+
+  <g class="view s1">
+    <circle cx="88" cy="326" r="19" fill="none" stroke="#3a403c" stroke-width="5"/>
+    <circle class="ringArc" cx="88" cy="326" r="19" fill="none" stroke="#2fbf71" stroke-width="5" stroke-linecap="round" transform="rotate(-90 88 326)"/>
+    <text x="88" y="331" class="mono val" text-anchor="middle">42</text>
+    <text x="88" y="356" class="lbl" text-anchor="middle" font-size="8.5">SETUP SCORE</text>
+    <text x="124" y="310" class="lbl">WHY THE DESK TOOK IT</text>
+    <text x="124" y="329" class="row">✓ Structure bullish on the 15m</text>
+    <text x="124" y="348" class="row">✓ EMA21 holding above EMA50 <tspan class="note">4,596.40 › 4,592.10</tspan></text>
+    <text x="124" y="367" class="row">✓ MACD line above zero <tspan class="note">+1.24</tspan></text>
+    <text x="124" y="386" class="row">✓ Entry near the EMA21 <tspan class="note">0.5 ATR</tspan></text>
+  </g>
+
+  <g class="view s2">
+    <text x="64" y="314" class="row">Reward : risk</text>
+    <text x="352" y="314" class="mono note" text-anchor="end">to Target 1</text>
+    <text x="446" y="314" class="mono val up" text-anchor="end">1 : 1.5</text>
+    <text x="64" y="333" class="row">Risk to the stop</text>
+    <text x="352" y="333" class="mono note" text-anchor="end">0.74 ATR</text>
+    <text x="446" y="333" class="mono val gold" text-anchor="end">34 pips</text>
+    <text x="64" y="352" class="row">ATR (15m)</text>
+    <text x="446" y="352" class="mono val" text-anchor="end">4.60</text>
+    <text x="64" y="371" class="row">Position at 1% risk</text>
+    <text x="352" y="371" class="mono note" text-anchor="end">$5,000 account</text>
+    <text x="446" y="371" class="mono val" text-anchor="end">0.14 lots</text>
+  </g>
+
+  <g class="view s3">
+    <circle cx="72" cy="312" r="8" fill="#2fbf71" fill-opacity=".15"/>
+    <text x="72" y="316" class="mono up" font-size="9.5" font-weight="800" text-anchor="middle">1</text>
+    <text x="90" y="316" class="row">Fill inside the zone — never chase above it.</text>
+    <circle cx="72" cy="331" r="8" fill="#2fbf71" fill-opacity=".15"/>
+    <text x="72" y="335" class="mono up" font-size="9.5" font-weight="800" text-anchor="middle">2</text>
+    <text x="90" y="335" class="row">The stop goes on with the fill, and never moves.</text>
+    <circle cx="72" cy="350" r="8" fill="#2fbf71" fill-opacity=".15"/>
+    <text x="72" y="354" class="mono up" font-size="9.5" font-weight="800" text-anchor="middle">3</text>
+    <text x="90" y="354" class="row">Take half at Target 1, stop to break-even.</text>
+    <circle cx="72" cy="369" r="8" fill="#2fbf71" fill-opacity=".15"/>
+    <text x="72" y="373" class="mono up" font-size="9.5" font-weight="800" text-anchor="middle">4</text>
+    <text x="90" y="373" class="row">Let the rest run to Target 2, trailing structure.</text>
+  </g>
+
+  <!-- ========================= the legend ========================= -->
+  <text x="512" y="52" fill="#e8f2ec" font-size="15" font-weight="800">One setup. Four views. No second set of numbers.</text>
+  <text x="512" y="74" class="row" font-size="12">Every figure on every panel is derived from the one sample in</text>
+  <text x="512" y="92" class="mono note" font-size="11">src/lib/use-demo-price.ts</text>
+  <text x="512" y="112" class="row" font-size="12">— so the card cannot quote a level the analysis disagrees with.</text>
+
+  <g>
+    <rect x="512" y="136" width="448" height="52" rx="7" fill="none" stroke="#2a322d"/>
+    <rect class="legOn" x="512" y="136" width="448" height="52" rx="7" fill="#2fbf71" fill-opacity=".07" stroke="#2fbf71" stroke-opacity=".4"/>
+    <text x="530" y="157" class="lbl up">LEVELS</text>
+    <text x="530" y="176" class="row">Entry zone, stop and both targets, in price, pips and R.</text>
+  </g>
+  <g>
+    <rect x="512" y="198" width="448" height="52" rx="7" fill="none" stroke="#2a322d"/>
+    <rect class="legOn s1" x="512" y="198" width="448" height="52" rx="7" fill="#2fbf71" fill-opacity=".07" stroke="#2fbf71" stroke-opacity=".4"/>
+    <text x="530" y="219" class="lbl up">ANALYSIS</text>
+    <text x="530" y="238" class="row">The autopilot's own gates, and the score they add up to.</text>
+  </g>
+  <g>
+    <rect x="512" y="260" width="448" height="52" rx="7" fill="none" stroke="#2a322d"/>
+    <rect class="legOn s2" x="512" y="260" width="448" height="52" rx="7" fill="#2fbf71" fill-opacity=".07" stroke="#2fbf71" stroke-opacity=".4"/>
+    <text x="530" y="281" class="lbl up">RISK</text>
+    <text x="530" y="300" class="row">Payoff, distance to the stop, and a worked position size.</text>
+  </g>
+  <g>
+    <rect x="512" y="322" width="448" height="52" rx="7" fill="none" stroke="#2a322d"/>
+    <rect class="legOn s3" x="512" y="322" width="448" height="52" rx="7" fill="#2fbf71" fill-opacity=".07" stroke="#2fbf71" stroke-opacity=".4"/>
+    <text x="530" y="343" class="lbl up">PLAN</text>
+    <text x="530" y="362" class="row">How the trade is managed once it is on. Four steps.</text>
+  </g>
+</svg>
