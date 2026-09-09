@@ -232,54 +232,6 @@ export type Database = {
           },
         ]
       }
-      ezyai_entitlements: {
-        Row: {
-          amount_cents: number
-          claimed_at: string | null
-          created_at: string
-          currency: string
-          email: string | null
-          id: string
-          months: number
-          redeem_code: string | null
-          sku: string
-          status: string
-          stripe_session_id: string
-          telegram_id: number | null
-          telegram_username: string
-        }
-        Insert: {
-          amount_cents?: number
-          claimed_at?: string | null
-          created_at?: string
-          currency?: string
-          email?: string | null
-          id?: string
-          months: number
-          redeem_code?: string | null
-          sku: string
-          status?: string
-          stripe_session_id: string
-          telegram_id?: number | null
-          telegram_username: string
-        }
-        Update: {
-          amount_cents?: number
-          claimed_at?: string | null
-          created_at?: string
-          currency?: string
-          email?: string | null
-          id?: string
-          months?: number
-          redeem_code?: string | null
-          sku?: string
-          status?: string
-          stripe_session_id?: string
-          telegram_id?: number | null
-          telegram_username?: string
-        }
-        Relationships: []
-      }
       ezyai_autopilot_runs: {
         Row: {
           advanced: number
@@ -340,6 +292,54 @@ export type Database = {
           id?: string
           outcome?: string
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      ezyai_entitlements: {
+        Row: {
+          amount_cents: number
+          claimed_at: string | null
+          created_at: string
+          currency: string
+          email: string | null
+          id: string
+          months: number
+          redeem_code: string | null
+          sku: string
+          status: string
+          stripe_session_id: string
+          telegram_id: number | null
+          telegram_username: string
+        }
+        Insert: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months: number
+          redeem_code?: string | null
+          sku: string
+          status?: string
+          stripe_session_id: string
+          telegram_id?: number | null
+          telegram_username: string
+        }
+        Update: {
+          amount_cents?: number
+          claimed_at?: string | null
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          months?: number
+          redeem_code?: string | null
+          sku?: string
+          status?: string
+          stripe_session_id?: string
+          telegram_id?: number | null
+          telegram_username?: string
         }
         Relationships: []
       }
