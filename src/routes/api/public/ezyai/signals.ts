@@ -69,9 +69,31 @@ function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
-async function guard(request: Request): Promise<Response | null> {
+/**
+ * Record an attempt, and never let that recording matter.
+ *
+ * Importing the server module constructs the Supabase admin client, which
+ * throws when the database is unconfigured or unreachable — so the import has
+ * to sit inside the try as much as the call does. A bridge that cannot write
+ * its log still has to answer 401 with a 401.
+ */
+async function logAttempt(
+  outcome: "accepted" | "partial" | "rejected" | "unauthorized" | "not_configured" | "bad_request",
+  meta: { externalId?: string | null; detail?: string | null; userAgent?: string | null } = {},
+): Promise<void> {
+  try {
+    const { recordBridgeHit } = await import("@/lib/ezyai/signals.server");
+    recordBridgeHit(outcome, meta);
+  } catch (error) {
+    console.error("[ezyai signals] could not record the attempt", error);
+  }
+}
+
+async function guard(request: Request, log: boolean): Promise<Response | null> {
+  const ua = request.headers.get("user-agent");
   const { key, source } = boundKey();
   if (!key) {
+    if (log) await logAttempt("not_configured", { userAgent: ua });
     return Response.json(
       {
         error: "signal bridge not configured",
@@ -83,6 +105,12 @@ async function guard(request: Request): Promise<Response | null> {
   const header = request.headers.get("authorization") ?? "";
   const presented = normalise(header.startsWith("Bearer ") ? header.slice(7) : "");
   if (!presented || !safeEqual(presented, key)) {
+    if (log) {
+      await logAttempt("unauthorized", {
+        userAgent: ua,
+        detail: presented ? "key mismatch" : "no bearer token",
+      });
+    }
     // A bare 401 cannot tell "wrong secret" from "right secret, but the
     // fallback variable is the one actually bound" — and the two have
     // opposite fixes. Name the variable compared and a truncated digest of
@@ -109,6 +137,14 @@ async function diagnose(): Promise<Response> {
   const { key, source } = boundKey();
   const signal = normalise(process.env.EZYAI_SIGNAL_KEY);
   const entitlement = normalise(process.env.EZYAI_ENTITLEMENT_KEY);
+  // The question a bound key cannot answer: has anything actually called?
+  let recent: unknown[] = [];
+  try {
+    const { recentBridgeHits } = await import("@/lib/ezyai/signals.server");
+    recent = await recentBridgeHits(5);
+  } catch (error) {
+    console.error("[ezyai signals] diagnose could not read the bridge log", error);
+  }
   return Response.json({
     configured: Boolean(key),
     compared_against: source,
@@ -122,6 +158,10 @@ async function diagnose(): Promise<Response> {
     // exactly the kind of thing you want to find out before you rely on it.
     entitlement_fingerprint: await fingerprint(entitlement),
     keys_identical: Boolean(signal) && signal === entitlement,
+    // Empty means nothing has ever called this endpoint — which is a different
+    // problem from being called and refused, and has a different fix.
+    ever_called: recent.length > 0,
+    recent_attempts: recent,
   });
 }
 
@@ -136,7 +176,7 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
         if (new URL(request.url).searchParams.get("diagnose") === "1") {
           return diagnose();
         }
-        const denied = await guard(request);
+        const denied = await guard(request, false);
         if (denied) return denied;
         try {
           const { listLiveSignals } = await import("@/lib/ezyai/signals.server");
@@ -148,19 +188,23 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
       },
 
       POST: async ({ request }) => {
-        const denied = await guard(request);
+        const denied = await guard(request, true);
         if (denied) return denied;
         try {
+          const ua = request.headers.get("user-agent");
           const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
           if (!body || typeof body !== "object") {
+            await logAttempt("bad_request", { userAgent: ua, detail: "not a JSON object" });
             return Response.json({ error: "expected a JSON object" }, { status: 400 });
           }
 
           const batch = Array.isArray(body.signals) ? body.signals : [body];
           if (batch.length === 0) {
+            await logAttempt("bad_request", { userAgent: ua, detail: "empty batch" });
             return Response.json({ error: "no signals in the payload" }, { status: 400 });
           }
           if (batch.length > MAX_BATCH) {
+            await logAttempt("bad_request", { userAgent: ua, detail: "batch over the limit" });
             return Response.json(
               { error: `at most ${MAX_BATCH} signals per request` },
               { status: 400 },
@@ -178,6 +222,17 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
           }
 
           const accepted = results.filter((r) => r.ok).length;
+          const firstId = batch.find((e) => e && typeof e === "object")
+            ? String((batch[0] as Record<string, unknown>).external_id ?? "")
+            : "";
+          await logAttempt(
+            accepted === results.length ? "accepted" : accepted === 0 ? "rejected" : "partial",
+            {
+              userAgent: ua,
+              externalId: firstId || null,
+              detail: `${accepted}/${results.length} accepted`,
+            },
+          );
           // 207 when the batch was mixed, so the bot can tell "all landed"
           // from "some landed" without parsing the body.
           const status = accepted === results.length ? 200 : accepted === 0 ? 400 : 207;
