@@ -4,16 +4,21 @@ import type { Instrument } from "./autopilot";
 /**
  * Candle feeds for the website's own autopilot.
  *
- * The same two sources the Telegram desk reads, so a signal published here is
- * comparable with one published there: Yahoo for FX, metals and energy, Binance
- * for crypto. Both are public and keyless, which matters — a feed that needs a
- * secret is a feed that silently stops working when the secret expires.
+ * Yahoo, for everything including crypto. Public and keyless, which matters —
+ * a feed that needs a secret is a feed that silently stops working when the
+ * secret expires, and that is the failure this whole board was stuck behind.
+ *
+ * Binance was the original crypto source, matching what the Telegram desk
+ * reads. It is gone because it does not work from here: the first production
+ * run scanned all six Yahoo instruments and returned "only 0 bars" for both
+ * Binance ones, which is what a datacenter-IP block looks like. Yahoo quotes
+ * BTC-USD and ETH-USD perfectly well, and a working feed beats a matching one.
  *
  * Every fetch is bounded and every failure is contained: a provider that is
  * down costs its own instrument and nothing else.
  */
 
-export type Feed = "yahoo" | "binance";
+export type Feed = "yahoo";
 
 export type WatchedInstrument = Instrument & {
   feed: Feed;
@@ -51,20 +56,8 @@ export const WATCHLIST: WatchedInstrument[] = [
     pip: 0.01,
   },
   { symbol: "WTIUSD", feed: "yahoo", feedSymbol: "CL=F", decimals: 2, pip: 0.01 },
-  {
-    symbol: "BTCUSD",
-    feed: "binance",
-    feedSymbol: "BTCUSDT",
-    decimals: 1,
-    pip: 1,
-  },
-  {
-    symbol: "ETHUSD",
-    feed: "binance",
-    feedSymbol: "ETHUSDT",
-    decimals: 2,
-    pip: 0.1,
-  },
+  { symbol: "BTCUSD", feed: "yahoo", feedSymbol: "BTC-USD", decimals: 2, pip: 1 },
+  { symbol: "ETHUSD", feed: "yahoo", feedSymbol: "ETH-USD", decimals: 2, pip: 0.1 },
 ];
 
 /**
@@ -142,42 +135,13 @@ async function yahooCandles(feedSymbol: string, interval: string, bars: number):
   return candles.slice(-bars);
 }
 
-/** Binance klines: an array of arrays, prices as strings. */
-async function binanceCandles(
-  feedSymbol: string,
-  interval: string,
-  bars: number,
-): Promise<Candle[]> {
-  const url =
-    `https://api.binance.com/api/v3/klines` +
-    `?symbol=${encodeURIComponent(feedSymbol)}&interval=${interval}&limit=${bars}`;
-  const body = (await getJson(url)) as unknown[][] | null;
-  if (!Array.isArray(body)) return [];
-
-  const candles: Candle[] = [];
-  for (const row of body) {
-    if (!Array.isArray(row) || row.length < 5) continue;
-    const time = finite(row[0]);
-    const open = Number(row[1]);
-    const high = Number(row[2]);
-    const low = Number(row[3]);
-    const close = Number(row[4]);
-    if (time === null || ![open, high, low, close].every(Number.isFinite)) continue;
-    candles.push({ time, open, high, low, close });
-  }
-  return candles;
-}
-
 /** Bars for one instrument, newest last. Empty when the feed is unavailable. */
 export async function loadCandles(
   instrument: WatchedInstrument,
   interval: string,
   bars = 200,
 ): Promise<Candle[]> {
-  const candles =
-    instrument.feed === "yahoo"
-      ? await yahooCandles(instrument.feedSymbol, interval, bars)
-      : await binanceCandles(instrument.feedSymbol, interval, bars);
+  const candles = await yahooCandles(instrument.feedSymbol, interval, bars);
 
   // The final bar on both feeds is the one still forming. Publishing levels off
   // a half-built candle means the levels move under the reader, so it goes.
