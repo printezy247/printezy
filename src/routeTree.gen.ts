@@ -37,6 +37,7 @@ import { Route as MsMacroRouteImport } from './routes/ms/macro'
 import { Route as MsPrivacyRouteImport } from './routes/ms/privacy'
 import { Route as MsTermsRouteImport } from './routes/ms/terms'
 import { Route as MsEbooksSlugRouteImport } from './routes/ms/ebooks.$slug'
+import { Route as ApiPublicEzyaiAutopilotRouteImport } from './routes/api/public/ezyai/autopilot'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
 import { Route as ApiPublicEzyaiSignalsRouteImport } from './routes/api/public/ezyai/signals'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -183,6 +184,11 @@ const MsEbooksSlugRoute = MsEbooksSlugRouteImport.update({
   path: '/ms/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicEzyaiAutopilotRoute = ApiPublicEzyaiAutopilotRouteImport.update({
+  id: '/api/public/ezyai/autopilot',
+  path: '/api/public/ezyai/autopilot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEzyaiEntitlementsRoute =
   ApiPublicEzyaiEntitlementsRouteImport.update({
     id: '/api/public/ezyai/entitlements',
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/ms/terms': typeof MsTermsRoute
   '/ms/': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/autopilot': typeof ApiPublicEzyaiAutopilotRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -268,6 +275,7 @@ export interface FileRoutesByTo {
   '/ms/terms': typeof MsTermsRoute
   '/ms': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/autopilot': typeof ApiPublicEzyaiAutopilotRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -303,6 +311,7 @@ export interface FileRoutesById {
   '/ms/terms': typeof MsTermsRoute
   '/ms/': typeof MsIndexRoute
   '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/api/public/ezyai/autopilot': typeof ApiPublicEzyaiAutopilotRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -338,6 +347,7 @@ export interface FileRouteTypes {
     | '/ms/terms'
     | '/ms/'
     | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/autopilot'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
@@ -371,6 +381,7 @@ export interface FileRouteTypes {
     | '/ms/terms'
     | '/ms'
     | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/autopilot'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
@@ -405,6 +416,7 @@ export interface FileRouteTypes {
     | '/ms/terms'
     | '/ms/'
     | '/ms/ebooks/$slug'
+    | '/api/public/ezyai/autopilot'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/payments/webhook'
@@ -438,6 +450,7 @@ export interface RootRouteChildren {
   MsTermsRoute: typeof MsTermsRoute
   MsIndexRoute: typeof MsIndexRoute
   MsEbooksSlugRoute: typeof MsEbooksSlugRoute
+  ApiPublicEzyaiAutopilotRoute: typeof ApiPublicEzyaiAutopilotRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
   ApiPublicEzyaiSignalsRoute: typeof ApiPublicEzyaiSignalsRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -642,6 +655,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MsEbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ezyai/autopilot': {
+      id: '/api/public/ezyai/autopilot'
+      path: '/api/public/ezyai/autopilot'
+      fullPath: '/api/public/ezyai/autopilot'
+      preLoaderRoute: typeof ApiPublicEzyaiAutopilotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ezyai/entitlements': {
       id: '/api/public/ezyai/entitlements'
       path: '/api/public/ezyai/entitlements'
@@ -713,6 +733,7 @@ const rootRouteChildren: RootRouteChildren = {
   MsTermsRoute: MsTermsRoute,
   MsIndexRoute: MsIndexRoute,
   MsEbooksSlugRoute: MsEbooksSlugRoute,
+  ApiPublicEzyaiAutopilotRoute: ApiPublicEzyaiAutopilotRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
   ApiPublicEzyaiSignalsRoute: ApiPublicEzyaiSignalsRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

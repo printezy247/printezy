@@ -18,6 +18,20 @@ export type EzyAiHistory = {
 
 export const getEzyAiBoard = createServerFn({ method: "GET" }).handler(
   async (): Promise<EzyAiBoard> => {
+    // Loading the board is what drives the desk. There is no cron on this
+    // runtime, so the visit itself is the tick: the run is throttled to once
+    // every few minutes, so a hundred visitors cost one pass over the feeds,
+    // and a quiet hour simply means the board is refreshed by whoever looks
+    // next. Awaited rather than fired and forgotten, because a worker is free
+    // to stop executing the moment it has sent the response.
+    try {
+      const { runAutopilot } = await import("./autopilot.server");
+      await runAutopilot();
+    } catch (error) {
+      // The desk failing must never cost the reader the board it already has.
+      console.error("[ezyai board] autopilot pass failed", error);
+    }
+
     const { listLiveSignals } = await import("./signals.server");
     const signals = await listLiveSignals();
     const updatedAt =
