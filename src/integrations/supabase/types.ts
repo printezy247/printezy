@@ -489,7 +489,7 @@ export type Database = {
           },
         ]
       }
-      market_quote_cache: {
+      macro_calendar_cache: {
         Row: {
           fetched_at: string
           key: string
@@ -507,7 +507,7 @@ export type Database = {
         }
         Relationships: []
       }
-      macro_calendar_cache: {
+      market_quote_cache: {
         Row: {
           fetched_at: string
           key: string
