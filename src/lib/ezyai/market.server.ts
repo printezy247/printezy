@@ -19,8 +19,6 @@ export type WatchedInstrument = Instrument & {
   feed: Feed;
   /** The provider's own ticker, which is rarely the display symbol. */
   feedSymbol: string;
-  /** Shown on the card, e.g. "Intraday · 15m". */
-  timeframe: string;
 };
 
 /**
@@ -29,15 +27,14 @@ export type WatchedInstrument = Instrument & {
  * one with eight the desk actually watches.
  */
 export const WATCHLIST: WatchedInstrument[] = [
-  { symbol: "XAUUSD", feed: "yahoo", feedSymbol: "GC=F", decimals: 2, pip: 0.1, timeframe: "15m" },
-  { symbol: "XAGUSD", feed: "yahoo", feedSymbol: "SI=F", decimals: 3, pip: 0.01, timeframe: "15m" },
+  { symbol: "XAUUSD", feed: "yahoo", feedSymbol: "GC=F", decimals: 2, pip: 0.1 },
+  { symbol: "XAGUSD", feed: "yahoo", feedSymbol: "SI=F", decimals: 3, pip: 0.01 },
   {
     symbol: "EURUSD",
     feed: "yahoo",
     feedSymbol: "EURUSD=X",
     decimals: 5,
     pip: 0.0001,
-    timeframe: "15m",
   },
   {
     symbol: "GBPUSD",
@@ -45,7 +42,6 @@ export const WATCHLIST: WatchedInstrument[] = [
     feedSymbol: "GBPUSD=X",
     decimals: 5,
     pip: 0.0001,
-    timeframe: "15m",
   },
   {
     symbol: "USDJPY",
@@ -53,16 +49,14 @@ export const WATCHLIST: WatchedInstrument[] = [
     feedSymbol: "USDJPY=X",
     decimals: 3,
     pip: 0.01,
-    timeframe: "15m",
   },
-  { symbol: "WTIUSD", feed: "yahoo", feedSymbol: "CL=F", decimals: 2, pip: 0.01, timeframe: "15m" },
+  { symbol: "WTIUSD", feed: "yahoo", feedSymbol: "CL=F", decimals: 2, pip: 0.01 },
   {
     symbol: "BTCUSD",
     feed: "binance",
     feedSymbol: "BTCUSDT",
     decimals: 1,
     pip: 1,
-    timeframe: "15m",
   },
   {
     symbol: "ETHUSD",
@@ -70,7 +64,6 @@ export const WATCHLIST: WatchedInstrument[] = [
     feedSymbol: "ETHUSDT",
     decimals: 2,
     pip: 0.1,
-    timeframe: "15m",
   },
 ];
 
@@ -107,10 +100,13 @@ function finite(value: unknown): number | null {
 }
 
 /** Yahoo's chart endpoint, which returns parallel arrays rather than records. */
-async function yahooCandles(feedSymbol: string, bars: number): Promise<Candle[]> {
+async function yahooCandles(feedSymbol: string, interval: string, bars: number): Promise<Candle[]> {
+  // Yahoo caps how far back each interval reaches; asking for more than the
+  // cap returns an error rather than a truncated series.
+  const range = interval === "1d" ? "1y" : interval === "5m" ? "5d" : "5d";
   const url =
     `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(feedSymbol)}` +
-    `?interval=15m&range=5d`;
+    `?interval=${interval}&range=${range}`;
   const body = (await getJson(url)) as {
     chart?: {
       result?: {
@@ -147,10 +143,14 @@ async function yahooCandles(feedSymbol: string, bars: number): Promise<Candle[]>
 }
 
 /** Binance klines: an array of arrays, prices as strings. */
-async function binanceCandles(feedSymbol: string, bars: number): Promise<Candle[]> {
+async function binanceCandles(
+  feedSymbol: string,
+  interval: string,
+  bars: number,
+): Promise<Candle[]> {
   const url =
     `https://api.binance.com/api/v3/klines` +
-    `?symbol=${encodeURIComponent(feedSymbol)}&interval=15m&limit=${bars}`;
+    `?symbol=${encodeURIComponent(feedSymbol)}&interval=${interval}&limit=${bars}`;
   const body = (await getJson(url)) as unknown[][] | null;
   if (!Array.isArray(body)) return [];
 
@@ -169,11 +169,15 @@ async function binanceCandles(feedSymbol: string, bars: number): Promise<Candle[
 }
 
 /** Bars for one instrument, newest last. Empty when the feed is unavailable. */
-export async function loadCandles(instrument: WatchedInstrument, bars = 200): Promise<Candle[]> {
+export async function loadCandles(
+  instrument: WatchedInstrument,
+  interval: string,
+  bars = 200,
+): Promise<Candle[]> {
   const candles =
     instrument.feed === "yahoo"
-      ? await yahooCandles(instrument.feedSymbol, bars)
-      : await binanceCandles(instrument.feedSymbol, bars);
+      ? await yahooCandles(instrument.feedSymbol, interval, bars)
+      : await binanceCandles(instrument.feedSymbol, interval, bars);
 
   // The final bar on both feeds is the one still forming. Publishing levels off
   // a half-built candle means the levels move under the reader, so it goes.

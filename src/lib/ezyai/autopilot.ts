@@ -50,20 +50,84 @@ export type Setup = {
   reasons: string[];
 };
 
-/** Reward-to-risk below this is not worth publishing. */
-const MIN_RR = 1.3;
 /** ATR as a fraction of price: outside this band the market is dead or wild. */
 const MIN_ATR_RATIO = 0.0004;
 const MAX_ATR_RATIO = 0.05;
-/**
- * How far from the EMA21, in ATR, price may sit and still count as a
- * continuation. An EMA lags a strong trend by construction, so a cap near 2
- * rejects healthy trends as well as blow-off candles; 3 separates them.
- */
-const MAX_EXTENSION_ATR = 3;
 
-const TP1_R = 1.5;
-const TP2_R = 2.5;
+/**
+ * The three ways the desk trades, mirroring the modes the Telegram bot runs.
+ *
+ * They are not the same strategy with a different label on it. A scalp lives
+ * inside the noise, so it takes a tighter stop, a nearer target and a lower
+ * reward-to-risk floor — demanding 1.5 R from a five-minute continuation just
+ * means never taking one. A swing is the opposite: a wider stop it has to be
+ * paid properly for, so the floor rises with it. Extension tolerance widens
+ * with the timeframe too, because a daily EMA lags a daily trend by more than
+ * a five-minute EMA lags a five-minute one.
+ *
+ * `minGapMs` is how often the profile is worth re-examining. Re-running a
+ * daily-bar strategy every five minutes cannot find anything new; it just
+ * spends a network call to reach the same answer.
+ */
+export type ProfileName = "scalping" | "intraday" | "swing";
+
+export type StrategyProfile = {
+  name: ProfileName;
+  /** Shown on the card, and the interval requested from the feed. */
+  timeframe: string;
+  label: string;
+  minRr: number;
+  tp1R: number;
+  tp2R: number;
+  swingLookback: number;
+  maxExtensionAtr: number;
+  /** Widest stop the setup may carry, in ATR. */
+  maxRiskAtr: number;
+  minGapMs: number;
+  minBars: number;
+};
+
+export const PROFILES: StrategyProfile[] = [
+  {
+    name: "scalping",
+    timeframe: "5m",
+    label: "Scalping · Normal risk · 5m",
+    minRr: 1.1,
+    tp1R: 1.2,
+    tp2R: 2,
+    swingLookback: 8,
+    maxExtensionAtr: 2.5,
+    maxRiskAtr: 3,
+    minGapMs: 5 * 60 * 1000,
+    minBars: 60,
+  },
+  {
+    name: "intraday",
+    timeframe: "15m",
+    label: "Intraday · Normal risk · 15m",
+    minRr: 1.3,
+    tp1R: 1.5,
+    tp2R: 2.5,
+    swingLookback: 10,
+    maxExtensionAtr: 3,
+    maxRiskAtr: 4,
+    minGapMs: 15 * 60 * 1000,
+    minBars: 60,
+  },
+  {
+    name: "swing",
+    timeframe: "1d",
+    label: "Swing · Normal risk · 1d",
+    minRr: 1.5,
+    tp1R: 2,
+    tp2R: 3.5,
+    swingLookback: 14,
+    maxExtensionAtr: 3.5,
+    maxRiskAtr: 5,
+    minGapMs: 60 * 60 * 1000,
+    minBars: 80,
+  },
+];
 
 function lastDefined(series: (number | null)[]): number | null {
   for (let i = series.length - 1; i >= 0; i -= 1) {
@@ -79,8 +143,12 @@ function lastDefined(series: (number | null)[]): number | null {
  * that finds a trade on every bar is not reading the market, it is decorating
  * it.
  */
-export function evaluate(candles: Candle[], instrument: Instrument): Setup | null {
-  if (candles.length < 60) return null;
+export function evaluate(
+  candles: Candle[],
+  instrument: Instrument,
+  profile: StrategyProfile,
+): Setup | null {
+  if (candles.length < profile.minBars) return null;
 
   const closes = candles.map((c) => c.close);
   const price = closes[closes.length - 1];
@@ -114,24 +182,27 @@ export function evaluate(candles: Candle[], instrument: Instrument): Setup | nul
 
   // 5 — extension
   const extension = Math.abs(price - ema21) / atrNow;
-  if (extension > MAX_EXTENSION_ATR) return null;
+  if (extension > profile.maxExtensionAtr) return null;
 
   // 6 — risk
   // Ten bars, not twenty: the stop belongs beyond the most recent pullback,
   // and a wider window in a trending market prices in risk the setup never took.
-  const swing = bullish ? swingLow(candles, 10) : swingHigh(candles, 10);
+  const swing = bullish
+    ? swingLow(candles, profile.swingLookback)
+    : swingHigh(candles, profile.swingLookback);
   if (swing === null) return null;
   const pad = atrNow * 0.5;
   const stopRaw = bullish ? swing - pad : swing + pad;
   const risk = Math.abs(price - stopRaw);
   if (risk <= 0) return null;
-  // A stop further than 4 ATR is not this setup; it is a different trade.
-  if (risk / atrNow > 4) return null;
+  // A stop wider than the profile allows is not this setup; it is a different
+  // trade wearing its name.
+  if (risk / atrNow > profile.maxRiskAtr) return null;
 
-  const tp1Raw = bullish ? price + risk * TP1_R : price - risk * TP1_R;
-  const tp2Raw = bullish ? price + risk * TP2_R : price - risk * TP2_R;
+  const tp1Raw = bullish ? price + risk * profile.tp1R : price - risk * profile.tp1R;
+  const tp2Raw = bullish ? price + risk * profile.tp2R : price - risk * profile.tp2R;
   const rr = Math.abs(tp1Raw - price) / risk;
-  if (rr < MIN_RR) return null;
+  if (rr < profile.minRr) return null;
 
   // The entry is a zone rather than a point: a fill is never the exact close.
   const band = atrNow * 0.15;
@@ -156,7 +227,7 @@ export function evaluate(candles: Candle[], instrument: Instrument): Setup | nul
     tp1: roundTo(tp1Raw, d),
     tp2: roundTo(tp2Raw, d),
     rr: roundTo(rr, 2),
-    setupScore: score({ atrRatio, extension, rr, histogram, atrNow, ema21, ema50 }),
+    setupScore: score({ atrRatio, extension, rr, histogram, atrNow, ema21, ema50, profile }),
     reasons,
   };
 }
@@ -173,6 +244,7 @@ function score(input: {
   atrNow: number;
   ema21: number;
   ema50: number;
+  profile: StrategyProfile;
 }): number {
   const clamp = (v: number) => Math.max(0, Math.min(1, v));
 
@@ -181,9 +253,10 @@ function score(input: {
   // Momentum: histogram size relative to volatility.
   const momentum = clamp(Math.abs(input.histogram) / (input.atrNow * 0.5)) * 25;
   // Entry quality: nearer the EMA21 is better.
-  const entry = clamp(1 - input.extension / 2) * 20;
-  // Payoff: 1.3 earns nothing, 3.0 earns it all.
-  const payoff = clamp((input.rr - 1.3) / 1.7) * 15;
+  const entry = clamp(1 - input.extension / input.profile.maxExtensionAtr) * 20;
+  // Payoff, measured against this profile's own floor: the minimum earns
+  // nothing, and 1.7 R above it earns the lot.
+  const payoff = clamp((input.rr - input.profile.minRr) / 1.7) * 15;
   // Volatility health: mid-band is best.
   const mid = (MIN_ATR_RATIO + MAX_ATR_RATIO) / 2;
   const health = clamp(1 - Math.abs(input.atrRatio - mid) / mid) * 10;

@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { advance, evaluate } from "./autopilot";
+import { advance, evaluate, PROFILES, type StrategyProfile } from "./autopilot";
 import { loadCandles, WATCHLIST, type WatchedInstrument } from "./market.server";
 import { pushSignal } from "./signals.server";
 import type { Candle } from "./indicators";
@@ -20,8 +20,11 @@ import type { Candle } from "./indicators";
  *   3. Record what happened, so an empty board is never ambiguous again.
  */
 
-/** Newest bar the run is allowed to reuse before fetching again. */
-const MIN_RUN_GAP_MS = 5 * 60 * 1000;
+/**
+ * The shortest gap any profile asks for. A pass is worth starting only when at
+ * least one profile is due; each then re-checks its own cadence.
+ */
+const MIN_RUN_GAP_MS = Math.min(...PROFILES.map((p) => p.minGapMs));
 
 export type AutopilotRun = {
   ran: boolean;
@@ -50,8 +53,8 @@ const idle = (reason: string): AutopilotRun => ({
  * re-examines the same bar updates the card it already made instead of stacking
  * a second one. Idempotence lives in the key, not in a lock.
  */
-function externalId(symbol: string, barTime: number): string {
-  return `auto-${symbol}-${barTime}`;
+function externalId(profile: StrategyProfile, symbol: string, barTime: number): string {
+  return `auto-${profile.name}-${symbol}-${barTime}`;
 }
 
 type OpenRow = {
@@ -80,8 +83,8 @@ async function openSignals(): Promise<OpenRow[]> {
   return (data ?? []) as unknown as OpenRow[];
 }
 
-/** True when a run started recently enough that another would be wasted work. */
-async function tooSoon(): Promise<boolean> {
+/** When the last pass started, or 0 when there has never been one. */
+async function lastRunAt(): Promise<number> {
   const { data, error } = await supabaseAdmin
     .from("ezyai_autopilot_runs")
     .select("started_at")
@@ -90,27 +93,32 @@ async function tooSoon(): Promise<boolean> {
   if (error) {
     // Never let a bookkeeping failure stop the desk from running.
     console.error("[autopilot] could not read the run log", error.message);
-    return false;
+    return 0;
   }
   const last = (data ?? [])[0] as { started_at: string } | undefined;
-  if (!last) return false;
-  return Date.now() - new Date(last.started_at).getTime() < MIN_RUN_GAP_MS;
+  return last ? new Date(last.started_at).getTime() : 0;
 }
 
 async function handleInstrument(
   instrument: WatchedInstrument,
+  profile: StrategyProfile,
   candles: Candle[],
   open: OpenRow[],
   run: AutopilotRun,
 ): Promise<void> {
-  if (candles.length < 60) {
+  const tag = `${instrument.symbol} ${profile.name}`;
+  if (candles.length < profile.minBars) {
     run.errors += 1;
-    run.detail.push(`${instrument.symbol}: only ${candles.length} bars`);
+    run.detail.push(`${tag}: only ${candles.length} bars`);
     return;
   }
   run.scanned += 1;
 
-  const live = open.find((row) => row.symbol === instrument.symbol);
+  // One live signal per instrument PER PROFILE: a scalp and a swing on the same
+  // pair are different trades with different lives, and collapsing them would
+  // hide one behind the other.
+  const prefix = `auto-${profile.name}-${instrument.symbol}-`;
+  const live = open.find((row) => row.external_id.startsWith(prefix));
 
   // 1 — advance what is already open
   if (live) {
@@ -137,31 +145,29 @@ async function handleInstrument(
       });
       if (!result.ok) {
         run.errors += 1;
-        run.detail.push(`${instrument.symbol}: advance failed`);
+        run.detail.push(`${tag}: advance failed`);
       } else if (step.status === "tp" || step.status === "sl") {
         run.closed += 1;
-        run.detail.push(`${instrument.symbol}: closed ${step.status} at ${step.resultR}R`);
+        run.detail.push(`${tag}: closed ${step.status} at ${step.resultR}R`);
       } else {
         run.advanced += 1;
       }
     }
-    // One live signal per instrument. A board showing three overlapping XAUUSD
-    // trades is a board nobody can act on.
     return;
   }
 
   // 2 — consider a new one
-  const setup = evaluate(candles, instrument);
+  const setup = evaluate(candles, instrument, profile);
   if (!setup) return;
 
   const bar = candles[candles.length - 1];
   const result = await pushSignal({
-    external_id: externalId(instrument.symbol, bar.time),
+    external_id: externalId(profile, instrument.symbol, bar.time),
     symbol: instrument.symbol,
     direction: setup.direction,
     status: "pending",
-    setup: `Intraday · ${instrument.timeframe} · trend continuation`,
-    timeframe: instrument.timeframe,
+    setup: profile.label,
+    timeframe: profile.timeframe,
     entry_low: setup.entryLow,
     entry_high: setup.entryHigh,
     stop_price: setup.stopPrice,
@@ -176,10 +182,10 @@ async function handleInstrument(
 
   if (result.ok) {
     run.opened += 1;
-    run.detail.push(`${instrument.symbol}: opened ${setup.direction} @ ${setup.setupScore}/100`);
+    run.detail.push(`${tag}: opened ${setup.direction} @ ${setup.setupScore}/100`);
   } else {
     run.errors += 1;
-    run.detail.push(`${instrument.symbol}: open failed`);
+    run.detail.push(`${tag}: open failed`);
   }
 }
 
@@ -192,7 +198,8 @@ async function handleInstrument(
  */
 export async function runAutopilot(force = false): Promise<AutopilotRun> {
   try {
-    if (!force && (await tooSoon())) return idle("throttled");
+    const lastRunMs = await lastRunAt();
+    if (!force && lastRunMs && Date.now() - lastRunMs < MIN_RUN_GAP_MS) return idle("throttled");
 
     const run: AutopilotRun = {
       ran: true,
@@ -211,21 +218,30 @@ export async function runAutopilot(force = false): Promise<AutopilotRun> {
     // Sequentially it would be eight round trips deep — and since a page load
     // is what triggers this, that latency lands on a reader waiting for the
     // board. Parallel puts the whole scan inside one timeout instead of eight.
+    // Only the profiles that are actually due. A daily-bar strategy re-examined
+    // every five minutes cannot find anything new; it just spends a network
+    // call to reach the same answer.
+    const due = force ? PROFILES : PROFILES.filter((p) => Date.now() - lastRunMs >= p.minGapMs);
+    if (!due.length) return idle("no profile due");
+    run.detail.push(`profiles: ${due.map((p) => p.name).join(", ")}`);
+
+    const jobs = due.flatMap((profile) => WATCHLIST.map((instrument) => ({ profile, instrument })));
+
     const fetched = await Promise.all(
-      WATCHLIST.map(async (instrument) => {
+      jobs.map(async ({ profile, instrument }) => {
         try {
-          return { instrument, candles: await loadCandles(instrument) };
+          return { profile, instrument, candles: await loadCandles(instrument, profile.timeframe) };
         } catch (error) {
-          console.error(`[autopilot] ${instrument.symbol} feed threw`, error);
-          return { instrument, candles: [] as Candle[] };
+          console.error(`[autopilot] ${instrument.symbol} ${profile.name} feed threw`, error);
+          return { profile, instrument, candles: [] as Candle[] };
         }
       }),
     );
 
     // Decisions stay sequential: they are database writes, they are fast, and
     // ordering them keeps the run log readable.
-    for (const { instrument, candles } of fetched) {
-      await handleInstrument(instrument, candles, open, run);
+    for (const { profile, instrument, candles } of fetched) {
+      await handleInstrument(instrument, profile, candles, open, run);
     }
 
     const { error } = await supabaseAdmin.from("ezyai_autopilot_runs").insert({
