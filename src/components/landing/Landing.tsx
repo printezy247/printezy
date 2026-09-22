@@ -3,6 +3,7 @@ import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { getTicker } from "@/lib/ticker.functions";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
@@ -337,7 +338,9 @@ const NAV_ITEMS = [
   { key: "nav_packages", href: "/#packages" },
   { key: "nav_tools", href: "/#tools" },
   { key: "nav_macro", href: "/macro" },
-  { key: "nav_ezyai", href: "/ezyai" },
+  // The board's nav item comes and goes with the board itself, rather than
+  // being deleted — see src/lib/ezyai/visibility.ts.
+  ...(EZYAI_BOARD_VISIBLE ? ([{ key: "nav_ezyai", href: "/ezyai" }] as const) : []),
 ] as const;
 
 /** Not in the header nav — footer-only wayfinding links. */
@@ -1030,7 +1033,9 @@ export function CtaBand() {
               <p className="mt-2 max-w-xl text-sm text-black/75">{t("band_body")}</p>
             </div>
             <a
-              href={localizePath("/ezyai", locale)}
+              href={EZYAI_BOARD_VISIBLE ? localizePath("/ezyai", locale) : LINKS.ezyai}
+              target={EZYAI_BOARD_VISIBLE ? undefined : "_blank"}
+              rel={EZYAI_BOARD_VISIBLE ? undefined : "noopener noreferrer"}
               onClick={() => goTrack("band_ezyai")}
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0a0c0b] px-6 py-3 text-sm font-bold text-foreground transition-transform hover:-translate-y-0.5"
             >
@@ -1605,11 +1610,13 @@ export function Products() {
             >
               {t("ezyai_try_free")} <ArrowRight className="h-3.5 w-3.5" />
             </a>
-            <Button asChild variant="outline">
-              <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
-                {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
+            {EZYAI_BOARD_VISIBLE ? (
+              <Button asChild variant="outline">
+                <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
+                  {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            ) : null}
           </div>
         </article>
         </Reveal>

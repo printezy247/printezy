@@ -1,4 +1,4 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -14,10 +14,17 @@ import { SITE_URL } from "@/lib/bot/tiers";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
 import { getEzyAiBoard, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
 
 export const Route = createFileRoute("/ezyai")({
+  // Hidden while the bot is being updated. This runs before the loader, so the
+  // board's data — and the autopilot pass the board's load triggers — never
+  // starts: the page is closed rather than merely unlinked.
+  beforeLoad: () => {
+    if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/" });
+  },
   // Deep-linkable tabs, so the hero card (and anything else) can point
   // straight at the live board rather than at the page and a hope.
   validateSearch: (search: Record<string, unknown>): { tab?: EzyAiTab } => ({

@@ -10,10 +10,13 @@ import { EBOOK_PAGES } from "@/lib/ebooks";
  * so each entry carries en/ms/x-default alternates.
  */
 const STATIC_ROUTES: { path: string; priority: string; msPath?: string }[] = [
+  // /ezyai is deliberately absent while the board is hidden — listing a route
+  // that redirects is how a sitemap earns a crawl warning. It goes back when
+  // EZYAI_BOARD_VISIBLE does (see src/lib/ezyai/visibility.ts):
+  //   { path: "/ezyai", priority: "0.8", msPath: "/ms/ezyai" },
   { path: "/", priority: "1.0", msPath: "/ms" },
   { path: "/indicators", priority: "0.8", msPath: "/ms/indicators" },
   { path: "/macro", priority: "0.8", msPath: "/ms/macro" },
-  { path: "/ezyai", priority: "0.8", msPath: "/ms/ezyai" },
   { path: "/free-channel", priority: "0.7", msPath: "/ms/free-channel" },
   { path: "/faq", priority: "0.6", msPath: "/ms/faq" },
   { path: "/privacy", priority: "0.3", msPath: "/ms/privacy" },
