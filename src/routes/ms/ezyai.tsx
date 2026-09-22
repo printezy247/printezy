@@ -1,9 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { brandLogo } from "@/components/landing/Landing";
 import { SITE_URL } from "@/lib/bot/tiers";
 import { EzyAiPage } from "../ezyai";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 export const Route = createFileRoute("/ms/ezyai")({
+  // Hidden with its English twin, and sent to the Malay home page rather than
+  // the English one so a visitor is not switched languages by a redirect.
+  beforeLoad: () => {
+    if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/ms" });
+  },
   head: () => ({
     meta: [
       { title: "EzyAI — Isyarat Dagangan AI di Telegram | EzyMap Algo" },

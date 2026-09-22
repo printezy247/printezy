@@ -57,19 +57,24 @@ const MAX_ATR_RATIO = 0.05;
 /**
  * The three ways the desk trades, mirroring the modes the Telegram bot runs.
  *
- * They are not the same strategy with a different label on it. A scalp lives
- * inside the noise, so it takes a tighter stop, a nearer target and a lower
- * reward-to-risk floor — demanding 1.5 R from a five-minute continuation just
- * means never taking one. A swing is the opposite: a wider stop it has to be
- * paid properly for, so the floor rises with it. Extension tolerance widens
- * with the timeframe too, because a daily EMA lags a daily trend by more than
- * a five-minute EMA lags a five-minute one.
+ * They are not the same strategy with a different label on it. An intraday
+ * setup lives closer to the noise, so it takes a tighter stop, a nearer target
+ * and a lower reward-to-risk floor. A swing is the opposite: a wider stop it
+ * has to be paid properly for, so the floor rises with it. Extension tolerance
+ * widens with the timeframe too, because a daily EMA lags a daily trend by
+ * more than a fifteen-minute EMA lags a fifteen-minute one.
+ *
+ * A third, five-minute `scalping` profile ran here until it had a record to
+ * judge: one target against eight stops. That is not a spread of timeframes
+ * worth keeping — a continuation strategy reading five-minute bars is mostly
+ * reading spread — so it was retired rather than tuned. The 5m signals it
+ * published are left in the history; they are part of the record.
  *
  * `minGapMs` is how often the profile is worth re-examining. Re-running a
  * daily-bar strategy every five minutes cannot find anything new; it just
  * spends a network call to reach the same answer.
  */
-export type ProfileName = "scalping" | "intraday" | "swing";
+export type ProfileName = "intraday" | "swing";
 
 export type StrategyProfile = {
   name: ProfileName;
@@ -88,19 +93,6 @@ export type StrategyProfile = {
 };
 
 export const PROFILES: StrategyProfile[] = [
-  {
-    name: "scalping",
-    timeframe: "5m",
-    label: "Scalping · Normal risk · 5m",
-    minRr: 1.1,
-    tp1R: 1.2,
-    tp2R: 2,
-    swingLookback: 8,
-    maxExtensionAtr: 2.5,
-    maxRiskAtr: 3,
-    minGapMs: 5 * 60 * 1000,
-    minBars: 60,
-  },
   {
     name: "intraday",
     timeframe: "15m",

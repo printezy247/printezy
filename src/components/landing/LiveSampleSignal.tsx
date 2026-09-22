@@ -15,6 +15,7 @@ import type { TranslationKey } from "@/lib/translations";
 import { DEMO, DEMO_RISK, type DemoPrice } from "@/lib/use-demo-price";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack } from "@/lib/analytics";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
  * The hero's signal card, showing the format the desk publishes in.
@@ -60,6 +61,10 @@ const money = (value: number) =>
     minimumFractionDigits: DEMO.decimals,
     maximumFractionDigits: DEMO.decimals,
   });
+
+/** Both calls to action wear the same button; only the destination differs. */
+const CTA_CLASS =
+  "mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/8 px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/15";
 
 type ViewId = "levels" | "analysis" | "risk" | "plan";
 
@@ -409,14 +414,24 @@ export function LiveSampleSignal({ chart, live }: { chart: ReactNode; live: Demo
         </div>
       </div>
 
-      <Link
-        to="/ezyai"
-        search={{ tab: "live" }}
-        onClick={() => goTrack("hero_sample_open_board")}
-        className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/8 px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/15"
-      >
-        {t("hero_sample_cta")} <ArrowRight className="h-4 w-4" />
-      </Link>
+      {EZYAI_BOARD_VISIBLE ? (
+        <Link
+          to="/ezyai"
+          search={{ tab: "live" }}
+          onClick={() => goTrack("hero_sample_open_board")}
+          className={CTA_CLASS}
+        >
+          {t("hero_sample_cta")} <ArrowRight className="h-4 w-4" />
+        </Link>
+      ) : (
+        <Link
+          to="/free-channel"
+          onClick={() => goTrack("hero_sample_free_channel")}
+          className={CTA_CLASS}
+        >
+          {t("hero_sample_cta_free")} <ArrowRight className="h-4 w-4" />
+        </Link>
+      )}
 
       <p className="mt-2.5 text-[11.5px] leading-relaxed text-muted-foreground">
         {t("hero_disclaimer")}

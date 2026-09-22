@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
  * Manual and scheduled trigger for the website's own autopilot.
@@ -46,6 +47,16 @@ export const Route = createFileRoute("/api/public/ezyai/autopilot")({
       },
 
       POST: async ({ request }) => {
+        // The board's own load is the autopilot's usual trigger, so hiding the
+        // board pauses it. This is the other door: a scheduler holding the key
+        // could otherwise keep writing signals nobody can see, and "paused"
+        // would only be true by accident. The flag is the single answer.
+        if (!EZYAI_BOARD_VISIBLE) {
+          return Response.json(
+            { error: "autopilot paused while the board is hidden" },
+            { status: 503 },
+          );
+        }
         const key =
           normalise(process.env.EZYAI_SIGNAL_KEY) || normalise(process.env.EZYAI_ENTITLEMENT_KEY);
         if (!key) {
