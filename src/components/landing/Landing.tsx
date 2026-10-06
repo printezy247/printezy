@@ -521,7 +521,7 @@ export function Nav() {
   return (
     <>
       <Ticker />
-      <header className="sticky top-0 z-50 bg-background">
+      <header role="banner" className="sticky top-0 z-50 bg-background">
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link to={locale === "ms" ? "/ms" : "/"} aria-label="EzyMap Algo home">
@@ -2064,7 +2064,7 @@ export function Landing() {
     <MemberCountContext.Provider value={memberCount}>
       <div className="min-h-screen bg-background text-foreground">
         <Nav />
-        <main>
+        <main role="main">
           <Hero />
           <TrustStrip />
           <StatsStrip />

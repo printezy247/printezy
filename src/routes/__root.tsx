@@ -83,16 +83,18 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 const META_PIXEL_ID = "1029112770124061";
-const FB_PIXEL_SCRIPT = `!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${META_PIXEL_ID}');
-if(!/^\\/(account|auth|dashboard|checkout-success)(\\/|$)/.test(location.pathname)){fbq('track', 'PageView');}`;
+/** SRI hash of public/fb-pixel.js — regenerate whenever that file changes. */
+const FB_PIXEL_SRI = "sha256-lLFCVCZYKsg3rRwZByerAajqxkFsdHVfG7BfYZU+xDs=";
+const SUPABASE_ORIGIN = import.meta.env.VITE_SUPABASE_URL ?? "";
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://js.stripe.com https://telegram.org",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace(/^https/, "wss")} https://api.stripe.com https://*.stripe.com https://www.facebook.com https://connect.facebook.net`,
+  "frame-src https://js.stripe.com https://*.stripe.com https://checkout.stripe.com https://oauth.telegram.org https://www.facebook.com",
+].join("; ");
 
 /**
  * Site-wide structured data. Only fields backed by real data in the repo —
@@ -122,6 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
+      { httpEquiv: "Content-Security-Policy", content: CSP },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "EzyMap ALGO — Professional Trading Signals on Telegram" },
       { name: "description", content: "EzyMap ALGO delivers real-time trading signals and daily education to 640+ traders on Telegram. Forex, crypto and commodities, 24/5." },
@@ -141,12 +144,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
+        rel: "preload",
+        as: "style",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      },
+      {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
       },
     ],
     scripts: [
-      { type: "text/javascript", children: FB_PIXEL_SCRIPT },
+      { src: "/fb-pixel.js", integrity: FB_PIXEL_SRI, defer: true },
       { type: "application/ld+json", children: ORGANIZATION_JSON_LD },
       { type: "application/ld+json", children: WEBSITE_JSON_LD },
     ],
@@ -166,6 +174,12 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+        >
+          Skip to main content
+        </a>
         {children}
         <noscript>
           <img
@@ -194,7 +208,9 @@ function RootComponent() {
       <LocaleProvider>
         <PaymentTestModeBanner />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <div id="main" tabIndex={-1} className="outline-none">
+          <Outlet />
+        </div>
         <SupportChat />
         <ConsentBanner />
         <EbookAutoPopup />

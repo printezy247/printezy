@@ -53,8 +53,18 @@ export function localizedHead(o: LocalizedHeadOptions) {
   ];
   if (o.twitterDescription)
     meta.push({ name: "twitter:description", content: o.twitterDescription });
+  const crumbName = o.title.split(/ [—|–-] /)[0];
+  const breadcrumb = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: o.locale === "ms" ? "Utama" : "Home", item: o.locale === "ms" ? `${SITE_URL}/ms` : `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: crumbName, item: self },
+    ],
+  });
   return {
     meta,
+    scripts: [{ type: "application/ld+json", children: breadcrumb }],
     links: [
       { rel: "canonical", href: self },
       { rel: "alternate", hrefLang: "en", href: enUrl },
