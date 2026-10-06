@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { Sparkles, BookOpen, LineChart, Send } from "lucide-react";
 import { getNextStepRecommendation } from "@/lib/advisor.functions";
 import { getSessionId, goTrack } from "@/lib/analytics";
@@ -101,12 +100,12 @@ export function NextStepAdvisor() {
             <step.icon className="mx-auto h-8 w-8 text-primary" />
             <h3 className="mt-3 text-xl font-semibold text-foreground">{step.title}</h3>
             {result.reason && <p className="mt-2 text-sm text-muted-foreground">{result.reason}</p>}
-            <Link
-              to={step.to}
+            <a
+              href={step.to}
               className="mt-5 inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
               {step.cta}
-            </Link>
+            </a>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { imgProps } from "@/lib/responsive-images";
+import { NextStepAdvisor } from "./NextStepAdvisor";
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
