@@ -2069,6 +2069,7 @@ export function Landing() {
           <Hero />
           <TrustStrip />
           <StatsStrip />
+          <NextStepAdvisor />
           <Features />
           <Pricing />
           <Tools />
