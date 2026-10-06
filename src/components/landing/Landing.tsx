@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
@@ -245,7 +246,7 @@ function Logo() {
   return (
     <span className="inline-flex items-center gap-2">
       <img
-        src={brandLogo}
+        {...imgProps(brandLogo)}
         alt="EzyMap Algo logo"
         className="h-8 w-8 rounded-md object-contain"
       />
@@ -998,7 +999,7 @@ export function Showcase() {
                 <div className={i % 2 === 1 ? "md:order-first" : ""}>
                   <div className="glass-card card-lift flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl bg-[#0a0c0b] p-6">
                     <img
-                      src={row.image}
+                      {...imgProps(row.image)}
                       alt={row.alt}
                       loading="lazy"
                       className="max-h-full max-w-full rounded-lg object-contain"
@@ -1250,7 +1251,7 @@ export function Pricing() {
                   </span>
                 ) : null}
                 <img
-                  src={t.image}
+                  {...imgProps(t.image)}
                   alt={`${t.name} package preview`}
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -1511,7 +1512,7 @@ export function Products() {
         <Reveal className="h-full" delay={0.1}>
         <article className="glass-card flex h-full flex-col rounded-xl p-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
-            <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
+            <img {...imgProps(mt5Logo)} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">{t("products_mt5_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
@@ -1548,13 +1549,13 @@ export function Products() {
         <Reveal className="h-full" delay={0.2}>
         <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
           <img
-            src={macroLogo}
+            {...imgProps(macroLogo)}
             alt="Gold, Forex & Crypto Macros"
             loading="lazy"
             className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full object-contain opacity-15"
           />
           <img
-            src={macroLogo}
+            {...imgProps(macroLogo)}
             alt=""
             aria-hidden="true"
             loading="lazy"
@@ -1679,7 +1680,7 @@ export function Ambassador() {
         <div className="glass-card relative overflow-hidden rounded-xl p-8 text-center">
           <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
             <img
-              src={jackPhoto}
+              {...imgProps(jackPhoto)}
               alt="Jack, founder of EzyMap ALGO"
               loading="lazy"
               className="h-full w-full object-cover"

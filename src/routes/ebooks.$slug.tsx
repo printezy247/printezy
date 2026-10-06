@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { createFileRoute, Link, notFound, useSearch } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
@@ -169,7 +170,7 @@ export function EbookPage({ book: source }: { book: Ebook }) {
             <div className="rounded-2xl border border-border bg-card p-6 shadow-elevated">
               <div className="mx-auto aspect-[2/3] w-40 overflow-hidden rounded-lg border border-border bg-surface">
                 <img
-                  src={book.image}
+                  {...imgProps(book.image)}
                   alt={t("ebook_cover_alt").replace("{title}", book.title)}
                   className="h-full w-full object-cover"
                 />
@@ -281,7 +282,7 @@ export function EbookPage({ book: source }: { book: Ebook }) {
                   >
                     <div className="h-20 w-14 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
                       <img
-                        src={b.image}
+                        {...imgProps(b.image)}
                         alt={b.title}
                         className="h-full w-full object-cover"
                         loading="lazy"

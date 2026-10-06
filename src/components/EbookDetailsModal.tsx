@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Check, Clock, Download, FileText, X } from "lucide-react";
@@ -116,7 +117,7 @@ export function EbookDetailsModal({ slug, onClose }: Props) {
             <div className="overflow-y-auto p-6 sm:p-7">
               <div className="flex items-start gap-4 pr-8">
                 <img
-                  src={book.image}
+                  {...imgProps(book.image)}
                   alt={`${book.title} cover`}
                   className="h-28 w-20 shrink-0 rounded-md border border-border object-cover sm:h-32 sm:w-[88px]"
                 />
