@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { useState, type ReactNode } from "react";
 import { Check, ArrowRight } from "lucide-react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
@@ -218,7 +219,7 @@ export function Tools() {
       <div className="mt-14">
         <div className="flex items-center gap-3">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
-            <img src={mt5Logo} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
+            <img {...imgProps(mt5Logo)} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <div>
             <h3 className="text-xl font-semibold">{t("tools_mt5_section_title")}</h3>

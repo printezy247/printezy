@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Fragment,
@@ -757,7 +758,7 @@ export function MacroPage() {
         <header className="flex flex-col gap-6 border-b border-border pb-7 md:flex-row md:items-end md:justify-between">
           <div className="flex items-start gap-4">
             <img
-              src={macroLogo}
+              {...imgProps(macroLogo)}
               alt="MacroTrader desk"
               className="h-14 w-14 rounded-xl border border-border bg-[#0a0c0b] object-contain p-1.5"
               loading="lazy"

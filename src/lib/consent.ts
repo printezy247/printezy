@@ -46,6 +46,10 @@ let regionPromise: Promise<boolean> | null = null;
 /** True when the visitor is in a region that requires consent. Fails open. */
 export function isRegulatedRegion(): Promise<boolean> {
   if (typeof window === "undefined") return Promise.resolve(true);
+  // /cdn-cgi/trace only exists behind Cloudflare; on local/dev servers it 404s.
+  if (import.meta.env.DEV || /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname)) {
+    return Promise.resolve(true);
+  }
   if (regionPromise) return regionPromise;
 
   regionPromise = (async () => {

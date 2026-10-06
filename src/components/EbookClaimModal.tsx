@@ -1,3 +1,4 @@
+import { imgProps } from "@/lib/responsive-images";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -261,7 +262,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
 
           <div className="flex items-start gap-3 pr-8">
             <img
-              src={book.image}
+              {...imgProps(book.image)}
               alt={`${book.title} cover`}
               className="h-20 w-14 shrink-0 rounded-md border border-border object-cover"
             />
