@@ -807,21 +807,21 @@ function Hero() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
       <div aria-hidden="true" className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block" />
       <PointerGlyphs />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:px-6 sm:py-16 lg:grid-cols-[1fr_1fr] lg:gap-10 lg:px-8 lg:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[1fr_1fr] lg:gap-8 lg:px-8 lg:py-10 xl:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
         <div className="mx-auto max-w-xl lg:mx-0">
           <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
             <Users className="h-3.5 w-3.5 text-primary" />
             <span className="font-mono font-extrabold tabular-nums text-primary">{memberCount}</span>{" "}
             {t("hero_badge")}
           </span>
-          <h1 className="text-glow mt-5 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[50px] lg:text-[48px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
+          <h1 className="text-glow mt-5 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[42px] lg:text-[44px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
             {t("hero_title")}
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-body sm:text-lg">
+          <p className="mt-5 text-base leading-relaxed text-body sm:text-lg [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 [@media(min-width:640px)_and_(max-width:1279px)]:text-base">
             {t("hero_subtitle")}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+          <div className="mt-8 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
               to="/free-channel"
               onClick={() => goTrack("hero_join_free")}
@@ -838,7 +838,7 @@ function Hero() {
             </a>
           </div>
 
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-4 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-sm text-muted-foreground">
             <Link
               to="/ebooks/$slug"
               params={{ slug: "technical-analysis" }}
@@ -849,7 +849,7 @@ function Hero() {
             </Link>
           </p>
 
-          <dl className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
+          <dl className="mx-auto mt-10 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
             {[
               [memberCount, t("hero_stat_members")],
               ["24/5", t("hero_stat_coverage")],
