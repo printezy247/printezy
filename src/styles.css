@@ -93,13 +93,16 @@
   --gradient-metal: linear-gradient(160deg, #171a19 0%, #101312 55%, #0c0f0e 100%);
   --gradient-gold: linear-gradient(135deg, #a8862c 0%, #c9a13a 100%);
   --gradient-green: linear-gradient(135deg, #0f7a4a 0%, #2fbf71 100%);
-  --gradient-glow: none;
-  --gradient-gold-glow: none;
+  --gradient-glow: radial-gradient(60% 50% at 70% 40%, rgba(47, 191, 113, 0.22) 0%, transparent 70%);
+  --gradient-gold-glow: radial-gradient(50% 50% at 50% 50%, rgba(201, 161, 58, 0.18) 0%, transparent 70%);
   --gradient-card: var(--gradient-metal);
 
-  /* Neutral depth only — no coloured glows */
-  --shadow-gold: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-green: 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* Neon-style glows in the brand green and gold */
+  --glow-green: 0 0 0 1px rgba(47, 191, 113, 0.35), 0 0 24px rgba(47, 191, 113, 0.35),
+    0 0 60px rgba(47, 191, 113, 0.18);
+  --glow-green-soft: 0 0 0 1px rgba(47, 191, 113, 0.22), 0 0 30px -6px rgba(47, 191, 113, 0.3);
+  --shadow-gold: 0 0 0 1px rgba(201, 161, 58, 0.3), 0 0 24px rgba(201, 161, 58, 0.25);
+  --shadow-green: var(--glow-green);
   --shadow-elevated: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3),
     0 16px 40px rgba(0, 0, 0, 0.35);
   --shadow-inset-gold: none;
@@ -151,7 +154,15 @@
 }
 
 @utility bg-glow {
-  background: none;
+  background: var(--gradient-glow);
+}
+
+@utility text-glow {
+  text-shadow: 0 0 18px rgba(47, 191, 113, 0.55), 0 0 42px rgba(47, 191, 113, 0.25);
+}
+
+@utility glow-ring {
+  box-shadow: var(--glow-green-soft);
 }
 
 @utility bg-green {
@@ -1100,4 +1111,37 @@
   .holo-tab {
     transition: none;
   }
+}
+
+/* ---- Site-wide glow refinement (reference-inspired, brand colours) ---- */
+h1 {
+  text-shadow: 0 0 28px rgba(47, 191, 113, 0.18);
+}
+a.bg-primary,
+button.bg-primary,
+.btn-primary-glass {
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px rgba(47, 191, 113, 0.4), 0 0 22px rgba(47, 191, 113, 0.35);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
+}
+a.bg-primary:hover,
+button.bg-primary:hover,
+.btn-primary-glass:hover {
+  box-shadow: 0 0 0 1px rgba(47, 191, 113, 0.6), 0 0 36px rgba(47, 191, 113, 0.55);
+}
+.bg-card.border,
+.glass-card {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.bg-card.border:hover,
+.glass-card:hover {
+  border-color: rgba(47, 191, 113, 0.35);
+  box-shadow: var(--glow-green-soft);
+}
+.hero-photo-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  a.bg-primary, button.bg-primary, .bg-card.border, .glass-card { transition: none; }
 }
