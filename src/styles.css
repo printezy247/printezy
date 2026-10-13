@@ -1112,3 +1112,36 @@
     transition: none;
   }
 }
+
+/* ---- Site-wide glow refinement (reference-inspired, brand colours) ---- */
+h1 {
+  text-shadow: 0 0 28px rgba(47, 191, 113, 0.18);
+}
+a.bg-primary,
+button.bg-primary,
+.btn-primary-glass {
+  border-radius: 9999px;
+  box-shadow: 0 0 0 1px rgba(47, 191, 113, 0.4), 0 0 22px rgba(47, 191, 113, 0.35);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
+}
+a.bg-primary:hover,
+button.bg-primary:hover,
+.btn-primary-glass:hover {
+  box-shadow: 0 0 0 1px rgba(47, 191, 113, 0.6), 0 0 36px rgba(47, 191, 113, 0.55);
+}
+.bg-card.border,
+.glass-card {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.bg-card.border:hover,
+.glass-card:hover {
+  border-color: rgba(47, 191, 113, 0.35);
+  box-shadow: var(--glow-green-soft);
+}
+.hero-photo-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  a.bg-primary, button.bg-primary, .bg-card.border, .glass-card { transition: none; }
+}
