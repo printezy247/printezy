@@ -803,6 +803,7 @@ function Hero() {
   // One walk, two readers: the chart and the card's rail.
   const live = useDemoPrice();
   return (
+    <>
     <section className="bg-hero relative overflow-hidden border-b border-border">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
       <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] lg:block">
