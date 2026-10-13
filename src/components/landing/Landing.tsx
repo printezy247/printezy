@@ -2,6 +2,7 @@ import { imgProps } from "@/lib/responsive-images";
 import { NextStepAdvisor } from "./NextStepAdvisor";
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
+import heroGlowTrader from "@/assets/hero-glow-trader.jpg";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
@@ -803,45 +804,50 @@ function Hero() {
   const live = useDemoPrice();
   return (
     <section className="bg-hero relative overflow-hidden border-b border-border">
-      {/* Blurred colour orbs behind the hero — pure decoration. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="glow-orb animate-float-slow motion-reduce:animate-none left-[-8%] top-[-12%] h-[420px] w-[420px] bg-primary/25" />
-        <div className="glow-orb animate-float-slower motion-reduce:animate-none right-[-6%] top-[8%] h-[380px] w-[380px] bg-accent/20" />
-        <div className="glow-orb bottom-[-30%] left-[38%] h-[360px] w-[360px] bg-primary/15" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] lg:block">
+        <img
+          src={heroGlowTrader}
+          alt=""
+          width={1600}
+          height={1008}
+          fetchPriority="high"
+          className="hero-photo-mask h-full w-full object-cover object-[70%_center]"
+        />
       </div>
       <PointerGlyphs />
-      <div className="relative mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:py-16">
-        <div>
+      <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 lg:min-h-[640px] lg:px-8 lg:py-24 lg:text-left">
+        <div className="mx-auto max-w-xl lg:mx-0">
           <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
             <Users className="h-3.5 w-3.5 text-primary" />
             <span className="font-mono font-extrabold tabular-nums text-primary">{memberCount}</span>{" "}
             {t("hero_badge")}
           </span>
-          <h1 className="mt-4 max-w-2xl text-[34px] leading-[1.05] text-foreground sm:text-[44px]">
+          <h1 className="text-glow mt-5 text-[38px] font-bold uppercase leading-[0.98] tracking-tight text-foreground sm:text-[54px] lg:text-[62px]">
             {t("hero_title")}
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-body">
+          <p className="mt-5 text-base leading-relaxed text-body sm:text-lg">
             {t("hero_subtitle")}
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
               to="/free-channel"
               onClick={() => goTrack("hero_join_free")}
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-glow"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground hover:bg-primary-glow"
             >
               <Send className="h-4 w-4" /> {t("hero_cta_join")}
             </Link>
             <a
               href="/#packages"
               onClick={() => goTrack("hero_see_packages")}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
             >
               {t("hero_cta_packages")}
             </a>
           </div>
 
-          <p className="mt-3 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-muted-foreground">
             <Link
               to="/ebooks/$slug"
               params={{ slug: "technical-analysis" }}
@@ -852,13 +858,13 @@ function Hero() {
             </Link>
           </p>
 
-          <dl className="mt-9 grid max-w-lg grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-3">
+          <dl className="mx-auto mt-10 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-3 lg:mx-0">
             {[
               [memberCount, t("hero_stat_members")],
               ["24/5", t("hero_stat_coverage")],
               ["3 Styles", t("hero_stat_styles")],
             ].map(([v, l]) => (
-              <div key={l} className="bg-card px-4 py-3.5">
+              <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
                 <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
                 <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {l}
@@ -868,11 +874,21 @@ function Hero() {
           </dl>
         </div>
 
-        <div>
-          <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+        <div aria-hidden="true" className="pointer-events-none absolute right-8 top-24 hidden flex-col items-end gap-3 xl:flex">
+          {["XAU/USD", "BTC/USD", "EUR/USD"].map((s) => (
+            <span key={s} className="glow-ring rounded-2xl bg-card/80 px-4 py-2 font-mono text-sm font-bold text-foreground backdrop-blur">
+              {s}
+            </span>
+          ))}
         </div>
       </div>
     </section>
+    <section className="border-b border-border px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl">
+        <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+      </div>
+    </section>
+    </>
   );
 }
 
