@@ -2,7 +2,6 @@ import { imgProps } from "@/lib/responsive-images";
 import { NextStepAdvisor } from "./NextStepAdvisor";
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
-import heroGlowTrader from "@/assets/hero-glow-trader.jpg";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
@@ -806,18 +805,9 @@ function Hero() {
     <>
     <section className="bg-hero relative overflow-hidden border-b border-border">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 hidden w-[62%] lg:block">
-        <img
-          src={heroGlowTrader}
-          alt=""
-          width={1600}
-          height={1008}
-          fetchPriority="high"
-          className="hero-photo-mask h-full w-full object-cover object-[70%_center]"
-        />
-      </div>
+      <div aria-hidden="true" className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block" />
       <PointerGlyphs />
-      <div className="relative mx-auto max-w-6xl px-4 py-16 text-center sm:px-6 lg:min-h-[640px] lg:px-8 lg:py-24 lg:text-left">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 text-center sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:px-8 lg:py-20 lg:text-left">
         <div className="mx-auto max-w-xl lg:mx-0">
           <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
             <Users className="h-3.5 w-3.5 text-primary" />
@@ -875,18 +865,12 @@ function Hero() {
           </dl>
         </div>
 
-        <div aria-hidden="true" className="pointer-events-none absolute bottom-24 right-8 hidden flex-col items-end gap-3 xl:flex">
-          {["XAU/USD", "BTC/USD", "EUR/USD"].map((s) => (
-            <span key={s} className="glow-ring rounded-2xl bg-card/80 px-4 py-2 font-mono text-sm font-bold text-foreground backdrop-blur">
-              {s}
-            </span>
-          ))}
+        <div className="relative mx-auto w-full max-w-xl text-left">
+          <div aria-hidden="true" className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl" />
+          <div className="relative">
+            <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+          </div>
         </div>
-      </div>
-    </section>
-    <section className="border-b border-border px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl">
-        <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
       </div>
     </section>
     </>
