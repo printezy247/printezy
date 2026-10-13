@@ -807,14 +807,14 @@ function Hero() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
       <div aria-hidden="true" className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block" />
       <PointerGlyphs />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 text-center sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:px-8 lg:py-20 lg:text-left">
+      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:px-6 sm:py-16 lg:grid-cols-[1fr_1fr] lg:gap-10 lg:px-8 lg:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
         <div className="mx-auto max-w-xl lg:mx-0">
           <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
             <Users className="h-3.5 w-3.5 text-primary" />
             <span className="font-mono font-extrabold tabular-nums text-primary">{memberCount}</span>{" "}
             {t("hero_badge")}
           </span>
-          <h1 className="text-glow mt-5 text-[38px] font-bold uppercase leading-[0.98] tracking-tight text-foreground sm:text-[54px] lg:text-[62px]">
+          <h1 className="text-glow mt-5 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[50px] lg:text-[48px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
             {t("hero_title")}
           </h1>
           <p className="mt-5 text-base leading-relaxed text-body sm:text-lg">
