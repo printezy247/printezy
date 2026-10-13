@@ -859,7 +859,7 @@ function Hero() {
             </Link>
           </p>
 
-          <dl className="mx-auto mt-10 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-3 lg:mx-0">
+          <dl className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
             {[
               [memberCount, t("hero_stat_members")],
               ["24/5", t("hero_stat_coverage")],
@@ -875,7 +875,7 @@ function Hero() {
           </dl>
         </div>
 
-        <div aria-hidden="true" className="pointer-events-none absolute right-8 top-24 hidden flex-col items-end gap-3 xl:flex">
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-24 right-8 hidden flex-col items-end gap-3 xl:flex">
           {["XAU/USD", "BTC/USD", "EUR/USD"].map((s) => (
             <span key={s} className="glow-ring rounded-2xl bg-card/80 px-4 py-2 font-mono text-sm font-bold text-foreground backdrop-blur">
               {s}
