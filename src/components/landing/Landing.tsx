@@ -18,6 +18,7 @@ import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { PreLandingTrigger } from "./PreLandingSection";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
 
@@ -2062,27 +2063,29 @@ export function Landing() {
 
   return (
     <MemberCountContext.Provider value={memberCount}>
-      <div className="min-h-screen bg-background text-foreground">
-        <Nav />
-        <main>
-          <Hero />
-          <TrustStrip />
-          <StatsStrip />
-          <Features />
-          <Pricing />
-          <Tools />
-          <Showcase />
-          <Products />
-          <CtaBand />
-          <HowItWorks />
-          <TrackRecord />
-          <SocialProof />
-          <Ambassador />
-          <Faq />
-          <FinalCta />
-        </main>
-        <Footer />
-      </div>
+      <PreLandingTrigger>
+        <div className="min-h-screen bg-background text-foreground">
+          <Nav />
+          <main>
+            <Hero />
+            <TrustStrip />
+            <StatsStrip />
+            <Features />
+            <Pricing />
+            <Tools />
+            <Showcase />
+            <Products />
+            <CtaBand />
+            <HowItWorks />
+            <TrackRecord />
+            <SocialProof />
+            <Ambassador />
+            <Faq />
+            <FinalCta />
+          </main>
+          <Footer />
+        </div>
+      </PreLandingTrigger>
       <StickyBuyBar />
     </MemberCountContext.Provider>
   );
