@@ -42,6 +42,7 @@ const STORAGE_KEY = "pe_locale";
  */
 const LOCALIZED_PATHS = new Set([
   "/",
+  "/home",
   "/faq",
   "/ezyai",
   "/indicators",
@@ -65,7 +66,7 @@ export function localizePath(path: string, locale: Locale): string {
   const hashAt = path.indexOf("#");
   const bare = hashAt === -1 ? path : path.slice(0, hashAt);
   const hash = hashAt === -1 ? "" : path.slice(hashAt);
-  return `${bare === "/" ? "/ms" : `/ms${bare}`}${hash}`;
+  return `${bare === "/" || bare === "/home" ? "/ms" : `/ms${bare}`}${hash}`;
 }
 
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Landing, brandLogo } from "@/components/landing/Landing";
 import { SITE_URL } from "@/lib/bot/tiers";
-import { PRODUCTS_JSON_LD } from "../index";
+import { PRODUCTS_JSON_LD } from "../home";
 
 export const Route = createFileRoute("/ms/")({
   head: () => ({

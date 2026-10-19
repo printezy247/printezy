@@ -336,9 +336,9 @@ export function Ticker() {
 /* ------------------------------------------------------------------ */
 
 const NAV_ITEMS = [
-  { key: "nav_signals", href: "/#features" },
-  { key: "nav_packages", href: "/#packages" },
-  { key: "nav_tools", href: "/#tools" },
+  { key: "nav_signals", href: "/home#features" },
+  { key: "nav_packages", href: "/home#packages" },
+  { key: "nav_tools", href: "/home#tools" },
   { key: "nav_macro", href: "/macro" },
   // The board's nav item comes and goes with the board itself, rather than
   // being deleted — see src/lib/ezyai/visibility.ts.
@@ -347,7 +347,7 @@ const NAV_ITEMS = [
 
 /** Not in the header nav — footer-only wayfinding links. */
 const FOOTER_ONLY_ITEMS = [
-  { key: "footer_track_record", href: "/#track-record" },
+  { key: "footer_track_record", href: "/home#track-record" },
   { key: "footer_faq", href: "/faq" },
 ] as const;
 
@@ -830,7 +830,7 @@ function Hero() {
               <Send className="h-4 w-4" /> {t("hero_cta_join")}
             </Link>
             <a
-              href="/#packages"
+              href="/home#packages"
               onClick={() => goTrack("hero_see_packages")}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
             >
