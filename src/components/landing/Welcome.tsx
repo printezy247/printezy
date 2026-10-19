@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowRight,
+  ArrowUp,
   BellRing,
   BrainCircuit,
   ChevronDown,
@@ -146,7 +147,7 @@ function CtaPair({ where, center = true }: { where: string; center?: boolean }) 
 function Heading({ children, sub }: { children: ReactNode; sub?: string }) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <h2 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-5xl">
+      <h2 className="text-3xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-4xl lg:text-5xl">
         {children}
       </h2>
       {sub ? (
@@ -197,10 +198,20 @@ function AlertCard({
   );
 }
 
-function Phone({ children, caption }: { children: ReactNode; caption: string }) {
+function Phone({
+  children,
+  caption,
+  peek = false,
+}: {
+  children: ReactNode;
+  caption: string;
+  peek?: boolean;
+}) {
   return (
     <figure className="mx-auto w-full max-w-[300px]">
-      <div className="rounded-[2.2rem] border-[7px] border-neutral-900 bg-neutral-900 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)]">
+      <div
+        className={`rounded-[2.2rem] border-[7px] border-neutral-900 bg-neutral-900 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.45)] ${peek ? "max-h-[300px] overflow-hidden [mask-image:linear-gradient(to_bottom,#000_62%,transparent)] lg:max-h-none lg:[mask-image:none]" : ""}`}
+      >
         <div className="rounded-[1.7rem] bg-[#0f1311] p-3">
           <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-neutral-700" aria-hidden="true" />
           <div className="mb-3 flex items-center gap-2 border-b border-white/5 pb-2.5">
@@ -264,19 +275,19 @@ function Hero({ members }: { members: number }) {
   const count = useCountUp(members);
   return (
     <section className="bg-white">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8 lg:pb-24 lg:pt-20">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 pb-8 pt-8 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8 lg:pb-20 lg:pt-16">
         <div className="text-center lg:text-left">
           <h1 className="text-[40px] font-extrabold leading-[1.04] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-6xl lg:text-[64px]">
             Never Miss A Trade Setup <span className="whitespace-nowrap">Again.</span>
           </h1>
-          <p className="mt-5 text-lg font-extrabold uppercase tracking-wide text-red-600 sm:text-xl">
+          <p className="mt-4 text-[13px] font-extrabold uppercase tracking-wide text-red-600 sm:mt-5 sm:text-xl">
             *** Free to join · No card · Leave any time ***
           </p>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-neutral-700 lg:mx-0">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-neutral-700 sm:mt-5 sm:text-lg lg:mx-0">
             Live trading alerts land on your phone the moment a setup forms, with the entry, stop,
             targets and the reason. No more watching charts all day.
           </p>
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:justify-center sm:gap-4 lg:justify-start">
             <JoinButton where="hero" />
             <MoreLink where="hero" />
           </div>
@@ -287,8 +298,13 @@ function Hero({ members }: { members: number }) {
             />
             {count}+ traders already inside the channel
           </p>
+          <p className="mt-1.5 text-xs text-neutral-600">
+            Trading carries risk. Alerts are information, not financial advice.
+          </p>
         </div>
-        <Phone caption="Illustrative sample alerts, not live trades.">{SAMPLE_FEED}</Phone>
+        <Phone peek caption="Illustrative sample alerts, not live trades.">
+          {SAMPLE_FEED}
+        </Phone>
       </div>
     </section>
   );
@@ -317,7 +333,7 @@ const PAINS = [
   {
     icon: Crosshair,
     title: "You saw it too late",
-    body: "The clean entry printed an hour ago. Now the candle has already run and you wonder whether to chase.",
+    body: "Gold ran 40 pips while you slept. The clean entry printed hours ago and now you are deciding whether to chase.",
   },
   {
     icon: Layers,
@@ -327,22 +343,24 @@ const PAINS = [
   {
     icon: ShieldAlert,
     title: "No plan once you are in",
-    body: "Where does the stop go? When do you take profit? Without levels set first, emotion makes the call.",
+    body: "Where does the stop go? Without levels set first, emotion makes the call.",
   },
 ];
 
 function Pain() {
   return (
-    <section className="bg-white px-5 py-20 sm:px-8">
+    <section className="bg-white px-5 py-12 sm:px-8 sm:py-16">
       <Reveal>
         <Heading>Trading alone is a full-time job nobody pays you for.</Heading>
       </Reveal>
-      <div className="mx-auto mt-12 grid max-w-6xl gap-6 md:grid-cols-3">
+      <div className="mx-auto mt-8 grid max-w-6xl gap-4 md:grid-cols-3 md:gap-6">
         {PAINS.map((p, i) => (
           <Reveal key={p.title} delay={i * 0.1}>
-            <div className="h-full rounded-lg border-2 border-neutral-900 bg-white p-7 shadow-[6px_6px_0_0_#171717]">
-              <p.icon className="h-8 w-8 text-red-600" aria-hidden="true" />
-              <h3 className="mt-4 text-xl font-extrabold text-neutral-950">{p.title}</h3>
+            <div className="h-full rounded-lg border-2 border-neutral-900 bg-white p-5 shadow-[5px_5px_0_0_#171717]">
+              <div className="flex items-center gap-3">
+                <p.icon className="h-7 w-7 shrink-0 text-red-600" aria-hidden="true" />
+                <h3 className="text-lg font-extrabold text-neutral-950">{p.title}</h3>
+              </div>
               <p className="mt-2 leading-relaxed text-neutral-700">{p.body}</p>
             </div>
           </Reveal>
@@ -361,40 +379,14 @@ const STEPS = [
   {
     n: "2",
     title: "Get the alert",
-    body: "When a setup forms your phone buzzes with the full plan: entry, stop, targets, why.",
+    body: "When a setup forms your phone buzzes with the full plan.",
   },
   {
     n: "3",
     title: "Act on your terms",
-    body: "Take it, skip it, or study it. Daily education shows the reasoning so you keep improving.",
+    body: "Take it, skip it, or study it. Daily education shows the reasoning.",
   },
 ];
-
-function HowItWorks() {
-  return (
-    <section className="border-y border-neutral-200 bg-neutral-50 px-5 py-20 sm:px-8">
-      <Reveal>
-        <Heading sub="It takes under a minute to get started.">Three simple steps</Heading>
-      </Reveal>
-      <ol className="mx-auto mt-12 grid max-w-5xl gap-8 md:grid-cols-3">
-        {STEPS.map((s, i) => (
-          <li key={s.n}>
-            <Reveal delay={i * 0.1} className="text-center">
-              <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-neutral-950 text-2xl font-extrabold text-[#3ddc84]">
-                {s.n}
-              </span>
-              <h3 className="mt-4 text-xl font-extrabold text-neutral-950">{s.title}</h3>
-              <p className="mt-2 leading-relaxed text-neutral-700">{s.body}</p>
-            </Reveal>
-          </li>
-        ))}
-      </ol>
-      <Reveal className="mt-12">
-        <CtaPair where="steps" />
-      </Reveal>
-    </section>
-  );
-}
 
 const ANATOMY = [
   { k: "Entry", v: "Where to get in, and the zone it is valid for." },
@@ -403,22 +395,39 @@ const ANATOMY = [
   { k: "The why", v: "The confluence behind it, so you learn the setup, not just copy it." },
 ];
 
-function Anatomy() {
+function HowItWorks() {
   return (
-    <section className="bg-white px-5 py-20 sm:px-8">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2">
+    <section className="border-y border-neutral-200 bg-neutral-50 px-5 py-12 sm:px-8 sm:py-16">
+      <Reveal>
+        <Heading sub="Under a minute to start.">Three steps. Then the alerts come to you.</Heading>
+      </Reveal>
+      <ol className="mx-auto mt-8 grid max-w-5xl gap-5 md:grid-cols-3 md:gap-8">
+        {STEPS.map((s, i) => (
+          <li key={s.n}>
+            <Reveal delay={i * 0.1} className="flex gap-4 text-left md:block md:text-center">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-neutral-950 text-xl font-extrabold text-[#3ddc84] md:mx-auto md:h-14 md:w-14 md:text-2xl">
+                {s.n}
+              </span>
+              <div>
+                <h3 className="text-lg font-extrabold text-neutral-950 md:mt-4 md:text-xl">
+                  {s.title}
+                </h3>
+                <p className="mt-1 leading-relaxed text-neutral-700 md:mt-2">{s.body}</p>
+              </div>
+            </Reveal>
+          </li>
+        ))}
+      </ol>
+
+      <div className="mx-auto mt-12 grid max-w-5xl items-center gap-8 lg:grid-cols-2 lg:gap-12">
         <Reveal>
-          <h2 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-5xl">
+          <h3 className="text-2xl font-extrabold leading-tight tracking-tight text-neutral-950 [text-wrap:balance] sm:text-3xl">
             A complete trade plan, not a vague hint.
-          </h2>
-          <p className="mt-5 max-w-lg text-lg leading-relaxed text-neutral-700">
-            Most signal groups shout a ticker and a direction. Ours hands you the whole plan, so you
-            always know your risk before you act.
-          </p>
-          <ul className="mt-8 space-y-4">
+          </h3>
+          <ul className="mt-5 space-y-3">
             {ANATOMY.map((a) => (
               <li key={a.k} className="flex gap-3">
-                <BellRing className="mt-1 h-5 w-5 shrink-0 text-[#1fa55e]" aria-hidden="true" />
+                <BellRing className="mt-1 h-5 w-5 shrink-0 text-[#12803f]" aria-hidden="true" />
                 <p className="text-neutral-700">
                   <strong className="text-neutral-950">{a.k}.</strong> {a.v}
                 </p>
@@ -427,7 +436,7 @@ function Anatomy() {
           </ul>
         </Reveal>
         <Reveal delay={0.1}>
-          <Phone caption="Illustrative sample alert.">
+          <div className="mx-auto w-full max-w-sm space-y-2.5 rounded-2xl bg-[#0f1311] p-4 shadow-[0_24px_50px_-24px_rgba(0,0,0,0.5)]">
             <AlertCard
               pair="XAUUSD"
               side="BUY"
@@ -443,8 +452,41 @@ function Anatomy() {
               Why: trend and momentum agree, price is reacting off a key level, risk is tight. If
               2,336 breaks, the idea is dead.
             </p>
-          </Phone>
+            <p className="text-center text-xs text-neutral-400">Illustrative sample alert.</p>
+          </div>
         </Reveal>
+      </div>
+
+      <Reveal className="mt-10">
+        <CtaPair where="steps" />
+      </Reveal>
+    </section>
+  );
+}
+
+type Testimonial = { quote: string; name: string; role?: string };
+/** Real member quotes only, with permission. Empty means the section is not rendered. */
+const TESTIMONIALS: Testimonial[] = [];
+
+function Testimonials() {
+  if (TESTIMONIALS.length === 0) return null;
+  return (
+    <section className="bg-white px-5 py-12 sm:px-8 sm:py-16">
+      <Reveal>
+        <Heading>What members say</Heading>
+      </Reveal>
+      <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-3 md:gap-6">
+        {TESTIMONIALS.map((t, i) => (
+          <Reveal key={t.name} delay={i * 0.1}>
+            <figure className="h-full rounded-lg border-2 border-neutral-900 bg-white p-5 shadow-[5px_5px_0_0_#171717]">
+              <blockquote className="leading-relaxed text-neutral-800">“{t.quote}”</blockquote>
+              <figcaption className="mt-3 text-sm font-bold text-neutral-950">
+                {t.name}
+                {t.role ? <span className="font-normal text-neutral-600"> · {t.role}</span> : null}
+              </figcaption>
+            </figure>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
@@ -494,10 +536,10 @@ function EzyAi() {
   }, [reduced]);
 
   return (
-    <section className="border-y border-neutral-200 bg-neutral-50 px-5 py-20 sm:px-8">
+    <section className="border-y border-neutral-200 bg-neutral-50 px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2">
         <Reveal className="lg:order-2">
-          <h2 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-5xl">
+          <h2 className="text-3xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-4xl lg:text-5xl">
             Your own AI analyst, inside Telegram.
           </h2>
           <p className="mt-5 max-w-lg text-lg leading-relaxed text-neutral-700">
@@ -568,11 +610,11 @@ const FAQ = [
 
 function Faq() {
   return (
-    <section className="bg-white px-5 py-20 sm:px-8">
+    <section className="bg-white px-5 py-12 sm:px-8 sm:py-16">
       <Reveal>
         <Heading>Before you join</Heading>
       </Reveal>
-      <div className="mx-auto mt-10 max-w-3xl divide-y-2 divide-neutral-900 border-y-2 border-neutral-900">
+      <div className="mx-auto mt-8 max-w-3xl divide-y-2 divide-neutral-900 border-y-2 border-neutral-900">
         {FAQ.map((f) => (
           <details key={f.q} className="group py-1">
             <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-lg font-extrabold text-neutral-950 focus-visible:outline-2 focus-visible:outline-neutral-900 [&::-webkit-details-marker]:hidden">
@@ -592,9 +634,9 @@ function Faq() {
 
 function FinalCta({ members }: { members: number }) {
   return (
-    <section className="bg-[#3ddc84] px-5 py-20 text-center sm:px-8">
+    <section className="bg-[#3ddc84] px-5 py-12 text-center sm:px-8 sm:py-16">
       <Reveal className="mx-auto max-w-3xl">
-        <h2 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-6xl">
+        <h2 className="text-3xl font-extrabold leading-[1.05] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-5xl">
           The next setup is forming right now.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg font-semibold text-neutral-900">
@@ -623,10 +665,29 @@ function FinalCta({ members }: { members: number }) {
 }
 
 function Footer() {
+  const reduced = usePrefersReducedMotion();
   return (
     <footer className="bg-black px-5 py-12 text-neutral-400 sm:px-8">
       <div className="mx-auto max-w-4xl text-center">
         <Mark size={40} className="mx-auto mb-4" />
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={LINKS.freeChannel}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => goTrack("welcome_join_footer")}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-sm px-5 py-2 text-sm font-extrabold uppercase tracking-wide focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${GREEN}`}
+          >
+            <Send className="h-4 w-4" aria-hidden="true" /> Join the free channel
+          </a>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })}
+            className="inline-flex min-h-11 items-center gap-2 rounded-sm border-2 border-white/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-white hover:bg-white hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
+            <ArrowUp className="h-4 w-4" aria-hidden="true" /> Back to top
+          </button>
+        </div>
         <p className="text-xs leading-relaxed">
           <strong className="text-neutral-200">Risk warning:</strong> Trading forex, crypto and CFDs
           carries a high level of risk and may not be suitable for everyone. You can lose some or
@@ -661,8 +722,15 @@ function Footer() {
 
 function Bars() {
   const [past, setPast] = useState(false);
+  const bar = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const onScroll = () => setPast(window.scrollY > 640);
+    const onScroll = () => {
+      setPast(window.scrollY > 640);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (bar.current) {
+        bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -670,6 +738,12 @@ function Bars() {
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/95 backdrop-blur">
+        <div
+          ref={bar}
+          className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-[#3ddc84]"
+          style={{ transform: "scaleX(0)" }}
+          aria-hidden="true"
+        />
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
           <Link
             to="/"
@@ -743,8 +817,8 @@ export function Welcome() {
         <FactStrip />
         <Pain />
         <HowItWorks />
-        <Anatomy />
         <EzyAi />
+        <Testimonials />
         <Faq />
         <FinalCta members={members} />
       </main>
