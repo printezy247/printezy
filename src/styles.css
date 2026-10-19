@@ -1151,6 +1151,11 @@ button.bg-primary:hover,
   50% { transform: translateY(-8px); }
 }
 
+@keyframes shine {
+  0%, 55% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(450%) skewX(-20deg); }
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
