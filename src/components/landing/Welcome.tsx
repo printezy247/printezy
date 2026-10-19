@@ -15,6 +15,7 @@ import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { useCountUp } from "@/lib/use-count-up";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack, trackEngagement, trackPageLoad } from "@/lib/analytics";
+import markImg from "@/assets/ezymap-mark.webp";
 import { LINKS } from "./Landing";
 
 /**
@@ -23,6 +24,20 @@ import { LINKS } from "./Landing";
  * disclaimer footer. Every section ends in one of two doors: the free Telegram
  * channel, or the full site.
  */
+
+function Mark({ size, className = "" }: { size: number; className?: string }) {
+  return (
+    <img
+      src={markImg}
+      width={size}
+      height={size}
+      alt=""
+      decoding="async"
+      className={`shrink-0 ${className}`}
+      style={{ width: size, height: size }}
+    />
+  );
+}
 
 const FIND_OUT_MORE = "/home";
 const FALLBACK_MEMBERS = 640;
@@ -173,7 +188,7 @@ function AlertCard({
       <dl className="mt-2.5 grid grid-cols-4 gap-2 font-mono text-[11.5px]">
         {lines.map(([k, v]) => (
           <div key={k}>
-            <dt className="text-neutral-500">{k}</dt>
+            <dt className="text-neutral-400">{k}</dt>
             <dd className="mt-0.5 tabular-nums text-neutral-100">{v}</dd>
           </div>
         ))}
@@ -189,15 +204,10 @@ function Phone({ children, caption }: { children: ReactNode; caption: string }) 
         <div className="rounded-[1.7rem] bg-[#0f1311] p-3">
           <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-neutral-700" aria-hidden="true" />
           <div className="mb-3 flex items-center gap-2 border-b border-white/5 pb-2.5">
-            <span
-              className="grid h-8 w-8 place-items-center rounded-full bg-[#3ddc84] text-[13px] font-black text-neutral-950"
-              aria-hidden="true"
-            >
-              E
-            </span>
+            <Mark size={32} />
             <div>
               <p className="text-[13px] font-bold text-white">EzyMap ALGO</p>
-              <p className="text-[11px] text-neutral-500">channel</p>
+              <p className="text-[11px] text-neutral-400">channel</p>
             </div>
           </div>
           <div className="space-y-2.5">{children}</div>
@@ -514,7 +524,7 @@ function EzyAi() {
           >
             <div className="mb-3 flex items-center gap-2 border-b border-neutral-200 pb-3 text-sm font-extrabold text-neutral-950">
               <BrainCircuit className="h-5 w-5 text-[#1fa55e]" aria-hidden="true" /> EzyAI
-              <span className="ml-auto text-xs font-semibold text-[#1fa55e]">● online</span>
+              <span className="ml-auto text-xs font-semibold text-[#12803f]">● online</span>
             </div>
             <div className="min-h-[19rem] space-y-3" aria-hidden="true">
               {CHAT.slice(0, shown).map((m, i) => (
@@ -616,6 +626,7 @@ function Footer() {
   return (
     <footer className="bg-black px-5 py-12 text-neutral-400 sm:px-8">
       <div className="mx-auto max-w-4xl text-center">
+        <Mark size={40} className="mx-auto mb-4" />
         <p className="text-xs leading-relaxed">
           <strong className="text-neutral-200">Risk warning:</strong> Trading forex, crypto and CFDs
           carries a high level of risk and may not be suitable for everyone. You can lose some or
@@ -665,13 +676,8 @@ function Bars() {
             className="flex items-center gap-2 text-lg font-extrabold uppercase tracking-tight text-neutral-950"
             aria-label="EzyMap ALGO home"
           >
-            <span
-              className="grid h-8 w-8 place-items-center rounded bg-neutral-950 text-sm font-black text-[#3ddc84]"
-              aria-hidden="true"
-            >
-              E
-            </span>
-            EzyMap <span className="text-[#1fa55e]">ALGO</span>
+            <Mark size={36} />
+            EzyMap <span className="text-[#12803f]">ALGO</span>
           </Link>
           <nav className="hidden items-center gap-6 sm:flex" aria-label="Primary">
             <Link

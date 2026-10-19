@@ -21,7 +21,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
 import { LocaleProvider } from "../lib/i18n";
 import { SITE_URL } from "../lib/bot/tiers";
-import { brandLogo } from "../components/landing/Landing";
 
 function NotFoundComponent() {
   return (
@@ -108,7 +107,7 @@ const ORGANIZATION_JSON_LD = JSON.stringify({
   "@type": "Organization",
   name: "EzyMap ALGO",
   url: SITE_URL,
-  logo: `${SITE_URL}${brandLogo}`,
+  logo: `${SITE_URL}/ezymap-logo.png`,
   foundingDate: "2021",
   sameAs: ["https://t.me/ezymap"],
 });
