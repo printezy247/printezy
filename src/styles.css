@@ -1145,3 +1145,8 @@ button.bg-primary:hover,
 @media (prefers-reduced-motion: reduce) {
   a.bg-primary, button.bg-primary, .bg-card.border, .glass-card { transition: none; }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}

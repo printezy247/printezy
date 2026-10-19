@@ -19,6 +19,7 @@ import { Route as EzyaiRouteImport } from './routes/ezyai'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
+import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -90,6 +91,11 @@ const FreeChannelRoute = FreeChannelRouteImport.update({
 const FreeEbookRoute = FreeEbookRouteImport.update({
   id: '/free-ebook',
   path: '/free-ebook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeRoute = HomeRouteImport.update({
+  id: '/home',
+  path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndicatorsRoute = IndicatorsRouteImport.update({
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -293,6 +301,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
+  '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/home'
     | '/indicators'
     | '/macro'
     | '/pricing'
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/home'
     | '/indicators'
     | '/macro'
     | '/pricing'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/free-channel'
     | '/free-ebook'
+    | '/home'
     | '/indicators'
     | '/macro'
     | '/pricing'
@@ -434,6 +446,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
+  HomeRoute: typeof HomeRoute
   IndicatorsRoute: typeof IndicatorsRoute
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
@@ -527,6 +540,13 @@ declare module '@tanstack/react-router' {
       path: '/free-ebook'
       fullPath: '/free-ebook'
       preLoaderRoute: typeof FreeEbookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/indicators': {
@@ -717,6 +737,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
+  HomeRoute: HomeRoute,
   IndicatorsRoute: IndicatorsRoute,
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,

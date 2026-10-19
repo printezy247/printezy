@@ -220,7 +220,7 @@ function PurchasesCard() {
       ) : !data || data.length === 0 ? (
         <div className="text-sm text-body">
           <p>{t("dash_no_purchases")}</p>
-          <Link to="/" hash="packages" className="mt-3 inline-block text-primary hover:underline">
+          <Link to="/home" hash="packages" className="mt-3 inline-block text-primary hover:underline">
             {t("dash_browse_packages")}
           </Link>
         </div>

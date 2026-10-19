@@ -14,7 +14,8 @@ const STATIC_ROUTES: { path: string; priority: string; msPath?: string }[] = [
   // that redirects is how a sitemap earns a crawl warning. It goes back when
   // EZYAI_BOARD_VISIBLE does (see src/lib/ezyai/visibility.ts):
   //   { path: "/ezyai", priority: "0.8", msPath: "/ms/ezyai" },
-  { path: "/", priority: "1.0", msPath: "/ms" },
+  { path: "/", priority: "1.0" },
+  { path: "/home", priority: "0.9", msPath: "/ms" },
   { path: "/indicators", priority: "0.8", msPath: "/ms/indicators" },
   { path: "/macro", priority: "0.8", msPath: "/ms/macro" },
   { path: "/free-channel", priority: "0.7", msPath: "/ms/free-channel" },

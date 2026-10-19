@@ -288,7 +288,7 @@ function SuccessPage() {
                 </a>
               </Button>
               <Button asChild variant="ghost">
-                <Link to="/" hash="packages">
+                <Link to="/home" hash="packages">
                   Back to pricing
                 </Link>
               </Button>
