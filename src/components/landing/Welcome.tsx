@@ -101,8 +101,12 @@ function JoinButton({
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => goTrack(`welcome_join_${where}`)}
-      className={`group inline-flex min-h-14 items-center justify-center gap-3 rounded-sm px-8 py-4 text-lg font-extrabold uppercase tracking-wide shadow-[0_6px_0_0_#1fa55e] transition-all duration-150 hover:translate-y-[2px] hover:shadow-[0_4px_0_0_#1fa55e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900 ${GREEN} ${wide ? "w-full" : ""}`}
+      className={`group relative inline-flex min-h-14 items-center justify-center gap-3 overflow-hidden rounded-sm px-8 py-4 text-lg font-extrabold uppercase tracking-wide shadow-[0_6px_0_0_#1fa55e] transition-all duration-150 hover:translate-y-[2px] hover:shadow-[0_4px_0_0_#1fa55e] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900 ${GREEN} ${wide ? "w-full" : ""}`}
     >
+      <span
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-white/40 motion-safe:animate-[shine_3.6s_ease-in-out_infinite] motion-reduce:hidden"
+        aria-hidden="true"
+      />
       <Send className="h-5 w-5" aria-hidden="true" />
       {label}
       <ArrowRight
@@ -229,43 +233,85 @@ function Phone({
   );
 }
 
-const SAMPLE_FEED = (
-  <>
-    <AlertCard
-      pair="XAUUSD"
-      side="BUY"
-      time="now"
-      lines={[
-        ["Entry", "2,341.5"],
-        ["Stop", "2,336.2"],
-        ["TP1", "2,349.0"],
-        ["TP2", "2,358.4"],
-      ]}
-    />
-    <AlertCard
-      pair="BTCUSD"
-      side="SELL"
-      time="12m"
-      lines={[
-        ["Entry", "67,420"],
-        ["Stop", "68,150"],
-        ["TP1", "66,300"],
-        ["TP2", "65,100"],
-      ]}
-    />
-    <AlertCard
-      pair="EURUSD"
-      side="BUY"
-      time="38m"
-      lines={[
-        ["Entry", "1.0842"],
-        ["Stop", "1.0811"],
-        ["TP1", "1.0890"],
-        ["TP2", "1.0936"],
-      ]}
-    />
-  </>
-);
+type Sample = {
+  pair: string;
+  side: "BUY" | "SELL";
+  lines: [string, string][];
+};
+
+/** Illustrative only. Never presented as live trades. */
+const SAMPLES: Sample[] = [
+  {
+    pair: "XAUUSD",
+    side: "BUY",
+    lines: [
+      ["Entry", "2,341.5"],
+      ["Stop", "2,336.2"],
+      ["TP1", "2,349.0"],
+      ["TP2", "2,358.4"],
+    ],
+  },
+  {
+    pair: "BTCUSD",
+    side: "SELL",
+    lines: [
+      ["Entry", "67,420"],
+      ["Stop", "68,150"],
+      ["TP1", "66,300"],
+      ["TP2", "65,100"],
+    ],
+  },
+  {
+    pair: "EURUSD",
+    side: "BUY",
+    lines: [
+      ["Entry", "1.0842"],
+      ["Stop", "1.0811"],
+      ["TP1", "1.0890"],
+      ["TP2", "1.0936"],
+    ],
+  },
+  {
+    pair: "US30",
+    side: "SELL",
+    lines: [
+      ["Entry", "39,860"],
+      ["Stop", "40,020"],
+      ["TP1", "39,640"],
+      ["TP2", "39,420"],
+    ],
+  },
+  {
+    pair: "GBPJPY",
+    side: "BUY",
+    lines: [
+      ["Entry", "191.45"],
+      ["Stop", "190.92"],
+      ["TP1", "192.10"],
+      ["TP2", "192.80"],
+    ],
+  },
+];
+
+const FEED_AGES = ["now", "3m", "11m"];
+
+/** Newest alert slides in on top every few seconds. Static without motion or JS. */
+function useSampleFeed(reduced: boolean) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => {
+      if (!document.hidden) setTick((t) => t + 1);
+    }, 3600);
+    return () => clearInterval(id);
+  }, [reduced]);
+  const n = SAMPLES.length;
+  return FEED_AGES.map((age, j) => ({
+    key: tick - j,
+    age,
+    ...SAMPLES[(((tick - j) % n) + n) % n],
+  }));
+}
 
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
@@ -273,10 +319,19 @@ const SAMPLE_FEED = (
 
 function Hero({ members }: { members: number }) {
   const count = useCountUp(members);
+  const reduced = usePrefersReducedMotion();
+  const feed = useSampleFeed(reduced);
   return (
     <section className="bg-white">
       <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 pb-8 pt-8 sm:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-8 lg:pb-20 lg:pt-16">
         <div className="text-center lg:text-left">
+          <p
+            className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 font-mono text-xs font-bold text-neutral-700 lg:mx-0"
+            aria-hidden="true"
+          >
+            <span className="h-2 w-2 rounded-full bg-[#1fa55e] motion-safe:animate-pulse" />
+            SAMPLE ALERT · {feed[0].pair} {feed[0].side} · now
+          </p>
           <h1 className="text-[40px] font-extrabold leading-[1.04] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-6xl lg:text-[64px]">
             Never Miss A Trade Setup <span className="whitespace-nowrap">Again.</span>
           </h1>
@@ -296,14 +351,23 @@ function Hero({ members }: { members: number }) {
               className="mr-2 inline-block h-2 w-2 rounded-full bg-[#1fa55e] motion-safe:animate-pulse"
               aria-hidden="true"
             />
-            {count}+ traders already inside the channel
+            {count}+ traders inside · opens Telegram in one tap
           </p>
           <p className="mt-1.5 text-xs text-neutral-600">
             Trading carries risk. Alerts are information, not financial advice.
           </p>
         </div>
         <Phone peek caption="Illustrative sample alerts, not live trades.">
-          {SAMPLE_FEED}
+          <div className="space-y-2.5">
+            {feed.map((f) => (
+              <div
+                key={f.key}
+                className={f.age === "now" ? "motion-safe:animate-[fadeUp_0.5s_ease-out]" : ""}
+              >
+                <AlertCard pair={f.pair} side={f.side} time={f.age} lines={f.lines} />
+              </div>
+            ))}
+          </div>
         </Phone>
       </div>
     </section>
@@ -725,7 +789,7 @@ function Bars() {
   const bar = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onScroll = () => {
-      setPast(window.scrollY > 640);
+      setPast(window.scrollY > 300);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (bar.current) {
         bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
