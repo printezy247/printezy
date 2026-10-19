@@ -140,7 +140,7 @@ function MoreLink({
 function CtaPair({ where, center = true }: { where: string; center?: boolean }) {
   return (
     <div
-      className={`flex flex-col gap-4 sm:flex-row ${center ? "items-center justify-center" : ""}`}
+      className={`flex flex-col gap-4 sm:flex-row ${center ? "items-stretch justify-center sm:items-center" : ""}`}
     >
       <JoinButton where={where} />
       <MoreLink where={where} />
@@ -817,11 +817,21 @@ function Bars() {
             <Mark size={36} />
             EzyMap <span className="text-[#12803f]">ALGO</span>
           </Link>
-          <nav className="hidden items-center gap-6 sm:flex" aria-label="Primary">
+          <nav className="flex items-center gap-4 sm:gap-6" aria-label="Primary">
+            <Link
+              to="/ms"
+              hrefLang="ms"
+              lang="ms"
+              onClick={() => goTrack("welcome_lang_ms")}
+              aria-label="Bahasa Melayu"
+              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border-2 border-neutral-300 px-3 text-sm font-extrabold uppercase tracking-wide text-neutral-800 hover:border-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
+            >
+              BM
+            </Link>
             <Link
               to={FIND_OUT_MORE}
               onClick={() => goTrack("welcome_more_nav")}
-              className="text-sm font-bold uppercase tracking-wide text-neutral-800 hover:text-neutral-950"
+              className="hidden text-sm font-bold uppercase tracking-wide text-neutral-800 hover:text-neutral-950 sm:inline"
             >
               Full site
             </Link>
@@ -830,7 +840,7 @@ function Bars() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => goTrack("welcome_join_nav")}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-sm px-5 py-2 text-sm font-extrabold uppercase tracking-wide ${GREEN}`}
+              className={`hidden min-h-11 items-center gap-2 rounded-sm px-5 py-2 text-sm font-extrabold uppercase tracking-wide sm:inline-flex ${GREEN}`}
             >
               Join free
             </a>
