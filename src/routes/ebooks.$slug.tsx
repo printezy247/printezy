@@ -40,7 +40,7 @@ export function ebookHead(book: Ebook | undefined, locale: "en" | "ms") {
     title,
     description: copy.tagline,
     ogType: "article" as const,
-    image: book.image,
+    image: book.slug,
     imageAlt: copy.title,
     crumbName: copy.title,
   };
@@ -177,7 +177,7 @@ export function EbookPage({ book: source }: { book: Ebook }) {
             </div>
 
             <div className="rounded-2xl border border-border bg-card p-6 shadow-elevated">
-              <div className="mx-auto aspect-[2/3] w-40 overflow-hidden rounded-lg border border-border bg-surface">
+              <div className="mx-auto aspect-[1240/1754] w-40 overflow-hidden rounded-lg border border-border bg-surface">
                 <img
                   {...imgProps(book.image)}
                   alt={t("ebook_cover_alt").replace("{title}", book.title)}

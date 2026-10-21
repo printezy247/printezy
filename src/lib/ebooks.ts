@@ -23,8 +23,13 @@ export type Ebook = EbookCopy & {
   ms?: EbookCopy;
 };
 
-const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
-const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
+/**
+ * The covers live in /public, so the site serves them itself instead of
+ * pointing at the asset store. One source of truth: Landing.tsx imports these
+ * too, so a cover swap can never miss a second hardcoded URL.
+ */
+export const EBOOK_COVER_MAPPING = "/ebook-cover-mapping-like-a-pro.png";
+export const EBOOK_COVER_TECHNICAL = "/ebook-cover-technical-analysis.png";
 
 export const EBOOK_PAGES: Ebook[] = [
   {
@@ -35,7 +40,7 @@ export const EBOOK_PAGES: Ebook[] = [
       "A short, beginner-friendly guide to mapping the market the way professional traders do. Start with the Weekly trend, refine the zones on Daily and H4, then filter entries on H1 and M15, so you plan the trade first and trade the plan.",
     author: "EzyMap ALGO",
     language: "en",
-    image: ebookMapping,
+    image: EBOOK_COVER_MAPPING,
     file: "mapping-like-a-pro.pdf",
     pages: 12,
     readTime: "10 min read",
@@ -95,7 +100,7 @@ export const EBOOK_PAGES: Ebook[] = [
       "The four building blocks every trader uses to read a chart before taking a trade: where price is likely to react, how to draw the lines that matter, the patterns that repeat, and what a single candle is telling you.",
     author: "EzyMap ALGO",
     language: "en",
-    image: ebookTechnical,
+    image: EBOOK_COVER_TECHNICAL,
     file: "technical-analysis.pdf",
     pages: 14,
     readTime: "10 min read",

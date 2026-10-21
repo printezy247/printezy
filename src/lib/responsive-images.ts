@@ -21,29 +21,13 @@ const VARIANTS: Record<string, Array<[number, number, string]>> = {
     [480, 480, "/__l5e/assets-v1/021041bb-4b9e-4e6d-8035-1bc8c863f16a/macro-logo-480.webp"],
     [960, 960, "/__l5e/assets-v1/7baa2459-9ede-4b9c-8d99-de5ef5e0e69c/macro-logo-960.webp"],
   ],
-  "ebook-mapping-like-pro.png": [
-    [
-      480,
-      720,
-      "/__l5e/assets-v1/b016745b-d0c9-47ee-81f8-8aa915619a44/ebook-mapping-like-pro-480.webp",
-    ],
-    [
-      960,
-      1440,
-      "/__l5e/assets-v1/36792b7b-27b2-4913-9249-b7277154d1d7/ebook-mapping-like-pro-960.webp",
-    ],
+  "ebook-cover-mapping-like-a-pro.png": [
+    [480, 679, "/ebook-cover-mapping-like-a-pro-480.webp"],
+    [960, 1358, "/ebook-cover-mapping-like-a-pro-960.webp"],
   ],
-  "ebook-technical-analysis.png": [
-    [
-      480,
-      720,
-      "/__l5e/assets-v1/b08126a4-948a-4085-81a7-eaf06080b1d0/ebook-technical-analysis-480.webp",
-    ],
-    [
-      960,
-      1440,
-      "/__l5e/assets-v1/1bbdcc04-51af-43c9-95ea-bd36278d5aa9/ebook-technical-analysis-960.webp",
-    ],
+  "ebook-cover-technical-analysis.png": [
+    [480, 679, "/ebook-cover-technical-analysis-480.webp"],
+    [960, 1358, "/ebook-cover-technical-analysis-960.webp"],
   ],
   "mt5-logo.png": [
     [230, 230, "/__l5e/assets-v1/d043b11a-42ab-4fc4-9dc3-5353477dacc6/mt5-logo-480.webp"],
