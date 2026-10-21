@@ -18,4 +18,15 @@ describe("ebookHead()", () => {
     expect(bookNode.url).toBe(`${SITE_URL}/ebooks/${book.slug}`);
     expect(bookNode.inLanguage).toBe(book.language);
   });
+
+  it("declares the cover's real pixel size as og:image", () => {
+    const book = EBOOK_PAGES[0];
+    const head = ebookHead(book, "en") as { meta: Array<Record<string, string>> };
+    const image = head.meta.find((m) => m.property === "og:image");
+    const width = head.meta.find((m) => m.property === "og:image:width");
+    const height = head.meta.find((m) => m.property === "og:image:height");
+    expect(image?.content).toBe(`${SITE_URL}${book.image}`);
+    expect(width?.content).toBe("1240");
+    expect(height?.content).toBe("1754");
+  });
 });

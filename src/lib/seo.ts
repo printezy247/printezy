@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/bot/tiers";
 import { localizePath } from "@/lib/i18n";
+import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
 
 export type PageLocale = "en" | "ms";
 
@@ -24,6 +25,20 @@ export const OG_IMAGES: Record<string, OgImage> = {
     width: 1200,
     height: 630,
     alt: "EzyMap ALGO — never miss a trade setup",
+  },
+  // Ebook covers are A4 (1240x1754), not 1200x630. Registered here so the
+  // card is not letterboxed; a bare path would fall back to the 1200x630 guess.
+  "mapping-like-a-pro": {
+    image: EBOOK_COVER_MAPPING,
+    width: 1240,
+    height: 1754,
+    alt: "Mapping Like A Pro — ebook cover",
+  },
+  "technical-analysis": {
+    image: EBOOK_COVER_TECHNICAL,
+    width: 1240,
+    height: 1754,
+    alt: "Technical Analysis Ebook — cover",
   },
 };
 

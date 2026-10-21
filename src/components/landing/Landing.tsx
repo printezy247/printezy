@@ -55,14 +55,16 @@ import {
   metaTrack,
   goTrack,
 } from "@/lib/analytics";
+import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
 /** Exported for reuse as og:image on routes that don't have a more specific banner. */
 export const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
 export const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 
-const ebookMapping = "/__l5e/assets-v1/b177d46a-680e-4021-ae98-bcc3631ab665/ebook-mapping-like-pro.png";
-const ebookTechnical = "/__l5e/assets-v1/eb540617-0a0b-4444-993e-d90be97af7d7/ebook-technical-analysis.png";
+/** Imported, not copied: one place to swap a cover (see lib/ebooks.ts). */
+const ebookMapping = EBOOK_COVER_MAPPING;
+const ebookTechnical = EBOOK_COVER_TECHNICAL;
 
 const tierFree = "/__l5e/assets-v1/174daaab-2584-456e-a536-500846c6e53a/tier-beginner.jpg";
 
@@ -1399,7 +1401,7 @@ const MACRO_FEATURE_KEYS: TranslationKey[] = ["macro_feature_1", "macro_feature_
 
 function Book3D({ image, title }: { image: string; title: string }) {
   return (
-    <div className="book-3d aspect-[2/3] w-28 shrink-0 sm:w-32">
+    <div className="book-3d aspect-[1240/1754] w-28 shrink-0 sm:w-32">
       <div className="book-back" aria-hidden="true" />
       <img
         {...imgProps(image)}
