@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bell, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
-import { Nav, Footer, LINKS, brandLogo } from "@/components/landing/Landing";
+import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { Button } from "@/components/ui/button";
 import { BuyButton } from "@/components/BuyButton";
 import { useTranslation } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
-import { SITE_URL } from "@/lib/bot/tiers";
+import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
 import { getEzyAiBoard, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
@@ -33,39 +33,18 @@ export const Route = createFileRoute("/ezyai")({
         ? search.tab
         : undefined,
   }),
-  head: () => ({
-    meta: [
-      { title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo" },
-      {
-        name: "description",
-        content:
-          "EzyAI turns free market data into trading confluence on Telegram — technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
-      },
-      { property: "og:title", content: "EzyAI — AI Trading Signals on Telegram" },
-      {
-        property: "og:description",
-        content:
-          "On-demand analysis, live alerts, fundamentals and autopilot signals — free to start.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/ezyai` },
-      { property: "og:locale", content: "en_US" },
-      { property: "og:locale:alternate", content: "ms_MY" },
-      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
-      { property: "og:image:alt", content: "EzyMap ALGO logo" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "EzyAI — AI Trading Signals on Telegram" },
-      { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
-    ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/ezyai` },
-      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/ezyai` },
-      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms/ezyai` },
-      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/ezyai` },
-    ],
-  }),
+  head: () =>
+    localizedHead({
+      path: "/ezyai",
+      locale: "en",
+      title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo",
+      description:
+        "EzyAI turns free market data into trading confluence on Telegram — technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
+      ogDescription:
+        "On-demand analysis, live alerts, fundamentals and autopilot signals — free to start.",
+      image: "default",
+      crumbName: "EzyAI",
+    }),
   component: EzyAiPage,
 });
 

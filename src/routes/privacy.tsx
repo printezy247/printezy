@@ -12,6 +12,7 @@ export function privacyHead(locale: "en" | "ms") {
     title: t.privacy_meta_title,
     description: t.privacy_meta_desc,
     ogDescription: t.privacy_og_desc,
+    image: "default",
     twitterCard: "summary",
   });
 }

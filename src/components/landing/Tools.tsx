@@ -193,7 +193,7 @@ export function Tools() {
       <div className="mt-8">
         <div className="flex items-center gap-3">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
-            <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
+            <img src={tradingViewLogo} width={320} height={320} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <div>
             <h3 className="text-xl font-semibold">{t("tools_tv_section_title")}</h3>

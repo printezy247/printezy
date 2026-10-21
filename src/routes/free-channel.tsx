@@ -16,6 +16,7 @@ export function freeChannelHead(locale: "en" | "ms") {
     locale,
     title: t.fc_meta_title,
     description: t.fc_meta_desc,
+    image: "default",
   });
 }
 

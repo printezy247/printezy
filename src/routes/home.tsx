@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Landing, brandLogo } from "@/components/landing/Landing";
+import { Landing } from "@/components/landing/Landing";
 import { SITE_URL } from "@/lib/bot/tiers";
 import { CATALOG, type CatalogItem } from "@/lib/catalog";
+import { localizedHead } from "@/lib/seo";
 
 /**
  * Where a sku's purchase anchor actually lives, so Offer.url points at a
@@ -47,40 +48,26 @@ export const PRODUCTS_JSON_LD = JSON.stringify({
   })),
 });
 
+const HEAD = localizedHead({
+  path: "/home",
+  locale: "en",
+  title: "EzyMap ALGO — Professional Trading Signals on Telegram",
+  description:
+    "Join 640+ traders receiving live trading signals and education on Telegram. Real-time forex, crypto and commodity alerts powered by TradingView indicators.",
+  ogDescription:
+    "Live signals and daily education for 640+ traders. Start free, upgrade to Pro, Premium or Elite.",
+  image: "default",
+  crumbName: "Professional Trading Signals",
+});
+
 export const Route = createFileRoute("/home")({
   head: () => ({
+    ...HEAD,
     meta: [
-      { title: "EzyMap ALGO — Professional Trading Signals on Telegram" },
-      {
-        name: "description",
-        content:
-          "Join 640+ traders receiving live trading signals and education on Telegram. Real-time forex, crypto and commodity alerts powered by TradingView indicators.",
-      },
-      { property: "og:title", content: "EzyMap ALGO — Professional Trading Signals on Telegram" },
-      {
-        property: "og:description",
-        content:
-          "Live signals and daily education for 640+ traders. Start free, upgrade to Pro, Premium or Elite.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/home` },
-      { property: "og:locale", content: "en_US" },
-      { property: "og:locale:alternate", content: "ms_MY" },
-      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
-      { property: "og:image:alt", content: "EzyMap ALGO logo" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
+      ...HEAD.meta,
       { name: "facebook-domain-verification", content: "tbn6gbwzvnlav1zi9hbxkcc1jve6bn" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: `${SITE_URL}${brandLogo}` },
     ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/home` },
-      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/` },
-      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms` },
-      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/` },
-    ],
-    scripts: [{ type: "application/ld+json", children: PRODUCTS_JSON_LD }],
+    scripts: [...HEAD.scripts, { type: "application/ld+json", children: PRODUCTS_JSON_LD }],
   }),
   component: Landing,
 });

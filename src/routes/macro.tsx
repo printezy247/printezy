@@ -54,7 +54,7 @@ export function macroHead(locale: "en" | "ms") {
     title: t.macro_meta_title,
     description: t.macro_meta_desc,
     ogDescription: t.macro_og_desc,
-    image: macroLogo,
+    image: "default",
     imageAlt: "MacroTrader desk logo",
     twitterDescription: t.macro_twitter_desc,
   });

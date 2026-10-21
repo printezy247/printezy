@@ -21,11 +21,13 @@ import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as DotwellKnownSecurityDottxtRouteImport } from './routes/[.]well-known/security[.]txt'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
@@ -103,6 +105,11 @@ const IndicatorsRoute = IndicatorsRouteImport.update({
   path: '/indicators',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MacroRoute = MacroRouteImport.update({
   id: '/macro',
   path: '/macro',
@@ -128,6 +135,12 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotwellKnownSecurityDottxtRoute =
+  DotwellKnownSecurityDottxtRouteImport.update({
+    id: '/.well-known/security.txt',
+    path: '/.well-known/security.txt',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdsDashboardRoute =
   AuthenticatedAdsDashboardRouteImport.update({
     id: '/ads-dashboard',
@@ -231,11 +244,13 @@ export interface FileRoutesByFullPath {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
@@ -266,11 +281,13 @@ export interface FileRoutesByTo {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
@@ -303,11 +320,13 @@ export interface FileRoutesById {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
@@ -340,11 +359,13 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/llms.txt'
     | '/macro'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
@@ -375,11 +396,13 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/llms.txt'
     | '/macro'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
@@ -411,11 +434,13 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/llms.txt'
     | '/macro'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/.well-known/security.txt'
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
@@ -448,11 +473,13 @@ export interface RootRouteChildren {
   FreeEbookRoute: typeof FreeEbookRoute
   HomeRoute: typeof HomeRoute
   IndicatorsRoute: typeof IndicatorsRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  DotwellKnownSecurityDottxtRoute: typeof DotwellKnownSecurityDottxtRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
   MsEzyaiRoute: typeof MsEzyaiRoute
   MsFaqRoute: typeof MsFaqRoute
@@ -556,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndicatorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/macro': {
       id: '/macro'
       path: '/macro'
@@ -589,6 +623,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/security.txt': {
+      id: '/.well-known/security.txt'
+      path: '/.well-known/security.txt'
+      fullPath: '/.well-known/security.txt'
+      preLoaderRoute: typeof DotwellKnownSecurityDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/ads-dashboard': {
@@ -739,11 +780,13 @@ const rootRouteChildren: RootRouteChildren = {
   FreeEbookRoute: FreeEbookRoute,
   HomeRoute: HomeRoute,
   IndicatorsRoute: IndicatorsRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  DotwellKnownSecurityDottxtRoute: DotwellKnownSecurityDottxtRoute,
   EbooksSlugRoute: EbooksSlugRoute,
   MsEzyaiRoute: MsEzyaiRoute,
   MsFaqRoute: MsFaqRoute,

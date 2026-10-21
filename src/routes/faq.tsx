@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Faq, Nav, Footer, FAQ_GROUPS, brandLogo } from "@/components/landing/Landing";
+import { Faq, Nav, Footer, FAQ_GROUPS } from "@/components/landing/Landing";
 import { trackPageLoad, trackEngagement } from "@/lib/analytics";
-import { SITE_URL } from "@/lib/bot/tiers";
+import { localizedHead } from "@/lib/seo";
 import { translations, type TranslationKey } from "@/lib/translations";
 import { useTranslation, useLocale } from "@/lib/i18n";
 
@@ -26,37 +26,21 @@ export function buildFaqJsonLd(locale: "en" | "ms") {
   });
 }
 
+const HEAD = localizedHead({
+  path: "/faq",
+  locale: "en",
+  title: "FAQ — EzyMap ALGO Trading Signals",
+  description:
+    "Answers about EzyMap ALGO trading routines, pricing tiers, the 30-day Vantage trial, enrollment, your account, and support.",
+  ogDescription: "Everything you need to know about EzyMap ALGO signals and subscriptions.",
+  image: "default",
+  crumbName: "FAQ",
+});
+
 export const Route = createFileRoute("/faq")({
   head: () => ({
-    meta: [
-      { title: "FAQ — EzyMap ALGO Trading Signals" },
-      {
-        name: "description",
-        content:
-          "Answers about EzyMap ALGO trading routines, pricing tiers, the 30-day Vantage trial, enrollment, your account, and support.",
-      },
-      { property: "og:title", content: "FAQ — EzyMap ALGO Trading Signals" },
-      {
-        property: "og:description",
-        content: "Everything you need to know about EzyMap ALGO signals and subscriptions.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/faq` },
-      { property: "og:locale", content: "en_US" },
-      { property: "og:locale:alternate", content: "ms_MY" },
-      { property: "og:image", content: `${SITE_URL}${brandLogo}` },
-      { property: "og:image:alt", content: "EzyMap ALGO logo" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/faq` },
-      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/faq` },
-      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms/faq` },
-      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/faq` },
-    ],
-    scripts: [{ type: "application/ld+json", children: buildFaqJsonLd("en") }],
+    ...HEAD,
+    scripts: [...HEAD.scripts, { type: "application/ld+json", children: buildFaqJsonLd("en") }],
   }),
   component: FaqPage,
 });

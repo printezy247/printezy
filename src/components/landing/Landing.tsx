@@ -1402,7 +1402,7 @@ function Book3D({ image, title }: { image: string; title: string }) {
     <div className="book-3d aspect-[2/3] w-28 shrink-0 sm:w-32">
       <div className="book-back" aria-hidden="true" />
       <img
-        src={image}
+        {...imgProps(image)}
         alt={`${title} cover`}
         loading="lazy"
         className="book-cover"
@@ -1476,7 +1476,7 @@ export function Products() {
         <Reveal className="h-full">
         <article className="glass-card flex h-full flex-col rounded-xl p-6">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
-            <img src={tradingViewLogo} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
+            <img src={tradingViewLogo} width={320} height={320} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
           </span>
           <h3 className="mt-4 text-lg font-semibold">{t("products_tv_heading")}</h3>
           <ul className="mt-4 flex-1 space-y-2.5">
@@ -1502,7 +1502,7 @@ export function Products() {
                 rel="noopener noreferrer"
                 onClick={() => goTrack("products_tv_open_free_account")}
               >
-                <img src={tradingViewLogo} alt="" className="h-4 w-4 object-contain" />
+                <img src={tradingViewLogo} width={320} height={320} alt="" className="h-4 w-4 object-contain" />
                 {t("products_open_free_account")}
               </a>
             </Button>

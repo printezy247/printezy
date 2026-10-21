@@ -1,38 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Welcome } from "@/components/landing/Welcome";
-import { SITE_URL } from "@/lib/bot/tiers";
+import { STEPS, FAQ } from "@/components/landing/welcome-data";
+import { localizedHead } from "@/lib/seo";
 
-const OG_IMAGE = `${SITE_URL}/og-welcome.png`;
 const TITLE = "Never Miss a Trade Setup — Free Signals on Telegram | EzyMap ALGO";
 const DESC =
   "Get live trading alerts with entry, stop and targets sent straight to your phone. Join 640+ traders in the free EzyMap Telegram channel. No card needed.";
 
+/**
+ * HowTo + FAQPage generated from the same STEPS and FAQ the page renders, so
+ * the schema can never drift from the visible copy. The `/` page has no Malay
+ * twin (see docs/SEO-KNOWN-GAPS.md), hence msPath: null.
+ */
+const HOWTO_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "How to get EzyMap ALGO trading alerts",
+  description: "Join the free Telegram channel and receive a full trade plan as each setup forms.",
+  step: STEPS.map((s) => ({
+    "@type": "HowToStep",
+    position: Number(s.n),
+    name: s.title,
+    text: s.body,
+  })),
+});
+
+const FAQ_JSON_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+});
+
+const HEAD = localizedHead({
+  path: "/",
+  locale: "en",
+  title: TITLE,
+  description: DESC,
+  image: "welcome",
+  msPath: null,
+  crumbName: "Free Telegram signals",
+});
+
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESC },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESC },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/` },
-      { property: "og:image", content: OG_IMAGE },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      {
-        property: "og:image:alt",
-        content: "EzyMap ALGO logo and the headline: Never miss a trade setup",
-      },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESC },
-      { name: "twitter:image", content: OG_IMAGE },
-    ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/` },
-      { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/` },
-      { rel: "alternate", hrefLang: "ms", href: `${SITE_URL}/ms` },
-      { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/` },
+    ...HEAD,
+    scripts: [
+      ...HEAD.scripts,
+      { type: "application/ld+json", children: HOWTO_JSON_LD },
+      { type: "application/ld+json", children: FAQ_JSON_LD },
     ],
   }),
   component: Welcome,
