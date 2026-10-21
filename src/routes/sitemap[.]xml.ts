@@ -6,46 +6,68 @@ import { EBOOK_PAGES } from "@/lib/ebooks";
  * Generated, not hand-written, so it can never go stale. Only the static
  * indexable routes plus one entry per real ebook — never a fabricated
  * <lastmod>, since none of these routes have a real timestamp to report.
- * Every public page has a real, translated /ms/ twin (see src/routes/ms/*),
- * so each entry carries en/ms/x-default alternates.
+ * Alternates are stated explicitly per entry so the sitemap can express an
+ * English-only page (no alternates) as well as a translated pair.
  */
-const STATIC_ROUTES: { path: string; priority: string; msPath?: string }[] = [
+type Alternate = { hrefLang: string; href: string };
+
+/** en/ms/x-default alternates for a page that has a real Malay twin. */
+function twin(en: string, ms: string): Alternate[] {
+  return [
+    { hrefLang: "en", href: en },
+    { hrefLang: "ms", href: ms },
+    { hrefLang: "x-default", href: en },
+  ];
+}
+
+type UrlEntry = { path: string; priority: string; alternates?: Alternate[] };
+
+const STATIC_ROUTES: UrlEntry[] = [
+  // `/` has no Malay twin (it is the English-only Welcome page), so it carries
+  // no alternates — matching its own head tags. `/ms` is the Landing twin of
+  // `/home`, not of `/`, and gets its own <loc> below.
+  { path: "/", priority: "1.0" },
+  { path: "/home", priority: "0.9", alternates: twin("/home", "/ms") },
+  { path: "/ms", priority: "0.9", alternates: twin("/home", "/ms") },
+  { path: "/indicators", priority: "0.8", alternates: twin("/indicators", "/ms/indicators") },
+  { path: "/macro", priority: "0.8", alternates: twin("/macro", "/ms/macro") },
+  { path: "/free-channel", priority: "0.7", alternates: twin("/free-channel", "/ms/free-channel") },
+  { path: "/faq", priority: "0.6", alternates: twin("/faq", "/ms/faq") },
+  { path: "/privacy", priority: "0.3", alternates: twin("/privacy", "/ms/privacy") },
+  { path: "/terms", priority: "0.3", alternates: twin("/terms", "/ms/terms") },
+  // Language-neutral generated files: plain URLs, no alternates.
+  { path: "/llms.txt", priority: "0.4" },
+  { path: "/.well-known/security.txt", priority: "0.4" },
   // /ezyai is deliberately absent while the board is hidden — listing a route
   // that redirects is how a sitemap earns a crawl warning. It goes back when
   // EZYAI_BOARD_VISIBLE does (see src/lib/ezyai/visibility.ts):
-  //   { path: "/ezyai", priority: "0.8", msPath: "/ms/ezyai" },
-  { path: "/", priority: "1.0" },
-  { path: "/home", priority: "0.9", msPath: "/ms" },
-  { path: "/indicators", priority: "0.8", msPath: "/ms/indicators" },
-  { path: "/macro", priority: "0.8", msPath: "/ms/macro" },
-  { path: "/free-channel", priority: "0.7", msPath: "/ms/free-channel" },
-  { path: "/faq", priority: "0.6", msPath: "/ms/faq" },
-  { path: "/privacy", priority: "0.3", msPath: "/ms/privacy" },
-  { path: "/terms", priority: "0.3", msPath: "/ms/terms" },
+  //   { path: "/ezyai", priority: "0.8", alternates: twin("/ezyai", "/ms/ezyai") },
 ];
 
-function urlEntry(path: string, priority: string, msPath?: string, enPath?: string): string {
-  const alternates = msPath
-    ? `
-    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}${enPath ?? path}" />
-    <xhtml:link rel="alternate" hreflang="ms" href="${SITE_URL}${msPath}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}${enPath ?? path}" />`
-    : "";
+function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {
+  const altXml = alternates
+    .map(
+      (a) =>
+        `\n    <xhtml:link rel="alternate" hreflang="${a.hrefLang}" href="${SITE_URL}${a.href}" />`,
+    )
+    .join("");
   return `  <url>
     <loc>${SITE_URL}${path}</loc>
-    <priority>${priority}</priority>${alternates}
+    <priority>${priority}</priority>${altXml}
   </url>`;
 }
 
-function buildSitemap(): string {
-  const urls = [
-    ...STATIC_ROUTES.map(({ path, priority, msPath }) => urlEntry(path, priority, msPath)),
-    ...STATIC_ROUTES.filter((r) => r.msPath).map((r) => urlEntry(r.msPath!, r.priority, r.msPath, r.path)),
-    ...EBOOK_PAGES.map((book) => urlEntry(`/ebooks/${book.slug}`, "0.7", `/ms/ebooks/${book.slug}`)),
-    ...EBOOK_PAGES.map((book) =>
-      urlEntry(`/ms/ebooks/${book.slug}`, "0.7", `/ms/ebooks/${book.slug}`, `/ebooks/${book.slug}`),
-    ),
-  ];
+export function buildSitemap(): string {
+  const ebookEntries: UrlEntry[] = EBOOK_PAGES.flatMap((book) => {
+    const en = `/ebooks/${book.slug}`;
+    const ms = `/ms/ebooks/${book.slug}`;
+    return [
+      { path: en, priority: "0.7", alternates: twin(en, ms) },
+      { path: ms, priority: "0.7", alternates: twin(en, ms) },
+    ];
+  });
+
+  const urls = [...STATIC_ROUTES, ...ebookEntries].map(urlEntry);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">

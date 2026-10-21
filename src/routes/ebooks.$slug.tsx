@@ -7,7 +7,7 @@ import { Nav, Footer } from "@/components/landing/Landing";
 import { getEbook, localizeEbook, EBOOK_PAGES, type Ebook } from "@/lib/ebooks";
 import { useTranslation } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
-import { localizedHead } from "@/lib/seo";
+import { localizedHead, buildBreadcrumbJsonLd } from "@/lib/seo";
 
 const EbookClaimModal = lazy(() =>
   import("@/components/EbookClaimModal").then((m) => ({ default: m.EbookClaimModal })),
@@ -30,18 +30,27 @@ export function ebookHead(book: Ebook | undefined, locale: "en" | "ms") {
     author: { "@type": "Organization", name: book.author },
     image: `${SITE_URL}${book.image}`,
     inLanguage: book.language,
+    numberOfPages: book.pages,
+    bookFormat: "Ebook",
+    url: `${SITE_URL}/ebooks/${book.slug}`,
   });
+  const opts = {
+    path: `/ebooks/${book.slug}`,
+    locale,
+    title,
+    description: copy.tagline,
+    ogType: "article" as const,
+    image: book.image,
+    imageAlt: copy.title,
+    crumbName: copy.title,
+  };
   return {
-    ...localizedHead({
-      path: `/ebooks/${book.slug}`,
-      locale,
-      title,
-      description: copy.tagline,
-      ogType: "article",
-      image: book.image,
-      imageAlt: copy.title,
-    }),
-    scripts: [{ type: "application/ld+json", children: bookJsonLd }],
+    ...localizedHead(opts),
+    // Explicit array: adding the Book node must not drop the BreadcrumbList.
+    scripts: [
+      { type: "application/ld+json", children: buildBreadcrumbJsonLd(opts) },
+      { type: "application/ld+json", children: bookJsonLd },
+    ],
   };
 }
 

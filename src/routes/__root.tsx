@@ -134,9 +134,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "EzyMap ALGO" },
       { property: "og:locale", content: "en_US" },
+      // Site-level social fallback: any route that does not set its own image
+      // still gets a real 1200x630 card instead of a broken preview.
+      { property: "og:image", content: `${SITE_URL}/og-default.png` },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "EzyMap ALGO logo" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "EzyMap ALGO — Professional Trading Signals" },
       { name: "twitter:description", content: "Live signals and education for 640+ traders on Telegram." },
+      { name: "twitter:image", content: `${SITE_URL}/og-default.png` },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

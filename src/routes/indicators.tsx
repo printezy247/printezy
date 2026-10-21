@@ -17,6 +17,7 @@ export function indicatorsHead(locale: "en" | "ms") {
     title: t.indicators_meta_title,
     description: t.indicators_meta_desc,
     ogDescription: t.indicators_og_desc,
+    image: "default",
   });
 }
 

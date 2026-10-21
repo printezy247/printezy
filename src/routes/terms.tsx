@@ -12,6 +12,7 @@ export function termsHead(locale: "en" | "ms") {
     title: t.terms_meta_title,
     description: t.terms_meta_desc,
     ogDescription: t.terms_og_desc,
+    image: "default",
     twitterCard: "summary",
   });
 }

@@ -18,6 +18,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack, trackEngagement, trackPageLoad } from "@/lib/analytics";
 import markImg from "@/assets/ezymap-mark.webp";
 import { LINKS } from "./Landing";
+import { STEPS, FAQ } from "./welcome-data";
 
 /**
  * The first page a visitor sees. Direct-response layout: light page, one bold
@@ -144,19 +145,6 @@ function CtaPair({ where, center = true }: { where: string; center?: boolean }) 
     >
       <JoinButton where={where} />
       <MoreLink where={where} />
-    </div>
-  );
-}
-
-function Heading({ children, sub }: { children: ReactNode; sub?: string }) {
-  return (
-    <div className="mx-auto max-w-3xl text-center">
-      <h2 className="text-3xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-4xl lg:text-5xl">
-        {children}
-      </h2>
-      {sub ? (
-        <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-neutral-600">{sub}</p>
-      ) : null}
     </div>
   );
 }
@@ -374,6 +362,20 @@ function Hero({ members }: { members: number }) {
   );
 }
 
+/** Section heading, defined after Hero so the page <h1> leads the source too. */
+function Heading({ children, sub }: { children: ReactNode; sub?: string }) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      <h2 className="text-3xl font-extrabold leading-[1.08] tracking-tight text-neutral-950 [text-wrap:balance] sm:text-4xl lg:text-5xl">
+        {children}
+      </h2>
+      {sub ? (
+        <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-neutral-600">{sub}</p>
+      ) : null}
+    </div>
+  );
+}
+
 const FACTS = ["Forex", "Gold", "Crypto", "Indices", "Daily education", "AI analyst"];
 
 function FactStrip() {
@@ -433,24 +435,6 @@ function Pain() {
     </section>
   );
 }
-
-const STEPS = [
-  {
-    n: "1",
-    title: "Join the free channel",
-    body: "One tap opens Telegram. No sign-up form, no card.",
-  },
-  {
-    n: "2",
-    title: "Get the alert",
-    body: "When a setup forms your phone buzzes with the full plan.",
-  },
-  {
-    n: "3",
-    title: "Act on your terms",
-    body: "Take it, skip it, or study it. Daily education shows the reasoning.",
-  },
-];
 
 const ANATOMY = [
   { k: "Entry", v: "Where to get in, and the zone it is valid for." },
@@ -648,29 +632,6 @@ function EzyAi() {
     </section>
   );
 }
-
-const FAQ = [
-  {
-    q: "Is the channel really free?",
-    a: "Yes. Joining the Telegram channel costs nothing and needs no card. Paid plans exist for people who want more, but they are never required.",
-  },
-  {
-    q: "Do I need trading experience?",
-    a: "No. Alerts come with the reasoning, and the daily education is written so a beginner can follow it while experienced traders still find the levels useful.",
-  },
-  {
-    q: "Which markets do you cover?",
-    a: "Forex, gold, crypto and major indices, such as XAUUSD, BTCUSD and EURUSD.",
-  },
-  {
-    q: "Are signals guaranteed to win?",
-    a: "No. Nobody can promise that, and anyone who does should be avoided. Every trade can lose. That is why each alert comes with a stop and a defined risk.",
-  },
-  {
-    q: "Can I leave any time?",
-    a: "Yes. Leave or mute the channel whenever you like. There is nothing to cancel.",
-  },
-];
 
 function Faq() {
   return (
