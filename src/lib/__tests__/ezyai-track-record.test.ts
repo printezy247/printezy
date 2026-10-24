@@ -15,10 +15,11 @@ import {
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
 
 describe("track-record window", () => {
-  it("counts from the first real bot push, not from the scanner era", () => {
-    expect(EZYAI_TRACK_RECORD_SINCE.startsWith("2026-10-15")).toBe(true);
-    // The scanner only ever ran in September — the window must exclude it.
-    expect(Date.parse(EZYAI_TRACK_RECORD_SINCE)).toBeGreaterThan(Date.parse("2026-09-30"));
+  it("counts from the board relaunch, not from the scanner or the bridge-test batch", () => {
+    expect(EZYAI_TRACK_RECORD_SINCE.startsWith("2026-10-25")).toBe(true);
+    // Scanner era (Sep) and the one-morning bridge test batch (15 Oct,
+    // ids ezyai-812..821, ticks frozen) are both before the relaunch.
+    expect(Date.parse(EZYAI_TRACK_RECORD_SINCE)).toBeGreaterThan(Date.parse("2026-10-16"));
   });
 
   it("the closed-signals query actually applies the window", () => {

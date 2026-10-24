@@ -26,12 +26,15 @@ export const LIVE_STATUSES: SignalStatus[] = ["pending", "running"];
 export const CLOSED_STATUSES: SignalStatus[] = ["tp", "be", "sl"];
 
 /**
- * The performance panel counts real bot signals only, from the first push
- * the bridge ever delivered (15 Oct). Everything before it came from the
- * website's own Yahoo scanner, which is deleted — its rows are voided in the
- * database and the window guards against any leftover feeding a number.
+ * The performance panel counts signals from the board relaunch (25 Oct) —
+ * the day the bot became the only writer and watch alerts started mirroring.
+ * Before it: the website's own Yahoo scanner (voided in the database) and a
+ * one-morning bridge-test batch (ids ezyai-812..821, ticks stopped 15 Oct).
+ * Neither describes what the board does now, so the window excludes both.
+ * Everything the bot closes from here counts, wins and losses alike — the
+ * era start is disclosed on the panel as "Counted from {date}".
  */
-export const EZYAI_TRACK_RECORD_SINCE = "2026-10-15T00:00:00Z";
+export const EZYAI_TRACK_RECORD_SINCE = "2026-10-25T00:00:00Z";
 
 /**
  * A handful of trades is not a win rate — it is a coin toss with a chart.
