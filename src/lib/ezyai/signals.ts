@@ -25,6 +25,25 @@ export type SignalDirection = (typeof SIGNAL_DIRECTIONS)[number];
 export const LIVE_STATUSES: SignalStatus[] = ["pending", "running"];
 export const CLOSED_STATUSES: SignalStatus[] = ["tp", "be", "sl"];
 
+/**
+ * The performance panel counts real bot signals only, from the first push
+ * the bridge ever delivered (15 Oct). Everything before it came from the
+ * website's own Yahoo scanner, which is deleted — its rows are voided in the
+ * database and the window guards against any leftover feeding a number.
+ */
+export const EZYAI_TRACK_RECORD_SINCE = "2026-10-15T00:00:00Z";
+
+/**
+ * A handful of trades is not a win rate — it is a coin toss with a chart.
+ * Below this many closed signals the panel says so instead of showing a
+ * rate that will jump wildly with the next result.
+ */
+export const EZYAI_MIN_TRACK_RECORD_SAMPLE = 10;
+
+export function buildingTrackRecord(closedTotal: number): boolean {
+  return closedTotal > 0 && closedTotal < EZYAI_MIN_TRACK_RECORD_SAMPLE;
+}
+
 /** One colour per state, shared by the flag, the rail and the result figure. */
 export const STATUS_COLOR: Record<SignalStatus, string> = {
   pending: "#c9a13a",

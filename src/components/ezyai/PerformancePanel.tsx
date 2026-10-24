@@ -2,7 +2,7 @@ import { useCountUp } from "@/lib/use-count-up";
 import { useTranslation } from "@/lib/i18n";
 import { formatLocalTime } from "@/lib/local-time";
 import { StatusFlag } from "./SignalCard";
-import { STATUS_COLOR } from "@/lib/ezyai/signals";
+import { buildingTrackRecord, EZYAI_TRACK_RECORD_SINCE, STATUS_COLOR } from "@/lib/ezyai/signals";
 import type { EzyAiPerformance, EzyAiSignal } from "@/lib/ezyai/signals";
 
 function signedR(value: number | null): string {
@@ -116,41 +116,65 @@ export function PerformancePanel({
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Metric
-          label={t("ezyai_sig_winrate")}
-          value={`${winRate}%`}
-          tone={performance.winRate >= 50 ? "#2fbf71" : "#d9534f"}
-          sub={t("ezyai_sig_winrate_note")
-            .replace("{wins}", String(performance.wins))
-            .replace("{losses}", String(performance.losses))}
-        />
-        <Metric
-          label={t("ezyai_sig_total_r")}
-          value={signedR(performance.totalR)}
-          tone={performance.totalR >= 0 ? "#2fbf71" : "#d9534f"}
-          sub={t("ezyai_sig_avg_r").replace("{value}", signedR(performance.avgR))}
-        />
-        <Metric
-          label={t("ezyai_sig_closed")}
-          value={String(total)}
-          sub={t("ezyai_sig_be_note").replace("{count}", String(performance.breakEven))}
-        />
-        <Metric
-          label={t("ezyai_sig_streak")}
-          value={streak}
-          tone={
-            performance.streak.kind === "win"
-              ? "#2fbf71"
-              : performance.streak.kind === "loss"
-                ? "#d9534f"
-                : undefined
-          }
-          sub={t("ezyai_sig_best_worst")
-            .replace("{best}", signedR(performance.bestR))
-            .replace("{worst}", signedR(performance.worstR))}
-        />
-      </div>
+      {/* Say what era the numbers are from: the website's own scanner feed
+          pre-dated the bot and was voided on 24 Oct, so this panel is bot
+          history only, counted from the first push it ever delivered. */}
+      <p className="text-xs text-muted-foreground">
+        {t("ezyai_sig_since").replace(
+          "{date}",
+          new Date(EZYAI_TRACK_RECORD_SINCE).toLocaleDateString(undefined, {
+            timeZone: "UTC",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+        )}
+      </p>
+
+      {buildingTrackRecord(performance.total) ? (
+        /* A handful of trades is not a win rate — it is a coin toss with a
+           chart. Until enough have closed, say the sample is building and
+           let the (real) curve carry the progress instead. */
+        <p className="rounded-xl border border-dashed border-border bg-card p-8 text-center text-sm text-body">
+          {t("ezyai_sig_building").replace("{closed}", String(performance.total))}
+        </p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Metric
+            label={t("ezyai_sig_winrate")}
+            value={`${winRate}%`}
+            tone={performance.winRate >= 50 ? "#2fbf71" : "#d9534f"}
+            sub={t("ezyai_sig_winrate_note")
+              .replace("{wins}", String(performance.wins))
+              .replace("{losses}", String(performance.losses))}
+          />
+          <Metric
+            label={t("ezyai_sig_total_r")}
+            value={signedR(performance.totalR)}
+            tone={performance.totalR >= 0 ? "#2fbf71" : "#d9534f"}
+            sub={t("ezyai_sig_avg_r").replace("{value}", signedR(performance.avgR))}
+          />
+          <Metric
+            label={t("ezyai_sig_closed")}
+            value={String(total)}
+            sub={t("ezyai_sig_be_note").replace("{count}", String(performance.breakEven))}
+          />
+          <Metric
+            label={t("ezyai_sig_streak")}
+            value={streak}
+            tone={
+              performance.streak.kind === "win"
+                ? "#2fbf71"
+                : performance.streak.kind === "loss"
+                  ? "#d9534f"
+                  : undefined
+            }
+            sub={t("ezyai_sig_best_worst")
+              .replace("{best}", signedR(performance.bestR))
+              .replace("{worst}", signedR(performance.worstR))}
+          />
+        </div>
+      )}
 
       <section className="rounded-xl border border-border bg-card p-5">
         <h3 className="text-sm font-semibold text-foreground">{t("ezyai_sig_curve")}</h3>
