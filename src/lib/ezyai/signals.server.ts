@@ -18,6 +18,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { findLiveDuplicate } from "./dedup";
 import {
   CLOSED_STATUSES,
+  EZYAI_TRACK_RECORD_SINCE,
   LIVE_STATUSES,
   SIGNAL_DIRECTIONS,
   SIGNAL_STATUSES,
@@ -107,12 +108,18 @@ export async function listLiveSignals(limit = 24): Promise<EzyAiSignal[]> {
   return ((data ?? []) as unknown as Row[]).map(toSignal);
 }
 
-/** Finished trades, newest close first — the input to every performance number. */
+/**
+ * Finished trades, newest close first — the input to every performance
+ * number. The opened_at window is the reset of 24 Oct: the Yahoo scanner's
+ * rows (voided as cancelled in the database) and anything older than the
+ * bot's first real push must never leak back into a public stat.
+ */
 export async function listClosedSignals(limit = 200): Promise<EzyAiSignal[]> {
   const { data, error } = await supabaseAdmin
     .from(TABLE)
     .select(COLUMNS)
     .in("status", CLOSED_STATUSES)
+    .gte("opened_at", EZYAI_TRACK_RECORD_SINCE)
     .order("closed_at", { ascending: false, nullsFirst: false })
     .limit(limit);
   if (error) {
