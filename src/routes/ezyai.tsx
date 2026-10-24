@@ -89,6 +89,8 @@ const PLANS: PlanTier[] = [
 
 type EzyAiTab = "live" | "history" | "about";
 
+const TAB_IDS: EzyAiTab[] = ["live", "history", "about"];
+
 const TAB_LABEL: Record<EzyAiTab, TranslationKey> = {
   live: "ezyai_tab_live",
   history: "ezyai_tab_history",
@@ -97,18 +99,29 @@ const TAB_LABEL: Record<EzyAiTab, TranslationKey> = {
 
 function TabButton({
   active,
+  tab,
   onClick,
+  onKeyDown,
   children,
 }: {
   active: boolean;
+  tab: EzyAiTab;
   onClick: () => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
   children: React.ReactNode;
 }) {
   return (
     <button
       type="button"
+      role="tab"
+      id={`ezyai-tab-${tab}`}
+      aria-selected={active}
+      aria-controls={`ezyai-panel-${tab}`}
+      // Only the selected tab is in the tab order; the arrow keys move
+      // between them, which is how a tablist is meant to work.
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
-      aria-pressed={active}
+      onKeyDown={onKeyDown}
       className={`-mb-px border-b-2 px-1 pb-2 text-sm font-semibold transition-colors ${
         active
           ? "border-primary text-foreground"
@@ -183,14 +196,29 @@ export function EzyAiPage() {
         </header>
 
         {/* Tabs */}
-        <div className="mt-10 flex gap-6 border-b border-border">
-          {(["live", "history", "about"] as EzyAiTab[]).map((id) => (
+        <div
+          className="mt-10 flex gap-6 border-b border-border"
+          role="tablist"
+          aria-label={t("ezyai_desk_label")}
+        >
+          {TAB_IDS.map((id) => (
             <TabButton
               key={id}
+              tab={id}
               active={tab === id}
               onClick={() => {
                 setTab(id);
                 goTrack(`ezyai_tab_${id}`);
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+                event.preventDefault();
+                const step = event.key === "ArrowRight" ? 1 : -1;
+                const next =
+                  TAB_IDS[(TAB_IDS.indexOf(id) + step + TAB_IDS.length) % TAB_IDS.length];
+                setTab(next);
+                goTrack(`ezyai_tab_${next}`);
+                document.getElementById(`ezyai-tab-${next}`)?.focus();
               }}
             >
               {t(TAB_LABEL[id])}
@@ -199,7 +227,13 @@ export function EzyAiPage() {
         </div>
 
         {tab === "live" ? (
-          <section className="mt-8">
+          <section
+            id="ezyai-panel-live"
+            role="tabpanel"
+            aria-labelledby="ezyai-tab-live"
+            aria-busy={board.isLoading}
+            className="mt-8"
+          >
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <h2 className="text-2xl">{t("ezyai_sig_title")}</h2>
@@ -226,7 +260,10 @@ export function EzyAiPage() {
                 ))}
               </div>
             ) : (
-              <p className="mt-6 rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+              <p
+                role="status"
+                className="mt-6 rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground"
+              >
                 {board.isLoading ? "…" : t("ezyai_sig_empty")}
               </p>
             )}
@@ -234,7 +271,13 @@ export function EzyAiPage() {
         ) : null}
 
         {tab === "history" ? (
-          <section className="mt-8">
+          <section
+            id="ezyai-panel-history"
+            role="tabpanel"
+            aria-labelledby="ezyai-tab-history"
+            aria-busy={history.isLoading}
+            className="mt-8"
+          >
             <h2 className="text-2xl">{t("ezyai_sig_history_title")}</h2>
             <div className="mt-6">
               {history.data ? (
@@ -243,7 +286,10 @@ export function EzyAiPage() {
                   signals={history.data.signals}
                 />
               ) : (
-                <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+                <p
+                  role="status"
+                  className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground"
+                >
                   …
                 </p>
               )}
@@ -252,7 +298,7 @@ export function EzyAiPage() {
         ) : null}
 
         {tab !== "about" ? null : (
-          <>
+          <div role="tabpanel" id="ezyai-panel-about" aria-labelledby="ezyai-tab-about">
             {/* Features */}
             <section className="mt-8">
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -368,7 +414,7 @@ export function EzyAiPage() {
                 </Button>
               </div>
             </section>
-          </>
+          </div>
         )}
 
         <div className="mx-auto mt-10 flex max-w-4xl items-start gap-2 text-xs leading-relaxed text-muted-foreground">

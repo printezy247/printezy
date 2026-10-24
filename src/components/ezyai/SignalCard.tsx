@@ -132,9 +132,10 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
 
   return (
     <article
-      className="card-lift rounded-xl border border-border bg-card p-4"
+      className="signal-card card-lift rounded-xl border border-border bg-card p-4"
       // A gentle stagger so a board that refreshes reads as a list arriving
-      // rather than a block appearing.
+      // rather than a block appearing. .signal-card carries the animation;
+      // prefers-reduced-motion switches it off in styles.css.
       style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
     >
       <div className="flex items-start justify-between gap-3">

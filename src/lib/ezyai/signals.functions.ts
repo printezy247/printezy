@@ -1,7 +1,10 @@
-// What /ezyai reads. Both functions are deliberately public: the signal board
-// is the website's exclusive — anyone can watch the desk work, and the PRO
-// gate stays where it always was, inside the bot, on the alerts that arrive
-// while a trade is still worth taking.
+// What /ezyai reads, and nothing else. The board is a mirror: the EzyAi bot
+// pushes every live signal (autopilot opens and watch alerts alike) through
+// the public bridge, and the site only stores and serves what it is told.
+// The old site-side scanner — Yahoo feeds, indicators, its own autopilot —
+// was removed when the board became a pure mirror, so loading the board has
+// no side effects. Both functions are deliberately public: anyone can watch
+// the board, and the PRO gate stays where it always was, inside the bot.
 import { createServerFn } from "@tanstack/react-start";
 import type { EzyAiPerformance, EzyAiSignal } from "./signals";
 
@@ -18,20 +21,6 @@ export type EzyAiHistory = {
 
 export const getEzyAiBoard = createServerFn({ method: "GET" }).handler(
   async (): Promise<EzyAiBoard> => {
-    // Loading the board is what drives the desk. There is no cron on this
-    // runtime, so the visit itself is the tick: the run is throttled to once
-    // every few minutes, so a hundred visitors cost one pass over the feeds,
-    // and a quiet hour simply means the board is refreshed by whoever looks
-    // next. Awaited rather than fired and forgotten, because a worker is free
-    // to stop executing the moment it has sent the response.
-    try {
-      const { runAutopilot } = await import("./autopilot.server");
-      await runAutopilot();
-    } catch (error) {
-      // The desk failing must never cost the reader the board it already has.
-      console.error("[ezyai board] autopilot pass failed", error);
-    }
-
     const { listLiveSignals } = await import("./signals.server");
     const signals = await listLiveSignals();
     const updatedAt =
