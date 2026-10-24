@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_URL } from "@/lib/bot/tiers";
 import { EBOOK_PAGES } from "@/lib/ebooks";
+import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
  * Generated, not hand-written, so it can never go stale. Only the static
@@ -38,10 +39,12 @@ const STATIC_ROUTES: UrlEntry[] = [
   // Language-neutral generated files: plain URLs, no alternates.
   { path: "/llms.txt", priority: "0.4" },
   { path: "/.well-known/security.txt", priority: "0.4" },
-  // /ezyai is deliberately absent while the board is hidden — listing a route
-  // that redirects is how a sitemap earns a crawl warning. It goes back when
-  // EZYAI_BOARD_VISIBLE does (see src/lib/ezyai/visibility.ts):
-  //   { path: "/ezyai", priority: "0.8", alternates: twin("/ezyai", "/ms/ezyai") },
+  // Gated on the same flag the route and the nav use (src/lib/ezyai/
+  // visibility.ts): listing a route that redirects is how a sitemap earns a
+  // crawl warning, so the entry appears exactly when the board does.
+  ...(EZYAI_BOARD_VISIBLE
+    ? ([{ path: "/ezyai", priority: "0.8", alternates: twin("/ezyai", "/ms/ezyai") }] as UrlEntry[])
+    : []),
 ];
 
 function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {

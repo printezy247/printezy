@@ -595,6 +595,24 @@
 /* EzyAI signal board                                                  */
 /* ------------------------------------------------------------------ */
 
+/* Card entrance. The board re-renders as a whole about every minute; a card
+   that simply appears makes the page jump, so each arrives with a breath,
+   staggered by the card's index (the animationDelay set on the article).
+   Reduced motion switches this off below, like every other signal motion. */
+.signal-card {
+  animation: sig-card-in 420ms ease-out both;
+}
+@keyframes sig-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Status flag. The dot is the state made visible: a running trade breathes,
    one still waiting for its entry blinks slowly, a closed one holds steady.
    Colour arrives as --flag so one class serves every status. */
@@ -760,7 +778,8 @@
 @media (prefers-reduced-motion: reduce) {
   .signal-flag[data-pulse]::before,
   .signal-rail__fill[data-live="true"]::after,
-  .signal-rail__idle {
+  .signal-rail__idle,
+  .signal-card {
     animation: none;
   }
   .signal-rail__fill,

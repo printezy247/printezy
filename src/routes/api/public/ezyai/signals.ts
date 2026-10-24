@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * Signal bridge for @ezytradeai_bot (tradernonymous/EzyAi).
  *
  *   GET  /api/public/ezyai/signals              → { signals } still on the board
- *   GET  /api/public/ezyai/signals?diagnose=1   → which key is bound (no auth)
+ *   GET  /api/public/ezyai/signals?diagnose=1   → bridge state (bearer key)
  *   POST /api/public/ezyai/signals  { ...one signal }
  *   POST /api/public/ezyai/signals  { signals: [ ... ] }   (batch, max 50)
  *
@@ -129,9 +129,11 @@ async function guard(request: Request, log: boolean): Promise<Response | null> {
 }
 
 /**
- * Unauthenticated on purpose: it exists for the case where authentication is
- * exactly what is broken, and it says only whether each variable is bound and
- * a 32-bit digest of the winner — never a value, never a length.
+ * Behind the guard now: it names which secret variable is bound and shows the
+ * recent bridge traffic, and that is more than a stranger should read. The
+ * wrong-key case is still fully served — a 401 from the guard answers with
+ * the same compared-variable and fingerprints that used to make this call
+ * anonymous, and the bot carries its key here too.
  */
 async function diagnose(): Promise<Response> {
   const { key, source } = boundKey();
@@ -171,13 +173,11 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        // Before the guard, deliberately: this is the one question you still
-        // need answered when the guard is the thing refusing you.
+        const denied = await guard(request, false);
+        if (denied) return denied;
         if (new URL(request.url).searchParams.get("diagnose") === "1") {
           return diagnose();
         }
-        const denied = await guard(request, false);
-        if (denied) return denied;
         try {
           const { listLiveSignals } = await import("@/lib/ezyai/signals.server");
           return Response.json({ signals: await listLiveSignals() });

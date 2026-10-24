@@ -1,7 +1,8 @@
-// Database access for the EzyAI autopilot signal board.
+// Database access for the EzyAI signal board.
 //
-// The bot is the only writer, through /api/public/ezyai/signals. Its pushes
-// come in three shapes and all three land here as one merge:
+// The bot is the only writer, through /api/public/ezyai/signals: every live
+// signal it emits — autopilot opens and watch alerts alike — arrives here.
+// Its pushes come in three shapes and all three land here as one merge:
 //
 //   open   { external_id, symbol, direction, entry_low, ..., status: "pending" }
 //   tick   { external_id, last_price }
@@ -10,7 +11,11 @@
 // So every field except external_id is optional on an update, and a column
 // absent from the payload keeps whatever it already had. The bot can retry a
 // push after a crash without duplicating a card or double-counting a result.
+// A watch alert fires per subscriber, so the same call can arrive under
+// several external_ids; a new push that duplicates a live card folds into it
+// (see dedup.ts) instead of printing the board a second time.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { findLiveDuplicate } from "./dedup";
 import {
   CLOSED_STATUSES,
   LIVE_STATUSES,
@@ -144,7 +149,9 @@ export type SignalPush = {
   closed_at?: unknown;
 };
 
-export type PushResult = { ok: true; id: string; created: boolean } | { ok: false; error: string };
+export type PushResult =
+  | { ok: true; id: string; created: boolean; deduped?: boolean }
+  | { ok: false; error: string };
 
 /** Finite number, or undefined so the column is left alone. Null clears it. */
 function num(value: unknown): number | null | undefined {
@@ -253,6 +260,33 @@ export async function pushSignal(payload: SignalPush): Promise<PushResult> {
       return { ok: false, error: error.message };
     }
     return { ok: true, id: known.id, created: false };
+  }
+
+  // A new signal that duplicates a live card folds into that card: the same
+  // pair, direction and setup opened within a day is the same call seen from
+  // a second subscriber's watch, and the board shows a call once. A lookup
+  // failure here must not lose the push, so it falls through to insert.
+  if ((status === undefined || (LIVE_STATUSES as readonly string[]).includes(status)) && symbol) {
+    const { data: rivals, error: rivalError } = await supabaseAdmin
+      .from(TABLE)
+      .select(COLUMNS)
+      .eq("symbol", symbol.toUpperCase())
+      .in("status", LIVE_STATUSES)
+      .order("opened_at", { ascending: false })
+      .limit(50);
+    if (rivalError) {
+      console.error("[ezyai-signals] duplicate lookup failed", rivalError);
+    } else {
+      const duplicate = findLiveDuplicate(((rivals ?? []) as unknown as Row[]).map(toSignal), {
+        symbol,
+        direction,
+        setup: text(payload.setup, 120),
+        openedAt: timestamp(payload.opened_at),
+      });
+      if (duplicate) {
+        return { ok: true, id: duplicate.id, created: false, deduped: true };
+      }
+    }
   }
 
   const { data, error } = await supabaseAdmin
