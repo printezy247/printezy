@@ -27,6 +27,8 @@ const DEFAULT_BOT_USERNAME = "EzyRegisterBot";
  */
 const MAX_AGE_MS = 15 * 60 * 1000;
 
+import { safeEqual } from "@/lib/secure-compare";
+
 export type TelegramLoginUser = {
   id: number;
   firstName: string;
@@ -48,14 +50,6 @@ export function loginConfigured(): boolean {
 
 function toHex(buffer: ArrayBuffer): string {
   return [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-/** Compares in constant time so a wrong hash can't be narrowed byte by byte. */
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
 }
 
 /**

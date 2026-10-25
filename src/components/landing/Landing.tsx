@@ -800,7 +800,7 @@ function ChartGraphic({ live }: { live: DemoPrice }) {
 
 function Hero() {
   const { formatted: memberCount } = useMemberCount();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   // One walk, two readers: the chart and the card's rail.
   const live = useDemoPrice();
   return (
@@ -871,6 +871,20 @@ function Hero() {
           <div aria-hidden="true" className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl" />
           <div className="relative">
             <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+            {/* This card is a demo walk, not the desk. When the real board
+                is open, point at it so nobody mistakes the sample for live
+                data — and so a buyer can jump straight to the real thing. */}
+            {EZYAI_BOARD_VISIBLE ? (
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                <a
+                  href={localizePath("/ezyai", locale)}
+                  className="underline underline-offset-2 transition-colors hover:text-foreground"
+                  onClick={() => goTrack("hero_see_live_board")}
+                >
+                  {t("ezyai_see_live_board")} →
+                </a>
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

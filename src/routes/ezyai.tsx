@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bell, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
@@ -13,7 +13,7 @@ import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
-import { getEzyAiBoard, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
+import { getEzyAiBoard, getEzyAiBoardRevision, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
@@ -139,20 +139,51 @@ export function EzyAiPage() {
   const [tab, setTab] = useState<EzyAiTab>(search?.tab ?? "live");
 
   const loadBoard = useServerFn(getEzyAiBoard);
+  const loadRevision = useServerFn(getEzyAiBoardRevision);
   const loadHistory = useServerFn(getEzyAiHistory);
 
   // The board refreshes on its own while it is on screen: the bot ticks
-  // prices as trades run, and a stale rail is worse than no rail.
+  // prices as trades run, and a stale rail is worse than no rail. Rather
+  // than re-pull every card each time, the page polls a one-row revision
+  // stamp (the newest updated_at anywhere on the board) and only fetches
+  // the full board when that stamp moves — a quiet minute costs one cheap
+  // lookup instead of twenty-four records.
+  const revision = useQuery({
+    queryKey: ["ezyai-board-revision"],
+    queryFn: () => loadRevision(),
+    refetchInterval: 30_000,
+  });
   const board = useQuery({
-    queryKey: ["ezyai-board"],
+    queryKey: ["ezyai-board", revision.data?.updatedAt ?? null],
     queryFn: () => loadBoard(),
-    refetchInterval: 60_000,
   });
   const history = useQuery({
     queryKey: ["ezyai-history"],
     queryFn: () => loadHistory(),
     enabled: tab === "history",
   });
+
+  // Announce board changes to screen readers: a polite live region that
+  // fires whenever the rendered signal count changes (a card opened, closed
+  // or changed), without stealing focus. The timestamp is the same "as of"
+  // line the sighted view shows.
+  const [announcement, setAnnouncement] = useState("");
+  const lastAnnounced = useRef<string>("");
+  useEffect(() => {
+    const data = board.data;
+    if (!data) return;
+    const signature = `${data.signals.length}:${data.updatedAt ?? ""}`;
+    if (signature === lastAnnounced.current) return;
+    // First load is not an "update" — the panel appearing is announcement enough.
+    if (lastAnnounced.current !== "") {
+      setAnnouncement(
+        data.updatedAt
+          ? t("ezyai_sig_updated").replace("{time}", formatLocalTime(new Date(data.updatedAt)))
+          : t("ezyai_sig_empty"),
+      );
+    }
+    lastAnnounced.current = signature;
+  }, [board.data, t]);
 
   useEffect(() => {
     trackPageLoad("ezyai");
@@ -251,6 +282,11 @@ export function EzyAiPage() {
 
             <p className="mt-3 inline-flex rounded-md border border-primary/25 bg-primary/8 px-3 py-1.5 text-xs text-body">
               {t("ezyai_sig_exclusive")}
+            </p>
+
+            {/* Screen-reader channel for board changes; visually hidden. */}
+            <p aria-live="polite" className="sr-only">
+              {announcement}
             </p>
 
             {board.data && board.data.signals.length > 0 ? (

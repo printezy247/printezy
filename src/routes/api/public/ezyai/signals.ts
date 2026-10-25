@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { safeEqual } from "@/lib/secure-compare";
 
 /**
  * Signal bridge for @ezytradeai_bot (tradernonymous/EzyAi).
@@ -25,18 +26,22 @@ type KeySource = "EZYAI_SIGNAL_KEY" | "EZYAI_ENTITLEMENT_KEY" | null;
 
 /**
  * Secrets reach us through dashboard fields and shell variables, and both are
- * happy to carry the punctuation around a value into it. Trim, then drop one
- * matched pair of surrounding quotes: a key pasted as "abc" is meant to be
- * abc, and the difference between the two is invisible in every UI that shows
- * it back to you.
+ * happy to carry the punctuation around a value into it. Trim, then drop
+ * matched pairs of surrounding quotes — one is the common case (a key pasted
+ * from a quoted env field as "abc"), but nested quotes from double-copying
+ * ("\"abc\"") are stripped too so the comparison still lands.
  */
 function normalise(raw: string | undefined): string {
-  const value = (raw ?? "").trim();
-  const quoted =
+  let value = (raw ?? "").trim();
+  // Loop so nested quotes like '"abc"' collapse to just abc.
+  while (
     value.length >= 2 &&
     ((value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'")));
-  return quoted ? value.slice(1, -1).trim() : value;
+      (value.startsWith("'") && value.endsWith("'")))
+  ) {
+    value = value.slice(1, -1).trim();
+  }
+  return value;
 }
 
 /** The key the guard will compare against, and which variable it came from. */
@@ -59,14 +64,6 @@ async function fingerprint(value: string): Promise<string> {
   return Array.from(new Uint8Array(digest).slice(0, 4))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
-}
-
-/** Constant-time compare so a wrong key can't be narrowed byte by byte. */
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
 }
 
 /**

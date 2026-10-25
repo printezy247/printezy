@@ -254,6 +254,13 @@
 /* Premium glass button treatment — layered gradient fill + inset sheen,
    deepened on press for a tactile, slightly 3D feel. */
 .btn-primary-glass {
+  /* Fallback gradient for Firefox < 113 (no color-mix support). */
+  background: linear-gradient(
+    180deg,
+    var(--primary) 0%,
+    var(--primary) 55%,
+    var(--primary-glow) 100%
+  );
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--primary) 100%, white 15%) 0%,
@@ -498,6 +505,12 @@
     ),
     linear-gradient(
       315deg,
+      var(--gem) 0%,
+      var(--gem) 50%,
+      var(--gem) 100%
+    ),
+    linear-gradient(
+      315deg,
       color-mix(in srgb, var(--gem) 55%, #000) 0%,
       var(--gem) 50%,
       color-mix(in srgb, var(--gem) 45%, #fff) 100%
@@ -623,7 +636,11 @@
   /* A two-line status flag stops reading as a flag. */
   white-space: nowrap;
   border-radius: 9999px;
+  /* Fallback for Firefox < 113 (no color-mix support) — the plain flag color.
+     color-mix versions override these in browsers that support it. */
+  border: 1px solid var(--flag);
   border: 1px solid color-mix(in srgb, var(--flag) 45%, transparent);
+  background: var(--flag);
   background: color-mix(in srgb, var(--flag) 12%, transparent);
   color: var(--flag);
   padding: 0.125rem 0.5rem;
@@ -649,6 +666,8 @@
 
 @keyframes sig-pulse {
   0% {
+    /* Fallback for Firefox < 113 (no color-mix support). */
+    box-shadow: 0 0 0 0 currentColor;
     box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 70%, transparent);
   }
   70%,
@@ -680,6 +699,8 @@
   inset-block: 0;
   left: 0;
   border-radius: 9999px;
+  /* Fallback gradient for Firefox < 113 (no color-mix support). */
+  background: linear-gradient(90deg, var(--rail) 0%, var(--rail) 100%);
   background: linear-gradient(
     90deg,
     color-mix(in srgb, var(--rail) 55%, transparent) 0%,
@@ -719,6 +740,7 @@
 .signal-rail__idle {
   position: absolute;
   inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--rail) 50%, transparent 100%);
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -745,6 +767,7 @@
   height: 12px;
   transform: translate(-50%, -50%);
   border-radius: 1px;
+  background: var(--foreground);
   background: color-mix(in srgb, var(--foreground) 65%, transparent);
 }
 
@@ -758,6 +781,10 @@
   width: 44px;
   height: 44px;
   border-radius: 9999px;
+  background: conic-gradient(
+    var(--ring) calc(var(--score) * 1%),
+    var(--gauge-track, #3a403c) 0
+  );
   background: conic-gradient(
     var(--ring) calc(var(--score) * 1%),
     color-mix(in srgb, var(--gauge-track, #3a403c) 80%, transparent) 0
@@ -921,6 +948,8 @@
   position: relative;
   isolation: isolate;
   border-radius: var(--radius-md, 0.5rem);
+  /* Fallback gradient for Firefox < 113 (no color-mix support). */
+  background: linear-gradient(158deg, var(--card) 0%, var(--card) 52%, var(--card) 100%);
   background: linear-gradient(
     158deg,
     color-mix(in srgb, var(--card) 88%, #0e2c1d) 0%,
@@ -1035,6 +1064,7 @@
 /* HUD corner brackets, eight one-pixel strips painted as backgrounds so the
    frame costs one element rather than four. */
 .holo-card__corners {
+  --bracket: var(--primary);
   --bracket: color-mix(in srgb, var(--primary) 62%, transparent);
   position: absolute;
   inset: 6px;
@@ -1074,6 +1104,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted-foreground);
+  background: var(--secondary);
   background: color-mix(in srgb, var(--secondary) 55%, transparent);
   border: 1px solid transparent;
   transition:
@@ -1085,12 +1116,18 @@
 }
 .holo-tab:hover {
   color: var(--foreground);
+  background: var(--secondary);
   background: color-mix(in srgb, var(--secondary) 85%, transparent);
 }
 .holo-tab[aria-selected="true"] {
   color: var(--primary);
+  background: var(--primary);
   background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border-color: var(--primary);
   border-color: color-mix(in srgb, var(--primary) 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 14px -2px var(--primary-glow, #4ade80);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.07),
     0 0 14px -2px color-mix(in srgb, var(--primary) 55%, transparent);
