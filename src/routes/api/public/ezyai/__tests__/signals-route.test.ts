@@ -13,14 +13,17 @@ const pushSignal = vi.fn();
 const listLiveSignals = vi.fn();
 const recordBridgeHit = vi.fn();
 const recentBridgeHits = vi.fn(async (_limit?: number) => []);
+const latestSignalUpdate = vi.fn(async () => "2026-10-26T02:04:00.000Z" as string | null);
 vi.mock("@/lib/ezyai/signals.server", () => ({
   pushSignal: (entry: Record<string, unknown>) => pushSignal(entry),
   listLiveSignals: () => listLiveSignals(),
   recordBridgeHit: (outcome: string, meta: unknown) => recordBridgeHit(outcome, meta),
   recentBridgeHits: (limit: number) => recentBridgeHits(limit),
+  latestSignalUpdate: () => latestSignalUpdate(),
 }));
 
 import { Route } from "../signals";
+import { subscribeBoardRevision } from "@/lib/ezyai/board-events.server";
 
 type Handler = (ctx: { request: Request }) => Promise<Response>;
 const handlers = (Route as unknown as { server: { handlers: { GET: Handler; POST: Handler } } })
@@ -54,6 +57,7 @@ beforeEach(() => {
   vi.stubEnv("EZYAI_ENTITLEMENT_KEY", "");
   pushSignal.mockReset().mockResolvedValue({ ok: true });
   listLiveSignals.mockReset().mockResolvedValue([]);
+  latestSignalUpdate.mockReset().mockResolvedValue("2026-10-26T02:04:00.000Z");
   recordBridgeHit.mockReset();
   recentBridgeHits.mockReset().mockResolvedValue([]);
 });
@@ -130,6 +134,27 @@ describe("POST", () => {
     expect(pushSignal).toHaveBeenCalledWith(
       expect.objectContaining({ external_id: "s1", symbol: "EURUSD" }),
     );
+  });
+
+  it("nudges the open board streams with the new revision", async () => {
+    const seen: Array<string | null> = [];
+    const stop = subscribeBoardRevision((stamp) => seen.push(stamp));
+
+    await post({ external_id: "s1", symbol: "EURUSD" });
+
+    expect(seen).toEqual(["2026-10-26T02:04:00.000Z"]);
+    stop();
+  });
+
+  it("does not nudge the streams when nothing was accepted", async () => {
+    pushSignal.mockResolvedValue({ ok: false, error: "nope" });
+    const seen: Array<string | null> = [];
+    const stop = subscribeBoardRevision((stamp) => seen.push(stamp));
+
+    await post({ external_id: "s1", symbol: "EURUSD" });
+
+    expect(seen).toEqual([]);
+    stop();
   });
 
   it("207 on a mixed batch — one bad row must not lose the rest", async () => {

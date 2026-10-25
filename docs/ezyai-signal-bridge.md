@@ -24,6 +24,32 @@ Content-Type: application/json
   the compared env variable and SHA-256 fingerprints of both sides — never the
   secrets), `503` no key bound to the deployment.
 
+## Live updates
+
+`GET /api/public/ezyai/stream` is the board's server-sent event channel. It is
+public and read-only, like the board, and it carries **only the revision
+stamp** — never signal data, so the page keeps one source of truth and still
+fetches signals through its own server function.
+
+```
+event: ready       {"updatedAt": "2026-10-26T02:00:00.000Z"}   once, at connect
+event: revision    {"updatedAt": "2026-10-26T02:04:00.000Z"}   when the stamp moves
+: keep-alive                                                     every 20s
+```
+
+The connection closes after 10 minutes so a socket cannot pin a server
+process forever; `EventSource` reconnects on its own and gets a fresh `ready`.
+A process holds at most 100 of them at once — each one costs a revision read
+every 5s, and the endpoint is public. Past the cap it answers `503` with
+`retry-after: 15`, which the page treats as "no stream": the 30s poll keeps
+the board fresh, so a refused connection costs freshness, not the board.
+
+**The bot needs no change.** A successful POST nudges every open stream in the
+same server process, and the stream also re-reads the revision every 5s — that
+second path is what makes the latency hold when the push was handled by a
+different process or isolate. The page's 30s revision poll stays underneath
+both for a client whose stream never connects at all.
+
 ## The three push shapes
 
 ### 1. Open — a new card appears

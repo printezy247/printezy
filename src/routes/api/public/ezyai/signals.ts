@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { publishBoardRevision } from "@/lib/ezyai/board-events.server";
 import { safeEqual } from "@/lib/secure-compare";
 
 /**
@@ -219,6 +220,18 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
           }
 
           const accepted = results.filter((r) => r.ok).length;
+          // Wake every board stream in this process before doing anything
+          // else with the result — the point is that a visitor watching the
+          // board sees the push now, not on the next 5s tick. Streams in
+          // other processes are covered by their own revision read.
+          if (accepted > 0) {
+            try {
+              const { latestSignalUpdate } = await import("@/lib/ezyai/signals.server");
+              publishBoardRevision(await latestSignalUpdate());
+            } catch (error) {
+              console.error("[ezyai signals] could not nudge the board streams", error);
+            }
+          }
           const firstId = batch.find((e) => e && typeof e === "object")
             ? String((batch[0] as Record<string, unknown>).external_id ?? "")
             : "";
