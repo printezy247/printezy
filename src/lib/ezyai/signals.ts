@@ -26,6 +26,14 @@ export const LIVE_STATUSES: SignalStatus[] = ["pending", "running"];
 export const CLOSED_STATUSES: SignalStatus[] = ["tp", "be", "sl"];
 
 /**
+ * The query entry holding the board's revision stamp. The 30s poll owns it and
+ * the live stream writes into it, so a push and a poll move the board through
+ * the same state; a typo in either would leave the doorbell ringing into a key
+ * nobody reads, with the poll hiding it.
+ */
+export const BOARD_REVISION_QUERY_KEY = ["ezyai-board-revision"] as const;
+
+/**
  * The performance panel counts signals from the board relaunch (25 Oct) —
  * the day the bot became the only writer and watch alerts started mirroring.
  * Before it: the website's own Yahoo scanner (voided in the database) and a

@@ -6,15 +6,29 @@ vi.mock("@tanstack/react-router", () => ({
   createFileRoute: () => (config: unknown) => config,
 }));
 
-// The stream reads one column for its revision; no database in tests.
+// The stream reads one column for its revision; no database in tests. The
+// bridge route shares this mock, so an end-to-end case can push through its
+// real POST handler and watch the frame arrive on a real stream.
 const latestSignalUpdate = vi.fn<() => Promise<string | null>>(async () => null);
+const pushSignal = vi.fn(async (_entry: Record<string, unknown>) => ({ ok: true }));
+const recordBridgeHit = vi.fn();
 vi.mock("@/lib/ezyai/signals.server", () => ({
   latestSignalUpdate: () => latestSignalUpdate(),
+  pushSignal: (entry: Record<string, unknown>) => pushSignal(entry),
+  recordBridgeHit: (outcome: string, meta: unknown) => recordBridgeHit(outcome, meta),
+  recentBridgeHits: async () => [],
+  listLiveSignals: async () => [],
 }));
 
 import { Route } from "../stream";
+import { Route as SignalsRoute } from "../signals";
 import { openBoardStream } from "@/lib/ezyai/board-stream.server";
-import { boardRevisionListenerCount, publishBoardRevision } from "@/lib/ezyai/board-events.server";
+import {
+  boardRevisionListenerCount,
+  boardStreamCount,
+  publishBoardRevision,
+  reserveBoardStream,
+} from "@/lib/ezyai/board-events.server";
 
 /**
  * The board's live channel. It carries a revision stamp and nothing else: the
@@ -24,6 +38,9 @@ import { boardRevisionListenerCount, publishBoardRevision } from "@/lib/ezyai/bo
 
 type Handler = (ctx: { request: Request }) => Promise<Response>;
 const handlers = (Route as unknown as { server: { handlers: { GET: Handler } } }).server.handlers;
+const signalsHandlers = (
+  SignalsRoute as unknown as { server: { handlers: { GET: Handler; POST: Handler } } }
+).server.handlers;
 
 const STREAM_URL = "http://local.test/api/public/ezyai/stream";
 
@@ -70,12 +87,16 @@ let controller: AbortController | null = null;
 
 beforeEach(() => {
   latestSignalUpdate.mockReset().mockResolvedValue("2026-10-26T02:00:00.000Z");
+  pushSignal.mockReset().mockResolvedValue({ ok: true });
+  recordBridgeHit.mockReset();
 });
 
 afterEach(() => {
   controller?.abort();
   controller = null;
   expect(boardRevisionListenerCount()).toBe(0);
+  // Every test has to give its slot back, however it ended.
+  expect(boardStreamCount()).toBe(0);
 });
 
 /** Through the route handler — proves the route is wired to the stream. */
@@ -179,5 +200,62 @@ describe("GET /api/public/ezyai/stream", () => {
 
     expect(boardRevisionListenerCount()).toBe(0);
     await reader.cancel();
+  });
+
+  it("turns a bridge push into a frame, without waiting for a tick", async () => {
+    // The whole point of the live channel, exercised through both real route
+    // handlers: a POST the bot would send reaches a connected visitor's
+    // socket. The tick is a minute away, so only the bus can produce this.
+    vi.stubEnv("EZYAI_SIGNAL_KEY", "test-signal-key");
+    vi.stubEnv("EZYAI_ENTITLEMENT_KEY", "");
+
+    const { reader } = await openStream({ tickMs: 60_000 });
+    await frames(reader, 1); // ready at 02:00
+
+    latestSignalUpdate.mockResolvedValue("2026-10-26T02:05:00.000Z");
+    const pushed = await signalsHandlers.POST({
+      request: new Request("http://local.test/api/public/ezyai/signals", {
+        method: "POST",
+        headers: {
+          authorization: "Bearer test-signal-key",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ external_id: "s1", symbol: "EURUSD" }),
+      }),
+    });
+    expect(pushed.status).toBe(200);
+
+    const [revision] = await frames(reader, 1);
+    expect(revision).toContain("event: revision");
+    expect(dataOf(revision)).toEqual({ updatedAt: "2026-10-26T02:05:00.000Z" });
+
+    await reader.cancel();
+    vi.unstubAllEnvs();
+  });
+
+  it("refuses a connection past the process cap, and lets the next one back in", async () => {
+    const releases: Array<() => void> = [];
+    try {
+      for (let slot = reserveBoardStream(); slot; slot = reserveBoardStream()) {
+        releases.push(slot);
+      }
+
+      controller = new AbortController();
+      const refused = await handlers.GET({
+        request: new Request(STREAM_URL, { signal: controller.signal }),
+      });
+      expect(refused.status).toBe(503);
+      expect(refused.headers.get("retry-after")).toBe("15");
+
+      // Freed slots are usable again: the cap throttles, it does not wedge.
+      releases.pop()!();
+      const allowed = await handlers.GET({
+        request: new Request(STREAM_URL, { signal: new AbortController().signal }),
+      });
+      expect(allowed.status).toBe(200);
+      await allowed.body!.cancel();
+    } finally {
+      for (const release of releases) release();
+    }
   });
 });

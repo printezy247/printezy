@@ -39,6 +39,10 @@ event: revision    {"updatedAt": "2026-10-26T02:04:00.000Z"}   when the stamp mo
 
 The connection closes after 10 minutes so a socket cannot pin a server
 process forever; `EventSource` reconnects on its own and gets a fresh `ready`.
+A process holds at most 100 of them at once — each one costs a revision read
+every 5s, and the endpoint is public. Past the cap it answers `503` with
+`retry-after: 15`, which the page treats as "no stream": the 30s poll keeps
+the board fresh, so a refused connection costs freshness, not the board.
 
 **The bot needs no change.** A successful POST nudges every open stream in the
 same server process, and the stream also re-reads the revision every 5s — that

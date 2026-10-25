@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import {
   boardRevisionListenerCount,
+  boardStreamCount,
   publishBoardRevision,
+  reserveBoardStream,
   subscribeBoardRevision,
 } from "../board-events.server";
 
@@ -59,5 +61,36 @@ describe("board revision bus", () => {
     stop();
     stop();
     expect(boardRevisionListenerCount()).toBe(0);
+  });
+});
+
+describe("stream slots", () => {
+  /** Fill the process cap and hand back the releases. */
+  function fill(): Array<() => void> {
+    const releases: Array<() => void> = [];
+    for (let slot = reserveBoardStream(); slot; slot = reserveBoardStream()) {
+      releases.push(slot);
+    }
+    return releases;
+  }
+
+  it("caps the streams one process will hold", () => {
+    const releases = fill();
+    try {
+      expect(releases.length).toBeGreaterThan(0);
+      expect(reserveBoardStream()).toBeNull();
+      expect(boardStreamCount()).toBe(releases.length);
+    } finally {
+      for (const release of releases) release();
+    }
+    expect(boardStreamCount()).toBe(0);
+  });
+
+  it("counts a slot once, however many times it is released", () => {
+    const release = reserveBoardStream()!;
+    expect(boardStreamCount()).toBe(1);
+    release();
+    release();
+    expect(boardStreamCount()).toBe(0);
   });
 });

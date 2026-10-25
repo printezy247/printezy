@@ -18,6 +18,7 @@ import {
   getEzyAiBoardRevision,
   getEzyAiHistory,
 } from "@/lib/ezyai/signals.functions";
+import { BOARD_REVISION_QUERY_KEY } from "@/lib/ezyai/signals";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
@@ -153,7 +154,7 @@ export function EzyAiPage() {
   // the full board when that stamp moves — a quiet minute costs one cheap
   // lookup instead of twenty-four records.
   const revision = useQuery({
-    queryKey: ["ezyai-board-revision"],
+    queryKey: BOARD_REVISION_QUERY_KEY,
     queryFn: () => loadRevision(),
     refetchInterval: 30_000,
   });
@@ -182,10 +183,10 @@ export function EzyAiPage() {
         // No stamp means the push landed but the revision read did not — ask
         // the poll's own query rather than inventing a value.
         if (!updatedAt) {
-          void queryClient.invalidateQueries({ queryKey: ["ezyai-board-revision"] });
+          void queryClient.invalidateQueries({ queryKey: BOARD_REVISION_QUERY_KEY });
           return;
         }
-        queryClient.setQueryData(["ezyai-board-revision"], { updatedAt });
+        queryClient.setQueryData(BOARD_REVISION_QUERY_KEY, { updatedAt });
       } catch {
         // A malformed frame is not worth breaking the board over; the poll wins.
       }

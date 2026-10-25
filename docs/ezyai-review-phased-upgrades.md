@@ -360,6 +360,12 @@ process still lands within ~5s. The page writes the stamp into the same query
 its 30s poll owns, so the board refetches itself; the poll stays as the
 fallback for a client whose stream never connects. The stream carries no
 signal data and needs no authentication — it is a doorbell, not a channel.
-Tests: `lib/ezyai/__tests__/board-events.test.ts` (bus),
+One process holds at most 100 streams (each costs a revision read every 5s);
+past that it answers `503 retry-after: 15` and the visitor stays on the poll.
+The stamp lives in one exported query key, `BOARD_REVISION_QUERY_KEY`, so the
+poll and the stream cannot drift apart.
+Tests: `lib/ezyai/__tests__/board-events.test.ts` (bus, stream slots),
 `routes/api/public/ezyai/__tests__/stream-route.test.ts` (frames, dedupe,
-tick, cleanup) and the publish case in `signals-route.test.ts`.
+tick, cleanup, the cap, and a bridge POST through both route handlers arriving
+as a frame with the tick a minute away) and the publish case in
+`signals-route.test.ts`.

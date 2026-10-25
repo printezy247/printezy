@@ -1,4 +1,4 @@
-import { subscribeBoardRevision } from "./board-events.server";
+import { reserveBoardStream, subscribeBoardRevision } from "./board-events.server";
 
 /**
  * Server-sent events for the public board.
@@ -34,6 +34,8 @@ const DEFAULTS: Required<BoardStreamTiming> = {
   maxConnectionMs: 10 * 60_000,
 };
 
+const encoder = new TextEncoder();
+
 /** Read the current stamp, treating an unconfigured database as "unknown". */
 async function readRevision(): Promise<string | null> {
   try {
@@ -45,84 +47,111 @@ async function readRevision(): Promise<string | null> {
   }
 }
 
+const frame = (event: string, data: unknown) =>
+  `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+
+/**
+ * One connection: the ready frame, then whatever stamp the bus or the tick
+ * produces, until the reader leaves or the ceiling passes. Returns its
+ * teardown, which is safe to call more than once.
+ */
+function runStream(
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  signal: AbortSignal,
+  baseline: string | null,
+  timing: Required<BoardStreamTiming>,
+  release: () => void,
+): () => void {
+  let last = baseline;
+  let closed = false;
+  let unsubscribe = () => {};
+  const stoppers: Array<() => void> = [];
+
+  const write = (chunk: string) => {
+    if (closed) return;
+    try {
+      controller.enqueue(encoder.encode(chunk));
+    } catch {
+      // The reader vanished between frames — the teardown is the same.
+      close();
+    }
+  };
+
+  /** Only ever announce a stamp the client does not already have. */
+  const emit = (stamp: string | null) => {
+    if (stamp === null || stamp === last) return;
+    last = stamp;
+    write(frame("revision", { updatedAt: stamp }));
+  };
+
+  function close() {
+    if (closed) return;
+    closed = true;
+    unsubscribe();
+    for (const stop of stoppers) stop();
+    signal.removeEventListener("abort", close);
+    release();
+    try {
+      controller.close();
+    } catch {
+      // Already closed by the platform — nothing to do.
+    }
+  }
+
+  // The baseline goes out first, before the bus is subscribed, so a push can
+  // never slip in front of the frame that tells the client what it has.
+  write(frame("ready", { updatedAt: baseline }));
+  if (closed) return close;
+
+  unsubscribe = subscribeBoardRevision(emit);
+  const tick = setInterval(() => void readRevision().then(emit), timing.tickMs);
+  const beat = setInterval(() => write(": keep-alive\n\n"), timing.heartbeatMs);
+  const expiry = setTimeout(close, timing.maxConnectionMs);
+  stoppers.push(
+    () => clearInterval(tick),
+    () => clearInterval(beat),
+    () => clearTimeout(expiry),
+  );
+
+  signal.addEventListener("abort", close, { once: true });
+  if (signal.aborted) close();
+
+  return close;
+}
+
 export async function openBoardStream(
   request: Request,
   timing: BoardStreamTiming = {},
 ): Promise<Response> {
-  // `??`, not a spread: a caller passing only `tickMs` must keep the other
-  // defaults, or the expiry becomes `setTimeout(fn, undefined)` — a 0ms close.
-  const tickMs = timing.tickMs ?? DEFAULTS.tickMs;
-  const heartbeatMs = timing.heartbeatMs ?? DEFAULTS.heartbeatMs;
-  const maxConnectionMs = timing.maxConnectionMs ?? DEFAULTS.maxConnectionMs;
+  const release = reserveBoardStream();
+  if (!release) {
+    // Over the cap: the page's 30s poll still works, so a client refused here
+    // loses freshness, not the board.
+    return new Response("the board is at capacity; keep polling", {
+      status: 503,
+      headers: { "retry-after": "15", "cache-control": "no-store" },
+    });
+  }
+
+  // `??` per field, not a spread: a caller passing only `tickMs` must keep the
+  // other defaults, or the expiry becomes `setTimeout(fn, undefined)`.
+  const resolved: Required<BoardStreamTiming> = {
+    tickMs: timing.tickMs ?? DEFAULTS.tickMs,
+    heartbeatMs: timing.heartbeatMs ?? DEFAULTS.heartbeatMs,
+    maxConnectionMs: timing.maxConnectionMs ?? DEFAULTS.maxConnectionMs,
+  };
 
   // Read the baseline before the first frame: a visitor arriving mid-trade is
   // told what the page already shows instead of being made to refetch it.
   const baseline = await readRevision();
-
-  const encoder = new TextEncoder();
-  let stop = () => {};
+  let dispose = release;
 
   const body = new ReadableStream<Uint8Array>({
     start(controller) {
-      let closed = false;
-      let last = baseline;
-      let unsubscribe = () => {};
-      // Held in an object: `finish` clears them, they need `write`, and `write`
-      // needs `finish` — so none of the three can be declared strictly first.
-      const timers: {
-        tick?: ReturnType<typeof setInterval>;
-        beat?: ReturnType<typeof setInterval>;
-        expiry?: ReturnType<typeof setTimeout>;
-      } = {};
-
-      const finish = () => {
-        if (closed) return;
-        closed = true;
-        unsubscribe();
-        if (timers.tick) clearInterval(timers.tick);
-        if (timers.beat) clearInterval(timers.beat);
-        if (timers.expiry) clearTimeout(timers.expiry);
-        request.signal.removeEventListener("abort", finish);
-        try {
-          controller.close();
-        } catch {
-          // Already closed (client vanished mid-write) — nothing to do.
-        }
-      };
-      stop = finish;
-
-      const write = (chunk: string) => {
-        if (closed) return;
-        try {
-          controller.enqueue(encoder.encode(chunk));
-        } catch {
-          finish();
-        }
-      };
-      const frame = (event: string, data: unknown) =>
-        write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
-      /** Only ever announce a stamp the client does not already have. */
-      const emit = (stamp: string | null) => {
-        if (stamp === null || stamp === last) return;
-        last = stamp;
-        frame("revision", { updatedAt: stamp });
-      };
-
-      frame("ready", { updatedAt: baseline });
-      unsubscribe = subscribeBoardRevision(emit);
-
-      timers.tick = setInterval(() => {
-        void readRevision().then(emit);
-      }, tickMs);
-      timers.beat = setInterval(() => write(": keep-alive\n\n"), heartbeatMs);
-      timers.expiry = setTimeout(finish, maxConnectionMs);
-
-      request.signal.addEventListener("abort", finish, { once: true });
-      if (request.signal.aborted) finish();
+      dispose = runStream(controller, request.signal, baseline, resolved, release);
     },
     cancel() {
-      // The reader went away without an abort (or before one arrived).
-      stop();
+      dispose();
     },
   });
 
