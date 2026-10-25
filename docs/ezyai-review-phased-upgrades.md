@@ -342,9 +342,18 @@ All tasks implemented except the one that is blocked on the bot:
 
   Covered by `src/routes/__tests__/ezyai-locale-route.test.ts` (head copy and
   canonical/hreflang for both URLs, the per-locale redirect when the board is
-  hidden, and the 404 for an unknown locale). Behaviour is otherwise
-  unchanged: `/ms/ezyai?tab=history` still opens the live tab, exactly as the
-  old Malay route did, because only the English route validates `tab`.
+  hidden, the 404 for an unknown locale, and which route owns the tab schema).
+
+  Deep-linked tabs now work on both boards: `/ms/ezyai?tab=history` and
+  `/ms/ezyai?tab=about` open their tab. The old Malay route ignored the
+  parameter entirely — the page read the search through the English route id,
+  which is not in the match tree there, so every shared link landed on live.
+  The rule is one resolver in `src/lib/ezyai/tabs.ts`, and the page reads the
+  tab from the URL through it. The English route keeps its search schema
+  (so a known tab stays in the address bar and a stale one is normalised
+  away); the translated route deliberately declares none, because a visitor
+  following someone else's `/ms/ezyai?tab=…` link should not be bounced off
+  the URL for a query the board does not recognise.
 - **P3.2 (P&L breakdown)** — blocked on the bot: `EzyAiSignal` has no
   `position_size`, so the site cannot compute dollar P&L from what it is
   told. Revisit when the bot pushes size.

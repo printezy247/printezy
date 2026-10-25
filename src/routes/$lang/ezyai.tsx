@@ -40,6 +40,9 @@ const copyFor = (lang: string | undefined): LocalizedEzyAi | undefined =>
   lang === undefined ? undefined : LOCALES[lang];
 
 export const Route = createFileRoute("/$lang/ezyai")({
+  // Deliberately no search schema: the board reads `?tab=` off the location
+  // itself, so a translated board honours the same shared links as the
+  // English one without this route having to own (and rewrite) the query.
   beforeLoad: ({ params }) => {
     const copy = copyFor(params.lang);
     // A locale without a translated page is a 404, not this page behind a
