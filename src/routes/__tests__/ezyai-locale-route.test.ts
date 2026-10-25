@@ -16,6 +16,7 @@ type RouteLike = {
       links: Array<Record<string, string>>;
     };
     beforeLoad?: (ctx: unknown) => unknown;
+    validateSearch?: (search: Record<string, unknown>) => { tab?: string };
   };
 };
 
@@ -91,6 +92,21 @@ describe("localized EzyAI route (/ms/ezyai)", () => {
     const { localized, english } = await loadRoutes(true);
     expect(runBeforeLoad(localized, { lang: "ms" })).toBeUndefined();
     expect(runBeforeLoad(english)).toBeUndefined();
+  });
+});
+
+describe("deep-linked tabs", () => {
+  it("keeps a known ?tab= on the English route and drops a stale one", async () => {
+    const { english } = await loadRoutes(true);
+    expect(english.options.validateSearch!({ tab: "history" })).toEqual({ tab: "history" });
+    expect(english.options.validateSearch!({ tab: "about" })).toEqual({ tab: "about" });
+    expect(english.options.validateSearch!({ tab: "junk" })).toEqual({ tab: undefined });
+    expect(english.options.validateSearch!({})).toEqual({ tab: undefined });
+  });
+
+  it("leaves the translated route's query alone — the board reads it from the URL", async () => {
+    const { localized } = await loadRoutes(true);
+    expect(localized.options.validateSearch).toBeUndefined();
   });
 });
 

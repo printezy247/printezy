@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
+import { createFileRoute, redirect, useLocation } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -13,6 +13,7 @@ import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
+import { EZYAI_TABS, type EzyAiTab, ezyAiTabFromSearch, resolveEzyAiTab } from "@/lib/ezyai/tabs";
 import {
   getEzyAiBoard,
   getEzyAiBoardRevision,
@@ -30,13 +31,16 @@ export const Route = createFileRoute("/ezyai")({
     if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/" });
   },
   // Deep-linkable tabs, so the hero card (and anything else) can point
-  // straight at the live board rather than at the page and a hope.
-  validateSearch: (search: Record<string, unknown>): { tab?: EzyAiTab } => ({
-    tab:
-      search.tab === "live" || search.tab === "history" || search.tab === "about"
-        ? search.tab
-        : undefined,
-  }),
+  // straight at the live board rather than at the page and a hope. A known
+  // tab stays in the URL; anything else is dropped, which is how a stale
+  // English deep link has always normalised. The translated twin declares no
+  // schema on purpose — it opens the right tab from the URL, and keeping an
+  // unrecognised parameter there rather than bouncing the visitor is the
+  // smaller change for a link someone else shared.
+  validateSearch: (search: Record<string, unknown>): { tab?: EzyAiTab } => {
+    const tab = resolveEzyAiTab(search.tab);
+    return { tab: tab === search.tab ? tab : undefined };
+  },
   head: () =>
     localizedHead({
       path: "/ezyai",
@@ -91,10 +95,6 @@ const PLANS: PlanTier[] = [
   { sku: "ezyai_pro_1y", labelKey: "ezyai_tier_12m_label", badgeKey: "ezyai_tier_12m_badge" },
 ];
 
-type EzyAiTab = "live" | "history" | "about";
-
-const TAB_IDS: EzyAiTab[] = ["live", "history", "about"];
-
 const TAB_LABEL: Record<EzyAiTab, TranslationKey> = {
   live: "ezyai_tab_live",
   history: "ezyai_tab_history",
@@ -139,8 +139,11 @@ function TabButton({
 
 export function EzyAiPage() {
   const { t } = useTranslation();
-  const search = useSearch({ from: "/ezyai", shouldThrow: false });
-  const [tab, setTab] = useState<EzyAiTab>(search?.tab ?? "live");
+  // Read the tab from the URL itself, not from this route's validated search:
+  // `/ms/ezyai` is a different route with no schema, and it has to honour the
+  // same `?tab=` deep links the English board does.
+  const { searchStr } = useLocation();
+  const [tab, setTab] = useState<EzyAiTab>(() => ezyAiTabFromSearch(searchStr));
 
   const loadBoard = useServerFn(getEzyAiBoard);
   const loadRevision = useServerFn(getEzyAiBoardRevision);
@@ -236,7 +239,7 @@ export function EzyAiPage() {
           role="tablist"
           aria-label={t("ezyai_desk_label")}
         >
-          {TAB_IDS.map((id) => (
+          {EZYAI_TABS.map((id) => (
             <TabButton
               key={id}
               tab={id}
@@ -250,7 +253,9 @@ export function EzyAiPage() {
                 event.preventDefault();
                 const step = event.key === "ArrowRight" ? 1 : -1;
                 const next =
-                  TAB_IDS[(TAB_IDS.indexOf(id) + step + TAB_IDS.length) % TAB_IDS.length];
+                  EZYAI_TABS[
+                    (EZYAI_TABS.indexOf(id) + step + EZYAI_TABS.length) % EZYAI_TABS.length
+                  ];
                 setTab(next);
                 goTrack(`ezyai_tab_${next}`);
                 document.getElementById(`ezyai-tab-${next}`)?.focus();
