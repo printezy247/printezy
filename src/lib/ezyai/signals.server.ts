@@ -117,6 +117,13 @@ export async function listLiveSignals(limit = 24): Promise<EzyAiSignal[]> {
  * moves, so a quiet minute costs one indexed max rather than twenty-four
  * full records.
  */
+/**
+ * Every open stream re-reads this every 5s and the page polls it every 30s, so
+ * a database outage must not print a stack trace per tick — a hundred streams
+ * would bury the log the operator needs. One line a minute is enough to see it.
+ */
+let revisionFailureLoggedAt = 0;
+
 export async function latestSignalUpdate(): Promise<string | null> {
   const { data, error } = await supabaseAdmin
     .from(TABLE)
@@ -125,7 +132,11 @@ export async function latestSignalUpdate(): Promise<string | null> {
     .limit(1)
     .maybeSingle();
   if (error) {
-    console.error("[ezyai-signals] revision lookup failed", error);
+    const now = Date.now();
+    if (now - revisionFailureLoggedAt > 60_000) {
+      revisionFailureLoggedAt = now;
+      console.warn("[ezyai-signals] revision lookup failed (repeats suppressed for 60s)", error);
+    }
     return null;
   }
   return (data as { updated_at: string | null } | null)?.updated_at ?? null;
