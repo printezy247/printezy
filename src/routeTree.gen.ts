@@ -27,12 +27,12 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as LangEzyaiRouteImport } from './routes/$lang/ezyai'
 import { Route as DotwellKnownSecurityDottxtRouteImport } from './routes/[.]well-known/security[.]txt'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as MsIndexRouteImport } from './routes/ms/index'
-import { Route as MsEzyaiRouteImport } from './routes/ms/ezyai'
 import { Route as MsFaqRouteImport } from './routes/ms/faq'
 import { Route as MsFreeChannelRouteImport } from './routes/ms/free-channel'
 import { Route as MsIndicatorsRouteImport } from './routes/ms/indicators'
@@ -135,6 +135,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LangEzyaiRoute = LangEzyaiRouteImport.update({
+  id: '/$lang/ezyai',
+  path: '/$lang/ezyai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DotwellKnownSecurityDottxtRoute =
   DotwellKnownSecurityDottxtRouteImport.update({
     id: '/.well-known/security.txt',
@@ -161,11 +166,6 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
 const MsIndexRoute = MsIndexRouteImport.update({
   id: '/ms/',
   path: '/ms/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsEzyaiRoute = MsEzyaiRouteImport.update({
-  id: '/ms/ezyai',
-  path: '/ms/ezyai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MsFaqRoute = MsFaqRouteImport.update({
@@ -250,11 +250,11 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/$lang/ezyai': typeof LangEzyaiRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
   '/ms/free-channel': typeof MsFreeChannelRoute
   '/ms/indicators': typeof MsIndicatorsRoute
@@ -287,11 +287,11 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/$lang/ezyai': typeof LangEzyaiRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
   '/ms/free-channel': typeof MsFreeChannelRoute
   '/ms/indicators': typeof MsIndicatorsRoute
@@ -326,11 +326,11 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/$lang/ezyai': typeof LangEzyaiRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/ezyai': typeof MsEzyaiRoute
   '/ms/faq': typeof MsFaqRoute
   '/ms/free-channel': typeof MsFreeChannelRoute
   '/ms/indicators': typeof MsIndicatorsRoute
@@ -365,11 +365,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/$lang/ezyai'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/ezyai'
     | '/ms/faq'
     | '/ms/free-channel'
     | '/ms/indicators'
@@ -402,11 +402,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/$lang/ezyai'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/ezyai'
     | '/ms/faq'
     | '/ms/free-channel'
     | '/ms/indicators'
@@ -440,11 +440,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/$lang/ezyai'
     | '/.well-known/security.txt'
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/ezyai'
     | '/ms/faq'
     | '/ms/free-channel'
     | '/ms/indicators'
@@ -479,9 +479,9 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  LangEzyaiRoute: typeof LangEzyaiRoute
   DotwellKnownSecurityDottxtRoute: typeof DotwellKnownSecurityDottxtRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
-  MsEzyaiRoute: typeof MsEzyaiRoute
   MsFaqRoute: typeof MsFaqRoute
   MsFreeChannelRoute: typeof MsFreeChannelRoute
   MsIndicatorsRoute: typeof MsIndicatorsRoute
@@ -625,6 +625,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$lang/ezyai': {
+      id: '/$lang/ezyai'
+      path: '/$lang/ezyai'
+      fullPath: '/$lang/ezyai'
+      preLoaderRoute: typeof LangEzyaiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.well-known/security.txt': {
       id: '/.well-known/security.txt'
       path: '/.well-known/security.txt'
@@ -658,13 +665,6 @@ declare module '@tanstack/react-router' {
       path: '/ms'
       fullPath: '/ms/'
       preLoaderRoute: typeof MsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/ezyai': {
-      id: '/ms/ezyai'
-      path: '/ms/ezyai'
-      fullPath: '/ms/ezyai'
-      preLoaderRoute: typeof MsEzyaiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ms/faq': {
@@ -786,9 +786,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  LangEzyaiRoute: LangEzyaiRoute,
   DotwellKnownSecurityDottxtRoute: DotwellKnownSecurityDottxtRoute,
   EbooksSlugRoute: EbooksSlugRoute,
-  MsEzyaiRoute: MsEzyaiRoute,
   MsFaqRoute: MsFaqRoute,
   MsFreeChannelRoute: MsFreeChannelRoute,
   MsIndicatorsRoute: MsIndicatorsRoute,

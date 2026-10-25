@@ -292,7 +292,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 | **2** | P2.2 | Add clipboard/share button on SignalCard | 30 min |
 | **2** | P2.3 | Label pending rails when levels are missing | 20 min |
 | **2** | P2.4 | Stagger score-ring and rail animations across cards | 20 min |
-| **2** | P2.5 | (Project-level) Consolidate `ms/ezyai.tsx` into wildcard route | TBD |
+| **2** | P2.5 | (EzyAI only) One `$lang/ezyai.tsx` replaces `ms/ezyai.tsx` | done |
 | **2** | P2.6 | `aria-live` announcement on board update | 30 min |
 | **2** | P2.7 | Coordinate home-page sample with live board visibility | 30 min |
 | **3** | P3.1 | SSE revision channel + revision poll underneath | done |
@@ -323,19 +323,34 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 
 ## 6. Implementation status (26 Oct 2026)
 
-All tasks implemented except the two that are blocked by design decisions:
+All tasks implemented except the one that is blocked on the bot:
 
-- **P2.5 (wildcard route)** — not done here. `ms/ezyai.tsx` is already a
-  25-line thin wrapper that re-uses `EzyAiPage`; the remaining duplication is
-  the `localizedHead` metadata, which is per-locale on purpose. Collapsing
-  every `ms/*` route into one `[lang]` wildcard is a project-wide routing
-  decision, not an EzyAI one — flagged for a dedicated change.
+- **P2.5 (wildcard route)** — done, **EzyAI only**. `src/routes/ms/ezyai.tsx`
+  is replaced by a single `src/routes/$lang/ezyai.tsx` that serves every
+  translated EzyAI URL (`/ms/ezyai` today) from one locale table: head copy,
+  canonical + hreflang pair, and the hidden-board redirect all come from the
+  locale in the URL, never from storage; a locale with no translated page is a
+  404 rather than this page behind a foreign URL.
+
+  Scope decision: the English `/ezyai` keeps `src/routes/ezyai.tsx`. It is one
+  path segment, not a translated twin, so serving it from the same file would
+  need an optional `{-$lang}` root segment — verified working — but that
+  changes the route id for every `to="/ezyai"` link and buys nothing today.
+  The other `ms/*` wrappers were deliberately left alone: each is already a
+  ~10-line re-export of a shared head builder, and moving all nine behind a
+  dynamic segment is a project-wide routing change with no EzyAI benefit.
+
+  Covered by `src/routes/__tests__/ezyai-locale-route.test.ts` (head copy and
+  canonical/hreflang for both URLs, the per-locale redirect when the board is
+  hidden, and the 404 for an unknown locale). Behaviour is otherwise
+  unchanged: `/ms/ezyai?tab=history` still opens the live tab, exactly as the
+  old Malay route did, because only the English route validates `tab`.
 - **P3.2 (P&L breakdown)** — blocked on the bot: `EzyAiSignal` has no
   `position_size`, so the site cannot compute dollar P&L from what it is
   told. Revisit when the bot pushes size.
 
-Delivered: P1.1–P1.5, P2.1–P2.4, P2.6–P2.7, P3.1 (revision-stamp poll),
-P3.3–P3.5. See `docs/ezyai-signal-bridge.md` for the P3.5 living doc.
+Delivered: P1.1–P1.5, P2.1–P2.7, P3.1 (SSE + revision poll), P3.3–P3.5. See
+`docs/ezyai-signal-bridge.md` for the P3.5 living doc.
 
 **P3.1 (live updates)** — `GET /api/public/ezyai/stream` streams the board's
 revision stamp over server-sent events. Two paths feed it: the bridge nudges
