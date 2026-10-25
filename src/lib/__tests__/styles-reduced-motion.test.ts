@@ -45,9 +45,7 @@ describe("styles.css prefers-reduced-motion coverage", () => {
 
   it("switches off the signal card entrance animation", () => {
     // .signal-card must sit in a rule that disables animation.
-    const covered = blocks.some(
-      (b) => /\.signal-card/.test(b) && /animation:\s*none/.test(b),
-    );
+    const covered = blocks.some((b) => /\.signal-card/.test(b) && /animation:\s*none/.test(b));
     expect(covered).toBe(true);
   });
 
@@ -61,9 +59,7 @@ describe("styles.css prefers-reduced-motion coverage", () => {
   });
 
   it("switches off the score ring transition", () => {
-    const covered = blocks.some(
-      (b) => /\.score-ring/.test(b) && /transition:\s*none/.test(b),
-    );
+    const covered = blocks.some((b) => /\.score-ring/.test(b) && /transition:\s*none/.test(b));
     expect(covered).toBe(true);
   });
 

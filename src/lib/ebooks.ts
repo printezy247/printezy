@@ -51,13 +51,35 @@ export const EBOOK_PAGES: Ebook[] = [
       "Run a pre-trade checklist covering risk, reward and stop loss",
     ],
     chapters: [
-      { title: "What is mapping?", summary: "The difference between random trading and professional mapping, with a top-down ladder." },
-      { title: "Weekly mapping", summary: "Identify the major trend and mark the key support and resistance zones." },
-      { title: "Daily and H4 mapping", summary: "Refine the big picture, find fresh and stronger zones, and plan breakouts." },
-      { title: "H1 and M15 filter", summary: "Zoom in, filter the noise and find high-probability entries." },
-      { title: "Breakout vs fakeout", summary: "How to spot a real breakout, and why you wait for the next M15 candle." },
-      { title: "Newbie secret tips", summary: "Line charts, A and V shapes, looking left, and the Weekly-to-M15 flow." },
-      { title: "Pre-trade checklist", summary: "Weekly marked, Daily refined, H4 zones, entry confirmed, risk and stop planned." },
+      {
+        title: "What is mapping?",
+        summary:
+          "The difference between random trading and professional mapping, with a top-down ladder.",
+      },
+      {
+        title: "Weekly mapping",
+        summary: "Identify the major trend and mark the key support and resistance zones.",
+      },
+      {
+        title: "Daily and H4 mapping",
+        summary: "Refine the big picture, find fresh and stronger zones, and plan breakouts.",
+      },
+      {
+        title: "H1 and M15 filter",
+        summary: "Zoom in, filter the noise and find high-probability entries.",
+      },
+      {
+        title: "Breakout vs fakeout",
+        summary: "How to spot a real breakout, and why you wait for the next M15 candle.",
+      },
+      {
+        title: "Newbie secret tips",
+        summary: "Line charts, A and V shapes, looking left, and the Weekly-to-M15 flow.",
+      },
+      {
+        title: "Pre-trade checklist",
+        summary: "Weekly marked, Daily refined, H4 zones, entry confirmed, risk and stop planned.",
+      },
     ],
     forYouIf: [
       "You are new to trading and want one simple process",
@@ -66,7 +88,8 @@ export const EBOOK_PAGES: Ebook[] = [
     ],
     ms: {
       title: "Memetakan Seperti Pro",
-      tagline: "Baca pasaran dari atas ke bawah, dari Mingguan ke M15, dan tunggu kemasukan disahkan.",
+      tagline:
+        "Baca pasaran dari atas ke bawah, dari Mingguan ke M15, dan tunggu kemasukan disahkan.",
       description:
         "Panduan ringkas dan mesra pemula untuk memetakan pasaran seperti pedagang profesional. Mulakan dengan trend Mingguan, perhalusi zon pada Harian dan H4, kemudian tapis kemasukan pada H1 dan M15, supaya anda merancang dagangan dahulu dan berdagang mengikut pelan.",
       readTime: "Bacaan 10 minit",
@@ -77,13 +100,37 @@ export const EBOOK_PAGES: Ebook[] = [
         "Jalankan senarai semak pra-dagangan merangkumi risiko, ganjaran dan stop loss",
       ],
       chapters: [
-        { title: "Apa itu pemetaan?", summary: "Beza antara dagangan rawak dan pemetaan profesional, dengan tangga atas-ke-bawah." },
-        { title: "Pemetaan Mingguan", summary: "Kenal pasti trend utama dan tanda zon sokongan dan rintangan penting." },
-        { title: "Pemetaan Harian & H4", summary: "Perhalusi gambaran besar, cari zon baharu yang lebih kuat, dan rancang pecah-keluar." },
-        { title: "Penapis H1 & M15", summary: "Zum masuk, tapis bunyi bising dan cari kemasukan berkebarangkalian tinggi." },
-        { title: "Breakout lawan fakeout", summary: "Cara mengesan breakout sebenar dan mengapa anda menunggu lilin M15 seterusnya." },
-        { title: "Tip rahsia pemula", summary: "Carta garisan, bentuk A dan V, tengok ke kiri, dan aliran Mingguan ke M15." },
-        { title: "Senarai semak pra-dagangan", summary: "Mingguan ditanda, Harian diperhalusi, zon H4, kemasukan disahkan, risiko dan stop loss dirancang." },
+        {
+          title: "Apa itu pemetaan?",
+          summary:
+            "Beza antara dagangan rawak dan pemetaan profesional, dengan tangga atas-ke-bawah.",
+        },
+        {
+          title: "Pemetaan Mingguan",
+          summary: "Kenal pasti trend utama dan tanda zon sokongan dan rintangan penting.",
+        },
+        {
+          title: "Pemetaan Harian & H4",
+          summary:
+            "Perhalusi gambaran besar, cari zon baharu yang lebih kuat, dan rancang pecah-keluar.",
+        },
+        {
+          title: "Penapis H1 & M15",
+          summary: "Zum masuk, tapis bunyi bising dan cari kemasukan berkebarangkalian tinggi.",
+        },
+        {
+          title: "Breakout lawan fakeout",
+          summary: "Cara mengesan breakout sebenar dan mengapa anda menunggu lilin M15 seterusnya.",
+        },
+        {
+          title: "Tip rahsia pemula",
+          summary: "Carta garisan, bentuk A dan V, tengok ke kiri, dan aliran Mingguan ke M15.",
+        },
+        {
+          title: "Senarai semak pra-dagangan",
+          summary:
+            "Mingguan ditanda, Harian diperhalusi, zon H4, kemasukan disahkan, risiko dan stop loss dirancang.",
+        },
       ],
       forYouIf: [
         "Anda baru dalam dagangan dan mahukan satu proses yang mudah",
@@ -95,7 +142,8 @@ export const EBOOK_PAGES: Ebook[] = [
   {
     slug: "technical-analysis",
     title: "Technical Analysis Ebook",
-    tagline: "Support & resistance, trendlines, chart patterns and candlesticks — the core toolkit, no fluff.",
+    tagline:
+      "Support & resistance, trendlines, chart patterns and candlesticks — the core toolkit, no fluff.",
     description:
       "The four building blocks every trader uses to read a chart before taking a trade: where price is likely to react, how to draw the lines that matter, the patterns that repeat, and what a single candle is telling you.",
     author: "EzyMap ALGO",
@@ -111,11 +159,28 @@ export const EBOOK_PAGES: Ebook[] = [
       "Read single and multi-candle patterns like doji, engulfing and morning/evening star",
     ],
     chapters: [
-      { title: "Why use technical analysis", summary: "Charting the patterns and trends before you take a trade." },
-      { title: "Support & resistance", summary: "Where buyers and sellers take over, and how levels flip once broken." },
-      { title: "Trendlines", summary: "How to draw them, read their angle, and what a break signals." },
-      { title: "Chart patterns", summary: "Reversal patterns (head & shoulders, double top/bottom, wedges) and continuation patterns (flags, triangles)." },
-      { title: "Candlestick patterns", summary: "Single-candle signals (doji, hammer, marubozu) and multi-candle signals (engulfing, morning/evening star, three soldiers/crows)." },
+      {
+        title: "Why use technical analysis",
+        summary: "Charting the patterns and trends before you take a trade.",
+      },
+      {
+        title: "Support & resistance",
+        summary: "Where buyers and sellers take over, and how levels flip once broken.",
+      },
+      {
+        title: "Trendlines",
+        summary: "How to draw them, read their angle, and what a break signals.",
+      },
+      {
+        title: "Chart patterns",
+        summary:
+          "Reversal patterns (head & shoulders, double top/bottom, wedges) and continuation patterns (flags, triangles).",
+      },
+      {
+        title: "Candlestick patterns",
+        summary:
+          "Single-candle signals (doji, hammer, marubozu) and multi-candle signals (engulfing, morning/evening star, three soldiers/crows).",
+      },
     ],
     forYouIf: [
       "You want the core chart-reading toolkit in one short guide",
@@ -124,7 +189,8 @@ export const EBOOK_PAGES: Ebook[] = [
     ],
     ms: {
       title: "E-buku Analisis Teknikal",
-      tagline: "Sokongan & rintangan, garis aliran, corak carta dan lilin — kit alat teras, tanpa bunga-bunga.",
+      tagline:
+        "Sokongan & rintangan, garis aliran, corak carta dan lilin — kit alat teras, tanpa bunga-bunga.",
       description:
         "Empat blok binaan yang setiap pedagang guna untuk membaca carta sebelum berdagang: di mana harga berkemungkinan bertindak balas, cara melukis garis yang penting, corak yang berulang, dan apa yang satu lilin sedang beritahu anda.",
       readTime: "Bacaan 10 minit",
@@ -135,11 +201,29 @@ export const EBOOK_PAGES: Ebook[] = [
         "Baca corak lilin tunggal dan berbilang seperti doji, engulfing dan bintang pagi/petang",
       ],
       chapters: [
-        { title: "Mengapa guna analisis teknikal", summary: "Memetakan corak dan aliran sebelum anda berdagang." },
-        { title: "Sokongan & rintangan", summary: "Di mana pembeli dan penjual mengambil alih, dan cara paras bertukar selepas ditembusi." },
-        { title: "Garis aliran", summary: "Cara melukisnya, membaca sudutnya, dan apa yang penembusan isyaratkan." },
-        { title: "Corak carta", summary: "Corak pembalikan (kepala & bahu, puncak/dasar berganda, baji) dan corak penerusan (bendera, segi tiga)." },
-        { title: "Corak lilin", summary: "Isyarat lilin tunggal (doji, tukul, marubozu) dan berbilang lilin (engulfing, bintang pagi/petang, tiga askar/gagak)." },
+        {
+          title: "Mengapa guna analisis teknikal",
+          summary: "Memetakan corak dan aliran sebelum anda berdagang.",
+        },
+        {
+          title: "Sokongan & rintangan",
+          summary:
+            "Di mana pembeli dan penjual mengambil alih, dan cara paras bertukar selepas ditembusi.",
+        },
+        {
+          title: "Garis aliran",
+          summary: "Cara melukisnya, membaca sudutnya, dan apa yang penembusan isyaratkan.",
+        },
+        {
+          title: "Corak carta",
+          summary:
+            "Corak pembalikan (kepala & bahu, puncak/dasar berganda, baji) dan corak penerusan (bendera, segi tiga).",
+        },
+        {
+          title: "Corak lilin",
+          summary:
+            "Isyarat lilin tunggal (doji, tukul, marubozu) dan berbilang lilin (engulfing, bintang pagi/petang, tiga askar/gagak).",
+        },
       ],
       forYouIf: [
         "Anda mahukan kit alat pembacaan carta teras dalam satu panduan ringkas",

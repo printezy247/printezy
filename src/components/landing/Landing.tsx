@@ -1,6 +1,15 @@
 import { imgProps } from "@/lib/responsive-images";
 import { NextStepAdvisor } from "./NextStepAdvisor";
-import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  lazy,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
@@ -13,7 +22,15 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import { useTranslation, useLocale, localizePath, LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/i18n";
+import {
+  useTranslation,
+  useLocale,
+  localizePath,
+  LOCALES,
+  LOCALE_LABELS,
+  LOCALE_FLAGS,
+  LOCALE_NATIVE_NAMES,
+} from "@/lib/i18n";
 import { LiveSampleSignal } from "./LiveSampleSignal";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
@@ -72,8 +89,7 @@ const tierPro = "/__l5e/assets-v1/b081a13c-b17d-495f-addf-bf83f9f20930/tier-pro.
 const tierPremium = "/__l5e/assets-v1/aed9ef52-2740-4a48-83db-2b807a45e958/tier-premium.jpg";
 const tierElite = "/__l5e/assets-v1/74dd6c4b-6aa9-466c-89ab-b1e0b75b28ac/tier-elite.jpg";
 
-const tradingViewLogo =
-  "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
+const tradingViewLogo = "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
 const mt5Logo = mt5LogoAsset;
 
 /* ------------------------------------------------------------------ */
@@ -86,11 +102,11 @@ export const LINKS = {
   bot: "https://t.me/ezyregisterbot",
   macro: "https://t.me/xaubtcmacro_bot",
   ebook: "https://t.me/m/r7Oig5BLMTk9",
-  vantage: "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
+  vantage:
+    "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
   tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
   ezyai: "https://t.me/ezytradeai_bot",
 };
-
 
 /**
  * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
@@ -183,7 +199,9 @@ export function SectionHeading({
     <Reveal>
       <div className="mx-auto mb-12 max-w-2xl text-center">
         {eyebrow ? (
-          <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{eyebrow}</p>
+          <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
+            {eyebrow}
+          </p>
         ) : null}
         <h2 className="text-3xl sm:text-4xl">{title}</h2>
         {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
@@ -206,11 +224,7 @@ function TelegramCta({
   className?: string;
 }) {
   return (
-    <Button
-      asChild
-      variant={variant === "primary" ? "primary" : "outline"}
-      className={className}
-    >
+    <Button asChild variant={variant === "primary" ? "primary" : "outline"} className={className}>
       <a href={href} onClick={() => goTrack(event)}>
         <Send className="h-4 w-4" />
         {label}
@@ -229,16 +243,14 @@ function SupportCta({ className = "" }: { className?: string }) {
   );
 }
 
-function NeonFreeAccessButton({
-  href,
-  event,
-}: {
-  href: string;
-  event: string;
-}) {
+function NeonFreeAccessButton({ href, event }: { href: string; event: string }) {
   return (
     <div className="flex justify-center">
-      <a href={href} onClick={() => goTrack(event)} className="neon-free-btn neon-free-btn--compact">
+      <a
+        href={href}
+        onClick={() => goTrack(event)}
+        className="neon-free-btn neon-free-btn--compact"
+      >
         <span className="neon-free-btn-inner">Get Free Access</span>
       </a>
     </div>
@@ -453,7 +465,12 @@ function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate
   }
   const redirect = typeof window !== "undefined" ? window.location.pathname : "/";
   return (
-    <Button asChild variant="ghost" size={mobile ? "md" : "sm"} className={mobile ? "w-full justify-start" : ""}>
+    <Button
+      asChild
+      variant="ghost"
+      size={mobile ? "md" : "sm"}
+      className={mobile ? "w-full justify-start" : ""}
+    >
       {state === "in" ? (
         <Link to="/dashboard" onClick={onNavigate}>
           <UserRound className="h-4 w-4" /> {t("nav_my_account")}
@@ -508,7 +525,11 @@ export function Nav() {
 
     function onPointerDown(e: MouseEvent) {
       const target = e.target as Node;
-      if (menuRef.current && !menuRef.current.contains(target) && !toggleBtnRef.current?.contains(target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        !toggleBtnRef.current?.contains(target)
+      ) {
         closeMenu();
       }
     }
@@ -805,90 +826,100 @@ function Hero() {
   const live = useDemoPrice();
   return (
     <>
-    <section className="bg-hero relative overflow-hidden border-b border-border">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
-      <div aria-hidden="true" className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block" />
-      <PointerGlyphs />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[1fr_1fr] lg:gap-8 lg:px-8 lg:py-10 xl:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
-        <div className="mx-auto max-w-xl lg:mx-0">
-          <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
-            <Users className="h-3.5 w-3.5 text-primary" />
-            <span className="font-mono font-extrabold tabular-nums text-primary">{memberCount}</span>{" "}
-            {t("hero_badge")}
-          </span>
-          <h1 className="text-glow mt-5 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[42px] lg:text-[44px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
-            {t("hero_title")}
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-body sm:text-lg [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 [@media(min-width:640px)_and_(max-width:1279px)]:text-base">
-            {t("hero_subtitle")}
-          </p>
+      <section className="bg-hero relative overflow-hidden border-b border-border">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block"
+        />
+        <PointerGlyphs />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[1fr_1fr] lg:gap-8 lg:px-8 lg:py-10 xl:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
+          <div className="mx-auto max-w-xl lg:mx-0">
+            <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
+              <Users className="h-3.5 w-3.5 text-primary" />
+              <span className="font-mono font-extrabold tabular-nums text-primary">
+                {memberCount}
+              </span>{" "}
+              {t("hero_badge")}
+            </span>
+            <h1 className="text-glow mt-5 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[42px] lg:text-[44px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
+              {t("hero_title")}
+            </h1>
+            <p className="mt-5 text-base leading-relaxed text-body sm:text-lg [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 [@media(min-width:640px)_and_(max-width:1279px)]:text-base">
+              {t("hero_subtitle")}
+            </p>
 
-          <div className="mt-8 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-            <Link
-              to="/free-channel"
-              onClick={() => goTrack("hero_join_free")}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground hover:bg-primary-glow"
-            >
-              <Send className="h-4 w-4" /> {t("hero_cta_join")}
-            </Link>
-            <a
-              href="/home#packages"
-              onClick={() => goTrack("hero_see_packages")}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
-            >
-              {t("hero_cta_packages")}
-            </a>
+            <div className="mt-8 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+              <Link
+                to="/free-channel"
+                onClick={() => goTrack("hero_join_free")}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground hover:bg-primary-glow"
+              >
+                <Send className="h-4 w-4" /> {t("hero_cta_join")}
+              </Link>
+              <a
+                href="/home#packages"
+                onClick={() => goTrack("hero_see_packages")}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
+              >
+                {t("hero_cta_packages")}
+              </a>
+            </div>
+
+            <p className="mt-4 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-sm text-muted-foreground">
+              <Link
+                to="/ebooks/$slug"
+                params={{ slug: "technical-analysis" }}
+                onClick={() => goTrack("hero_free_ebook")}
+                className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+              >
+                <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
+              </Link>
+            </p>
+
+            <dl className="mx-auto mt-10 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
+              {[
+                [memberCount, t("hero_stat_members")],
+                ["24/5", t("hero_stat_coverage")],
+                ["3 Styles", t("hero_stat_styles")],
+              ].map(([v, l]) => (
+                <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
+                  <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">
+                    {v}
+                  </dt>
+                  <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {l}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          <p className="mt-4 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-sm text-muted-foreground">
-            <Link
-              to="/ebooks/$slug"
-              params={{ slug: "technical-analysis" }}
-              onClick={() => goTrack("hero_free_ebook")}
-              className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
-            >
-              <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
-            </Link>
-          </p>
-
-          <dl className="mx-auto mt-10 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
-            {[
-              [memberCount, t("hero_stat_members")],
-              ["24/5", t("hero_stat_coverage")],
-              ["3 Styles", t("hero_stat_styles")],
-            ].map(([v, l]) => (
-              <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
-                <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
-                <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  {l}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <div className="relative mx-auto w-full max-w-xl text-left">
-          <div aria-hidden="true" className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl" />
-          <div className="relative">
-            <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
-            {/* This card is a demo walk, not the desk. When the real board
-                is open, point at it so nobody mistakes the sample for live
-                data — and so a buyer can jump straight to the real thing. */}
-            {EZYAI_BOARD_VISIBLE ? (
-              <p className="mt-3 text-center text-xs text-muted-foreground">
-                <a
-                  href={localizePath("/ezyai", locale)}
-                  className="underline underline-offset-2 transition-colors hover:text-foreground"
-                  onClick={() => goTrack("hero_see_live_board")}
-                >
-                  {t("ezyai_see_live_board")} →
-                </a>
-              </p>
-            ) : null}
+          <div className="relative mx-auto w-full max-w-xl text-left">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl"
+            />
+            <div className="relative">
+              <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+              {/* This card is a demo walk, not the desk. When the real board
+                  is open, point at it so nobody mistakes the sample for live
+                  data — and so a buyer can jump straight to the real thing. */}
+              {EZYAI_BOARD_VISIBLE ? (
+                <p className="mt-3 text-center text-xs text-muted-foreground">
+                  <a
+                    href={localizePath("/ezyai", locale)}
+                    className="underline underline-offset-2 transition-colors hover:text-foreground"
+                    onClick={() => goTrack("hero_see_live_board")}
+                  >
+                    {t("ezyai_see_live_board")} →
+                  </a>
+                </p>
+              ) : null}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   );
 }
@@ -935,7 +966,9 @@ export function StatsStrip() {
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-6 px-4 py-8 sm:px-6 md:grid-cols-4 lg:px-8">
         {stats.map(([value, label]) => (
           <div key={label} className="flex items-center justify-center gap-3">
-            <span className="font-mono text-3xl font-extrabold tabular-nums text-foreground">{value}</span>
+            <span className="font-mono text-3xl font-extrabold tabular-nums text-foreground">
+              {value}
+            </span>
             <span className="text-gradient-brand max-w-[8.5rem] text-[11px] font-bold uppercase leading-tight tracking-[0.14em]">
               {label}
             </span>
@@ -1086,11 +1119,11 @@ export function TrackRecord() {
           onClick={() => goTrack("track_record_telegram")}
           className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-primary"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">{t("track_record_telegram_eyebrow")}</p>
-          <h3 className="mt-2 text-lg font-bold">{t("track_record_telegram_title")}</h3>
-          <p className="mt-2 flex-1 text-sm text-body">
-            {t("track_record_telegram_body")}
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-primary">
+            {t("track_record_telegram_eyebrow")}
           </p>
+          <h3 className="mt-2 text-lg font-bold">{t("track_record_telegram_title")}</h3>
+          <p className="mt-2 flex-1 text-sm text-body">{t("track_record_telegram_body")}</p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
             {t("track_record_telegram_cta")} <ArrowRight className="h-3.5 w-3.5" />
           </span>
@@ -1102,11 +1135,11 @@ export function TrackRecord() {
           onClick={() => goTrack("track_record_forexfactory")}
           className="flex h-full flex-col rounded-md border border-border bg-card p-5 transition-colors hover:border-accent"
         >
-          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">{t("track_record_ff_eyebrow")}</p>
-          <h3 className="mt-2 text-lg font-bold">{t("track_record_ff_title")}</h3>
-          <p className="mt-2 flex-1 text-sm text-body">
-            {t("track_record_ff_body")}
+          <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
+            {t("track_record_ff_eyebrow")}
           </p>
+          <h3 className="mt-2 text-lg font-bold">{t("track_record_ff_title")}</h3>
+          <p className="mt-2 flex-1 text-sm text-body">{t("track_record_ff_body")}</p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
             {t("track_record_ff_cta")} <ArrowRight className="h-3.5 w-3.5" />
           </span>
@@ -1143,16 +1176,16 @@ export function Features() {
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((f, i) => (
           <Reveal key={f.titleKey} delay={i * 0.04} className="h-full">
-          <article className="glass-card card-lift h-full rounded-xl p-6">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-              <f.icon className="h-5 w-5" />
-            </span>
-            <span className="gradient-tick mt-4" aria-hidden="true" />
-            <h3 className="mt-2 text-lg font-semibold">{t(f.titleKey)}</h3>
-            <p className="mt-2 text-sm text-body">
-              {t(f.bodyKey).replace("{memberCount}", memberCount)}
-            </p>
-          </article>
+            <article className="glass-card card-lift h-full rounded-xl p-6">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
+                <f.icon className="h-5 w-5" />
+              </span>
+              <span className="gradient-tick mt-4" aria-hidden="true" />
+              <h3 className="mt-2 text-lg font-semibold">{t(f.titleKey)}</h3>
+              <p className="mt-2 text-sm text-body">
+                {t(f.bodyKey).replace("{memberCount}", memberCount)}
+              </p>
+            </article>
           </Reveal>
         ))}
       </div>
@@ -1189,7 +1222,12 @@ const TIERS: Tier[] = [
     price: "$29",
     priceNote: "one-time",
     blurbKey: "tier_beginner_blurb",
-    featureKeys: ["tier_beginner_f1", "tier_beginner_f2", "tier_beginner_f3", "tier_enroll_via_bot"],
+    featureKeys: [
+      "tier_beginner_f1",
+      "tier_beginner_f2",
+      "tier_beginner_f3",
+      "tier_enroll_via_bot",
+    ],
     href: LINKS.bot,
     sku: "signal_beginner",
     event: "pricing_beginner",
@@ -1226,7 +1264,13 @@ const TIERS: Tier[] = [
     price: "$299",
     priceNote: "one-time",
     blurbKey: "tier_elite_blurb",
-    featureKeys: ["tier_elite_f1", "tier_elite_f2", "tier_elite_f3", "tier_elite_f4", "tier_enroll_via_bot"],
+    featureKeys: [
+      "tier_elite_f1",
+      "tier_elite_f2",
+      "tier_elite_f3",
+      "tier_elite_f4",
+      "tier_enroll_via_bot",
+    ],
     href: LINKS.bot,
     sku: "signal_elite",
     event: "pricing_elite",
@@ -1249,111 +1293,115 @@ export function Pricing() {
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {TIERS.map((t, i) => (
           <Reveal key={t.name} delay={i * 0.04} className="h-full">
-          <article
-            id={t.sku}
-            className={`card-lift relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
-              t.highlight
-                ? "border border-accent/60 bg-surface-elevated shadow-elevated ring-1 ring-accent/15 lg:-translate-y-1.5"
-                : "glass-card"
-            }`}
-          >
-            {t.highlight ? (
-              <div className="bg-gold absolute inset-x-0 top-0 z-10 h-[3px]" aria-hidden="true" />
-            ) : null}
-            {t.image ? (
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
-                {t.highlight ? (
-                  <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
-                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    {tt("pricing_most_popular")}
-                  </span>
-                ) : null}
-                <img
-                  {...imgProps(t.image)}
-                  alt={`${t.name} package preview`}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
-              </div>
-            ) : (
-              <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border">
-                {t.highlight ? (
-                  <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
-                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    {tt("pricing_most_popular")}
-                  </span>
-                ) : null}
-              </div>
-            )}
-            <div className="flex flex-1 flex-col p-6">
-              <h3 className="text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                {t.name}
-              </h3>
-              <p className="mt-2 flex items-baseline justify-center gap-1.5 text-center">
-                <span className="font-mono text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
-                  {t.price}
-                </span>
-                {t.priceNote ? (
-                  <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t.priceNote}
-                  </span>
-                ) : null}
-              </p>
-              {t.freeAlt ? (
-                <p className="mt-1 text-center text-[11px] font-medium leading-snug text-accent">
-                  {tt("pricing_free_alt")}
-                </p>
-              ) : (
-                <p className="mt-1 h-4" aria-hidden="true" />
-              )}
-              <p className="mt-2 text-center text-sm font-semibold text-body">{tt(t.blurbKey).replace("{memberCount}", memberCount)}</p>
-              <ul className="mt-5 flex-1 space-y-2.5">
-                {t.featureKeys.map((fk) => (
-                  <li key={fk} className="flex items-start gap-2 text-sm">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-body">{tt(fk).replace("{memberCount}", memberCount)}</span>
-                  </li>
-                ))}
-              </ul>
-              {t.openAccountHref ? (
-                <div className="mt-6 flex justify-center">
-                  <a
-                    href={t.openAccountHref}
-                    onClick={() => goTrack(t.openAccountEvent!)}
-                    className="neon-free-btn neon-pearl neon-free-btn--compact"
-                  >
-                    <span className="neon-free-btn-inner">Open Account</span>
-                  </a>
+            <article
+              id={t.sku}
+              className={`card-lift relative flex h-full scroll-mt-24 flex-col overflow-hidden rounded-xl ${
+                t.highlight
+                  ? "border border-accent/60 bg-surface-elevated shadow-elevated ring-1 ring-accent/15 lg:-translate-y-1.5"
+                  : "glass-card"
+              }`}
+            >
+              {t.highlight ? (
+                <div className="bg-gold absolute inset-x-0 top-0 z-10 h-[3px]" aria-hidden="true" />
+              ) : null}
+              {t.image ? (
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
+                  {t.highlight ? (
+                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                      {tt("pricing_most_popular")}
+                    </span>
+                  ) : null}
+                  <img
+                    {...imgProps(t.image)}
+                    alt={`${t.name} package preview`}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[#0a0c0b]/90 to-transparent" />
                 </div>
-              ) : null}
-
-              <div className={t.openAccountHref ? "mt-2" : "mt-6"} onClickCapture={() => goTrack(t.event)}>
-                <BuyButton sku={t.sku} label={tt("pricing_cta")} inlineForm />
-              </div>
-              <p className="mt-1.5 flex items-center justify-center gap-1 text-center text-[11px] text-muted-foreground">
-                <Lock className="h-3 w-3" /> Secured by Stripe
-              </p>
-              {t.freeAlt ? (
-                t.name === "Premium" ? (
-                  <div className="mt-2">
-                    <NeonFreeAccessButton
-                      href={botHref}
-                      event={`${t.event}_free_access`}
-                    />
-                  </div>
+              ) : (
+                <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border">
+                  {t.highlight ? (
+                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                      {tt("pricing_most_popular")}
+                    </span>
+                  ) : null}
+                </div>
+              )}
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  {t.name}
+                </h3>
+                <p className="mt-2 flex items-baseline justify-center gap-1.5 text-center">
+                  <span className="font-mono text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
+                    {t.price}
+                  </span>
+                  {t.priceNote ? (
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      {t.priceNote}
+                    </span>
+                  ) : null}
+                </p>
+                {t.freeAlt ? (
+                  <p className="mt-1 text-center text-[11px] font-medium leading-snug text-accent">
+                    {tt("pricing_free_alt")}
+                  </p>
                 ) : (
-                  <div className="mt-2 flex justify-center">
-                    <Button asChild variant="outline" size="sm" className="min-w-[168px]">
-                      <a href={botHref} onClick={() => goTrack(`${t.event}_free_access`)}>
-                        Get Free Access
-                      </a>
-                    </Button>
+                  <p className="mt-1 h-4" aria-hidden="true" />
+                )}
+                <p className="mt-2 text-center text-sm font-semibold text-body">
+                  {tt(t.blurbKey).replace("{memberCount}", memberCount)}
+                </p>
+                <ul className="mt-5 flex-1 space-y-2.5">
+                  {t.featureKeys.map((fk) => (
+                    <li key={fk} className="flex items-start gap-2 text-sm">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <span className="text-body">
+                        {tt(fk).replace("{memberCount}", memberCount)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {t.openAccountHref ? (
+                  <div className="mt-6 flex justify-center">
+                    <a
+                      href={t.openAccountHref}
+                      onClick={() => goTrack(t.openAccountEvent!)}
+                      className="neon-free-btn neon-pearl neon-free-btn--compact"
+                    >
+                      <span className="neon-free-btn-inner">Open Account</span>
+                    </a>
                   </div>
-                )
-              ) : null}
-            </div>
-          </article>
+                ) : null}
+
+                <div
+                  className={t.openAccountHref ? "mt-2" : "mt-6"}
+                  onClickCapture={() => goTrack(t.event)}
+                >
+                  <BuyButton sku={t.sku} label={tt("pricing_cta")} inlineForm />
+                </div>
+                <p className="mt-1.5 flex items-center justify-center gap-1 text-center text-[11px] text-muted-foreground">
+                  <Lock className="h-3 w-3" /> Secured by Stripe
+                </p>
+                {t.freeAlt ? (
+                  t.name === "Premium" ? (
+                    <div className="mt-2">
+                      <NeonFreeAccessButton href={botHref} event={`${t.event}_free_access`} />
+                    </div>
+                  ) : (
+                    <div className="mt-2 flex justify-center">
+                      <Button asChild variant="outline" size="sm" className="min-w-[168px]">
+                        <a href={botHref} onClick={() => goTrack(`${t.event}_free_access`)}>
+                          Get Free Access
+                        </a>
+                      </Button>
+                    </div>
+                  )
+                ) : null}
+              </div>
+            </article>
           </Reveal>
         ))}
       </div>
@@ -1374,7 +1422,11 @@ export function Pricing() {
       </div>
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Questions?{" "}
-        <a href={LINKS.support} onClick={() => goTrack("pricing_support")} className="text-primary hover:underline">
+        <a
+          href={LINKS.support}
+          onClick={() => goTrack("pricing_support")}
+          className="text-primary hover:underline"
+        >
           Ask Sarah
         </a>{" "}
         for help choosing the right tier.
@@ -1398,7 +1450,11 @@ export const EBOOKS = [
     title: "Technical Analysis Ebook",
     slug: "technical-analysis",
     image: ebookTechnical,
-    bulletKeys: ["ebook_technical_b1", "ebook_technical_b2", "ebook_technical_b3"] as TranslationKey[],
+    bulletKeys: [
+      "ebook_technical_b1",
+      "ebook_technical_b2",
+      "ebook_technical_b3",
+    ] as TranslationKey[],
   },
 ];
 
@@ -1411,18 +1467,17 @@ const MT5_FEATURE_KEYS: TranslationKey[] = [
   "mt5_feature_4",
 ];
 
-const MACRO_FEATURE_KEYS: TranslationKey[] = ["macro_feature_1", "macro_feature_2", "macro_feature_3"];
+const MACRO_FEATURE_KEYS: TranslationKey[] = [
+  "macro_feature_1",
+  "macro_feature_2",
+  "macro_feature_3",
+];
 
 function Book3D({ image, title }: { image: string; title: string }) {
   return (
     <div className="book-3d aspect-[1240/1754] w-28 shrink-0 sm:w-32">
       <div className="book-back" aria-hidden="true" />
-      <img
-        {...imgProps(image)}
-        alt={`${title} cover`}
-        loading="lazy"
-        className="book-cover"
-      />
+      <img {...imgProps(image)} alt={`${title} cover`} loading="lazy" className="book-cover" />
     </div>
   );
 }
@@ -1463,7 +1518,10 @@ export function Products() {
                   <h4 className="text-base font-semibold leading-snug sm:text-lg">{b.title}</h4>
                   <ul className="mt-2 flex-1 space-y-1">
                     {b.bulletKeys.map((bulletKey) => (
-                      <li key={bulletKey} className="flex items-start gap-2 text-xs text-body sm:text-sm">
+                      <li
+                        key={bulletKey}
+                        className="flex items-start gap-2 text-xs text-body sm:text-sm"
+                      >
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
                         <span>{t(bulletKey)}</span>
                       </li>
@@ -1490,154 +1548,174 @@ export function Products() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* TradingView indicators */}
         <Reveal className="h-full">
-        <article className="glass-card flex h-full flex-col rounded-xl p-6">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
-            <img src={tradingViewLogo} width={320} height={320} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
-          </span>
-          <h3 className="mt-4 text-lg font-semibold">{t("products_tv_heading")}</h3>
-          <ul className="mt-4 flex-1 space-y-2.5">
-            {TV_FEATURE_KEYS.map((fk) => (
-              <li key={fk} className="flex items-start gap-2 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-body">{t(fk)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-col gap-2 pt-5">
-            <a
-              href={botHref}
-              onClick={() => goTrack("products_tv_enroll")}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-            >
-              {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-            <Button asChild variant="outline">
+          <article className="glass-card flex h-full flex-col rounded-xl p-6">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
+              <img
+                src={tradingViewLogo}
+                width={320}
+                height={320}
+                alt="TradingView logo"
+                loading="lazy"
+                className="h-full w-full object-contain"
+              />
+            </span>
+            <h3 className="mt-4 text-lg font-semibold">{t("products_tv_heading")}</h3>
+            <ul className="mt-4 flex-1 space-y-2.5">
+              {TV_FEATURE_KEYS.map((fk) => (
+                <li key={fk} className="flex items-start gap-2 text-sm">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <span className="text-body">{t(fk)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto flex flex-col gap-2 pt-5">
               <a
-                href={LINKS.tradingView}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("products_tv_open_free_account")}
+                href={botHref}
+                onClick={() => goTrack("products_tv_enroll")}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
               >
-                <img src={tradingViewLogo} width={320} height={320} alt="" className="h-4 w-4 object-contain" />
-                {t("products_open_free_account")}
+                {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
               </a>
-            </Button>
-          </div>
-        </article>
+              <Button asChild variant="outline">
+                <a
+                  href={LINKS.tradingView}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => goTrack("products_tv_open_free_account")}
+                >
+                  <img
+                    src={tradingViewLogo}
+                    width={320}
+                    height={320}
+                    alt=""
+                    className="h-4 w-4 object-contain"
+                  />
+                  {t("products_open_free_account")}
+                </a>
+              </Button>
+            </div>
+          </article>
         </Reveal>
 
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
-        <article className="glass-card flex h-full flex-col rounded-xl p-6">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
-            <img {...imgProps(mt5Logo)} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
-          </span>
-          <h3 className="mt-4 text-lg font-semibold">{t("products_mt5_heading")}</h3>
-          <ul className="mt-4 flex-1 space-y-2.5">
-            {MT5_FEATURE_KEYS.map((fk) => (
-              <li key={fk} className="flex items-start gap-2 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-body">{t(fk)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-col gap-2 pt-5">
-            <a
-              href={botHref}
-              onClick={() => goTrack("products_mt5_enroll")}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-            >
-              {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-            <Button asChild variant="outline">
+          <article className="glass-card flex h-full flex-col rounded-xl p-6">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
+              <img
+                {...imgProps(mt5Logo)}
+                alt="MetaTrader 5 logo"
+                loading="lazy"
+                className="h-full w-full object-contain"
+              />
+            </span>
+            <h3 className="mt-4 text-lg font-semibold">{t("products_mt5_heading")}</h3>
+            <ul className="mt-4 flex-1 space-y-2.5">
+              {MT5_FEATURE_KEYS.map((fk) => (
+                <li key={fk} className="flex items-start gap-2 text-sm">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <span className="text-body">{t(fk)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto flex flex-col gap-2 pt-5">
               <a
-                href="https://www.metatrader5.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => goTrack("products_mt5_download")}
+                href={botHref}
+                onClick={() => goTrack("products_mt5_enroll")}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
               >
-                {t("products_download_mt5")} <ArrowRight className="h-3.5 w-3.5" />
+                {t("pricing_cta")} <ArrowRight className="h-3.5 w-3.5" />
               </a>
-            </Button>
-          </div>
-        </article>
+              <Button asChild variant="outline">
+                <a
+                  href="https://www.metatrader5.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => goTrack("products_mt5_download")}
+                >
+                  {t("products_download_mt5")} <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </Button>
+            </div>
+          </article>
         </Reveal>
 
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
-        <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
-          <img
-            {...imgProps(macroLogo)}
-            alt="Gold, Forex & Crypto Macros"
-            loading="lazy"
-            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full object-contain opacity-15"
-          />
-          <img
-            {...imgProps(macroLogo)}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
-          />
-          <h3 className="mt-4 text-lg font-semibold">{t("products_macro_heading")}</h3>
-          <ul className="mt-4 flex-1 space-y-2.5">
-            {MACRO_FEATURE_KEYS.map((fk) => (
-              <li key={fk} className="flex items-start gap-2 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                <span className="text-body">{t(fk)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-col gap-2 pt-5">
-            <a
-              href={LINKS.macro}
-              onClick={() => goTrack("products_macro_join")}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-            >
-              {t("products_join_macro_bot")} <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-            <Button asChild variant="outline">
-              <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
-                {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </article>
+          <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
+            <img
+              {...imgProps(macroLogo)}
+              alt="Gold, Forex & Crypto Macros"
+              loading="lazy"
+              className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full object-contain opacity-15"
+            />
+            <img
+              {...imgProps(macroLogo)}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              className="h-12 w-12 rounded-full object-contain ring-1 ring-accent/30"
+            />
+            <h3 className="mt-4 text-lg font-semibold">{t("products_macro_heading")}</h3>
+            <ul className="mt-4 flex-1 space-y-2.5">
+              {MACRO_FEATURE_KEYS.map((fk) => (
+                <li key={fk} className="flex items-start gap-2 text-sm">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  <span className="text-body">{t(fk)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto flex flex-col gap-2 pt-5">
+              <a
+                href={LINKS.macro}
+                onClick={() => goTrack("products_macro_join")}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+              >
+                {t("products_join_macro_bot")} <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+              <Button asChild variant="outline">
+                <Link to="/macro" onClick={() => goTrack("products_macro_view")}>
+                  {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            </div>
+          </article>
         </Reveal>
 
         {/* EzyAI */}
         <Reveal className="h-full" delay={0.3}>
-        <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
-          <EzyAiLogo className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-15" />
-          <EzyAiLogo className="h-12 w-12 rounded-full ring-1 ring-primary/30" title="EzyAI" />
-          <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
-          <ul className="mt-4 flex-1 space-y-2.5">
-            {(["ezyai_feature_1", "ezyai_feature_2", "ezyai_feature_3"] as TranslationKey[]).map((fk) => (
-              <li key={fk} className="flex items-start gap-2 text-sm">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                <span className="text-body">{t(fk)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-auto flex flex-col gap-2 pt-5">
-            <a
-              href={LINKS.ezyai}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => goTrack("products_ezyai_try_free")}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-            >
-              {t("ezyai_try_free")} <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-            {EZYAI_BOARD_VISIBLE ? (
-              <Button asChild variant="outline">
-                <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
-                  {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            ) : null}
-          </div>
-        </article>
+          <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
+            <EzyAiLogo className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-15" />
+            <EzyAiLogo className="h-12 w-12 rounded-full ring-1 ring-primary/30" title="EzyAI" />
+            <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
+            <ul className="mt-4 flex-1 space-y-2.5">
+              {(["ezyai_feature_1", "ezyai_feature_2", "ezyai_feature_3"] as TranslationKey[]).map(
+                (fk) => (
+                  <li key={fk} className="flex items-start gap-2 text-sm">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <span className="text-body">{t(fk)}</span>
+                  </li>
+                ),
+              )}
+            </ul>
+            <div className="mt-auto flex flex-col gap-2 pt-5">
+              <a
+                href={LINKS.ezyai}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => goTrack("products_ezyai_try_free")}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+              >
+                {t("ezyai_try_free")} <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+              {EZYAI_BOARD_VISIBLE ? (
+                <Button asChild variant="outline">
+                  <Link to="/ezyai" onClick={() => goTrack("products_ezyai_view")}>
+                    {t("products_view_it_here")} <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+          </article>
         </Reveal>
       </div>
     </Section>
@@ -1668,7 +1746,9 @@ export function HowItWorks() {
             initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }}
+            transition={
+              reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }
+            }
           >
             <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
             <span className="gradient-tick mt-2" aria-hidden="true" />
@@ -1695,51 +1775,52 @@ export function Ambassador() {
     <Section id="ambassador">
       <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal>
-        <div className="glass-card relative overflow-hidden rounded-xl p-8 text-center">
-          <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
-            <img
-              {...imgProps(jackPhoto)}
-              alt="Jack, founder of EzyMap ALGO"
-              loading="lazy"
-              className="h-full w-full object-cover"
-            />
+          <div className="glass-card relative overflow-hidden rounded-xl p-8 text-center">
+            <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border-2 border-accent/40 shadow-gold">
+              <img
+                {...imgProps(jackPhoto)}
+                alt="Jack, founder of EzyMap ALGO"
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <p className="mt-5 text-lg font-semibold">Jack</p>
+            <p className="text-sm text-muted-foreground">{t("ambassador_role")}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("ambassador_experience")}</p>
+            <Button asChild variant="outline" size="sm" className="mt-5">
+              <a href={LINKS.support} onClick={() => goTrack("ambassador_contact_sarah")}>
+                <Send className="h-4 w-4" /> {t("ambassador_ask_sarah")}
+              </a>
+            </Button>
           </div>
-          <p className="mt-5 text-lg font-semibold">Jack</p>
-          <p className="text-sm text-muted-foreground">{t("ambassador_role")}</p>
-          <p className="mt-3 text-xs text-muted-foreground">
-            {t("ambassador_experience")}
-          </p>
-          <Button asChild variant="outline" size="sm" className="mt-5">
-            <a href={LINKS.support} onClick={() => goTrack("ambassador_contact_sarah")}>
-              <Send className="h-4 w-4" /> {t("ambassador_ask_sarah")}
-            </a>
-          </Button>
-        </div>
         </Reveal>
 
         <Reveal delay={0.15}>
-        <div>
-          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{t("ambassador_eyebrow")}</p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">{t("ambassador_title")}</h2>
-          <p className="mt-4 text-base text-body">
-            {t("ambassador_bio")}
-          </p>
-          <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
-            "{t("ambassador_quote")}"
-          </blockquote>
-          <dl className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              [memberCount, t("ambassador_stat_students")],
-              ["10+ yrs", t("ambassador_stat_trading")],
-              ["24/5", t("ambassador_stat_coverage")],
-            ].map(([v, l]) => (
-              <div key={l} className="flex h-full flex-col rounded-xl border border-border bg-surface p-4">
-                <dt className="font-mono text-xl font-bold tabular-nums text-accent">{v}</dt>
-                <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+          <div>
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
+              {t("ambassador_eyebrow")}
+            </p>
+            <h2 className="mt-3 text-3xl sm:text-4xl">{t("ambassador_title")}</h2>
+            <p className="mt-4 text-base text-body">{t("ambassador_bio")}</p>
+            <blockquote className="mt-6 border-l-2 border-accent pl-4 text-lg italic text-foreground">
+              "{t("ambassador_quote")}"
+            </blockquote>
+            <dl className="mt-8 grid gap-4 sm:grid-cols-3">
+              {[
+                [memberCount, t("ambassador_stat_students")],
+                ["10+ yrs", t("ambassador_stat_trading")],
+                ["24/5", t("ambassador_stat_coverage")],
+              ].map(([v, l]) => (
+                <div
+                  key={l}
+                  className="flex h-full flex-col rounded-xl border border-border bg-surface p-4"
+                >
+                  <dt className="font-mono text-xl font-bold tabular-nums text-accent">{v}</dt>
+                  <dd className="text-xs uppercase tracking-wide text-muted-foreground">{l}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </Reveal>
       </div>
     </Section>
@@ -1776,45 +1857,49 @@ export function SocialProof() {
         subtitle={t("social_subtitle")}
       />
       <div className="mb-10 grid gap-4">
-        {[
-          [Clock, "24/5", t("social_market_coverage")],
-        ].map(([Icon, v, l], i) => {
+        {[[Clock, "24/5", t("social_market_coverage")]].map(([Icon, v, l], i) => {
           const I = Icon as typeof Activity;
           return (
             <Reveal key={l as string} delay={i * 0.04}>
-            <div className="glass-card mx-auto flex h-full max-w-xs items-center gap-4 rounded-xl p-5">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
-                <I className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-mono text-xl font-bold tabular-nums">{v as string}</p>
-                <p className="text-xs text-muted-foreground">{l as string}</p>
+              <div className="glass-card mx-auto flex h-full max-w-xs items-center gap-4 rounded-xl p-5">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
+                  <I className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="font-mono text-xl font-bold tabular-nums">{v as string}</p>
+                  <p className="text-xs text-muted-foreground">{l as string}</p>
+                </div>
               </div>
-            </div>
             </Reveal>
           );
         })}
       </div>
       <div className="flex flex-wrap justify-center gap-5">
         {TESTIMONIALS.map((item, i) => (
-          <Reveal key={item.name} delay={i * 0.04} className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs">
-          <figure className="glass-card flex h-full flex-col rounded-xl p-6">
-            <div className="flex gap-0.5 text-accent">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-current" />
-              ))}
-            </div>
-            <blockquote className="mt-3 flex-1 text-sm text-body">"{t(item.quoteKey)}"</blockquote>
-            <figcaption className="mt-4 text-sm">
-              <span className="font-semibold">{item.name}</span>
-              <span className="block text-xs text-muted-foreground">{t(item.roleKey)}</span>
-              {item.verifiedHandle ? (
-                <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                  <ShieldCheck className="h-3 w-3" /> {t("testimonial_verified")}
-                </span>
-              ) : null}
-            </figcaption>
-          </figure>
+          <Reveal
+            key={item.name}
+            delay={i * 0.04}
+            className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs"
+          >
+            <figure className="glass-card flex h-full flex-col rounded-xl p-6">
+              <div className="flex gap-0.5 text-accent">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-3.5 w-3.5 fill-current" />
+                ))}
+              </div>
+              <blockquote className="mt-3 flex-1 text-sm text-body">
+                "{t(item.quoteKey)}"
+              </blockquote>
+              <figcaption className="mt-4 text-sm">
+                <span className="font-semibold">{item.name}</span>
+                <span className="block text-xs text-muted-foreground">{t(item.roleKey)}</span>
+                {item.verifiedHandle ? (
+                  <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
+                    <ShieldCheck className="h-3 w-3" /> {t("testimonial_verified")}
+                  </span>
+                ) : null}
+              </figcaption>
+            </figure>
           </Reveal>
         ))}
       </div>
@@ -1826,7 +1911,10 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const FAQ_GROUPS: { titleKey: TranslationKey; items: { qKey: TranslationKey; aKey: TranslationKey }[] }[] = [
+export const FAQ_GROUPS: {
+  titleKey: TranslationKey;
+  items: { qKey: TranslationKey; aKey: TranslationKey }[];
+}[] = [
   {
     titleKey: "faq_group1_title",
     items: [
@@ -1876,24 +1964,24 @@ export function Faq() {
                 const id = `${gi}-${i}`;
                 return (
                   <Reveal key={f.qKey} delay={i * 0.04} y={20}>
-                  <div className="glass-card overflow-hidden rounded-xl">
-                    <button
-                      type="button"
-                      onClick={() => toggle(id)}
-                      aria-expanded={openIds.includes(id)}
-                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                    >
-                      <span className="text-sm font-semibold">{t(f.qKey)}</span>
-                      <ChevronDown
-                        className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${openIds.includes(id) ? "rotate-180" : ""}`}
-                      />
-                    </button>
-                    {openIds.includes(id) ? (
-                      <p className="border-t border-border px-5 py-4 text-sm leading-relaxed text-body">
-                        {t(f.aKey)}
-                      </p>
-                    ) : null}
-                  </div>
+                    <div className="glass-card overflow-hidden rounded-xl">
+                      <button
+                        type="button"
+                        onClick={() => toggle(id)}
+                        aria-expanded={openIds.includes(id)}
+                        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                      >
+                        <span className="text-sm font-semibold">{t(f.qKey)}</span>
+                        <ChevronDown
+                          className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${openIds.includes(id) ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {openIds.includes(id) ? (
+                        <p className="border-t border-border px-5 py-4 text-sm leading-relaxed text-body">
+                          {t(f.aKey)}
+                        </p>
+                      ) : null}
+                    </div>
                   </Reveal>
                 );
               })}
@@ -1915,22 +2003,20 @@ function FinalCta() {
   return (
     <Section id="get-started" className="bg-surface/40">
       <Reveal>
-      <div className="glass-card rounded-xl px-6 py-14 text-center sm:px-12">
-        <h2 className="text-3xl sm:text-4xl">{t("final_title")}</h2>
-        <p className="mx-auto mt-4 max-w-xl text-body">
-          {t("final_body")}
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <TelegramCta event="final_join_free" className="px-7 py-3.5 text-base" />
-          <TelegramCta
-            label={t("final_enroll_via_bot")}
-            event="final_enroll_bot"
-            variant="gold"
-            href={botHref}
-            className="px-7 py-3.5 text-base"
-          />
+        <div className="glass-card rounded-xl px-6 py-14 text-center sm:px-12">
+          <h2 className="text-3xl sm:text-4xl">{t("final_title")}</h2>
+          <p className="mx-auto mt-4 max-w-xl text-body">{t("final_body")}</p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <TelegramCta event="final_join_free" className="px-7 py-3.5 text-base" />
+            <TelegramCta
+              label={t("final_enroll_via_bot")}
+              event="final_enroll_bot"
+              variant="gold"
+              href={botHref}
+              className="px-7 py-3.5 text-base"
+            />
+          </div>
         </div>
-      </div>
       </Reveal>
     </Section>
   );
@@ -1949,9 +2035,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo />
-            <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              {t("footer_tagline")}
-            </p>
+            <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t("footer_tagline")}</p>
             <a
               href={LINKS.freeChannel}
               onClick={() => goTrack("footer_telegram")}
@@ -1978,17 +2062,29 @@ export function Footer() {
             <h3 className="text-sm font-semibold">{t("footer_links")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href={botHref} onClick={() => goTrack("footer_bot")} className="hover:text-foreground">
+                <a
+                  href={botHref}
+                  onClick={() => goTrack("footer_bot")}
+                  className="hover:text-foreground"
+                >
                   {t("footer_enrollment_bot")}
                 </a>
               </li>
               <li>
-                <a href={LINKS.support} onClick={() => goTrack("footer_support")} className="hover:text-foreground">
+                <a
+                  href={LINKS.support}
+                  onClick={() => goTrack("footer_support")}
+                  className="hover:text-foreground"
+                >
                   {t("footer_support")}
                 </a>
               </li>
               <li>
-                <a href={LINKS.macro} onClick={() => goTrack("footer_macro")} className="hover:text-foreground">
+                <a
+                  href={LINKS.macro}
+                  onClick={() => goTrack("footer_macro")}
+                  className="hover:text-foreground"
+                >
                   {t("footer_macro_fundamentals")}
                 </a>
               </li>
@@ -1998,7 +2094,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href={LINKS.vantage} onClick={() => goTrack("footer_vantage")} className="hover:text-foreground">
+                <a
+                  href={LINKS.vantage}
+                  onClick={() => goTrack("footer_vantage")}
+                  className="hover:text-foreground"
+                >
                   {t("footer_vantage_markets")}
                 </a>
               </li>
@@ -2009,17 +2109,27 @@ export function Footer() {
             <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to={locale === "ms" ? "/ms/privacy" : "/privacy"} className="hover:text-foreground">
+                <Link
+                  to={locale === "ms" ? "/ms/privacy" : "/privacy"}
+                  className="hover:text-foreground"
+                >
                   {t("footer_privacy")}
                 </Link>
               </li>
               <li>
-                <Link to={locale === "ms" ? "/ms/terms" : "/terms"} className="hover:text-foreground">
+                <Link
+                  to={locale === "ms" ? "/ms/terms" : "/terms"}
+                  className="hover:text-foreground"
+                >
                   {t("footer_terms")}
                 </Link>
               </li>
               <li>
-                <a href={LINKS.support} onClick={() => goTrack("footer_contact")} className="hover:text-foreground">
+                <a
+                  href={LINKS.support}
+                  onClick={() => goTrack("footer_contact")}
+                  className="hover:text-foreground"
+                >
                   {t("footer_contact")}
                 </a>
               </li>
@@ -2068,7 +2178,7 @@ export function Landing() {
       "cta-band",
       "how-it-works",
       "ambassador",
-      
+
       "testimonials",
       "faq",
       "get-started",
