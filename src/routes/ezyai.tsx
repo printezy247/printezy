@@ -13,7 +13,11 @@ import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
-import { getEzyAiBoard, getEzyAiBoardRevision, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
+import {
+  getEzyAiBoard,
+  getEzyAiBoardRevision,
+  getEzyAiHistory,
+} from "@/lib/ezyai/signals.functions";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
