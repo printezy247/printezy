@@ -295,7 +295,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 | **2** | P2.5 | (Project-level) Consolidate `ms/ezyai.tsx` into wildcard route | TBD |
 | **2** | P2.6 | `aria-live` announcement on board update | 30 min |
 | **2** | P2.7 | Coordinate home-page sample with live board visibility | 30 min |
-| **3** | P3.1 | Replace 60s polling with SSE/WS or last-update check | 2–4 hrs |
+| **3** | P3.1 | SSE revision channel + revision poll underneath | done |
 | **3** | P3.2 | P&L breakdown (if bot pushes position size) | depends on bot |
 | **3** | P3.3 | Test CSS `prefers-reduced-motion` coverage | 15 min |
 | **3** | P3.4 | Type-check i18n key completeness across 6 locales | 30 min |
@@ -317,7 +317,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 | `safeEqual` in one place | ❌ No — triple-copied | bennycode/trading-signals: single `consts.ts` for crypto fns |
 | Route-handler integration tests | ❌ No | OctoBot: full pytest suite on API endpoints |
 | i18n key completeness enforced | ❌ No (manual) | bennycode/trading-signals: `LocaleStrings` TS interface |
-| SSE/WS live updates | ❌ No (60s polling) | tradeclaw: WebSocket stream with backpressure |
+| SSE/WS live updates | ✅ Yes — SSE revision channel, poll as fallback | tradeclaw: WebSocket stream with backpressure |
 | Reference client in multiple languages | ✅ Python only | OctoBot: Python + JS + Go + Rust + C# |
 ---
 
@@ -336,3 +336,15 @@ All tasks implemented except the two that are blocked by design decisions:
 
 Delivered: P1.1–P1.5, P2.1–P2.4, P2.6–P2.7, P3.1 (revision-stamp poll),
 P3.3–P3.5. See `docs/ezyai-signal-bridge.md` for the P3.5 living doc.
+
+**P3.1 (live updates)** — `GET /api/public/ezyai/stream` streams the board's
+revision stamp over server-sent events. Two paths feed it: the bridge nudges
+every open stream in the same server process the moment a POST is accepted,
+and the stream re-reads the revision every 5s so a push handled by another
+process still lands within ~5s. The page writes the stamp into the same query
+its 30s poll owns, so the board refetches itself; the poll stays as the
+fallback for a client whose stream never connects. The stream carries no
+signal data and needs no authentication — it is a doorbell, not a channel.
+Tests: `lib/ezyai/__tests__/board-events.test.ts` (bus),
+`routes/api/public/ezyai/__tests__/stream-route.test.ts` (frames, dedupe,
+tick, cleanup) and the publish case in `signals-route.test.ts`.

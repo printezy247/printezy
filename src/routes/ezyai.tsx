@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useSearch } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bell, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
@@ -13,7 +13,11 @@ import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
-import { getEzyAiBoard, getEzyAiBoardRevision, getEzyAiHistory } from "@/lib/ezyai/signals.functions";
+import {
+  getEzyAiBoard,
+  getEzyAiBoardRevision,
+  getEzyAiHistory,
+} from "@/lib/ezyai/signals.functions";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
@@ -162,6 +166,36 @@ export function EzyAiPage() {
     queryFn: () => loadHistory(),
     enabled: tab === "history",
   });
+
+  // The bridge wakes the board instead of the board waiting for its clock: the
+  // stream carries only the revision stamp, written into the same query the
+  // 30s poll owns, and the board refetches because its key includes the stamp.
+  // The poll stays underneath — a blocked stream, an offline tab or a push
+  // handled by another server process all fall back to it.
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (typeof EventSource === "undefined") return;
+    const source = new EventSource("/api/public/ezyai/stream");
+    const onRevision = (event: MessageEvent<string>) => {
+      try {
+        const { updatedAt } = JSON.parse(event.data) as { updatedAt?: string | null };
+        // No stamp means the push landed but the revision read did not — ask
+        // the poll's own query rather than inventing a value.
+        if (!updatedAt) {
+          void queryClient.invalidateQueries({ queryKey: ["ezyai-board-revision"] });
+          return;
+        }
+        queryClient.setQueryData(["ezyai-board-revision"], { updatedAt });
+      } catch {
+        // A malformed frame is not worth breaking the board over; the poll wins.
+      }
+    };
+    source.addEventListener("revision", onRevision as EventListener);
+    return () => {
+      source.removeEventListener("revision", onRevision as EventListener);
+      source.close();
+    };
+  }, [queryClient]);
 
   // Announce board changes to screen readers: a polite live region that
   // fires whenever the rendered signal count changes (a card opened, closed
