@@ -23,6 +23,12 @@ import { LocaleProvider } from "../lib/i18n";
 import { SITE_URL } from "../lib/bot/tiers";
 
 function NotFoundComponent() {
+  // Unknown routes have no head of their own, so the root's marketing title
+  // would otherwise stay in the tab. The next successful route sets its own.
+  useEffect(() => {
+    document.title = "Page not found — EzyMap ALGO";
+  }, []);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">

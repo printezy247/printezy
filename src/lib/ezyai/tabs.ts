@@ -1,11 +1,11 @@
 /**
  * Which tab the board opens on.
  *
- * The English board reads `?tab=` through its route's search schema; the
- * Malay board is a separate route and used to ignore the parameter entirely,
- * because the page looked the search up through the English route id. One
- * resolver keeps the two honest, and the page reads the URL directly so a
- * translated route needs no schema of its own to honour a shared link.
+ * Both boards read `?tab=` from the URL through this one resolver. Neither
+ * route declares a search schema: a schema could only rewrite what the
+ * visitor's link said (a stale tab used to be dropped with a redirect on the
+ * English board and kept on the Malay one), and the page already knows how to
+ * fall back to live without moving anyone off their URL.
  */
 
 export const EZYAI_TABS = ["live", "history", "about"] as const;

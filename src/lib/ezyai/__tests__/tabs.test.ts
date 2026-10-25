@@ -2,11 +2,11 @@ import { describe, it, expect } from "vitest";
 import { EZYAI_TABS, ezyAiTabFromSearch, resolveEzyAiTab } from "../tabs";
 
 /**
- * Deep-linkable tabs are the English board's behaviour: `/ezyai?tab=history`
- * opens the history tab, and anything unrecognised opens live instead of an
- * empty page. The Malay board reads the same links but on its own route, so
- * the rule lives here — one list, one fallback — and the page reads the URL
- * through it.
+ * Deep-linkable tabs: `/ezyai?tab=history` and `/ms/ezyai?tab=history` both
+ * open the history tab, and anything unrecognised opens live instead of an
+ * empty page — without a redirect, on either board. The rule lives here, one
+ * list and one fallback, and the page reads the URL through it and writes the
+ * selected tab back with replaceState.
  */
 
 describe("resolveEzyAiTab", () => {

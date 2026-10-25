@@ -102,8 +102,11 @@ export async function listLiveSignals(limit = 24): Promise<EzyAiSignal[]> {
     .order("opened_at", { ascending: false })
     .limit(limit);
   if (error) {
+    // Throw rather than return []: an empty board and a broken database look
+    // identical to the page otherwise, and the live tab's empty copy ("the bot
+    // posts here the moment a signal fires") is a lie when nothing was read.
     console.error("[ezyai-signals] live lookup failed", error);
-    return [];
+    throw new Error("live signal lookup failed");
   }
   return ((data ?? []) as unknown as Row[]).map(toSignal);
 }
@@ -143,8 +146,10 @@ export async function listClosedSignals(limit = 200): Promise<EzyAiSignal[]> {
     .order("closed_at", { ascending: false, nullsFirst: false })
     .limit(limit);
   if (error) {
+    // Same reason as listLiveSignals: a failed read must reach the page as a
+    // failure, not as "no closed signals yet".
     console.error("[ezyai-signals] history lookup failed", error);
-    return [];
+    throw new Error("history lookup failed");
   }
   return ((data ?? []) as unknown as Row[]).map(toSignal);
 }

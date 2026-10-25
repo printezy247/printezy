@@ -96,16 +96,12 @@ describe("localized EzyAI route (/ms/ezyai)", () => {
 });
 
 describe("deep-linked tabs", () => {
-  it("keeps a known ?tab= on the English route and drops a stale one", async () => {
-    const { english } = await loadRoutes(true);
-    expect(english.options.validateSearch!({ tab: "history" })).toEqual({ tab: "history" });
-    expect(english.options.validateSearch!({ tab: "about" })).toEqual({ tab: "about" });
-    expect(english.options.validateSearch!({ tab: "junk" })).toEqual({ tab: undefined });
-    expect(english.options.validateSearch!({})).toEqual({ tab: undefined });
-  });
-
-  it("leaves the translated route's query alone — the board reads it from the URL", async () => {
-    const { localized } = await loadRoutes(true);
+  it("leaves the query to the page on both routes, so neither rewrites a shared link", async () => {
+    const { english, localized } = await loadRoutes(true);
+    // A search schema used to rewrite `?tab=` on the English board only, which
+    // gave the two boards different answers to the same URL. The rule lives in
+    // src/lib/ezyai/tabs.ts now: unknown tabs open live, in place.
+    expect(english.options.validateSearch).toBeUndefined();
     expect(localized.options.validateSearch).toBeUndefined();
   });
 });

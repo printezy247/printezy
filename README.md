@@ -22,7 +22,7 @@ Stripe checkout and delivered to a Telegram account the buyer never has to type.
 ![Supabase](https://img.shields.io/badge/Supabase-Postgres_%C2%B7_Auth-3ecf8e?style=flat-square&logo=supabase&logoColor=white&labelColor=1a1d1b)
 ![Stripe](https://img.shields.io/badge/Stripe-checkout-635bff?style=flat-square&logo=stripe&logoColor=white&labelColor=1a1d1b)
 ![Tailwind](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss&logoColor=white&labelColor=1a1d1b)
-![Locales](https://img.shields.io/badge/locales-6-c9a13a?style=flat-square&labelColor=1a1d1b)
+![Locales](https://img.shields.io/badge/locales-2-c9a13a?style=flat-square&labelColor=1a1d1b)
 
 </div>
 
@@ -215,7 +215,7 @@ money rather than the parts that are fun:
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📡 **A calendar feed we may depend on** | The desk reads TradingView's public widget endpoint first because it is the one that carries the released `actual`. It is not a licensed API and it can close without notice; the ForexFactory fallback never carries an actual at all. |
 | 🖥️ **A dedicated VPS for the bots**     | Four Telegram bots on one hobby box is a single point of failure for every delivery on this list.                                                                                                                                       |
-| 🌍 **Native translators**               | Six locales ship today; four of them were translated by a machine and deserve a human pass.                                                                                                                                             |
+| 🌍 **Native translators**               | English and Malay ship today; the four staged locales need a human pass before they can be offered.                                                                                                                                    |
 | 🧪 **A staging Supabase project**       | All 33 migrations here are applied to production because there is nowhere else to apply them.                                                                                                                                           |
 
 <div align="center">
@@ -705,20 +705,22 @@ authoritative.
 </details>
 
 <details>
-<summary><b><code>CH 10</code> · Six locales</b> — <code>TranslationKey</code> makes 3,366 strings a compile-time contract, and <code>/ms/*</code> are real URLs while the other four are a stored preview</summary>
+<summary><b><code>CH 10</code> · Two locales</b> — <code>TranslationKey</code> makes 3,366 strings a compile-time contract, and only <code>en</code>/<code>ms</code> are offered because only they have real URLs</summary>
 
 <br>
 
-`en` · `ms` · `zh` · `hi` · `ar` · `sw` — switcher in the nav, see `src/lib/i18n.tsx`.
+`en` · `ms` — the nav switcher offers only these two, see `src/lib/i18n.tsx`. `zh` · `hi` · `ar` · `sw`
+still have full key sets in `translations.ts` but are not selectable: they have no `/zz` URLs, and
+large parts of their copy are still English, so offering them promised a translation the site does
+not have. A stored value from an older build is ignored.
 
 `TranslationKey` is derived from the `en` block, so the type checker **rejects a build in which any
 locale is missing any key**: 561 × 6 = 3,366 strings, a compile-time contract rather than a
 dictionary.
 
 `en` and `ms` follow the URL, because they have real `/ms/*` twins that crawlers need, and
-reciprocal hreflang is emitted per route and in `/sitemap.xml`. `zh`/`hi`/`ar`/`sw` have no URL
-anywhere and stay a stored client-side preview. Two resolution bugs the comments document, stated
-as the reasons they exist:
+reciprocal hreflang is emitted per route and in `/sitemap.xml`. Two resolution bugs the comments
+document, stated as the reasons they exist:
 
 - The stored preference is read once on mount **whatever the route**. Reading it only on
   non-localized paths made a stored `zh` get ignored on `/`, picked up on `/dashboard`, then leak
@@ -726,7 +728,9 @@ as the reasons they exist:
 - `setLocale` records the pick **before** navigating. Returning early for `en`/`ms` had made English
   literally unreachable once another language was stored.
 
-Arabic flips `document.dir` to `rtl` for native bidi handling, while layout intentionally stays LTR.
+A right-to-left locale would flip `document.dir` for native bidi handling, while layout
+intentionally stays LTR — neither offered locale is RTL, so the switch is dormant but kept for the
+next one that is.
 Ebook page copy is localized via the `ms` field on each `EBOOK_PAGES` entry; the PDFs and the macro
 desk data stay English.
 

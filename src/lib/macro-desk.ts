@@ -123,13 +123,17 @@ export type MacroDesk = {
 
 const SEED: MacroDesk = {
   // Fallback only (shown with a "sample data" note when the bot bridge is
-  // not configured). Values as published at each bank's mid-2026 decisions.
+  // not configured). Rates and stances are placeholder sample copy; meeting
+  // dates are deliberately "TBA" — a fixed date in a fallback goes stale the
+  // week after it is typed and then reads as an upcoming meeting that has
+  // already happened. The bot bridge supplies the real `next_meeting` and
+  // `rate_decisions` values (see the view mapping in src/routes/macro.tsx).
   centralBanks: [
-    { bank: "Federal Reserve", rate: "3.50–3.75%", stance: "dovish", nextMeeting: "Sep 16" },
-    { bank: "European Central Bank", rate: "2.25%", stance: "neutral", nextMeeting: "Sep 10" },
-    { bank: "Bank of England", rate: "3.75%", stance: "dovish", nextMeeting: "Sep 17" },
-    { bank: "Bank of Japan", rate: "1.00%", stance: "hawkish", nextMeeting: "Sep 18" },
-    { bank: "Swiss National Bank", rate: "0.00%", stance: "neutral", nextMeeting: "Sep 24" },
+    { bank: "Federal Reserve", rate: "3.50–3.75%", stance: "dovish", nextMeeting: "TBA" },
+    { bank: "European Central Bank", rate: "2.25%", stance: "neutral", nextMeeting: "TBA" },
+    { bank: "Bank of England", rate: "3.75%", stance: "dovish", nextMeeting: "TBA" },
+    { bank: "Bank of Japan", rate: "1.00%", stance: "hawkish", nextMeeting: "TBA" },
+    { bank: "Swiss National Bank", rate: "0.00%", stance: "neutral", nextMeeting: "TBA" },
   ],
   recession: [
     { country: "United States", probability: 35, driver: "10Y-2Y yield curve inverted" },
@@ -186,12 +190,14 @@ const SEED: MacroDesk = {
       sku: "macro_yield_optimizer",
     },
   ],
+  // No fixed dates here either: "next rate decisions" is exactly the panel a
+  // stale sample date misleads on, so the fallback says the date is pending.
   rateDecisions: [
-    { bank: "European Central Bank", date: "Sep 10" },
-    { bank: "Federal Reserve", date: "Sep 16" },
-    { bank: "Bank of England", date: "Sep 17" },
-    { bank: "Bank of Japan", date: "Sep 18" },
-    { bank: "Swiss National Bank", date: "Sep 24" },
+    { bank: "European Central Bank", date: "TBA" },
+    { bank: "Federal Reserve", date: "TBA" },
+    { bank: "Bank of England", date: "TBA" },
+    { bank: "Bank of Japan", date: "TBA" },
+    { bank: "Swiss National Bank", date: "TBA" },
   ],
   fearGreed: { value: 54, label: "Neutral", source: "alternative.me" },
 };

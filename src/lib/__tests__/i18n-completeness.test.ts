@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { translations } from "../translations";
+import { LOCALES as OFFERED } from "../i18n";
 
 // P3.4: adding a key to `en` and forgetting the other five locales should be
 // a failing test, not a English-only string shipping to ms/zh/hi/ar/sw readers.
@@ -10,6 +11,14 @@ type Locale = (typeof LOCALES)[number];
 const table = translations as Record<Locale, Record<string, string>>;
 
 describe("i18n locale completeness", () => {
+  it("offers only the locales the site can render end to end", () => {
+    // The switcher used to list six languages, four of which had no URL and
+    // large English gaps. Offering a language is a promise; keep it to the two
+    // with `/ms/*` twins and complete copy.
+    expect(OFFERED).toEqual(["en", "ms"]);
+    for (const locale of OFFERED) expect(LOCALES).toContain(locale);
+  });
+
   it("every locale block exists", () => {
     for (const locale of LOCALES) {
       expect(table[locale], `locale block "${locale}" missing`).toBeTruthy();

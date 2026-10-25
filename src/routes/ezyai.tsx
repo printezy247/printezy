@@ -13,7 +13,7 @@ import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { localizedHead } from "@/lib/seo";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { formatLocalTime } from "@/lib/local-time";
-import { EZYAI_TABS, type EzyAiTab, ezyAiTabFromSearch, resolveEzyAiTab } from "@/lib/ezyai/tabs";
+import { EZYAI_TABS, type EzyAiTab, ezyAiTabFromSearch } from "@/lib/ezyai/tabs";
 import {
   getEzyAiBoard,
   getEzyAiBoardRevision,
@@ -32,16 +32,11 @@ export const Route = createFileRoute("/ezyai")({
     if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/" });
   },
   // Deep-linkable tabs, so the hero card (and anything else) can point
-  // straight at the live board rather than at the page and a hope. A known
-  // tab stays in the URL; anything else is dropped, which is how a stale
-  // English deep link has always normalised. The translated twin declares no
-  // schema on purpose — it opens the right tab from the URL, and keeping an
-  // unrecognised parameter there rather than bouncing the visitor is the
-  // smaller change for a link someone else shared.
-  validateSearch: (search: Record<string, unknown>): { tab?: EzyAiTab } => {
-    const tab = resolveEzyAiTab(search.tab);
-    return { tab: tab === search.tab ? tab : undefined };
-  },
+  // straight at the live board rather than at the page and a hope. Neither
+  // this route nor the translated twin declares a search schema: the page
+  // reads `?tab=` from the URL through one resolver, so both boards behave
+  // the same, an unrecognised tab opens live without a redirect, and a
+  // shared link keeps the parameters its sender wrote.
   head: () =>
     localizedHead({
       path: "/ezyai",
@@ -138,13 +133,57 @@ function TabButton({
   );
 }
 
+/** One failure view for both panels: what happened, and a way to try again. */
+function PanelError({
+  message,
+  retryLabel,
+  onRetry,
+}: {
+  message: string;
+  retryLabel: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div
+      role="alert"
+      className="mt-6 rounded-xl border border-border bg-card p-8 text-center text-sm"
+    >
+      <p className="text-body">{message}</p>
+      <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
+        {retryLabel}
+      </Button>
+    </div>
+  );
+}
+
 export function EzyAiPage() {
   const { t } = useTranslation();
-  // Read the tab from the URL itself, not from this route's validated search:
-  // `/ms/ezyai` is a different route with no schema, and it has to honour the
-  // same `?tab=` deep links the English board does.
-  const { searchStr } = useLocation();
+  // Read the tab from the URL itself. Neither board declares a search schema,
+  // and `/ms/ezyai` is a different route anyway, so the URL is the one source
+  // both of them share.
+  const { searchStr, pathname } = useLocation();
   const [tab, setTab] = useState<EzyAiTab>(() => ezyAiTabFromSearch(searchStr));
+
+  // The panel and the address bar move together. Without this the tab changed
+  // but `?tab=` did not, so a reload — or a link copied from the bar — snapped
+  // back to whatever the URL said. replaceState, not push: switching tabs is
+  // not a navigation the back button should have to walk through.
+  const selectTab = (next: EzyAiTab) => {
+    setTab(next);
+    const params = new URLSearchParams(searchStr);
+    params.set("tab", next);
+    const query = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${pathname}${query ? `?${query}` : ""}${window.location.hash}`,
+    );
+  };
+
+  // A back/forward jump or a hand-edited URL is authoritative: follow it.
+  useEffect(() => {
+    setTab(ezyAiTabFromSearch(searchStr));
+  }, [searchStr]);
 
   const loadBoard = useServerFn(getEzyAiBoard);
   const loadRevision = useServerFn(getEzyAiBoardRevision);
@@ -177,10 +216,18 @@ export function EzyAiPage() {
   // The poll stays underneath — a blocked stream, an offline tab or a push
   // handled by another server process all fall back to it.
   const queryClient = useQueryClient();
+  // Whether the doorbell is currently connected — the "Live updates" line the
+  // reader sees. It is deliberately not a promise of freshness: the poll runs
+  // underneath either way, which is what the fallback label says.
+  const [streamLive, setStreamLive] = useState(false);
   useEffect(() => {
     if (typeof EventSource === "undefined") return;
-    const source = new EventSource("/api/public/ezyai/stream");
+    let source: EventSource | null = null;
+    let retry: number | undefined;
+    let disposed = false;
+
     const onRevision = (event: MessageEvent<string>) => {
+      setStreamLive(true);
       try {
         const { updatedAt } = JSON.parse(event.data) as { updatedAt?: string | null };
         // No stamp means the push landed but the revision read did not — ask
@@ -194,10 +241,30 @@ export function EzyAiPage() {
         // A malformed frame is not worth breaking the board over; the poll wins.
       }
     };
-    source.addEventListener("revision", onRevision as EventListener);
+
+    const connect = () => {
+      if (disposed) return;
+      const next = new EventSource("/api/public/ezyai/stream");
+      source = next;
+      next.addEventListener("ready", () => setStreamLive(true));
+      next.addEventListener("revision", onRevision as EventListener);
+      next.onerror = () => {
+        // A refused stream (503 at the cap, an offline proxy) would otherwise
+        // be reopened by the browser on its own schedule and never recover the
+        // only thing the reader can act on. Close it, say so, fall back to the
+        // poll, and knock again in a minute.
+        setStreamLive(false);
+        next.close();
+        if (source === next) source = null;
+        retry = window.setTimeout(connect, 60_000);
+      };
+    };
+
+    connect();
     return () => {
-      source.removeEventListener("revision", onRevision as EventListener);
-      source.close();
+      disposed = true;
+      if (retry) window.clearTimeout(retry);
+      source?.close();
     };
   }, [queryClient]);
 
@@ -276,7 +343,7 @@ export function EzyAiPage() {
               tab={id}
               active={tab === id}
               onClick={() => {
-                setTab(id);
+                selectTab(id);
                 goTrack(`ezyai_tab_${id}`);
               }}
               onKeyDown={(event) => {
@@ -287,7 +354,7 @@ export function EzyAiPage() {
                   EZYAI_TABS[
                     (EZYAI_TABS.indexOf(id) + step + EZYAI_TABS.length) % EZYAI_TABS.length
                   ];
-                setTab(next);
+                selectTab(next);
                 goTrack(`ezyai_tab_${next}`);
                 document.getElementById(`ezyai-tab-${next}`)?.focus();
               }}
@@ -310,14 +377,23 @@ export function EzyAiPage() {
                 <h2 className="text-2xl">{t("ezyai_sig_title")}</h2>
                 <p className="mt-1 max-w-2xl text-sm text-body">{t("ezyai_sig_desc")}</p>
               </div>
-              {board.data?.updatedAt ? (
-                <p className="text-xs text-muted-foreground">
-                  {t("ezyai_sig_updated").replace(
-                    "{time}",
-                    formatLocalTime(new Date(board.data.updatedAt)),
-                  )}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                {board.data?.updatedAt ? (
+                  <p>
+                    {t("ezyai_sig_updated").replace(
+                      "{time}",
+                      formatLocalTime(new Date(board.data.updatedAt)),
+                    )}
+                  </p>
+                ) : null}
+                <p className="inline-flex items-center gap-1.5">
+                  <span
+                    aria-hidden="true"
+                    className={`h-1.5 w-1.5 rounded-full ${streamLive ? "bg-green" : "bg-muted-foreground/50"}`}
+                  />
+                  {t(streamLive ? "ezyai_stream_live" : "ezyai_stream_poll")}
                 </p>
-              ) : null}
+              </div>
             </div>
 
             <p className="mt-3 inline-flex rounded-md border border-primary/25 bg-primary/8 px-3 py-1.5 text-xs text-body">
@@ -329,7 +405,13 @@ export function EzyAiPage() {
               {announcement}
             </p>
 
-            {board.data && board.data.signals.length > 0 ? (
+            {board.isError ? (
+              <PanelError
+                message={t("ezyai_load_failed")}
+                retryLabel={t("ezyai_retry")}
+                onRetry={() => void board.refetch()}
+              />
+            ) : board.data && board.data.signals.length > 0 ? (
               <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {board.data.signals.map((signal, i) => (
                   <SignalCard key={signal.id} signal={signal} index={i} />
@@ -356,7 +438,13 @@ export function EzyAiPage() {
           >
             <h2 className="text-2xl">{t("ezyai_sig_history_title")}</h2>
             <div className="mt-6">
-              {history.data ? (
+              {history.isError ? (
+                <PanelError
+                  message={t("ezyai_load_failed")}
+                  retryLabel={t("ezyai_retry")}
+                  onRetry={() => void history.refetch()}
+                />
+              ) : history.data ? (
                 <PerformancePanel
                   performance={history.data.performance}
                   signals={history.data.signals}

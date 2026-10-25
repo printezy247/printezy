@@ -318,15 +318,25 @@ export function Ticker() {
   const rows = quotes.length
     ? quotes
     : TICKER_SYMBOLS.map((symbol) => ({ symbol, price: "—", change: "", up: true }));
-  // Doubled so the marquee can loop without a visible seam.
+  // Doubled so the marquee can loop without a visible seam. The second copy
+  // exists only for the animation, so it is hidden from assistive tech —
+  // otherwise the strip is announced twice on every page.
   const items = [...rows, ...rows];
 
   return (
-    <div className="w-full border-b border-border bg-surface-elevated text-foreground">
+    <div
+      role="region"
+      aria-label="Market prices"
+      className="w-full border-b border-border bg-surface-elevated text-foreground"
+    >
       <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
         <div className="ticker-track animate-ticker gap-8">
           {items.map((t, i) => (
-            <span key={`${t.symbol}-${i}`} className="flex shrink-0 items-baseline gap-1.5">
+            <span
+              key={`${t.symbol}-${i}`}
+              aria-hidden={i >= rows.length ? true : undefined}
+              className="flex shrink-0 items-baseline gap-1.5"
+            >
               <span className="font-semibold text-body">{t.symbol}</span>
               <span className="font-mono tabular-nums text-foreground">{t.price}</span>
               {t.change ? (

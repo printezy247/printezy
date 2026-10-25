@@ -12,9 +12,13 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  * "hash present vs. not": a plain 301 to "/" preserves /pricing#sku as
  * /#sku for real visitors, while giving crawlers a real redirect instead of
  * a blank 200.
+ *
+ * The query string needs the opposite treatment: it does reach the server and
+ * a bare redirect drops it, so a campaign link such as /pricing?plan=pro
+ * would land with nothing attached. `search: true` carries it across.
  */
 export const Route = createFileRoute("/pricing")({
   beforeLoad: () => {
-    throw redirect({ to: "/home", statusCode: 301 });
+    throw redirect({ to: "/home", search: true, statusCode: 301 });
   },
 });

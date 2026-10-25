@@ -65,6 +65,9 @@ export function FaqPage() {
           >
             <ArrowLeft className="h-4 w-4" /> {t("faq_back_to_home")}
           </Link>
+          {/* The page's own h1. <Faq /> renders the section heading as an h2,
+              so without this the document jumped straight to a subheading. */}
+          <h1 className="mt-6 text-3xl sm:text-4xl">{t("footer_faq")}</h1>
         </div>
         <Faq />
       </main>

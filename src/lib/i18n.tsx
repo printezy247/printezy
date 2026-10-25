@@ -4,7 +4,11 @@ import { translations, type TranslationKey } from "./translations";
 
 export type Locale = "en" | "ms" | "zh" | "hi" | "ar" | "sw";
 
-export const LOCALES: Locale[] = ["en", "ms", "zh", "hi", "ar", "sw"];
+// Only the two locales the site can actually render end to end. zh/hi/ar/sw
+// are still in `translations` as a head start for a future launch, but they
+// have no URLs, no `/zz` route and large English gaps, so they are not offered
+// as a choice until that work exists.
+export const LOCALES: Locale[] = ["en", "ms"];
 export const LOCALE_LABELS: Record<Locale, string> = {
   en: "EN",
   ms: "BM",
@@ -36,9 +40,8 @@ const STORAGE_KEY = "pe_locale";
 /**
  * Public pages with a real per-locale URL: `/x` (en) and `/ms/x` (ms), see
  * src/routes/ms/*. On these paths en/ms follow the URL, not a stored
- * preference — crawlers and the switcher both need that. zh/hi/ar/sw have no
- * URL of their own anywhere and stay a client-side preview. Routes not
- * listed here (checkout, account, admin) keep the plain client toggle.
+ * preference — crawlers and the switcher both need that. Routes not listed
+ * here (checkout, account, admin) keep the plain client toggle.
  */
 const LOCALIZED_PATHS = new Set([
   "/",
@@ -74,10 +77,11 @@ const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocal
 
 /**
  * Persists the visitor's choice in localStorage for routes with no locale
- * URL of their own. Arabic gets text-direction only (document dir flips to
- * rtl so paragraphs/headings read correctly via the browser's native bidi
- * handling) — layout (nav order, grids, icon placement) intentionally stays
- * left-to-right for every locale.
+ * URL of their own. Right-to-left locales would get text-direction only
+ * (document dir flips so paragraphs/headings read correctly via the browser's
+ * native bidi handling) — layout (nav order, grids, icon placement)
+ * intentionally stays left-to-right. Neither offered locale is RTL today;
+ * the direction switch is kept for the next one that is.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -85,28 +89,27 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [storedLocale, setStoredLocale] = useState<Locale>("en");
 
   // Read the stored preference once on mount, whatever the route. Reading it
-  // only on non-localized paths made the locale flip mid-visit: a stored `zh`
+  // only on non-localized paths made the locale flip mid-visit: a stored `ms`
   // was ignored on `/`, picked up on `/dashboard`, and then leaked back onto
   // `/` on the way home, so one page rendered in two languages depending on
   // how the visitor arrived at it.
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
+      // A value this build no longer offers (a previously selectable zh/hi/ar/sw)
+      // is ignored, so those visitors get English rather than a half-translated
+      // page with no way back to a language the site really has.
       if (stored && LOCALES.includes(stored as Locale)) setStoredLocale(stored as Locale);
     } catch {
       // Private browsing / storage blocked — default to English.
     }
   }, []);
 
-  // `/ms/*` is an explicit locale URL, so it outranks any stored preference and
-  // a shared Malay link reads as Malay for whoever opens it. Every other path
-  // is the default URL rather than an explicit pick of English, so a stored
-  // zh/hi/ar/sw preview applies there — those four have no URL of their own
-  // anywhere. Stored `ms` is the exception: Malay has its own URL, and serving
-  // it from an English one would duplicate every page for crawlers.
-  const isPreviewLocale = storedLocale !== "en" && storedLocale !== "ms";
-  const locale =
-    routeLocale === "ms" ? "ms" : isPreviewLocale ? storedLocale : (routeLocale ?? storedLocale);
+  // A localized URL is an explicit statement of intent: `/ms/*` reads as Malay
+  // for whoever opens a shared link, and an English URL stays English even if
+  // this browser once picked Malay. Pages with no locale URL of their own fall
+  // back to the stored choice (already narrowed to a supported locale above).
+  const locale = routeLocale ?? storedLocale;
 
   useEffect(() => {
     document.documentElement.lang = locale;

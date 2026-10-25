@@ -342,18 +342,19 @@ All tasks implemented except the one that is blocked on the bot:
 
   Covered by `src/routes/__tests__/ezyai-locale-route.test.ts` (head copy and
   canonical/hreflang for both URLs, the per-locale redirect when the board is
-  hidden, the 404 for an unknown locale, and which route owns the tab schema).
+  hidden, the 404 for an unknown locale, and that neither route owns a tab
+  schema).
 
   Deep-linked tabs now work on both boards: `/ms/ezyai?tab=history` and
   `/ms/ezyai?tab=about` open their tab. The old Malay route ignored the
   parameter entirely — the page read the search through the English route id,
   which is not in the match tree there, so every shared link landed on live.
   The rule is one resolver in `src/lib/ezyai/tabs.ts`, and the page reads the
-  tab from the URL through it. The English route keeps its search schema
-  (so a known tab stays in the address bar and a stale one is normalised
-  away); the translated route deliberately declares none, because a visitor
-  following someone else's `/ms/ezyai?tab=…` link should not be bounced off
-  the URL for a query the board does not recognise.
+  tab from the URL through it. Neither route declares a search schema: a known
+  tab stays in the address bar, an unknown one opens live without a redirect,
+  and the page writes the tab it selected back into the URL (`replaceState`) so
+  a reload or a copied link keeps the panel the reader was on. Both boards now
+  answer the same URL the same way.
 - **P3.2 (P&L breakdown)** — blocked on the bot: `EzyAiSignal` has no
   `position_size`, so the site cannot compute dollar P&L from what it is
   told. Revisit when the bot pushes size.
@@ -370,7 +371,9 @@ its 30s poll owns, so the board refetches itself; the poll stays as the
 fallback for a client whose stream never connects. The stream carries no
 signal data and needs no authentication — it is a doorbell, not a channel.
 One process holds at most 100 streams (each costs a revision read every 5s);
-past that it answers `503 retry-after: 15` and the visitor stays on the poll.
+past that it answers `503 retry-after: 15`. The page closes that attempt,
+switches its indicator to the 30s poll, and tries the stream again after a
+minute — the browser's own EventSource retry would otherwise hammer the route.
 The stamp lives in one exported query key, `BOARD_REVISION_QUERY_KEY`, so the
 poll and the stream cannot drift apart.
 Tests: `lib/ezyai/__tests__/board-events.test.ts` (bus, stream slots),

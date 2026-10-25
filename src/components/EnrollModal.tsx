@@ -34,6 +34,32 @@ type Step = "details" | "checkout";
 const inputClass =
   "w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
 
+/** What the checkout server accepts: a Telegram username, no leading @. */
+const HANDLE_RE = /^[A-Za-z0-9_]{5,32}$/;
+
+/**
+ * Infrastructure failures are ours, not the buyer's. Showing them the
+ * variable name (or the words "Lovable Cloud") is a dead end they cannot act
+ * on, so those become one sentence they can act on: try again shortly.
+ */
+const INFRA_ERROR_RE =
+  /(supabase|environment variable|service[_ ]?role|anon key|not configured|placeholder|missing .{0,40}key|econnrefused|failed to fetch|fetch failed|network ?error)/i;
+
+function checkoutUserMessage(error: unknown): string {
+  const raw = error instanceof Error ? error.message : "";
+  if (INFRA_ERROR_RE.test(raw)) {
+    return "Checkout is temporarily unavailable. Please try again in a few minutes.";
+  }
+  // The checkout server already phrases its own refusals (rate limit, payment
+  // mismatch) and Stripe's declines for customers; anything else short and
+  // human goes through unchanged, and a long or empty message does not.
+  const clean = raw.replace(/\s+/g, " ").trim();
+  if (!clean || clean.length > 200) {
+    return "We couldn't start checkout. Please try again.";
+  }
+  return clean;
+}
+
 /**
  * The tier card IS the checkout: one overlay, details step flows straight
  * into the Stripe step inside the same dialog — no modal stacked on a
@@ -55,12 +81,23 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
   const [pulse, setPulse] = useState(0);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  // Bumped by "Try again": remounting the provider is what re-asks for a
+  // client secret without closing the dialog.
+  const [checkoutAttempt, setCheckoutAttempt] = useState(0);
+  // Validation is only shown once the buyer has tried to continue, so an
+  // untouched form never opens with red text.
+  const [attempted, setAttempted] = useState(false);
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const telegramRef = useRef<HTMLInputElement>(null);
+  const mt5Ref = useRef<HTMLInputElement>(null);
 
   const handle = telegramUsername.trim().replace(/^@+/, "");
-  const ready = /^[A-Za-z0-9_]{5,32}$/.test(handle) && (!requireMt5 || mt5Account.trim().length > 0);
+  const handleOk = HANDLE_RE.test(handle);
+  const mt5Ok = !requireMt5 || mt5Account.trim().length > 0;
+  const showHandleError = attempted && !handleOk;
+  const showMt5Error = attempted && !mt5Ok;
 
   // Body scroll lock while the dialog is open, and a signal other
   // proactive popups (e.g. EbookAutoPopup) check to stay suppressed.
@@ -125,8 +162,16 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
 
   function submitDetails(e: React.FormEvent) {
     e.preventDefault();
-    if (!ready) {
+    if (checkoutLoading) return;
+    setAttempted(true);
+    if (!handleOk) {
       setPulse((p) => p + 1);
+      telegramRef.current?.focus();
+      return;
+    }
+    if (!mt5Ok) {
+      setPulse((p) => p + 1);
+      mt5Ref.current?.focus();
       return;
     }
     setCheckoutLoading(true);
@@ -153,7 +198,10 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
       if (!result.clientSecret) throw new Error("Stripe did not return a client secret");
       return result.clientSecret;
     } catch (err) {
-      setCheckoutError(err instanceof Error ? err.message : "Could not start checkout.");
+      // The real cause is for us, in the console; the buyer gets a sentence
+      // they can act on.
+      console.error("[checkout] could not start", err);
+      setCheckoutError(checkoutUserMessage(err));
       throw err;
     } finally {
       setCheckoutLoading(false);
@@ -185,24 +233,48 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
             <form onSubmit={submitDetails} className="mt-5 flex flex-col gap-3">
               <label className="text-sm text-muted-foreground">Telegram username</label>
               <input
+                ref={telegramRef}
                 value={telegramUsername}
                 onChange={(e) => setTelegramUsername(e.target.value)}
                 placeholder="your_telegram"
                 autoComplete="off"
                 spellCheck={false}
+                aria-invalid={showHandleError}
+                aria-describedby={
+                  showHandleError
+                    ? "enroll-telegram-hint enroll-telegram-error"
+                    : "enroll-telegram-hint"
+                }
                 className={inputClass}
               />
+              <p id="enroll-telegram-hint" className="-mt-1 text-xs text-muted-foreground">
+                5–32 characters, letters, numbers or underscores — without the @
+              </p>
+              {showHandleError ? (
+                <p id="enroll-telegram-error" role="alert" className="-mt-1 text-xs text-destructive">
+                  Enter your Telegram username without the @ — 5 to 32 letters, numbers or
+                  underscores.
+                </p>
+              ) : null}
 
               {requireMt5 ? (
                 <>
                   <label className="text-sm text-muted-foreground">MT5 account number</label>
                   <input
+                    ref={mt5Ref}
                     value={mt5Account}
                     onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}
                     placeholder="12345678"
                     inputMode="numeric"
+                    aria-invalid={showMt5Error}
+                    aria-describedby={showMt5Error ? "enroll-mt5-error" : undefined}
                     className={inputClass}
                   />
+                  {showMt5Error ? (
+                    <p id="enroll-mt5-error" role="alert" className="text-xs text-destructive">
+                      Enter your MT5 account number.
+                    </p>
+                  ) : null}
                 </>
               ) : null}
 
@@ -230,7 +302,7 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
                 </SelectContent>
               </Select>
 
-              <Button type="submit" disabled={!ready} className="mt-2 w-full">
+              <Button type="submit" disabled={checkoutLoading} className="mt-2 w-full">
                 Continue
               </Button>
             </form>
@@ -316,18 +388,32 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
           <div className="relative min-h-[280px]">
             {checkoutError ? (
               <div className="flex flex-col items-center gap-3 p-8 text-center">
-                <p className="text-sm text-destructive">{checkoutError}</p>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setCheckoutError(null);
-                    setStep("details");
-                  }}
-                >
-                  Back
-                </Button>
+                <p role="alert" className="text-sm text-destructive">
+                  {checkoutError}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => {
+                      setCheckoutError(null);
+                      setCheckoutAttempt((n) => n + 1);
+                    }}
+                  >
+                    Try again
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setCheckoutError(null);
+                      setStep("details");
+                    }}
+                  >
+                    Back
+                  </Button>
+                </div>
               </div>
             ) : (
               <>
@@ -336,7 +422,11 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   </div>
                 ) : null}
-                <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+                <EmbeddedCheckoutProvider
+                  key={checkoutAttempt}
+                  stripe={getStripe()}
+                  options={{ fetchClientSecret }}
+                >
                   <EmbeddedCheckout />
                 </EmbeddedCheckoutProvider>
               </>
