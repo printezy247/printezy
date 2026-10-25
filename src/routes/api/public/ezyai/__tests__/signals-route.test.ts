@@ -23,9 +23,8 @@ vi.mock("@/lib/ezyai/signals.server", () => ({
 import { Route } from "../signals";
 
 type Handler = (ctx: { request: Request }) => Promise<Response>;
-const handlers = (
-  Route as unknown as { server: { handlers: { GET: Handler; POST: Handler } } }
-).server.handlers;
+const handlers = (Route as unknown as { server: { handlers: { GET: Handler; POST: Handler } } })
+  .server.handlers;
 
 const KEY = "test-signal-key";
 

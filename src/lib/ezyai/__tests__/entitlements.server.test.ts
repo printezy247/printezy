@@ -184,7 +184,9 @@ describe("recordEzyAiEntitlement", () => {
     const raced = { id: "e9", stripe_session_id: "cs_1" };
     fromMock
       .mockReturnValueOnce(chain({ data: null, error: null })) // existing lookup: nothing yet
-      .mockReturnValueOnce(chain({ data: null, error: { code: "23505", message: "duplicate key" } })) // insert loses the race
+      .mockReturnValueOnce(
+        chain({ data: null, error: { code: "23505", message: "duplicate key" } }),
+      ) // insert loses the race
       .mockReturnValueOnce(chain({ data: raced, error: null })); // re-read finds the winner
     expect(await recordEzyAiEntitlement("cs_1", "sandbox")).toEqual(raced);
     expect(fromMock).toHaveBeenCalledTimes(3);
