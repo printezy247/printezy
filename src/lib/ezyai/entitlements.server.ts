@@ -14,7 +14,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { EZYAI_SKU_MONTHS } from "@/lib/catalog";
 import { escapeLikePattern } from "@/lib/like-escape";
 import { normalizeHandle } from "@/lib/bot/site-access.server";
-import { safeEqual } from "@/lib/bot/telegram.server";
+import { safeEqual } from "@/lib/secure-compare";
 import { createStripeClient, type StripeEnv } from "@/lib/stripe.server";
 import { REDEEM_CODE_RE, generateRedeemCode, normalizeRedeemCode } from "./redeem-code";
 

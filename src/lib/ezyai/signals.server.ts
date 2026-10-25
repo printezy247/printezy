@@ -109,6 +109,26 @@ export async function listLiveSignals(limit = 24): Promise<EzyAiSignal[]> {
 }
 
 /**
+ * The newest update across the whole table — one cheap column fetch, no rows.
+ * The board polls this and only pulls the full signal list when the revision
+ * moves, so a quiet minute costs one indexed max rather than twenty-four
+ * full records.
+ */
+export async function latestSignalUpdate(): Promise<string | null> {
+  const { data, error } = await supabaseAdmin
+    .from(TABLE)
+    .select("updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) {
+    console.error("[ezyai-signals] revision lookup failed", error);
+    return null;
+  }
+  return (data as { updated_at: string | null } | null)?.updated_at ?? null;
+}
+
+/**
  * Finished trades, newest close first — the input to every performance
  * number. The opened_at window is the reset of 24 Oct: the Yahoo scanner's
  * rows (voided as cancelled in the database) and anything older than the

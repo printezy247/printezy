@@ -2,7 +2,8 @@
 // and the data each signed-in member is allowed to see.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { escapeLikePattern } from "@/lib/like-escape";
-import { safeEqual, sendMessage } from "./telegram.server";
+import { sendMessage } from "./telegram.server";
+import { safeEqual } from "@/lib/secure-compare";
 import { getTier, SITE_URL, type TierId } from "./tiers";
 
 const CODE_TTL_MINUTES = 10;
@@ -22,7 +23,11 @@ export const TIER_RANK: Record<string, number> = {
 };
 
 export function normalizeHandle(raw: string): string {
-  return raw.trim().replace(/^@/, "").replace(/^https?:\/\/t\.me\//i, "").toLowerCase();
+  return raw
+    .trim()
+    .replace(/^@/, "")
+    .replace(/^https?:\/\/t\.me\//i, "")
+    .toLowerCase();
 }
 
 function randomToken(): string {
@@ -43,7 +48,10 @@ export async function findMemberByHandle(handle: string) {
     .select("telegram_id, username, first_name")
     .ilike("username", escapeLikePattern(clean))
     .maybeSingle();
-  return (data as { telegram_id: number; username: string | null; first_name: string | null } | null) ?? null;
+  return (
+    (data as { telegram_id: number; username: string | null; first_name: string | null } | null) ??
+    null
+  );
 }
 
 /** Generates a code, stores it and delivers it through the bot chat. */
@@ -88,9 +96,7 @@ export async function verifyCode(telegramId: number, code: string): Promise<Veri
     .limit(1)
     .maybeSingle();
 
-  const row = data as
-    | { id: string; code: string; attempts: number; expires_at: string }
-    | null;
+  const row = data as { id: string; code: string; attempts: number; expires_at: string } | null;
   if (!row) return { ok: false, reason: "expired" };
   if (row.attempts >= MAX_CODE_ATTEMPTS) return { ok: false, reason: "locked" };
   if (new Date(row.expires_at).getTime() < Date.now()) return { ok: false, reason: "expired" };
@@ -190,9 +196,7 @@ export type EnrollmentRow = {
 export function highestActiveTier(rows: EnrollmentRow[]): TierId {
   const now = Date.now();
   const active = rows.filter(
-    (r) =>
-      r.status === "active" &&
-      (!r.expires_at || new Date(r.expires_at).getTime() > now),
+    (r) => r.status === "active" && (!r.expires_at || new Date(r.expires_at).getTime() > now),
   );
   let best: TierId = "free";
   for (const r of active) {

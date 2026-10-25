@@ -15,9 +15,17 @@ export type EzyAiBoard = {
 };
 
 export type EzyAiHistory = {
+  /**
+   * The most recent closes only — what the results list renders. The
+   * performance summary is computed over the full closed set server-side,
+   * so the panel's numbers never depend on how many rows made the trip.
+   */
   signals: EzyAiSignal[];
   performance: EzyAiPerformance;
 };
+
+/** How many recent closes the history tab renders in its results list. */
+const HISTORY_SHOWN = 30;
 
 export const getEzyAiBoard = createServerFn({ method: "GET" }).handler(
   async (): Promise<EzyAiBoard> => {
@@ -32,11 +40,26 @@ export const getEzyAiBoard = createServerFn({ method: "GET" }).handler(
   },
 );
 
+/**
+ * The board's revision stamp — one max() row instead of the full board.
+ * The page polls this on a short timer and only re-pulls the board when the
+ * revision moves, so a quiet board costs almost nothing to keep fresh.
+ */
+export const getEzyAiBoardRevision = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ updatedAt: string | null }> => {
+    const { latestSignalUpdate } = await import("./signals.server");
+    return { updatedAt: await latestSignalUpdate() };
+  },
+);
+
 export const getEzyAiHistory = createServerFn({ method: "GET" }).handler(
   async (): Promise<EzyAiHistory> => {
     const { listClosedSignals } = await import("./signals.server");
     const { summarisePerformance } = await import("./signals");
     const signals = await listClosedSignals();
-    return { signals, performance: summarisePerformance(signals) };
+    return {
+      signals: signals.slice(0, HISTORY_SHOWN),
+      performance: summarisePerformance(signals),
+    };
   },
 );

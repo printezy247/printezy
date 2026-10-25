@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Check, Copy } from "lucide-react";
 import { useCountUp } from "@/lib/use-count-up";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import type { TranslationKey } from "@/lib/translations";
@@ -56,15 +56,18 @@ export function StatusFlag({ status }: { status: SignalStatus }) {
  * card: one glance says how far this trade has come and which way it is
  * leaning, without reading a single number.
  */
-function Rail({ signal }: { signal: EzyAiSignal }) {
+function Rail({ signal, index = 0 }: { signal: EzyAiSignal; index?: number }) {
+  const { t } = useTranslation();
   const target = signal.tp1 ?? signal.tp2;
   const travelled = progressPercent(signal.lastPrice, signal.stopPrice, target, signal.direction);
   const entryAt = progressPercent(entryMid(signal), signal.stopPrice, target, signal.direction);
 
   // Grow from zero on first paint so the bar arrives by running, the same way
-  // the Fear & Greed gauges do.
+  // the Fear & Greed gauges do. The delay staggers cards so a fresh board
+  // reads as a list arriving rather than everything twitching at once.
   const [drawn, setDrawn] = useState(false);
   const reducedMotion = usePrefersReducedMotion();
+  const staggerMs = Math.min(index, 8) * 60;
   useEffect(() => {
     const frame = requestAnimationFrame(() => setDrawn(true));
     return () => cancelAnimationFrame(frame);
@@ -74,32 +77,46 @@ function Rail({ signal }: { signal: EzyAiSignal }) {
   const width = travelled == null ? 0 : drawn || reducedMotion ? travelled : 0;
 
   return (
-    <div className="signal-rail" style={{ "--rail": colour } as CSSProperties}>
-      {travelled == null ? (
-        <span className="signal-rail__idle" />
-      ) : (
-        <>
-          <span
-            className="signal-rail__fill"
-            data-live={signal.status === "running" ? "true" : undefined}
-            style={{ width: `${width}%` }}
-          />
-          {entryAt == null ? null : (
-            <span className="signal-entry-mark" style={{ left: `${entryAt}%` }} />
-          )}
-        </>
-      )}
-    </div>
+    <>
+      <div className="signal-rail" style={{ "--rail": colour } as CSSProperties}>
+        {travelled == null ? (
+          <span className="signal-rail__idle" />
+        ) : (
+          <>
+            <span
+              className="signal-rail__fill"
+              data-live={signal.status === "running" ? "true" : undefined}
+              style={{ width: `${width}%`, transitionDelay: `${staggerMs}ms` }}
+            />
+            {entryAt == null ? null : (
+              <span className="signal-entry-mark" style={{ left: `${entryAt}%` }} />
+            )}
+          </>
+        )}
+      </div>
+      {/* A pending card with no stop/target yet is not "empty" — it has not
+          been levelled. Say so on the rail instead of showing a bare stripe. */}
+      {travelled == null && signal.status === "pending" ? (
+        <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+          {t("ezyai_sig_awaiting_levels")}
+        </p>
+      ) : null}
+    </>
   );
 }
 
-function ScoreRing({ score }: { score: number }) {
-  const shown = useCountUp(score, 900);
+function ScoreRing({ score, index = 0 }: { score: number; index?: number }) {
+  // Stagger the ring with its card so ten rings don't all spin up on the
+  // same frame when the board mounts.
+  const staggerMs = Math.min(index, 8) * 60;
+  const shown = useCountUp(score, 900, staggerMs);
   const tone = score >= 75 ? "#2fbf71" : score >= 50 ? "#c9a13a" : "#8b948f";
   return (
     <span
       className="score-ring"
-      style={{ "--score": score, "--ring": tone } as CSSProperties}
+      style={
+        { "--score": score, "--ring": tone, transitionDelay: `${staggerMs}ms` } as CSSProperties
+      }
       aria-hidden
     >
       <span className="font-mono text-[13px] font-bold tabular-nums text-foreground">{shown}</span>
@@ -124,11 +141,45 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
   const live = isLive(signal.status);
   const Arrow = signal.direction === "buy" ? ArrowUpRight : ArrowDownRight;
   const dirColour = signal.direction === "buy" ? "text-primary" : "text-destructive";
+  const [copied, setCopied] = useState(false);
 
   const zone =
     signal.entryLow != null && signal.entryHigh != null
       ? `${price(signal.entryLow)} – ${price(signal.entryHigh)}`
       : price(entryMid(signal));
+
+  // One clipboard payload per card: the whole call as the bot reported it,
+  // so a PRO user can paste a signal into a journal or chat without
+  // screenshotting, and the operator can grab the external_id for debugging.
+  const copySignal = async () => {
+    const payload = JSON.stringify(
+      {
+        external_id: signal.id,
+        symbol: signal.symbol,
+        direction: signal.direction,
+        status: signal.status,
+        setup: signal.setup,
+        timeframe: signal.timeframe,
+        entry: zone,
+        stop: signal.stopPrice,
+        tp1: signal.tp1,
+        tp2: signal.tp2,
+        rr: signal.rr,
+        score: signal.setupScore,
+        result_r: signal.resultR,
+      },
+      null,
+      2,
+    );
+    try {
+      await navigator.clipboard.writeText(payload);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard can be blocked (permissions, insecure context); the button
+      // simply does nothing rather than throwing into the board render.
+    }
+  };
 
   return (
     <article
@@ -150,8 +201,20 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {signal.setupScore != null ? <ScoreRing score={signal.setupScore} /> : null}
+          {signal.setupScore != null ? <ScoreRing score={signal.setupScore} index={index} /> : null}
           <StatusFlag status={signal.status} />
+          <button
+            type="button"
+            onClick={copySignal}
+            aria-label={t(copied ? "ezyai_sig_copied" : "ezyai_sig_copy")}
+            className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+          >
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-primary" aria-hidden />
+            ) : (
+              <Copy className="h-3.5 w-3.5" aria-hidden />
+            )}
+          </button>
         </div>
       </div>
 
@@ -179,7 +242,7 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
             {t("ezyai_sig_tp")} <span className="font-mono">{price(signal.tp1 ?? signal.tp2)}</span>
           </span>
         </div>
-        <Rail signal={signal} />
+        <Rail signal={signal} index={index} />
       </div>
 
       {/* The zone carries two prices and needs twice the room, or it wraps

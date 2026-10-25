@@ -53,11 +53,7 @@ export function escapeHtml(value: unknown): string {
     .replace(/>/g, "&gt;");
 }
 
-export async function sendMessage(
-  chatId: number,
-  text: string,
-  keyboard?: InlineButton[][],
-) {
+export async function sendMessage(chatId: number, text: string, keyboard?: InlineButton[][]) {
   return telegramCall("sendMessage", {
     chat_id: chatId,
     text,
@@ -92,9 +88,4 @@ function base64url(bytes: Uint8Array): string {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-export function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
+export { safeEqual } from "@/lib/secure-compare";

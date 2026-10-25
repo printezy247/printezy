@@ -7,7 +7,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
  * visibly counts up instead of popping in. Skips the animation entirely
  * under prefers-reduced-motion.
  */
-export function useCountUp(target: number, durationMs = 800) {
+export function useCountUp(target: number, durationMs = 800, delayMs = 0) {
   const [display, setDisplay] = useState(target);
   const prevRef = useRef(target);
   const reducedMotion = usePrefersReducedMotion();
@@ -23,10 +23,12 @@ export function useCountUp(target: number, durationMs = 800) {
     }
 
     let raf: number;
-    const start = performance.now();
+    // A negative delay puts the start in the future; progress is clamped at
+    // zero so the count holds at `from` until the delay has elapsed.
+    const start = performance.now() + delayMs;
 
     function tick(now: number) {
-      const progress = Math.min((now - start) / durationMs, 1);
+      const progress = Math.max(0, Math.min((now - start) / durationMs, 1));
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.round(from + (to - from) * eased));
       if (progress < 1) raf = requestAnimationFrame(tick);
@@ -34,7 +36,7 @@ export function useCountUp(target: number, durationMs = 800) {
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [target, durationMs, reducedMotion]);
+  }, [target, durationMs, delayMs, reducedMotion]);
 
   return display;
 }
