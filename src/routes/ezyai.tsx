@@ -20,7 +20,6 @@ import {
   getEzyAiHistory,
 } from "@/lib/ezyai/signals.functions";
 import { BOARD_REVISION_QUERY_KEY } from "@/lib/ezyai/signals";
-import { EZYAI_TABS, type EzyAiTab, ezyAiTabFromSearch, resolveEzyAiTab } from "@/lib/ezyai/tabs";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { SignalCard } from "@/components/ezyai/SignalCard";
 import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
