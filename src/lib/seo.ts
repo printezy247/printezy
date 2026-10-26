@@ -169,11 +169,15 @@ export function localizedHead(o: LocalizedHeadOptions) {
     { name: "twitter:description", content: o.twitterDescription ?? o.description },
     { name: "twitter:image", content: image },
   ];
-  // With no twins, do not claim any: the page is its own alternate.
-  const others = twins ? LOCALES.filter((locale) => locale !== o.locale) : [];
-  for (const other of others) {
-    meta.push({ property: "og:locale:alternate", content: LOCALE_TAGS[other] });
-  }
+  // One tag only, deliberately: the router keeps a single meta per property, so
+  // five og:locale:alternate tags collapsed into whichever came last (every
+  // page advertised sw_KE). The complete language cluster is in the hreflang
+  // links below, which is what crawlers actually read; this tag names the
+  // site's other primary market, and with no twins the page is its own.
+  meta.push({
+    property: "og:locale:alternate",
+    content: LOCALE_TAGS[twins ? (o.locale === "ms" ? "en" : "ms") : o.locale],
+  });
 
   const links: Array<{ rel: string; href: string; hrefLang?: string }> = [
     { rel: "canonical", href: self },
