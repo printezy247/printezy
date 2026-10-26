@@ -11,12 +11,28 @@ type Locale = (typeof LOCALES)[number];
 const table = translations as Record<Locale, Record<string, string>>;
 
 describe("i18n locale completeness", () => {
-  it("offers only the locales the site can render end to end", () => {
-    // The switcher used to list six languages, four of which had no URL and
-    // large English gaps. Offering a language is a promise; keep it to the two
-    // with `/ms/*` twins and complete copy.
-    expect(OFFERED).toEqual(["en", "ms"]);
-    for (const locale of OFFERED) expect(LOCALES).toContain(locale);
+  it("offers every locale the site can render end to end", () => {
+    // Every locale has a `/xx/*` twin (see src/routes/$lang) and a complete
+    // dictionary, so all six are selectable — nothing is offered that the
+    // site cannot actually show.
+    expect(OFFERED).toEqual(["en", "ms", "zh", "hi", "ar", "sw"]);
+    expect([...OFFERED].sort()).toEqual([...LOCALES].sort());
+  });
+
+  it("carries the page metadata every route head reads", () => {
+    const metaKeys = [
+      "home_meta_title",
+      "home_meta_desc",
+      "faq_meta_title",
+      "faq_meta_desc",
+      "ezyai_meta_title",
+      "ezyai_meta_desc",
+    ];
+    for (const locale of LOCALES) {
+      for (const key of metaKeys) {
+        expect(table[locale][key], `${locale} is missing ${key}`).toBeTruthy();
+      }
+    }
   });
 
   it("every locale block exists", () => {

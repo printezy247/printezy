@@ -6,3 +6,6 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+
+# SRI-pinned: __root.tsx carries its sha256, so any reformat breaks the CSP.
+public/fb-pixel.js

@@ -5,9 +5,9 @@ import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
 import { Nav, Footer } from "@/components/landing/Landing";
 import { getEbook, localizeEbook, EBOOK_PAGES, type Ebook } from "@/lib/ebooks";
-import { useTranslation } from "@/lib/i18n";
+import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
-import { localizedHead, buildBreadcrumbJsonLd } from "@/lib/seo";
+import { localizedHead, buildBreadcrumbJsonLd, type PageLocale } from "@/lib/seo";
 
 const EbookClaimModal = lazy(() =>
   import("@/components/EbookClaimModal").then((m) => ({ default: m.EbookClaimModal })),
@@ -15,7 +15,7 @@ const EbookClaimModal = lazy(() =>
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/bot/tiers";
 
-export function ebookHead(book: Ebook | undefined, locale: "en" | "ms") {
+export function ebookHead(book: Ebook | undefined, locale: PageLocale) {
   const t = translations[locale];
   if (!book) {
     return { meta: [{ title: t.ebook_not_found_meta }, { name: "robots", content: "noindex" }] };
@@ -32,7 +32,7 @@ export function ebookHead(book: Ebook | undefined, locale: "en" | "ms") {
     inLanguage: book.language,
     numberOfPages: book.pages,
     bookFormat: "Ebook",
-    url: `${SITE_URL}/ebooks/${book.slug}`,
+    url: `${SITE_URL}${localizePath(`/ebooks/${book.slug}`, locale)}`,
   });
   const opts = {
     path: `/ebooks/${book.slug}`,
@@ -85,14 +85,13 @@ export function EbookNotFound() {
         <p className="mt-3 text-muted-foreground">{t("ebook_not_found_body")}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {EBOOK_PAGES.map((b) => (
-            <Link
+            <a
               key={b.slug}
-              to={locale === "ms" ? "/ms/ebooks/$slug" : "/ebooks/$slug"}
-              params={{ slug: b.slug }}
+              href={localizePath(`/ebooks/${b.slug}`, locale)}
               className="rounded-md border border-accent/60 px-4 py-2 text-sm font-semibold text-accent"
             >
               {localizeEbook(b, locale).title}
-            </Link>
+            </a>
           ))}
         </div>
       </main>
@@ -103,7 +102,7 @@ export function EbookNotFound() {
 
 export function EbookPage({ book: source }: { book: Ebook }) {
   const { t, locale } = useTranslation();
-  const ms = locale === "ms";
+  const localeHome = localizePath("/", locale);
   const book = localizeEbook(source, locale);
   const others = EBOOK_PAGES.filter((b) => b.slug !== book.slug).map((b) =>
     localizeEbook(b, locale),
@@ -136,12 +135,12 @@ export function EbookPage({ book: source }: { book: Ebook }) {
       <Nav />
       <main className="pt-8">
         <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
-          <Link
-            to={ms ? "/ms" : "/"}
+          <a
+            href={localeHome}
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> {t("ebook_back_home")}
-          </Link>
+          </a>
         </div>
 
         {/* Hero */}
@@ -259,13 +258,13 @@ export function EbookPage({ book: source }: { book: Ebook }) {
             <h2 className="text-xl ">{t("ebook_cta_title")}</h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{t("ebook_cta_body")}</p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link
-                to={ms ? "/ms/free-channel" : "/free-channel"}
+              <a
+                href={localizePath("/free-channel", locale)}
                 onClick={() => goTrack(`ebook_${book.slug}_free_channel`)}
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90"
               >
                 {t("ebook_cta_channel")} <ArrowRight className="h-4 w-4" />
-              </Link>
+              </a>
               <Link
                 to="/pricing"
                 onClick={() => goTrack(`ebook_${book.slug}_enroll`)}
@@ -283,10 +282,9 @@ export function EbookPage({ book: source }: { book: Ebook }) {
               </h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {others.map((b) => (
-                  <Link
+                  <a
                     key={b.slug}
-                    to={ms ? "/ms/ebooks/$slug" : "/ebooks/$slug"}
-                    params={{ slug: b.slug }}
+                    href={localizePath(`/ebooks/${b.slug}`, locale)}
                     className="glass-card flex h-full items-center gap-4 rounded-xl p-4 transition-transform hover:-translate-y-0.5"
                   >
                     <div className="h-20 w-14 shrink-0 overflow-hidden rounded-md border border-border bg-surface">
@@ -301,7 +299,7 @@ export function EbookPage({ book: source }: { book: Ebook }) {
                       <h3 className="text-sm font-semibold text-foreground">{b.title}</h3>
                       <p className="mt-1 text-xs text-muted-foreground">{b.tagline}</p>
                     </div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>

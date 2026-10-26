@@ -86,11 +86,24 @@ export function getStripeErrorMessage(error: unknown): string {
   return "Stripe request failed";
 }
 
+/**
+ * The slice of a Stripe checkout session the webhook acts on. Stripe sends many
+ * other event types, so `object` is typed as the one shape the handler reads
+ * rather than `any` — the signature above is what makes the payload trusted.
+ */
+export type StripeCheckoutSession = {
+  id: string;
+  payment_status?: string;
+  metadata?: Record<string, string> | null;
+};
+
+export type StripeWebhookEvent = {
+  type: string;
+  data: { object: StripeCheckoutSession };
+};
+
 /** Verify a Stripe webhook signature (HMAC-SHA256) without the SDK proxy. */
-export async function verifyWebhook(
-  req: Request,
-  env: StripeEnv,
-): Promise<{ type: string; data: { object: any } }> {
+export async function verifyWebhook(req: Request, env: StripeEnv): Promise<StripeWebhookEvent> {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
   const secret =
@@ -137,5 +150,5 @@ export async function verifyWebhook(
     throw new Error("Invalid webhook signature");
   }
 
-  return JSON.parse(body);
+  return JSON.parse(body) as StripeWebhookEvent;
 }

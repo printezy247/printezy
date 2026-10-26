@@ -698,6 +698,18 @@ export const translations = {
     dash_save: "Save",
     dash_saved: "Profile saved",
     dash_save_failed: "Could not save your profile.",
+
+    // Page metadata for the translated twins. Head-only: never rendered in
+    // the body, but it is the copy a crawler and a shared link show.
+    home_meta_title: "EzyMap ALGO — Professional Trading Signals on Telegram",
+    home_meta_desc:
+      "Join 640+ traders receiving live trading signals and education on Telegram. Real-time forex, crypto and commodity alerts powered by TradingView indicators.",
+    faq_meta_title: "FAQ — EzyMap ALGO Trading Signals",
+    faq_meta_desc:
+      "Answers about EzyMap ALGO trading routines, pricing tiers, the 30-day Vantage trial, enrollment, your account, and support.",
+    ezyai_meta_title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo",
+    ezyai_meta_desc:
+      "EzyAI turns free market data into trading confluence on Telegram — technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
   },
   ms: {
     nav_signals: "Signals",
@@ -1404,6 +1416,16 @@ export const translations = {
     dash_save: "Simpan",
     dash_saved: "Profil disimpan",
     dash_save_failed: "Tidak dapat menyimpan profil anda.",
+
+    home_meta_title: "EzyMap ALGO — Isyarat Dagangan Profesional di Telegram",
+    home_meta_desc:
+      "Sertai 640+ peniaga menerima isyarat dagangan langsung dan pendidikan di Telegram. Amaran forex, kripto dan komoditi masa nyata dikuasakan oleh penunjuk TradingView.",
+    faq_meta_title: "Soalan Lazim — Isyarat Dagangan EzyMap ALGO",
+    faq_meta_desc:
+      "Jawapan tentang rutin dagangan EzyMap ALGO, peringkat harga, percubaan Vantage 30 hari, pendaftaran, akaun anda, dan sokongan.",
+    ezyai_meta_title: "EzyAI — Isyarat Dagangan AI di Telegram | EzyMap Algo",
+    ezyai_meta_desc:
+      "EzyAI menukar data pasaran percuma menjadi keyakinan dagangan di Telegram — analisis teknikal, amaran tontonan langsung, asas dan isyarat autopilot, percuma untuk mula.",
   },
   zh: {
     nav_signals: "Signals",
@@ -2073,6 +2095,16 @@ export const translations = {
     dash_save: "保存",
     dash_saved: "资料已保存",
     dash_save_failed: "无法保存你的资料。",
+
+    home_meta_title: "EzyMap ALGO — Telegram 上的专业交易信号",
+    home_meta_desc:
+      "加入 640+ 名交易者，在 Telegram 上获取实时交易信号与教学。由 TradingView 指标驱动的外汇、加密货币与商品实时提醒。",
+    faq_meta_title: "常见问题 — EzyMap ALGO 交易信号",
+    faq_meta_desc:
+      "关于 EzyMap ALGO 的交易流程、价格方案、30 天 Vantage 试用、注册、账户与支持的解答。",
+    ezyai_meta_title: "EzyAI — Telegram 上的 AI 交易信号 | EzyMap Algo",
+    ezyai_meta_desc:
+      "EzyAI 将免费市场数据转化为 Telegram 上的交易共振 — 技术分析、实时观察提醒、基本面与自动交易信号，免费开始。",
   },
   hi: {
     nav_signals: "Signals",
@@ -2752,6 +2784,16 @@ export const translations = {
     dash_save: "सहेजें",
     dash_saved: "प्रोफ़ाइल सहेजी गई",
     dash_save_failed: "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी।",
+
+    home_meta_title: "EzyMap ALGO — Telegram पर पेशेवर ट्रेडिंग सिग्नल",
+    home_meta_desc:
+      "640+ ट्रेडर्स के साथ जुड़ें और Telegram पर लाइव ट्रेडिंग सिग्नल तथा शिक्षा पाएं। TradingView इंडिकेटर्स से फॉरेक्स, क्रिप्टो और कमोडिटी के रियल-टाइम अलर्ट।",
+    faq_meta_title: "सामान्य प्रश्न — EzyMap ALGO ट्रेडिंग सिग्नल",
+    faq_meta_desc:
+      "EzyMap ALGO की ट्रेडिंग दिनचर्या, प्राइसिंग प्लान, 30-दिन का Vantage ट्रायल, रजिस्ट्रेशन, आपका अकाउंट और सहायता से जुड़े जवाब।",
+    ezyai_meta_title: "EzyAI — Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo",
+    ezyai_meta_desc:
+      "EzyAI मुफ़्त मार्केट डेटा को Telegram पर ट्रेडिंग कॉन्फ़्लुएंस में बदलता है — तकनीकी विश्लेषण, लाइव वॉच अलर्ट, फंडामेंटल और ऑटोपायलट सिग्नल, शुरुआत मुफ़्त।",
   },
   ar: {
     nav_signals: "الـ signals",
@@ -3425,6 +3467,16 @@ export const translations = {
     dash_save: "حفظ",
     dash_saved: "تم حفظ الملف الشخصي",
     dash_save_failed: "تعذّر حفظ ملفك الشخصي.",
+
+    home_meta_title: "EzyMap ALGO — إشارات تداول احترافية على تيليجرام",
+    home_meta_desc:
+      "انضم إلى أكثر من 640 متداولًا يتلقون إشارات تداول مباشرة وتعليمًا على تيليجرام. تنبيهات فورية للفوركس والعملات الرقمية والسلع مدعومة بمؤشرات TradingView.",
+    faq_meta_title: "الأسئلة الشائعة — إشارات تداول EzyMap ALGO",
+    faq_meta_desc:
+      "إجابات عن روتين التداول في EzyMap ALGO، وفئات الأسعار، وتجربة Vantage لمدة 30 يومًا، والتسجيل، وحسابك، والدعم.",
+    ezyai_meta_title: "EzyAI — إشارات تداول بالذكاء الاصطناعي على تيليجرام | EzyMap Algo",
+    ezyai_meta_desc:
+      "يحوّل EzyAI بيانات السوق المجانية إلى توافق تداولي على تيليجرام — تحليل فني، وتنبيهات مراقبة مباشرة، وأساسيات، وإشارات طيار آلي، وبداية مجانية.",
   },
   sw: {
     nav_signals: "Signals",
@@ -4111,6 +4163,16 @@ export const translations = {
     dash_save: "Hifadhi",
     dash_saved: "Wasifu umehifadhiwa",
     dash_save_failed: "Imeshindwa kuhifadhi wasifu wako.",
+
+    home_meta_title: "EzyMap ALGO — Ishara za Biashara za Kitaalamu kwenye Telegram",
+    home_meta_desc:
+      "Jiunge na wafanyabiashara 640+ wanaopokea ishara za biashara za moja kwa moja na mafunzo kwenye Telegram. Tahadhari za wakati halisi za forex, crypto na bidhaa zinazoendeshwa na viashiria vya TradingView.",
+    faq_meta_title: "Maswali Yanayoulizwa Mara kwa Mara — Ishara za EzyMap ALGO",
+    faq_meta_desc:
+      "Majibu kuhusu taratibu za biashara za EzyMap ALGO, viwango vya bei, jaribio la siku 30 la Vantage, usajili, akaunti yako, na msaada.",
+    ezyai_meta_title: "EzyAI — Ishara za Biashara za AI kwenye Telegram | EzyMap Algo",
+    ezyai_meta_desc:
+      "EzyAI hubadilisha data ya soko ya bure kuwa muunganiko wa biashara kwenye Telegram — uchambuzi wa kiufundi, tahadhari za ufuatiliaji wa moja kwa moja, misingi na ishara za autopilot, bure kuanza.",
   },
 } as const;
 

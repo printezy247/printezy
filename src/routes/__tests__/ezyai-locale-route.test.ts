@@ -60,8 +60,25 @@ describe("English EzyAI route (/ezyai)", () => {
 
     expect(titleOf(head)).toBe("EzyAI — AI Trading Signals on Telegram | EzyMap Algo");
     expect(link(head, "canonical")).toBe(`${SITE_URL}/ezyai`);
-    expect(link(head, "alternate", "ms")).toBe(`${SITE_URL}/ms/ezyai`);
+    for (const locale of ["ms", "zh", "hi", "ar", "sw"]) {
+      expect(link(head, "alternate", locale)).toBe(`${SITE_URL}/${locale}/ezyai`);
+    }
     expect(link(head, "alternate", "x-default")).toBe(`${SITE_URL}/ezyai`);
+  });
+
+  it.each([
+    ["zh", "EzyAI — Telegram 上的 AI 交易信号 | EzyMap Algo", "zh_CN"],
+    ["hi", "EzyAI — Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo", "hi_IN"],
+    ["ar", "EzyAI — إشارات تداول بالذكاء الاصطناعي على تيليجرام | EzyMap Algo", "ar_SA"],
+    ["sw", "EzyAI — Ishara za Biashara za AI kwenye Telegram | EzyMap Algo", "sw_KE"],
+  ])("serves the %s head with its own canonical", async (lang, title, tag) => {
+    const { localized } = await loadRoutes(true);
+    const head = runHead(localized, { lang });
+
+    expect(titleOf(head)).toBe(title);
+    expect(metaContent(head, "og:locale")).toBe(tag);
+    expect(link(head, "canonical")).toBe(`${SITE_URL}/${lang}/ezyai`);
+    expect(link(head, "alternate", "en")).toBe(`${SITE_URL}/ezyai`);
   });
 });
 
@@ -107,12 +124,15 @@ describe("deep-linked tabs", () => {
 });
 
 describe("hidden board redirects stay in the visitor's language", () => {
-  it("sends /ms/ezyai to /ms, not to the English home page", async () => {
-    const { localized } = await loadRoutes(false);
-    expect(() => runBeforeLoad(localized, { lang: "ms" })).toThrowError(
-      expect.objectContaining({ options: expect.objectContaining({ to: "/ms" }) }),
-    );
-  });
+  it.each(["ms", "zh", "hi", "ar", "sw"])(
+    "sends /%s/ezyai to that locale's home, never to the English one",
+    async (lang) => {
+      const { localized } = await loadRoutes(false);
+      expect(() => runBeforeLoad(localized, { lang })).toThrowError(
+        expect.objectContaining({ options: expect.objectContaining({ href: `/${lang}` }) }),
+      );
+    },
+  );
 
   it("sends /ezyai to /", async () => {
     const { english } = await loadRoutes(false);

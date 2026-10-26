@@ -1,15 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, ArrowLeft, Users, ShieldCheck, Clock, Zap } from "lucide-react";
 import { saveLead } from "@/lib/leads.functions";
 import { LINKS } from "@/components/landing/Landing";
 import { getSessionId } from "@/lib/analytics";
-import { useTranslation } from "@/lib/i18n";
+import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations, type TranslationKey } from "@/lib/translations";
-import { localizedHead } from "@/lib/seo";
+import { localizedHead, type PageLocale } from "@/lib/seo";
 
-export function freeChannelHead(locale: "en" | "ms") {
+export function freeChannelHead(locale: PageLocale) {
   const t = translations[locale];
   return localizedHead({
     path: "/free-channel",
@@ -38,7 +38,7 @@ const benefits: { icon: typeof Zap; label: TranslationKey; desc: TranslationKey 
 
 export function FreeChannelPage() {
   const { t, locale } = useTranslation();
-  const home = locale === "ms" ? "/ms" : "/";
+  const home = localizePath("/", locale);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [telegram, setTelegram] = useState("");
@@ -70,15 +70,15 @@ export function FreeChannelPage() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 sm:px-6 lg:px-8">
         <header className="flex h-16 items-center justify-between">
-          <Link to={home} className="text-lg font-black tracking-tight text-foreground">
+          <a href={home} className="text-lg font-black tracking-tight text-foreground">
             EzyMap
-          </Link>
-          <Link
-            to={home}
+          </a>
+          <a
+            href={home}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> {t("fc_back_home")}
-          </Link>
+          </a>
         </header>
 
         <main className="flex flex-1 flex-col items-center justify-center py-12">

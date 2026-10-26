@@ -6,10 +6,10 @@ import { Tools } from "@/components/landing/Tools";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
-import { localizedHead } from "@/lib/seo";
+import { localizedHead, type PageLocale } from "@/lib/seo";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
 
-export function indicatorsHead(locale: "en" | "ms") {
+export function indicatorsHead(locale: PageLocale) {
   const t = translations[locale];
   return localizedHead({
     path: "/indicators",

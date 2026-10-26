@@ -16,6 +16,7 @@ import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { useCountUp } from "@/lib/use-count-up";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack, trackEngagement, trackPageLoad } from "@/lib/analytics";
+import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
 import markImg from "@/assets/ezymap-mark.webp";
 import { LINKS } from "./Landing";
 import { STEPS, FAQ } from "./welcome-data";
@@ -779,16 +780,32 @@ function Bars() {
             EzyMap <span className="text-[#12803f]">ALGO</span>
           </Link>
           <nav className="flex items-center gap-4 sm:gap-6" aria-label="Primary">
-            <Link
-              to="/ms"
-              hrefLang="ms"
-              lang="ms"
-              onClick={() => goTrack("welcome_lang_ms")}
-              aria-label="Bahasa Melayu"
-              className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border-2 border-neutral-300 px-3 text-sm font-extrabold uppercase tracking-wide text-neutral-800 hover:border-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
-            >
-              BM
-            </Link>
+            {/* Five translated homes live at /<locale>; this is the one
+                control on the welcome page that reaches them without
+                spending 250px of header on five buttons. */}
+            <label className="relative inline-flex items-center">
+              <span className="sr-only">Language</span>
+              <select
+                defaultValue=""
+                onChange={(event) => {
+                  const next = event.target.value as Locale;
+                  goTrack(`welcome_lang_${next}`);
+                  window.location.href = localizePath("/", next);
+                }}
+                className="min-h-11 min-w-11 appearance-none rounded-sm border-2 border-neutral-300 bg-white py-2 pl-3 pr-8 text-sm font-extrabold uppercase tracking-wide text-neutral-800 hover:border-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
+              >
+                <option value="en">{LOCALE_LABELS.en}</option>
+                {LOCALES.filter((locale) => locale !== "en").map((locale) => (
+                  <option key={locale} value={locale}>
+                    {LOCALE_LABELS[locale]}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-2 h-4 w-4 text-neutral-600"
+                aria-hidden="true"
+              />
+            </label>
             <Link
               to={FIND_OUT_MORE}
               onClick={() => goTrack("welcome_more_nav")}

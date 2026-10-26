@@ -20,7 +20,9 @@ describe("the board is visible", () => {
 
   it("lists /ezyai in the sitemap, gated on the same flag", () => {
     const src = read("src/routes/sitemap[.]xml.ts");
-    expect(src).toContain('path: "/ezyai"');
+    // One entry per locale, so the route is listed through the helper that
+    // emits the whole hreflang cluster — not as a single hardcoded path.
+    expect(src).toContain('localized("/ezyai"');
     expect(src).toContain("EZYAI_BOARD_VISIBLE");
   });
 });
@@ -53,7 +55,12 @@ describe("the signal bridge keeps its key check honest", () => {
 });
 
 describe("the board page is keyboard- and screen-reader-shaped", () => {
+  // The page is split: the route owns the tablist, each tab its own panel.
   const src = read("src/routes/ezyai.tsx");
+  const panels = [
+    read("src/components/ezyai/BoardPanel.tsx"),
+    read("src/components/ezyai/HistoryPanel.tsx"),
+  ].join("\n");
 
   it("uses a real tablist, not pressed buttons", () => {
     expect(src).toContain('role="tablist"');
@@ -62,8 +69,14 @@ describe("the board page is keyboard- and screen-reader-shaped", () => {
     expect(src).toContain("ArrowRight");
   });
 
-  it("tells assistive tech when the board is loading", () => {
-    expect(src).toContain('role="status"');
+  it("tells assistive tech when a panel is loading", () => {
+    expect(panels).toContain('role="status"');
+    expect(panels).toContain("aria-busy");
+  });
+
+  it("keeps the panels out of the route file", () => {
+    expect(src).not.toContain("SignalCard");
+    expect(src).not.toContain("PerformancePanel");
   });
 
   it("respects prefers-reduced-motion on the cards", () => {

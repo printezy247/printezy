@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -27,19 +28,19 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as LangIndexRouteImport } from './routes/$lang/index'
 import { Route as LangEzyaiRouteImport } from './routes/$lang/ezyai'
+import { Route as LangFaqRouteImport } from './routes/$lang/faq'
+import { Route as LangFreeChannelRouteImport } from './routes/$lang/free-channel'
+import { Route as LangIndicatorsRouteImport } from './routes/$lang/indicators'
+import { Route as LangMacroRouteImport } from './routes/$lang/macro'
+import { Route as LangPrivacyRouteImport } from './routes/$lang/privacy'
+import { Route as LangTermsRouteImport } from './routes/$lang/terms'
 import { Route as DotwellKnownSecurityDottxtRouteImport } from './routes/[.]well-known/security[.]txt'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
-import { Route as MsIndexRouteImport } from './routes/ms/index'
-import { Route as MsFaqRouteImport } from './routes/ms/faq'
-import { Route as MsFreeChannelRouteImport } from './routes/ms/free-channel'
-import { Route as MsIndicatorsRouteImport } from './routes/ms/indicators'
-import { Route as MsMacroRouteImport } from './routes/ms/macro'
-import { Route as MsPrivacyRouteImport } from './routes/ms/privacy'
-import { Route as MsTermsRouteImport } from './routes/ms/terms'
-import { Route as MsEbooksSlugRouteImport } from './routes/ms/ebooks.$slug'
+import { Route as LangEbooksSlugRouteImport } from './routes/$lang/ebooks.$slug'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
 import { Route as ApiPublicEzyaiSignalsRouteImport } from './routes/api/public/ezyai/signals'
 import { Route as ApiPublicEzyaiStreamRouteImport } from './routes/api/public/ezyai/stream'
@@ -49,6 +50,11 @@ import { Route as ApiPublicTelegramWebhookRouteImport } from './routes/api/publi
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -135,9 +141,44 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LangIndexRoute = LangIndexRouteImport.update({
+  id: '/$lang/',
+  path: '/$lang/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LangEzyaiRoute = LangEzyaiRouteImport.update({
   id: '/$lang/ezyai',
   path: '/$lang/ezyai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangFaqRoute = LangFaqRouteImport.update({
+  id: '/$lang/faq',
+  path: '/$lang/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangFreeChannelRoute = LangFreeChannelRouteImport.update({
+  id: '/$lang/free-channel',
+  path: '/$lang/free-channel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangIndicatorsRoute = LangIndicatorsRouteImport.update({
+  id: '/$lang/indicators',
+  path: '/$lang/indicators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangMacroRoute = LangMacroRouteImport.update({
+  id: '/$lang/macro',
+  path: '/$lang/macro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangPrivacyRoute = LangPrivacyRouteImport.update({
+  id: '/$lang/privacy',
+  path: '/$lang/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LangTermsRoute = LangTermsRouteImport.update({
+  id: '/$lang/terms',
+  path: '/$lang/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotwellKnownSecurityDottxtRoute =
@@ -163,44 +204,9 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MsIndexRoute = MsIndexRouteImport.update({
-  id: '/ms/',
-  path: '/ms/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsFaqRoute = MsFaqRouteImport.update({
-  id: '/ms/faq',
-  path: '/ms/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsFreeChannelRoute = MsFreeChannelRouteImport.update({
-  id: '/ms/free-channel',
-  path: '/ms/free-channel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsIndicatorsRoute = MsIndicatorsRouteImport.update({
-  id: '/ms/indicators',
-  path: '/ms/indicators',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsMacroRoute = MsMacroRouteImport.update({
-  id: '/ms/macro',
-  path: '/ms/macro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsPrivacyRoute = MsPrivacyRouteImport.update({
-  id: '/ms/privacy',
-  path: '/ms/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsTermsRoute = MsTermsRouteImport.update({
-  id: '/ms/terms',
-  path: '/ms/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MsEbooksSlugRoute = MsEbooksSlugRouteImport.update({
-  id: '/ms/ebooks/$slug',
-  path: '/ms/ebooks/$slug',
+const LangEbooksSlugRoute = LangEbooksSlugRouteImport.update({
+  id: '/$lang/ebooks/$slug',
+  path: '/$lang/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicEzyaiEntitlementsRoute =
@@ -234,6 +240,7 @@ const ApiPublicTelegramWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
@@ -251,18 +258,18 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
+  '/$lang/faq': typeof LangFaqRoute
+  '/$lang/free-channel': typeof LangFreeChannelRoute
+  '/$lang/indicators': typeof LangIndicatorsRoute
+  '/$lang/macro': typeof LangMacroRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/faq': typeof MsFaqRoute
-  '/ms/free-channel': typeof MsFreeChannelRoute
-  '/ms/indicators': typeof MsIndicatorsRoute
-  '/ms/macro': typeof MsMacroRoute
-  '/ms/privacy': typeof MsPrivacyRoute
-  '/ms/terms': typeof MsTermsRoute
-  '/ms/': typeof MsIndexRoute
-  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/$lang/': typeof LangIndexRoute
+  '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
@@ -271,6 +278,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
@@ -288,18 +296,18 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
+  '/$lang/faq': typeof LangFaqRoute
+  '/$lang/free-channel': typeof LangFreeChannelRoute
+  '/$lang/indicators': typeof LangIndicatorsRoute
+  '/$lang/macro': typeof LangMacroRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/faq': typeof MsFaqRoute
-  '/ms/free-channel': typeof MsFreeChannelRoute
-  '/ms/indicators': typeof MsIndicatorsRoute
-  '/ms/macro': typeof MsMacroRoute
-  '/ms/privacy': typeof MsPrivacyRoute
-  '/ms/terms': typeof MsTermsRoute
-  '/ms': typeof MsIndexRoute
-  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/$lang': typeof LangIndexRoute
+  '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$': typeof SplatRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
@@ -327,18 +336,18 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
+  '/$lang/faq': typeof LangFaqRoute
+  '/$lang/free-channel': typeof LangFreeChannelRoute
+  '/$lang/indicators': typeof LangIndicatorsRoute
+  '/$lang/macro': typeof LangMacroRoute
+  '/$lang/privacy': typeof LangPrivacyRoute
+  '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ms/faq': typeof MsFaqRoute
-  '/ms/free-channel': typeof MsFreeChannelRoute
-  '/ms/indicators': typeof MsIndicatorsRoute
-  '/ms/macro': typeof MsMacroRoute
-  '/ms/privacy': typeof MsPrivacyRoute
-  '/ms/terms': typeof MsTermsRoute
-  '/ms/': typeof MsIndexRoute
-  '/ms/ebooks/$slug': typeof MsEbooksSlugRoute
+  '/$lang/': typeof LangIndexRoute
+  '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$'
     | '/account'
     | '/auth'
     | '/checkout-success'
@@ -366,18 +376,18 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
+    | '/$lang/faq'
+    | '/$lang/free-channel'
+    | '/$lang/indicators'
+    | '/$lang/macro'
+    | '/$lang/privacy'
+    | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/faq'
-    | '/ms/free-channel'
-    | '/ms/indicators'
-    | '/ms/macro'
-    | '/ms/privacy'
-    | '/ms/terms'
-    | '/ms/'
-    | '/ms/ebooks/$slug'
+    | '/$lang/'
+    | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$'
     | '/account'
     | '/auth'
     | '/checkout-success'
@@ -403,18 +414,18 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
+    | '/$lang/faq'
+    | '/$lang/free-channel'
+    | '/$lang/indicators'
+    | '/$lang/macro'
+    | '/$lang/privacy'
+    | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/faq'
-    | '/ms/free-channel'
-    | '/ms/indicators'
-    | '/ms/macro'
-    | '/ms/privacy'
-    | '/ms/terms'
-    | '/ms'
-    | '/ms/ebooks/$slug'
+    | '/$lang'
+    | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
@@ -424,6 +435,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/$'
     | '/account'
     | '/auth'
     | '/checkout-success'
@@ -441,18 +453,18 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
+    | '/$lang/faq'
+    | '/$lang/free-channel'
+    | '/$lang/indicators'
+    | '/$lang/macro'
+    | '/$lang/privacy'
+    | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
-    | '/ms/faq'
-    | '/ms/free-channel'
-    | '/ms/indicators'
-    | '/ms/macro'
-    | '/ms/privacy'
-    | '/ms/terms'
-    | '/ms/'
-    | '/ms/ebooks/$slug'
+    | '/$lang/'
+    | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
@@ -463,6 +475,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  SplatRoute: typeof SplatRoute
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
@@ -480,16 +493,16 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   LangEzyaiRoute: typeof LangEzyaiRoute
+  LangFaqRoute: typeof LangFaqRoute
+  LangFreeChannelRoute: typeof LangFreeChannelRoute
+  LangIndicatorsRoute: typeof LangIndicatorsRoute
+  LangMacroRoute: typeof LangMacroRoute
+  LangPrivacyRoute: typeof LangPrivacyRoute
+  LangTermsRoute: typeof LangTermsRoute
   DotwellKnownSecurityDottxtRoute: typeof DotwellKnownSecurityDottxtRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
-  MsFaqRoute: typeof MsFaqRoute
-  MsFreeChannelRoute: typeof MsFreeChannelRoute
-  MsIndicatorsRoute: typeof MsIndicatorsRoute
-  MsMacroRoute: typeof MsMacroRoute
-  MsPrivacyRoute: typeof MsPrivacyRoute
-  MsTermsRoute: typeof MsTermsRoute
-  MsIndexRoute: typeof MsIndexRoute
-  MsEbooksSlugRoute: typeof MsEbooksSlugRoute
+  LangIndexRoute: typeof LangIndexRoute
+  LangEbooksSlugRoute: typeof LangEbooksSlugRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
   ApiPublicEzyaiSignalsRoute: typeof ApiPublicEzyaiSignalsRoute
   ApiPublicEzyaiStreamRoute: typeof ApiPublicEzyaiStreamRoute
@@ -504,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -625,11 +645,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$lang/': {
+      id: '/$lang/'
+      path: '/$lang'
+      fullPath: '/$lang/'
+      preLoaderRoute: typeof LangIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$lang/ezyai': {
       id: '/$lang/ezyai'
       path: '/$lang/ezyai'
       fullPath: '/$lang/ezyai'
       preLoaderRoute: typeof LangEzyaiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/faq': {
+      id: '/$lang/faq'
+      path: '/$lang/faq'
+      fullPath: '/$lang/faq'
+      preLoaderRoute: typeof LangFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/free-channel': {
+      id: '/$lang/free-channel'
+      path: '/$lang/free-channel'
+      fullPath: '/$lang/free-channel'
+      preLoaderRoute: typeof LangFreeChannelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/indicators': {
+      id: '/$lang/indicators'
+      path: '/$lang/indicators'
+      fullPath: '/$lang/indicators'
+      preLoaderRoute: typeof LangIndicatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/macro': {
+      id: '/$lang/macro'
+      path: '/$lang/macro'
+      fullPath: '/$lang/macro'
+      preLoaderRoute: typeof LangMacroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/privacy': {
+      id: '/$lang/privacy'
+      path: '/$lang/privacy'
+      fullPath: '/$lang/privacy'
+      preLoaderRoute: typeof LangPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$lang/terms': {
+      id: '/$lang/terms'
+      path: '/$lang/terms'
+      fullPath: '/$lang/terms'
+      preLoaderRoute: typeof LangTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/security.txt': {
@@ -660,60 +729,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ms/': {
-      id: '/ms/'
-      path: '/ms'
-      fullPath: '/ms/'
-      preLoaderRoute: typeof MsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/faq': {
-      id: '/ms/faq'
-      path: '/ms/faq'
-      fullPath: '/ms/faq'
-      preLoaderRoute: typeof MsFaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/free-channel': {
-      id: '/ms/free-channel'
-      path: '/ms/free-channel'
-      fullPath: '/ms/free-channel'
-      preLoaderRoute: typeof MsFreeChannelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/indicators': {
-      id: '/ms/indicators'
-      path: '/ms/indicators'
-      fullPath: '/ms/indicators'
-      preLoaderRoute: typeof MsIndicatorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/macro': {
-      id: '/ms/macro'
-      path: '/ms/macro'
-      fullPath: '/ms/macro'
-      preLoaderRoute: typeof MsMacroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/privacy': {
-      id: '/ms/privacy'
-      path: '/ms/privacy'
-      fullPath: '/ms/privacy'
-      preLoaderRoute: typeof MsPrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/terms': {
-      id: '/ms/terms'
-      path: '/ms/terms'
-      fullPath: '/ms/terms'
-      preLoaderRoute: typeof MsTermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ms/ebooks/$slug': {
-      id: '/ms/ebooks/$slug'
-      path: '/ms/ebooks/$slug'
-      fullPath: '/ms/ebooks/$slug'
-      preLoaderRoute: typeof MsEbooksSlugRouteImport
+    '/$lang/ebooks/$slug': {
+      id: '/$lang/ebooks/$slug'
+      path: '/$lang/ebooks/$slug'
+      fullPath: '/$lang/ebooks/$slug'
+      preLoaderRoute: typeof LangEbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ezyai/entitlements': {
@@ -770,6 +790,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  SplatRoute: SplatRoute,
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
@@ -787,16 +808,16 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   LangEzyaiRoute: LangEzyaiRoute,
+  LangFaqRoute: LangFaqRoute,
+  LangFreeChannelRoute: LangFreeChannelRoute,
+  LangIndicatorsRoute: LangIndicatorsRoute,
+  LangMacroRoute: LangMacroRoute,
+  LangPrivacyRoute: LangPrivacyRoute,
+  LangTermsRoute: LangTermsRoute,
   DotwellKnownSecurityDottxtRoute: DotwellKnownSecurityDottxtRoute,
   EbooksSlugRoute: EbooksSlugRoute,
-  MsFaqRoute: MsFaqRoute,
-  MsFreeChannelRoute: MsFreeChannelRoute,
-  MsIndicatorsRoute: MsIndicatorsRoute,
-  MsMacroRoute: MsMacroRoute,
-  MsPrivacyRoute: MsPrivacyRoute,
-  MsTermsRoute: MsTermsRoute,
-  MsIndexRoute: MsIndexRoute,
-  MsEbooksSlugRoute: MsEbooksSlugRoute,
+  LangIndexRoute: LangIndexRoute,
+  LangEbooksSlugRoute: LangEbooksSlugRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
   ApiPublicEzyaiSignalsRoute: ApiPublicEzyaiSignalsRoute,
   ApiPublicEzyaiStreamRoute: ApiPublicEzyaiStreamRoute,

@@ -19,12 +19,18 @@ import { EbookAutoPopup } from "../components/EbookAutoPopup";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
-import { LocaleProvider } from "../lib/i18n";
+import { LocaleProvider, localeFromPath } from "../lib/i18n";
 import { SITE_URL } from "../lib/bot/tiers";
 
-function NotFoundComponent() {
-  // Unknown routes have no head of their own, so the root's marketing title
-  // would otherwise stay in the tab. The next successful route sets its own.
+/**
+ * The 404 body, shared by the root's `notFoundComponent` (a route that throws
+ * `notFound()`) and the catch-all splat route in `src/routes/$.tsx`, which is
+ * what gives an unknown URL a real title and `noindex` in the server-rendered
+ * head instead of the marketing title.
+ */
+export function NotFoundComponent() {
+  // Belt and braces for the notFound() path, where no route head applies.
+  // The next successful route sets its own title.
   useEffect(() => {
     document.title = "Page not found — EzyMap ALGO";
   }, []);
@@ -60,9 +66,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+        <h1 className="text-xl tracking-tight text-foreground">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
@@ -133,10 +137,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { httpEquiv: "Content-Security-Policy", content: CSP },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "EzyMap ALGO — Professional Trading Signals on Telegram" },
-      { name: "description", content: "EzyMap ALGO delivers real-time trading signals and daily education to 640+ traders on Telegram. Forex, crypto and commodities, 24/5." },
+      // Any route may override the title with its own head; a 404 has no head
+      // of its own (see src/routes/$.tsx) and is titled by NotFoundComponent
+      // on mount instead.
+      {
+        name: "description",
+        content:
+          "EzyMap ALGO delivers real-time trading signals and daily education to 640+ traders on Telegram. Forex, crypto and commodities, 24/5.",
+      },
       { name: "author", content: "EzyMap ALGO" },
       { property: "og:title", content: "EzyMap ALGO — Professional Trading Signals on Telegram" },
-      { property: "og:description", content: "Live signals and education for 640+ traders. Start free on Telegram." },
+      {
+        property: "og:description",
+        content: "Live signals and education for 640+ traders. Start free on Telegram.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "EzyMap ALGO" },
       { property: "og:locale", content: "en_US" },
@@ -148,7 +162,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image:alt", content: "EzyMap ALGO logo" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "EzyMap ALGO — Professional Trading Signals" },
-      { name: "twitter:description", content: "Live signals and education for 640+ traders on Telegram." },
+      {
+        name: "twitter:description",
+        content: "Live signals and education for 640+ traders on Telegram.",
+      },
       { name: "twitter:image", content: `${SITE_URL}/og-default.png` },
     ],
     links: [
@@ -180,9 +197,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const lang = pathname === "/ms" || pathname.startsWith("/ms/") ? "ms" : "en";
+  // Read from the URL so the server-rendered document already carries the
+  // right language (and text direction) before any client code runs.
+  const locale = localeFromPath(pathname) ?? "en";
   return (
-    <html lang={lang}>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
         <HeadContent />
       </head>

@@ -1,50 +1,58 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_URL } from "@/lib/bot/tiers";
 import { EBOOK_PAGES } from "@/lib/ebooks";
+import { LOCALES, localizePath } from "@/lib/i18n";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
  * Generated, not hand-written, so it can never go stale. Only the static
  * indexable routes plus one entry per real ebook — never a fabricated
  * <lastmod>, since none of these routes have a real timestamp to report.
- * Alternates are stated explicitly per entry so the sitemap can express an
- * English-only page (no alternates) as well as a translated pair.
+ *
+ * A page with translated twins gets one <loc> per offered locale, and every
+ * one of those entries carries the same complete alternate set: an hreflang
+ * cluster is only valid when each member lists all the others.
  */
 type Alternate = { hrefLang: string; href: string };
+type UrlEntry = { path: string; priority: string; alternates?: Alternate[] };
 
-/** en/ms/x-default alternates for a page that has a real Malay twin. */
-function twin(en: string, ms: string): Alternate[] {
+/** The alternate set for a page that exists in every offered locale. */
+function alternatesFor(path: string): Alternate[] {
   return [
-    { hrefLang: "en", href: en },
-    { hrefLang: "ms", href: ms },
-    { hrefLang: "x-default", href: en },
+    ...LOCALES.map((locale) => ({ hrefLang: locale, href: localizePath(path, locale) })),
+    { hrefLang: "x-default", href: path },
   ];
 }
 
-type UrlEntry = { path: string; priority: string; alternates?: Alternate[] };
+/** One <loc> per locale for a translated page. */
+function localized(path: string, priority: string): UrlEntry[] {
+  const alternates = alternatesFor(path);
+  return LOCALES.map((locale) => ({
+    path: localizePath(path, locale),
+    priority,
+    alternates,
+  }));
+}
 
 const STATIC_ROUTES: UrlEntry[] = [
-  // `/` has no Malay twin (it is the English-only Welcome page), so it carries
-  // no alternates — matching its own head tags. `/ms` is the Landing twin of
-  // `/home`, not of `/`, and gets its own <loc> below.
+  // `/` has no translated twin (it is the English-only welcome page), so it
+  // carries no alternates — matching its own head tags. Each locale's landing
+  // page is the twin of `/home`, not of `/`.
   { path: "/", priority: "1.0" },
-  { path: "/home", priority: "0.9", alternates: twin("/home", "/ms") },
-  { path: "/ms", priority: "0.9", alternates: twin("/home", "/ms") },
-  { path: "/indicators", priority: "0.8", alternates: twin("/indicators", "/ms/indicators") },
-  { path: "/macro", priority: "0.8", alternates: twin("/macro", "/ms/macro") },
-  { path: "/free-channel", priority: "0.7", alternates: twin("/free-channel", "/ms/free-channel") },
-  { path: "/faq", priority: "0.6", alternates: twin("/faq", "/ms/faq") },
-  { path: "/privacy", priority: "0.3", alternates: twin("/privacy", "/ms/privacy") },
-  { path: "/terms", priority: "0.3", alternates: twin("/terms", "/ms/terms") },
+  ...localized("/home", "0.9"),
+  ...localized("/indicators", "0.8"),
+  ...localized("/macro", "0.8"),
+  ...localized("/free-channel", "0.7"),
+  ...localized("/faq", "0.6"),
+  ...localized("/privacy", "0.3"),
+  ...localized("/terms", "0.3"),
   // Language-neutral generated files: plain URLs, no alternates.
   { path: "/llms.txt", priority: "0.4" },
   { path: "/.well-known/security.txt", priority: "0.4" },
   // Gated on the same flag the route and the nav use (src/lib/ezyai/
   // visibility.ts): listing a route that redirects is how a sitemap earns a
   // crawl warning, so the entry appears exactly when the board does.
-  ...(EZYAI_BOARD_VISIBLE
-    ? ([{ path: "/ezyai", priority: "0.8", alternates: twin("/ezyai", "/ms/ezyai") }] as UrlEntry[])
-    : []),
+  ...(EZYAI_BOARD_VISIBLE ? localized("/ezyai", "0.8") : []),
 ];
 
 function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {
@@ -61,14 +69,9 @@ function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {
 }
 
 export function buildSitemap(): string {
-  const ebookEntries: UrlEntry[] = EBOOK_PAGES.flatMap((book) => {
-    const en = `/ebooks/${book.slug}`;
-    const ms = `/ms/ebooks/${book.slug}`;
-    return [
-      { path: en, priority: "0.7", alternates: twin(en, ms) },
-      { path: ms, priority: "0.7", alternates: twin(en, ms) },
-    ];
-  });
+  const ebookEntries: UrlEntry[] = EBOOK_PAGES.flatMap((book) =>
+    localized(`/ebooks/${book.slug}`, "0.7"),
+  );
 
   const urls = [...STATIC_ROUTES, ...ebookEntries].map(urlEntry);
 

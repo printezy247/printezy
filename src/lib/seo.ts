@@ -1,8 +1,21 @@
 import { SITE_URL } from "@/lib/bot/tiers";
-import { localizePath } from "@/lib/i18n";
+import { LOCALES, LOCALE_TAGS, localizePath, type Locale } from "@/lib/i18n";
 import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
 
-export type PageLocale = "en" | "ms";
+export type PageLocale = Locale;
+
+/**
+ * Breadcrumb label for the first crumb. Only ever read by JSON-LD, so it
+ * lives here rather than in the UI translation table.
+ */
+const HOME_CRUMB: Record<Locale, string> = {
+  en: "Home",
+  ms: "Utama",
+  zh: "首页",
+  hi: "होम",
+  ar: "الرئيسية",
+  sw: "Mwanzo",
+};
 
 export type OgImage = {
   /** Site-absolute path, e.g. "/og-default.png". */
@@ -72,18 +85,23 @@ export type LocalizedHeadOptions = {
   twitterTitle?: string;
   twitterDescription?: string;
   /**
-   * Malay twin path, or `null` when this page has no Malay twin. Omitted means
-   * the twin exists at `localizePath(path, "ms")`. `null` drops the ms and
-   * x-default alternates so a page never claims a translation it does not have.
+   * `null` for a page with no translated twins at all (the English-only `/`
+   * welcome page). Omitted means every offered locale has a twin at
+   * `localizePath(path, locale)`, and the head advertises all of them.
    */
-  msPath?: string | null;
+  twinPath?: null;
   /** Breadcrumb leaf name; falls back to the title's first dash segment. */
   crumbName?: string;
 };
 
-/** The Malay twin path, or null when the page has none. */
-function twinPath(o: LocalizedHeadOptions): string | null {
-  return o.msPath === undefined ? localizePath(o.path, "ms") : o.msPath;
+/** This page's URL in one locale: unprefixed for en, `/xx/...` otherwise. */
+function pathFor(o: LocalizedHeadOptions, locale: Locale): string {
+  return locale === "en" ? o.path : localizePath(o.path, locale);
+}
+
+/** Whether the page exists in the offered locales (or only in English). */
+function hasTwins(o: LocalizedHeadOptions): boolean {
+  return o.twinPath !== null;
 }
 
 /** Leaf name for the breadcrumb, preferring the explicit `crumbName`. */
@@ -96,8 +114,8 @@ function crumbFor(o: LocalizedHeadOptions): string {
  * script (a Book, a HowTo) can keep the breadcrumb instead of dropping it.
  */
 export function buildBreadcrumbJsonLd(o: LocalizedHeadOptions): string {
-  const twin = twinPath(o);
-  const self = twin !== null && o.locale === "ms" ? `${SITE_URL}${twin}` : `${SITE_URL}${o.path}`;
+  const self = `${SITE_URL}${pathFor(o, o.locale)}`;
+  const home = o.locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${o.locale}`;
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -105,8 +123,8 @@ export function buildBreadcrumbJsonLd(o: LocalizedHeadOptions): string {
       {
         "@type": "ListItem",
         position: 1,
-        name: o.locale === "ms" ? "Utama" : "Home",
-        item: o.locale === "ms" ? `${SITE_URL}/ms` : `${SITE_URL}/`,
+        name: HOME_CRUMB[o.locale],
+        item: home,
       },
       { "@type": "ListItem", position: 2, name: crumbFor(o), item: self },
     ],
@@ -114,37 +132,34 @@ export function buildBreadcrumbJsonLd(o: LocalizedHeadOptions): string {
 }
 
 /**
- * Head for a page that exists at `/x` (en) and `/ms/x` (ms): self-canonical,
- * reciprocal hreflang (en/ms/x-default) and matching og:locale pair. Keeps the
- * route files from repeating the same 30-line block.
+ * Head for a page that exists at `/x` (en) and `/xx/x` in each prefixed
+ * locale: self-canonical, reciprocal hreflang for every offered locale plus
+ * x-default, and a matching og:locale pair. Keeps the route files from
+ * repeating the same 30-line block.
  */
 export function localizedHead(o: LocalizedHeadOptions) {
-  const twin = twinPath(o);
-  const hasTwin = twin !== null;
-  const enUrl = `${SITE_URL}${o.path}`;
-  const msUrl = hasTwin ? `${SITE_URL}${twin}` : null;
-  const self = hasTwin && o.locale === "ms" ? (msUrl as string) : enUrl;
+  const twins = hasTwins(o);
+  const self = `${SITE_URL}${pathFor(o, o.locale)}`;
   const og = resolveOgImage(o.image);
   const image = `${SITE_URL}${og.image}`;
   const ogTitle = o.ogTitle ?? o.title;
-  const localeTag = o.locale === "ms" ? "ms_MY" : "en_US";
-  // With no twin, do not claim one: the alternate stays the page's own locale.
-  const alternateTag = hasTwin ? (o.locale === "ms" ? "en_US" : "ms_MY") : localeTag;
+  const localeTag = LOCALE_TAGS[o.locale];
   const meta: Array<Record<string, string>> = [
     { title: o.title },
     { name: "description", content: o.description },
+    // Search engines read the language a page is written in from here, not
+    // from <html lang>, when the page is fetched by a crawler without scripts.
+    { httpEquiv: "content-language", content: o.locale },
     { property: "og:title", content: ogTitle },
     { property: "og:description", content: o.ogDescription ?? o.description },
     { property: "og:type", content: o.ogType ?? "website" },
     { property: "og:url", content: self },
     { property: "og:site_name", content: "EzyMap ALGO" },
     { property: "og:locale", content: localeTag },
-    { property: "og:locale:alternate", content: alternateTag },
     { property: "og:image", content: image },
     {
       property: "og:image:alt",
-      content:
-        o.imageAlt ?? og.alt ?? (o.locale === "ms" ? "Logo EzyMap ALGO" : "EzyMap ALGO logo"),
+      content: o.imageAlt ?? og.alt ?? "EzyMap ALGO logo",
     },
     { property: "og:image:width", content: String(og.width) },
     { property: "og:image:height", content: String(og.height) },
@@ -154,13 +169,24 @@ export function localizedHead(o: LocalizedHeadOptions) {
     { name: "twitter:description", content: o.twitterDescription ?? o.description },
     { name: "twitter:image", content: image },
   ];
+  // With no twins, do not claim any: the page is its own alternate.
+  const others = twins ? LOCALES.filter((locale) => locale !== o.locale) : [];
+  for (const other of others) {
+    meta.push({ property: "og:locale:alternate", content: LOCALE_TAGS[other] });
+  }
 
   const links: Array<{ rel: string; href: string; hrefLang?: string }> = [
     { rel: "canonical", href: self },
-    { rel: "alternate", hrefLang: "en", href: enUrl },
   ];
-  if (hasTwin) links.push({ rel: "alternate", hrefLang: "ms", href: msUrl as string });
-  links.push({ rel: "alternate", hrefLang: "x-default", href: enUrl });
+  const alternates = twins ? LOCALES : (["en"] as Locale[]);
+  for (const locale of alternates) {
+    links.push({
+      rel: "alternate",
+      hrefLang: locale,
+      href: `${SITE_URL}${pathFor(o, locale)}`,
+    });
+  }
+  links.push({ rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}${o.path}` });
 
   return {
     meta,

@@ -1,19 +1,17 @@
-import { createFileRoute, redirect, useLocation } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Bell, Check, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
+import { Check, Send } from "lucide-react";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { Nav, Footer, LINKS } from "@/components/landing/Landing";
 import { Button } from "@/components/ui/button";
-import { BuyButton } from "@/components/BuyButton";
 import { useTranslation } from "@/lib/i18n";
 import type { TranslationKey } from "@/lib/translations";
 import { trackPageLoad, trackEngagement, goTrack } from "@/lib/analytics";
-import { localizedHead } from "@/lib/seo";
-import { formatUsd, getCatalogItem } from "@/lib/catalog";
-import { formatLocalTime } from "@/lib/local-time";
-import { EZYAI_TABS, type EzyAiTab, ezyAiTabFromSearch } from "@/lib/ezyai/tabs";
+import { localizedHead, type PageLocale } from "@/lib/seo";
+import { translations } from "@/lib/translations";
+import { EZYAI_TABS, type EzyAiTab } from "@/lib/ezyai/tabs";
 import {
   getEzyAiBoard,
   getEzyAiBoardRevision,
@@ -21,75 +19,40 @@ import {
 } from "@/lib/ezyai/signals.functions";
 import { BOARD_REVISION_QUERY_KEY } from "@/lib/ezyai/signals";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
-import { SignalCard } from "@/components/ezyai/SignalCard";
-import { PerformancePanel } from "@/components/ezyai/PerformancePanel";
+import { useBoardStream } from "@/lib/ezyai/use-board-stream";
+import { useBoardTab } from "@/lib/ezyai/use-board-tab";
+import { BoardPanel } from "@/components/ezyai/BoardPanel";
+import { HistoryPanel } from "@/components/ezyai/HistoryPanel";
+import { EzyAiAboutPanel } from "@/components/ezyai/EzyAiAboutPanel";
+
+/** The EzyAI head, shared by `/ezyai` and every translated twin. */
+export function ezyaiHead(locale: PageLocale) {
+  const t = translations[locale];
+  return localizedHead({
+    path: "/ezyai",
+    locale,
+    title: t.ezyai_meta_title,
+    description: t.ezyai_meta_desc,
+    image: "default",
+    crumbName: "EzyAI",
+  });
+}
 
 export const Route = createFileRoute("/ezyai")({
   // Hidden while the bot is being updated. This runs before the loader, so the
-  // board's data — and the autopilot pass the board's load triggers — never
-  // starts: the page is closed rather than merely unlinked.
+  // board's data never starts: the page is closed rather than merely unlinked.
   beforeLoad: () => {
     if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/" });
   },
   // Deep-linkable tabs, so the hero card (and anything else) can point
   // straight at the live board rather than at the page and a hope. Neither
   // this route nor the translated twin declares a search schema: the page
-  // reads `?tab=` from the URL through one resolver, so both boards behave
-  // the same, an unrecognised tab opens live without a redirect, and a
-  // shared link keeps the parameters its sender wrote.
-  head: () =>
-    localizedHead({
-      path: "/ezyai",
-      locale: "en",
-      title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo",
-      description:
-        "EzyAI turns free market data into trading confluence on Telegram — technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
-      ogDescription:
-        "On-demand analysis, live alerts, fundamentals and autopilot signals — free to start.",
-      image: "default",
-      crumbName: "EzyAI",
-    }),
+  // reads `?tab=` from the URL through one resolver (useBoardTab), so both
+  // boards behave the same, an unrecognised tab opens live without a
+  // redirect, and a shared link keeps the parameters its sender wrote.
+  head: () => ezyaiHead("en"),
   component: EzyAiPage,
 });
-
-const FEATURES: { icon: typeof Search; titleKey: TranslationKey; descKey: TranslationKey }[] = [
-  { icon: Search, titleKey: "ezyai_feature_analyze_title", descKey: "ezyai_feature_analyze_desc" },
-  { icon: Bell, titleKey: "ezyai_feature_watch_title", descKey: "ezyai_feature_watch_desc" },
-  {
-    icon: Newspaper,
-    titleKey: "ezyai_feature_fundamentals_title",
-    descKey: "ezyai_feature_fundamentals_desc",
-  },
-  {
-    icon: Rocket,
-    titleKey: "ezyai_feature_autopilot_title",
-    descKey: "ezyai_feature_autopilot_desc",
-  },
-  {
-    icon: LayoutDashboard,
-    titleKey: "ezyai_feature_dashboard_title",
-    descKey: "ezyai_feature_dashboard_desc",
-  },
-];
-
-type PlanTier = {
-  sku: string;
-  labelKey: TranslationKey;
-  badgeKey?: TranslationKey;
-  highlight?: boolean;
-};
-
-// Prices come from the catalog (which mirrors the bot's own PLANS table).
-const PLANS: PlanTier[] = [
-  { sku: "ezyai_pro_1m", labelKey: "ezyai_tier_1m_label" },
-  {
-    sku: "ezyai_pro_6m",
-    labelKey: "ezyai_tier_6m_label",
-    badgeKey: "ezyai_tier_6m_badge",
-    highlight: true,
-  },
-  { sku: "ezyai_pro_1y", labelKey: "ezyai_tier_12m_label", badgeKey: "ezyai_tier_12m_badge" },
-];
 
 const TAB_LABEL: Record<EzyAiTab, TranslationKey> = {
   live: "ezyai_tab_live",
@@ -97,104 +60,26 @@ const TAB_LABEL: Record<EzyAiTab, TranslationKey> = {
   about: "ezyai_tab_about",
 };
 
-function TabButton({
-  active,
-  tab,
-  onClick,
-  onKeyDown,
-  children,
-}: {
-  active: boolean;
-  tab: EzyAiTab;
-  onClick: () => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      id={`ezyai-tab-${tab}`}
-      aria-selected={active}
-      aria-controls={`ezyai-panel-${tab}`}
-      // Only the selected tab is in the tab order; the arrow keys move
-      // between them, which is how a tablist is meant to work.
-      tabIndex={active ? 0 : -1}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      className={`-mb-px border-b-2 px-1 pb-2 text-sm font-semibold transition-colors ${
-        active
-          ? "border-primary text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** One failure view for both panels: what happened, and a way to try again. */
-function PanelError({
-  message,
-  retryLabel,
-  onRetry,
-}: {
-  message: string;
-  retryLabel: string;
-  onRetry: () => void;
-}) {
-  return (
-    <div
-      role="alert"
-      className="mt-6 rounded-xl border border-border bg-card p-8 text-center text-sm"
-    >
-      <p className="text-body">{message}</p>
-      <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
-        {retryLabel}
-      </Button>
-    </div>
-  );
-}
-
+/**
+ * The board page: route options, the two queries and the layout. The tab/URL
+ * sync, the revision stream, and each tab's body live in their own modules —
+ * this file only wires them together.
+ */
 export function EzyAiPage() {
   const { t } = useTranslation();
-  // Read the tab from the URL itself. Neither board declares a search schema,
-  // and `/ms/ezyai` is a different route anyway, so the URL is the one source
-  // both of them share.
-  const { searchStr, pathname } = useLocation();
-  const [tab, setTab] = useState<EzyAiTab>(() => ezyAiTabFromSearch(searchStr));
-
-  // The panel and the address bar move together. Without this the tab changed
-  // but `?tab=` did not, so a reload — or a link copied from the bar — snapped
-  // back to whatever the URL said. replaceState, not push: switching tabs is
-  // not a navigation the back button should have to walk through.
-  const selectTab = (next: EzyAiTab) => {
-    setTab(next);
-    const params = new URLSearchParams(searchStr);
-    params.set("tab", next);
-    const query = params.toString();
-    window.history.replaceState(
-      window.history.state,
-      "",
-      `${pathname}${query ? `?${query}` : ""}${window.location.hash}`,
-    );
-  };
-
-  // A back/forward jump or a hand-edited URL is authoritative: follow it.
-  useEffect(() => {
-    setTab(ezyAiTabFromSearch(searchStr));
-  }, [searchStr]);
+  const { tab, selectTab } = useBoardTab();
 
   const loadBoard = useServerFn(getEzyAiBoard);
   const loadRevision = useServerFn(getEzyAiBoardRevision);
   const loadHistory = useServerFn(getEzyAiHistory);
 
-  // The board refreshes on its own while it is on screen: the bot ticks
-  // prices as trades run, and a stale rail is worse than no rail. Rather
-  // than re-pull every card each time, the page polls a one-row revision
-  // stamp (the newest updated_at anywhere on the board) and only fetches
-  // the full board when that stamp moves — a quiet minute costs one cheap
-  // lookup instead of twenty-four records.
+  // The board refreshes on its own while it is on screen: the bot ticks prices
+  // as trades run, and a stale rail is worse than no rail. Rather than re-pull
+  // every card each time, the page polls a one-row revision stamp (the newest
+  // updated_at anywhere on the board) and only fetches the full board when
+  // that stamp moves — a quiet minute costs one cheap lookup instead of
+  // twenty-four records. The stream (useBoardStream) writes the same stamp, so
+  // a push lands at once and the poll is only the fallback.
   const revision = useQuery({
     queryKey: BOARD_REVISION_QUERY_KEY,
     queryFn: () => loadRevision(),
@@ -210,91 +95,26 @@ export function EzyAiPage() {
     enabled: tab === "history",
   });
 
-  // The bridge wakes the board instead of the board waiting for its clock: the
-  // stream carries only the revision stamp, written into the same query the
-  // 30s poll owns, and the board refetches because its key includes the stamp.
-  // The poll stays underneath — a blocked stream, an offline tab or a push
-  // handled by another server process all fall back to it.
-  const queryClient = useQueryClient();
-  // Whether the doorbell is currently connected — the "Live updates" line the
-  // reader sees. It is deliberately not a promise of freshness: the poll runs
-  // underneath either way, which is what the fallback label says.
-  const [streamLive, setStreamLive] = useState(false);
-  useEffect(() => {
-    if (typeof EventSource === "undefined") return;
-    let source: EventSource | null = null;
-    let retry: number | undefined;
-    let disposed = false;
-
-    const onRevision = (event: MessageEvent<string>) => {
-      setStreamLive(true);
-      try {
-        const { updatedAt } = JSON.parse(event.data) as { updatedAt?: string | null };
-        // No stamp means the push landed but the revision read did not — ask
-        // the poll's own query rather than inventing a value.
-        if (!updatedAt) {
-          void queryClient.invalidateQueries({ queryKey: BOARD_REVISION_QUERY_KEY });
-          return;
-        }
-        queryClient.setQueryData(BOARD_REVISION_QUERY_KEY, { updatedAt });
-      } catch {
-        // A malformed frame is not worth breaking the board over; the poll wins.
-      }
-    };
-
-    const connect = () => {
-      if (disposed) return;
-      const next = new EventSource("/api/public/ezyai/stream");
-      source = next;
-      next.addEventListener("ready", () => setStreamLive(true));
-      next.addEventListener("revision", onRevision as EventListener);
-      next.onerror = () => {
-        // A refused stream (503 at the cap, an offline proxy) would otherwise
-        // be reopened by the browser on its own schedule and never recover the
-        // only thing the reader can act on. Close it, say so, fall back to the
-        // poll, and knock again in a minute.
-        setStreamLive(false);
-        next.close();
-        if (source === next) source = null;
-        retry = window.setTimeout(connect, 60_000);
-      };
-    };
-
-    connect();
-    return () => {
-      disposed = true;
-      if (retry) window.clearTimeout(retry);
-      source?.close();
-    };
-  }, [queryClient]);
-
-  // Announce board changes to screen readers: a polite live region that
-  // fires whenever the rendered signal count changes (a card opened, closed
-  // or changed), without stealing focus. The timestamp is the same "as of"
-  // line the sighted view shows.
-  const [announcement, setAnnouncement] = useState("");
-  const lastAnnounced = useRef<string>("");
-  useEffect(() => {
-    const data = board.data;
-    if (!data) return;
-    const signature = `${data.signals.length}:${data.updatedAt ?? ""}`;
-    if (signature === lastAnnounced.current) return;
-    // First load is not an "update" — the panel appearing is announcement enough.
-    if (lastAnnounced.current !== "") {
-      setAnnouncement(
-        data.updatedAt
-          ? t("ezyai_sig_updated").replace("{time}", formatLocalTime(new Date(data.updatedAt)))
-          : t("ezyai_sig_empty"),
-      );
-    }
-    lastAnnounced.current = signature;
-  }, [board.data, t]);
+  const streamLive = useBoardStream();
 
   useEffect(() => {
     trackPageLoad("ezyai");
     const stop = trackEngagement();
     return stop;
   }, []);
+
+  // Arrow keys move between tabs, which is how a tablist is meant to work;
+  // only the selected tab sits in the tab order.
+  const onTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, id: EzyAiTab) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const step = event.key === "ArrowRight" ? 1 : -1;
+    const next =
+      EZYAI_TABS[(EZYAI_TABS.indexOf(id) + step + EZYAI_TABS.length) % EZYAI_TABS.length];
+    selectTab(next);
+    goTrack(`ezyai_tab_${next}`);
+    document.getElementById(`ezyai-tab-${next}`)?.focus();
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -337,249 +157,37 @@ export function EzyAiPage() {
           role="tablist"
           aria-label={t("ezyai_desk_label")}
         >
-          {EZYAI_TABS.map((id) => (
-            <TabButton
-              key={id}
-              tab={id}
-              active={tab === id}
-              onClick={() => {
-                selectTab(id);
-                goTrack(`ezyai_tab_${id}`);
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-                event.preventDefault();
-                const step = event.key === "ArrowRight" ? 1 : -1;
-                const next =
-                  EZYAI_TABS[
-                    (EZYAI_TABS.indexOf(id) + step + EZYAI_TABS.length) % EZYAI_TABS.length
-                  ];
-                selectTab(next);
-                goTrack(`ezyai_tab_${next}`);
-                document.getElementById(`ezyai-tab-${next}`)?.focus();
-              }}
-            >
-              {t(TAB_LABEL[id])}
-            </TabButton>
-          ))}
+          {EZYAI_TABS.map((id) => {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                role="tab"
+                id={`ezyai-tab-${id}`}
+                aria-selected={active}
+                aria-controls={`ezyai-panel-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={() => {
+                  selectTab(id);
+                  goTrack(`ezyai_tab_${id}`);
+                }}
+                onKeyDown={(event) => onTabKeyDown(event, id)}
+                className={`-mb-px border-b-2 px-1 pb-2 text-sm font-semibold transition-colors ${
+                  active
+                    ? "border-primary text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t(TAB_LABEL[id])}
+              </button>
+            );
+          })}
         </div>
 
-        {tab === "live" ? (
-          <section
-            id="ezyai-panel-live"
-            role="tabpanel"
-            aria-labelledby="ezyai-tab-live"
-            aria-busy={board.isLoading}
-            className="mt-8"
-          >
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h2 className="text-2xl">{t("ezyai_sig_title")}</h2>
-                <p className="mt-1 max-w-2xl text-sm text-body">{t("ezyai_sig_desc")}</p>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                {board.data?.updatedAt ? (
-                  <p>
-                    {t("ezyai_sig_updated").replace(
-                      "{time}",
-                      formatLocalTime(new Date(board.data.updatedAt)),
-                    )}
-                  </p>
-                ) : null}
-                <p className="inline-flex items-center gap-1.5">
-                  <span
-                    aria-hidden="true"
-                    className={`h-1.5 w-1.5 rounded-full ${streamLive ? "bg-green" : "bg-muted-foreground/50"}`}
-                  />
-                  {t(streamLive ? "ezyai_stream_live" : "ezyai_stream_poll")}
-                </p>
-              </div>
-            </div>
-
-            <p className="mt-3 inline-flex rounded-md border border-primary/25 bg-primary/8 px-3 py-1.5 text-xs text-body">
-              {t("ezyai_sig_exclusive")}
-            </p>
-
-            {/* Screen-reader channel for board changes; visually hidden. */}
-            <p aria-live="polite" className="sr-only">
-              {announcement}
-            </p>
-
-            {board.isError ? (
-              <PanelError
-                message={t("ezyai_load_failed")}
-                retryLabel={t("ezyai_retry")}
-                onRetry={() => void board.refetch()}
-              />
-            ) : board.data && board.data.signals.length > 0 ? (
-              <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {board.data.signals.map((signal, i) => (
-                  <SignalCard key={signal.id} signal={signal} index={i} />
-                ))}
-              </div>
-            ) : (
-              <p
-                role="status"
-                className="mt-6 rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground"
-              >
-                {board.isLoading ? "…" : t("ezyai_sig_empty")}
-              </p>
-            )}
-          </section>
-        ) : null}
-
-        {tab === "history" ? (
-          <section
-            id="ezyai-panel-history"
-            role="tabpanel"
-            aria-labelledby="ezyai-tab-history"
-            aria-busy={history.isLoading}
-            className="mt-8"
-          >
-            <h2 className="text-2xl">{t("ezyai_sig_history_title")}</h2>
-            <div className="mt-6">
-              {history.isError ? (
-                <PanelError
-                  message={t("ezyai_load_failed")}
-                  retryLabel={t("ezyai_retry")}
-                  onRetry={() => void history.refetch()}
-                />
-              ) : history.data ? (
-                <PerformancePanel
-                  performance={history.data.performance}
-                  signals={history.data.signals}
-                />
-              ) : (
-                <p
-                  role="status"
-                  className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground"
-                >
-                  …
-                </p>
-              )}
-            </div>
-          </section>
-        ) : null}
-
-        {tab !== "about" ? null : (
-          <div role="tabpanel" id="ezyai-panel-about" aria-labelledby="ezyai-tab-about">
-            {/* Features */}
-            <section className="mt-8">
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {FEATURES.map((f) => (
-                  <article
-                    key={f.titleKey}
-                    className="glass-card flex h-full flex-col rounded-xl p-6"
-                  >
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-                      <f.icon className="h-5 w-5" />
-                    </span>
-                    <h3 className="mt-4 text-lg font-semibold">{t(f.titleKey)}</h3>
-                    <p className="mt-2 text-sm text-body">{t(f.descKey)}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            {/* Free vs PRO */}
-            <section className="mt-14">
-              <h2 className="text-2xl">{t("ezyai_free_pro_title")}</h2>
-              <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                <div className="rounded-xl border border-border bg-card p-6">
-                  <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                    {t("ezyai_free_label")}
-                  </h3>
-                  <p className="mt-3 text-sm text-body">{t("ezyai_free_desc")}</p>
-                </div>
-                <div className="rounded-xl border border-accent/60 bg-surface-elevated p-6 shadow-elevated ring-1 ring-accent/15">
-                  <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-accent">
-                    {t("ezyai_pro_label")}
-                  </h3>
-                  <p className="mt-3 text-sm text-body">{t("ezyai_pro_desc")}</p>
-                </div>
-              </div>
-            </section>
-
-            {/* Pricing */}
-            <section className="mt-14">
-              <p className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
-                {t("ezyai_pricing_eyebrow")}
-              </p>
-              <h2 className="mt-2 text-2xl">{t("ezyai_pricing_title")}</h2>
-              <p className="mt-2 max-w-2xl text-sm text-body">{t("ezyai_pricing_subtitle")}</p>
-              <div className="mt-6 grid gap-5 sm:grid-cols-3">
-                {PLANS.map((p) => (
-                  <article
-                    key={p.labelKey}
-                    className={`relative flex h-full flex-col rounded-xl p-6 ${
-                      p.highlight
-                        ? "border border-accent/60 bg-surface-elevated shadow-elevated ring-1 ring-accent/15 sm:-translate-y-1.5"
-                        : "glass-card"
-                    }`}
-                  >
-                    {p.highlight ? (
-                      <div
-                        className="bg-gold absolute inset-x-0 top-0 h-[3px]"
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                    <h3 className="text-center text-sm font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      {t(p.labelKey)}
-                    </h3>
-                    <p className="mt-2 text-center font-mono text-2xl font-extrabold tabular-nums text-foreground">
-                      {formatUsd(getCatalogItem(p.sku)?.amountCents ?? 0)}
-                    </p>
-                    {p.badgeKey ? (
-                      <p className="mt-1 text-center text-[11px] font-medium text-accent">
-                        {t(p.badgeKey)}
-                      </p>
-                    ) : null}
-                    <div className="mt-6">
-                      <BuyButton
-                        sku={p.sku}
-                        label={t("ezyai_buy_pro")}
-                        variant={p.highlight ? "primary" : "gold"}
-                      />
-                      <a
-                        href={LINKS.ezyai}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => goTrack(`ezyai_pricing_${p.labelKey}`)}
-                        className="mt-3 block text-center text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        {t("ezyai_upgrade_pro")}
-                      </a>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            {/* Markets */}
-            <section className="mt-14 rounded-xl border border-border bg-card p-6">
-              <h3 className="text-lg font-semibold">{t("ezyai_markets_title")}</h3>
-              <p className="mt-2 text-sm text-body">{t("ezyai_markets_desc")}</p>
-            </section>
-
-            {/* Final CTA */}
-            <section className="glass-card mt-14 rounded-xl px-6 py-14 text-center sm:px-12">
-              <h2 className="text-3xl sm:text-4xl">{t("ezyai_final_title")}</h2>
-              <p className="mx-auto mt-4 max-w-xl text-body">{t("ezyai_final_body")}</p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <Button asChild size="lg">
-                  <a
-                    href={LINKS.ezyai}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => goTrack("ezyai_final_open_bot")}
-                  >
-                    <Send className="h-4 w-4" /> {t("ezyai_cta_open_bot")}
-                  </a>
-                </Button>
-              </div>
-            </section>
-          </div>
-        )}
+        {tab === "live" ? <BoardPanel board={board} streamLive={streamLive} /> : null}
+        {tab === "history" ? <HistoryPanel history={history} /> : null}
+        {tab === "about" ? <EzyAiAboutPanel /> : null}
 
         <div className="mx-auto mt-10 flex max-w-4xl items-start gap-2 text-xs leading-relaxed text-muted-foreground">
           <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" />

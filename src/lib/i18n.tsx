@@ -4,11 +4,9 @@ import { translations, type TranslationKey } from "./translations";
 
 export type Locale = "en" | "ms" | "zh" | "hi" | "ar" | "sw";
 
-// Only the two locales the site can actually render end to end. zh/hi/ar/sw
-// are still in `translations` as a head start for a future launch, but they
-// have no URLs, no `/zz` route and large English gaps, so they are not offered
-// as a choice until that work exists.
-export const LOCALES: Locale[] = ["en", "ms"];
+// Every locale has a full key set in `translations`, so all six are offered.
+// English is the unprefixed one; each of the others owns a `/<locale>` prefix.
+export const LOCALES: Locale[] = ["en", "ms", "zh", "hi", "ar", "sw"];
 export const LOCALE_LABELS: Record<Locale, string> = {
   en: "EN",
   ms: "BM",
@@ -33,15 +31,28 @@ export const LOCALE_NATIVE_NAMES: Record<Locale, string> = {
   ar: "العربية",
   sw: "Kiswahili",
 };
+/** `og:locale` / `inLanguage` tags, trimmed to the region each market reads. */
+export const LOCALE_TAGS: Record<Locale, string> = {
+  en: "en_US",
+  ms: "ms_MY",
+  zh: "zh_CN",
+  hi: "hi_IN",
+  ar: "ar_SA",
+  sw: "sw_KE",
+};
 const RTL_LOCALES: Locale[] = ["ar"];
+
+/** The locales that live behind a `/<locale>` prefix (everything but English). */
+const PREFIXED = new Set<string>(LOCALES.filter((locale) => locale !== "en"));
 
 const STORAGE_KEY = "pe_locale";
 
 /**
- * Public pages with a real per-locale URL: `/x` (en) and `/ms/x` (ms), see
- * src/routes/ms/*. On these paths en/ms follow the URL, not a stored
- * preference — crawlers and the switcher both need that. Routes not listed
- * here (checkout, account, admin) keep the plain client toggle.
+ * Public pages with a real per-locale URL: `/x` (en) and `/<locale>/x` for the
+ * five prefixed locales, see src/routes/$lang/*. On these paths the locale
+ * follows the URL, not a stored preference — crawlers and the switcher both
+ * need that. Routes not listed here (checkout, account, admin) keep the plain
+ * client toggle.
  */
 const LOCALIZED_PATHS = new Set([
   "/",
@@ -56,20 +67,48 @@ const LOCALIZED_PATHS = new Set([
 ]);
 const LOCALIZED_PREFIXES = ["/ebooks/"];
 
+/** `/ms/faq` → `ms`; `/fr/faq` → undefined. */
+export function localeFromPath(pathname: string): Locale | undefined {
+  const segment = pathname.split("/")[1] ?? "";
+  return PREFIXED.has(segment) ? (segment as Locale) : undefined;
+}
+
+/**
+ * A `$lang` route param → locale. Undefined for `en` (which has no prefix) and
+ * for anything the site does not serve, so `/<lang>/faq` can 404 rather than
+ * render English behind a foreign URL.
+ */
+export function pageLocaleParam(lang: string | undefined): Locale | undefined {
+  return lang ? localeFromPath(`/${lang}`) : undefined;
+}
+
 export function routeLocaleFor(pathname: string): Locale | undefined {
-  if (pathname === "/ms" || pathname.startsWith("/ms/")) return "ms";
+  const fromUrl = localeFromPath(pathname);
+  if (fromUrl) return fromUrl;
   if (LOCALIZED_PATHS.has(pathname) || LOCALIZED_PREFIXES.some((p) => pathname.startsWith(p)))
     return "en";
   return undefined;
 }
 
-/** `/faq` → `/ms/faq`, `/#packages` → `/ms#packages`; unchanged for en. */
+/** The path with any leading locale prefix removed: `/zh/faq` → `/faq`. */
+export function stripLocale(pathname: string): string {
+  if (!localeFromPath(pathname)) return pathname;
+  const rest = pathname.split("/").slice(2).join("/");
+  return rest ? `/${rest}` : "/";
+}
+
+/**
+ * `/faq` → `/zh/faq`, `/` (and `/home`) → `/zh`, `/#packages` → `/zh#packages`;
+ * unchanged for en. A path that already carries a locale prefix is re-prefixed
+ * rather than doubled, so a caller may pass either shape.
+ */
 export function localizePath(path: string, locale: Locale): string {
-  if (locale !== "ms") return path;
+  if (locale === "en") return path;
   const hashAt = path.indexOf("#");
-  const bare = hashAt === -1 ? path : path.slice(0, hashAt);
+  const bare = stripLocale(hashAt === -1 ? path : path.slice(0, hashAt));
   const hash = hashAt === -1 ? "" : path.slice(hashAt);
-  return `${bare === "/" || bare === "/home" ? "/ms" : `/ms${bare}`}${hash}`;
+  const target = bare === "/" || bare === "/home" ? `/${locale}` : `/${locale}${bare}`;
+  return `${target}${hash}`;
 }
 
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
@@ -77,11 +116,9 @@ const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocal
 
 /**
  * Persists the visitor's choice in localStorage for routes with no locale
- * URL of their own. Right-to-left locales would get text-direction only
- * (document dir flips so paragraphs/headings read correctly via the browser's
- * native bidi handling) — layout (nav order, grids, icon placement)
- * intentionally stays left-to-right. Neither offered locale is RTL today;
- * the direction switch is kept for the next one that is.
+ * URL of their own. Arabic flips `dir` to rtl so paragraphs and headings read
+ * correctly via the browser's native bidi handling — layout (nav order, grids,
+ * icon placement) intentionally stays left-to-right.
  */
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -96,9 +133,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      // A value this build no longer offers (a previously selectable zh/hi/ar/sw)
-      // is ignored, so those visitors get English rather than a half-translated
-      // page with no way back to a language the site really has.
+      // Ignore a value this build no longer offers rather than render a
+      // language with no keys behind it.
       if (stored && LOCALES.includes(stored as Locale)) setStoredLocale(stored as Locale);
     } catch {
       // Private browsing / storage blocked — default to English.
@@ -108,7 +144,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // A localized URL is an explicit statement of intent: `/ms/*` reads as Malay
   // for whoever opens a shared link, and an English URL stays English even if
   // this browser once picked Malay. Pages with no locale URL of their own fall
-  // back to the stored choice (already narrowed to a supported locale above).
+  // back to the stored choice.
   const locale = routeLocale ?? storedLocale;
 
   useEffect(() => {
@@ -129,11 +165,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       // Non-critical — the in-memory selection still works for this visit.
     }
 
-    // en and ms have real URLs, so move to the right one when we are not
+    // Every offered locale has a URL, so move to the right one when we are not
     // already on it. Same-URL picks just re-render from the value above.
-    if (routeLocale && (next === "en" || next === "ms")) {
-      const bare = "/" + location.pathname.replace(/^\/ms/, "").replace(/^\/+/, "");
-      const target = next === "ms" ? (bare === "/" ? "/ms" : `/ms${bare}`) : bare;
+    if (routeLocale) {
+      const bare = stripLocale(location.pathname);
+      const target = next === "en" ? bare : localizePath(bare, next);
       if (target !== location.pathname) {
         window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
       }

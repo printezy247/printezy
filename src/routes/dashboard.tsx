@@ -17,7 +17,7 @@ import {
 import { Nav, Footer } from "@/components/landing/Landing";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useTranslation } from "@/lib/i18n";
+import { localizePath, useTranslation } from "@/lib/i18n";
 import { getCatalogItem, formatUsd } from "@/lib/catalog";
 import { EBOOK_PAGES, localizeEbook } from "@/lib/ebooks";
 import { getMyPurchases } from "@/lib/purchases.functions";
@@ -220,7 +220,11 @@ function PurchasesCard() {
       ) : !data || data.length === 0 ? (
         <div className="text-sm text-body">
           <p>{t("dash_no_purchases")}</p>
-          <Link to="/home" hash="packages" className="mt-3 inline-block text-primary hover:underline">
+          <Link
+            to="/home"
+            hash="packages"
+            className="mt-3 inline-block text-primary hover:underline"
+          >
             {t("dash_browse_packages")}
           </Link>
         </div>
@@ -326,14 +330,12 @@ function EbooksCard() {
                 ) : claim?.status === "pending" ? (
                   <span className="shrink-0 text-xs text-accent">{t("dash_ebook_pending")}</span>
                 ) : (
-                  <Link
-                    to={locale === "ms" ? "/ms/ebooks/$slug" : "/ebooks/$slug"}
-                    params={{ slug: book.slug }}
-                    search={{ claim: true }}
+                  <a
+                    href={`${localizePath(`/ebooks/${book.slug}`, locale)}?claim=1`}
                     className="shrink-0 text-xs text-primary hover:underline"
                   >
                     {t("dash_ebook_get")}
-                  </Link>
+                  </a>
                 )}
               </li>
             );

@@ -44,10 +44,28 @@ describe("localizedHead()", () => {
     expect(siteName?.content).toBe("EzyMap ALGO");
   });
 
-  it("does not emit an ms hreflang when msPath is null (page has no Malay twin)", () => {
-    const head = localizedHead({ ...base, msPath: null });
-    const msLinks = head.links.filter((l) => (l as Record<string, string>).hrefLang === "ms");
-    expect(msLinks).toHaveLength(0);
+  it("claims no translation when twinPath is null (English-only page)", () => {
+    const head = localizedHead({ ...base, twinPath: null });
+    const alternates = head.links.filter((l) => (l as Record<string, string>).rel === "alternate");
+    expect(alternates.map((l) => (l as Record<string, string>).hrefLang)).toEqual([
+      "en",
+      "x-default",
+    ]);
+  });
+
+  it("advertises all six locales on a page that has twins", () => {
+    const head = localizedHead({ ...base, locale: "ar" });
+    const languages = head.links
+      .filter((l) => (l as Record<string, string>).rel === "alternate")
+      .map((l) => (l as Record<string, string>).hrefLang);
+    expect(languages).toEqual(["en", "ms", "zh", "hi", "ar", "sw", "x-default"]);
+    expect(head.links.find((l) => (l as Record<string, string>).rel === "canonical")).toMatchObject(
+      {
+        href: `${SITE_URL}/ar/privacy`,
+      },
+    );
+    const ogLocale = head.meta.find((m) => (m as Record<string, string>).property === "og:locale");
+    expect(ogLocale?.content).toBe("ar_SA");
   });
 
   it("uses the registry slug's real dimensions and URL", () => {

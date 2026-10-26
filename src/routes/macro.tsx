@@ -17,7 +17,7 @@ import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";
 import { useLocalClock } from "@/lib/local-time";
 import { useTranslation } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
-import { localizedHead } from "@/lib/seo";
+import { localizedHead, type PageLocale } from "@/lib/seo";
 import type { TranslationKey } from "@/lib/translations";
 import {
   MACRO_FILTERS,
@@ -46,7 +46,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 const FOREXFACTORY = "https://www.forexfactory.com/calendar";
 
-export function macroHead(locale: "en" | "ms") {
+export function macroHead(locale: PageLocale) {
   const t = translations[locale];
   return localizedHead({
     path: "/macro",
@@ -73,9 +73,7 @@ function Badge({ tone, children }: { tone: "free" | "paid"; children: React.Reac
   return (
     <span
       className={`rounded px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-[0.12em] ${
-        tone === "free"
-          ? "bg-primary/15 text-primary"
-          : "border border-accent/40 text-accent"
+        tone === "free" ? "bg-primary/15 text-primary" : "border border-accent/40 text-accent"
       }`}
     >
       {children}
@@ -467,7 +465,12 @@ function SparklineChart({
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx={coords[coords.length - 1].x} cy={coords[coords.length - 1].y} r="3" fill={color} />
+      <circle
+        cx={coords[coords.length - 1].x}
+        cy={coords[coords.length - 1].y}
+        r="3"
+        fill={color}
+      />
     </svg>
   );
 }
@@ -526,7 +529,10 @@ function TrendCard({ trend }: { trend: TrendCard }) {
       className="flex flex-col"
       footer={
         <div className="space-y-2">
-          <BuyButton sku={trend.sku} label={t("macro_pay_with_card_price").replace("{price}", trend.price)} />
+          <BuyButton
+            sku={trend.sku}
+            label={t("macro_pay_with_card_price").replace("{price}", trend.price)}
+          />
           <a
             href={LINKS.macro}
             target="_blank"
@@ -554,7 +560,11 @@ function TrendCard({ trend }: { trend: TrendCard }) {
         </div>
         <span
           className={`rounded px-2 py-1 text-[11px] font-bold ${mono} ${
-            delta > 0 ? "bg-primary/15 text-primary" : delta < 0 ? "bg-red-500/15 text-red-400" : "bg-accent/15 text-accent"
+            delta > 0
+              ? "bg-primary/15 text-primary"
+              : delta < 0
+                ? "bg-red-500/15 text-red-400"
+                : "bg-accent/15 text-accent"
           }`}
         >
           {delta > 0 ? "+" : ""}
@@ -768,9 +778,7 @@ export function MacroPage() {
                 {t("macro_desk_label")}
               </p>
               <h1 className="mt-1 text-3xl sm:text-4xl">{t("macro_page_title")}</h1>
-              <p className="mt-2 max-w-xl text-sm text-body">
-                {t("macro_page_desc")}
-              </p>
+              <p className="mt-2 max-w-xl text-sm text-body">{t("macro_page_desc")}</p>
             </div>
           </div>
 
@@ -941,7 +949,11 @@ export function MacroPage() {
               <Card
                 title={t("macro_central_banks_title")}
                 note={view.note}
-                badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
+                badge={
+                  <Badge tone="paid">
+                    {t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}
+                  </Badge>
+                }
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
                     {t("macro_central_banks_footer")}
@@ -953,13 +965,23 @@ export function MacroPage() {
                     className="grid min-w-[560px] gap-x-3 text-left text-sm"
                     style={{ gridTemplateColumns: "minmax(0, 1fr) 96px minmax(90px, 150px) 86px" }}
                   >
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_bank")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_rate")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_stance")}</div>
-                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_next_meeting")}</div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_bank")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_rate")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_stance")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">
+                      {t("macro_col_next_meeting")}
+                    </div>
                     {view.centralBanks.map((b) => (
                       <Fragment key={b.bank}>
-                        <div className="border-t border-border py-2.5 pr-3 font-semibold">{b.bank}</div>
+                        <div className="border-t border-border py-2.5 pr-3 font-semibold">
+                          {b.bank}
+                        </div>
                         <div className={`border-t border-border py-2.5 ${mono}`}>{b.rate}</div>
                         <div className="border-t border-border py-2.5 pr-3">
                           <div className="flex items-center gap-2">
@@ -991,7 +1013,11 @@ export function MacroPage() {
                 title={t("macro_recession_title")}
                 subtitle={t("macro_recession_subtitle")}
                 note={view.note}
-                badge={<Badge tone="paid">{t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}</Badge>}
+                badge={
+                  <Badge tone="paid">
+                    {t("macro_heatmaps_label")} · {MACRO_PRICES.heatmaps}
+                  </Badge>
+                }
                 footer={
                   <p className="text-[11.5px] text-muted-foreground">
                     {t("macro_recession_footer")}
@@ -999,31 +1025,46 @@ export function MacroPage() {
                 }
               >
                 <div className="overflow-x-auto">
-                <div
-                  className="grid min-w-[560px] gap-x-3 text-left text-sm"
-                  style={{ gridTemplateColumns: "minmax(0, 150px) 52px minmax(80px, 140px) minmax(0, 1fr)" }}
-                >
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_country")}</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">{t("macro_col_prob")}</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_gauge")}</div>
-                  <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">{t("macro_col_driver")}</div>
-                  {view.recession.map((r) => (
-                    <Fragment key={r.country}>
-                      <div className="border-t border-border py-2.5 text-sm font-semibold">{r.country}</div>
-                      <div
-                        className="border-t border-border py-2.5 text-right font-mono text-sm font-bold tabular-nums"
-                        style={{ color: recessionColor(r.probability) }}
-                      >
-                        {r.probability}%
-                      </div>
-                      <div className="flex items-center border-t border-border py-2.5 pr-3">
-                        <FillBar percent={r.probability} color={recessionColor(r.probability)} />
-                      </div>
+                  <div
+                    className="grid min-w-[560px] gap-x-3 text-left text-sm"
+                    style={{
+                      gridTemplateColumns:
+                        "minmax(0, 150px) 52px minmax(80px, 140px) minmax(0, 1fr)",
+                    }}
+                  >
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_country")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 text-right font-bold">
+                      {t("macro_col_prob")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_gauge")}
+                    </div>
+                    <div className="text-[10.5px] uppercase tracking-[0.12em] text-muted-foreground pb-2 font-bold">
+                      {t("macro_col_driver")}
+                    </div>
+                    {view.recession.map((r) => (
+                      <Fragment key={r.country}>
+                        <div className="border-t border-border py-2.5 text-sm font-semibold">
+                          {r.country}
+                        </div>
+                        <div
+                          className="border-t border-border py-2.5 text-right font-mono text-sm font-bold tabular-nums"
+                          style={{ color: recessionColor(r.probability) }}
+                        >
+                          {r.probability}%
+                        </div>
+                        <div className="flex items-center border-t border-border py-2.5 pr-3">
+                          <FillBar percent={r.probability} color={recessionColor(r.probability)} />
+                        </div>
 
-                      <div className="border-t border-border py-2.5 text-xs text-muted-foreground">{r.driver}</div>
-                    </Fragment>
-                  ))}
-                </div>
+                        <div className="border-t border-border py-2.5 text-xs text-muted-foreground">
+                          {r.driver}
+                        </div>
+                      </Fragment>
+                    ))}
+                  </div>
                 </div>
               </Card>
             ) : null}
@@ -1055,7 +1096,10 @@ export function MacroPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={() =>
-                          track("click", `macro_crypto_telegram_${a.name.toLowerCase().replace(/\s+/g, "_")}`)
+                          track(
+                            "click",
+                            `macro_crypto_telegram_${a.name.toLowerCase().replace(/\s+/g, "_")}`,
+                          )
                         }
                         className="mt-2 text-center text-xs font-semibold text-muted-foreground hover:text-primary hover:underline"
                       >
@@ -1118,7 +1162,9 @@ export function MacroPage() {
                 {fng?.value ?? "—"}
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
-              <p className="mt-1 text-sm font-bold text-accent">{fng?.label ?? t("macro_loading")}</p>
+              <p className="mt-1 text-sm font-bold text-accent">
+                {fng?.label ?? t("macro_loading")}
+              </p>
               <div className="mt-3">
                 <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} live />
                 <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
@@ -1126,7 +1172,6 @@ export function MacroPage() {
                   <span>{t("macro_greed_label")}</span>
                 </div>
               </div>
-
             </Card>
 
             <Card title={t("macro_next_rate_decisions_title")}>
@@ -1145,7 +1190,10 @@ export function MacroPage() {
                 {t("macro_full_desk_label")}
               </p>
               <p className="mt-2 text-2xl font-black">
-                $19<span className="text-sm font-semibold text-muted-foreground">{t("macro_per_month")}</span>
+                $19
+                <span className="text-sm font-semibold text-muted-foreground">
+                  {t("macro_per_month")}
+                </span>
               </p>
               <p className="mt-2 text-sm text-body">
                 {t("macro_full_desk_desc").replace(
@@ -1153,7 +1201,12 @@ export function MacroPage() {
                   clock.ready ? `${digest} ${clock.tzLabel}` : "08:00 EST",
                 )}
               </p>
-              <BuyButton sku="macro_full_desk" label={t("macro_pay_with_card_price").replace("{price}", "$19/mo")} variant="gold" className="mt-4" />
+              <BuyButton
+                sku="macro_full_desk"
+                label={t("macro_pay_with_card_price").replace("{price}", "$19/mo")}
+                variant="gold"
+                className="mt-4"
+              />
               <a
                 href={LINKS.macro}
                 target="_blank"

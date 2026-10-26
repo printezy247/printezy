@@ -10,6 +10,7 @@ import { getMyEbookClaims, claimEbook, getEbookDownloadUrl } from "@/lib/ebook-c
 import { getMyProfile } from "@/lib/profile.functions";
 import { saveLead } from "@/lib/leads.functions";
 import { getEbook } from "@/lib/ebooks";
+import { localizePath, localeFromPath } from "@/lib/i18n";
 import { goTrack, getSessionId } from "@/lib/analytics";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { ModalPortal } from "@/components/ModalPortal";
@@ -61,8 +62,10 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   const requiresVantage = slug === "mapping-like-a-pro";
   // After signing in, land on the ebook page with the modal reopened — the
   // modal is also mounted on landing-page popups, where ?claim= means nothing.
-  const returnPath = () =>
-    `${typeof window !== "undefined" && window.location.pathname.startsWith("/ms") ? "/ms" : ""}/ebooks/${slug}?claim=1`;
+  const returnPath = () => {
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    return `${localizePath(`/ebooks/${slug}`, localeFromPath(pathname) ?? "en")}?claim=1`;
+  };
 
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -108,7 +111,9 @@ export function EbookClaimModal({ slug, onClose }: Props) {
 
   const handle = telegramUsername.trim().replace(/^@+/, "");
   const detailsReady =
-    fullName.trim().length > 0 && /^[A-Za-z0-9_]{5,32}$/.test(handle) && vantageAccount.trim().length > 0;
+    fullName.trim().length > 0 &&
+    /^[A-Za-z0-9_]{5,32}$/.test(handle) &&
+    vantageAccount.trim().length > 0;
 
   useEffect(() => {
     let active = true;
@@ -170,7 +175,12 @@ export function EbookClaimModal({ slug, onClose }: Props) {
     try {
       const result = await claim({
         data: requiresVantage
-          ? { slug, fullName: fullName.trim(), telegramUsername: handle, vantageAccount: vantageAccount.trim() }
+          ? {
+              slug,
+              fullName: fullName.trim(),
+              telegramUsername: handle,
+              vantageAccount: vantageAccount.trim(),
+            }
           : { slug },
       });
       if (result.status === "pending") {
@@ -283,25 +293,27 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               <div>
                 <button
                   type="button"
-                  onClick={() =>
-                    void navigate({ to: "/auth", search: { redirect: returnPath() } })
-                  }
+                  onClick={() => void navigate({ to: "/auth", search: { redirect: returnPath() } })}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
                 >
                   <LogIn className="h-4 w-4" /> Sign in to claim
                 </button>
-                <p className="mt-2 text-xs text-muted-foreground">Free account, one click with Google.</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Free account, one click with Google.
+                </p>
 
                 <div className="mt-4 border-t border-border pt-4">
                   {leadSaved ? (
                     <p className="text-sm text-body">
-                      Thanks — we'll keep you posted on free resources. Sign in any time to claim this one.
+                      Thanks — we'll keep you posted on free resources. Sign in any time to claim
+                      this one.
                     </p>
                   ) : (
                     <form onSubmit={submitLead}>
                       <p className="text-xs text-muted-foreground">
-                        Not ready to sign in? Leave your email and we'll keep you posted on free resources —
-                        no promises on this ebook specifically, sign-in is still the fastest way to get it.
+                        Not ready to sign in? Leave your email and we'll keep you posted on free
+                        resources — no promises on this ebook specifically, sign-in is still the
+                        fastest way to get it.
                       </p>
                       <div className="mt-2 flex gap-2">
                         <input
@@ -404,8 +416,8 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               <div className="flex flex-col items-center gap-3 py-4 text-center">
                 <AlertTriangle className="h-6 w-6 text-accent" />
                 <p className="text-sm text-body">
-                  Your details are saved, but we could not reach Sarah automatically just now.
-                  Send her a quick message and she will approve it from there.
+                  Your details are saved, but we could not reach Sarah automatically just now. Send
+                  her a quick message and she will approve it from there.
                 </p>
                 <a
                   href="https://t.me/ezysarah"
@@ -426,7 +438,9 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             ) : null}
 
             {gate === "claimed" && !links ? (
-              <p className="text-sm text-destructive">{error ?? "The download is temporarily unavailable."}</p>
+              <p className="text-sm text-destructive">
+                {error ?? "The download is temporarily unavailable."}
+              </p>
             ) : null}
 
             {gate === "claimed" && links ? (

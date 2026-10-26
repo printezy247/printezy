@@ -559,9 +559,9 @@ export function Nav() {
       <header role="banner" className="sticky top-0 z-50 bg-background">
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link to={locale === "ms" ? "/ms" : "/"} aria-label="EzyMap Algo home">
+            <a href={localizePath("/", locale)} aria-label="EzyMap Algo home">
               <Logo />
-            </Link>
+            </a>
 
             <ul className="hidden items-center gap-6 lg:flex">
               {NAV_ITEMS.map((item) => (
@@ -2119,20 +2119,14 @@ export function Footer() {
             <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link
-                  to={locale === "ms" ? "/ms/privacy" : "/privacy"}
-                  className="hover:text-foreground"
-                >
+                <a href={localizePath("/privacy", locale)} className="hover:text-foreground">
                   {t("footer_privacy")}
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  to={locale === "ms" ? "/ms/terms" : "/terms"}
-                  className="hover:text-foreground"
-                >
+                <a href={localizePath("/terms", locale)} className="hover:text-foreground">
                   {t("footer_terms")}
-                </Link>
+                </a>
               </li>
               <li>
                 <a

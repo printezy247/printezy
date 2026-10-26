@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Nav, Footer } from "@/components/landing/Landing";
-import { useTranslation } from "@/lib/i18n";
+import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations, type TranslationKey } from "@/lib/translations";
-import { localizedHead } from "@/lib/seo";
+import { localizedHead, type PageLocale } from "@/lib/seo";
 
-export function termsHead(locale: "en" | "ms") {
+export function termsHead(locale: PageLocale) {
   const t = translations[locale];
   return localizedHead({
     path: "/terms",
@@ -45,12 +45,12 @@ export function TermsPage() {
             </div>
           ))}
         </div>
-        <Link
-          to={locale === "ms" ? "/ms" : "/"}
+        <a
+          href={localizePath("/", locale)}
           className="mt-10 inline-block text-sm text-primary hover:underline"
         >
           {t("legal_back_home")}
-        </Link>
+        </a>
       </main>
       <Footer />
     </div>

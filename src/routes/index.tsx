@@ -41,7 +41,7 @@ const HEAD = localizedHead({
   title: TITLE,
   description: DESC,
   image: "welcome",
-  msPath: null,
+  twinPath: null,
   crumbName: "Free Telegram signals",
 });
 
