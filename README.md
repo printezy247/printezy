@@ -215,7 +215,7 @@ money rather than the parts that are fun:
 | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 📡 **A calendar feed we may depend on** | The desk reads TradingView's public widget endpoint first because it is the one that carries the released `actual`. It is not a licensed API and it can close without notice; the ForexFactory fallback never carries an actual at all. |
 | 🖥️ **A dedicated VPS for the bots**     | Four Telegram bots on one hobby box is a single point of failure for every delivery on this list.                                                                                                                                       |
-| 🌍 **Native translators**               | English and Malay ship today; the four staged locales need a human pass before they can be offered.                                                                                                                                    |
+| 🌍 **Native translators**               | English and Malay ship today; the four staged locales need a human pass before they can be offered.                                                                                                                                     |
 | 🧪 **A staging Supabase project**       | All 33 migrations here are applied to production because there is nowhere else to apply them.                                                                                                                                           |
 
 <div align="center">

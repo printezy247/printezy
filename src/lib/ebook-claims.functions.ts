@@ -42,12 +42,16 @@ export const claimEbook = createServerFn({ method: "POST" })
         throw new Error("Unknown ebook");
       }
       if (input.slug === "mapping-like-a-pro") {
-        const fullName = String(input.fullName ?? "").trim().slice(0, 120);
+        const fullName = String(input.fullName ?? "")
+          .trim()
+          .slice(0, 120);
         const telegramUsername = String(input.telegramUsername ?? "")
           .trim()
           .replace(/^@+/, "")
           .slice(0, 32);
-        const vantageAccount = String(input.vantageAccount ?? "").replace(/\D/g, "").slice(0, 20);
+        const vantageAccount = String(input.vantageAccount ?? "")
+          .replace(/\D/g, "")
+          .slice(0, 20);
         if (!fullName) throw new Error("Enter your full name.");
         if (!/^[A-Za-z0-9_]{5,32}$/.test(telegramUsername)) {
           throw new Error("Enter a valid Telegram username.");
@@ -63,7 +67,6 @@ export const claimEbook = createServerFn({ method: "POST" })
       data,
       context,
     }): Promise<{ ok: true; status: "pending" | "approved"; notified?: boolean }> => {
-
       if (data.slug === "mapping-like-a-pro") {
         const details = data as {
           slug: string;
@@ -89,9 +92,9 @@ export const claimEbook = createServerFn({ method: "POST" })
           .select("id")
           .single();
         if (error) {
-        console.error("[db] write failed", error);
-        throw new Error("Could not save your changes — please try again.");
-      }
+          console.error("[db] write failed", error);
+          throw new Error("Could not save your changes — please try again.");
+        }
 
         // Awaited on purpose: the worker is torn down as soon as the response
         // goes out, so a fire-and-forget send never reaches Telegram.
@@ -165,7 +168,9 @@ export const getEbookDownloadUrl = createServerFn({ method: "POST" })
     ]);
     if (download.error || read.error || !download.data || !read.data) {
       console.error("[ebooks] signed url failed", download.error ?? read.error);
-      throw new Error("The download is temporarily unavailable — please try again in a few minutes.");
+      throw new Error(
+        "The download is temporarily unavailable — please try again in a few minutes.",
+      );
     }
     return { downloadUrl: download.data.signedUrl, readUrl: read.data.signedUrl };
   });

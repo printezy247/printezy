@@ -10,11 +10,11 @@
 
 Three commits closed the major correctness gaps before this review:
 
-| Commit | What it fixed |
-|--------|--------------|
-| `96226c3` | Public board mirrors the bot; site-side scanner removed |
+| Commit    | What it fixed                                                             |
+| --------- | ------------------------------------------------------------------------- |
+| `96226c3` | Public board mirrors the bot; site-side scanner removed                   |
 | `14bc694` | Honest track record — bot-only history, "since" label, small-sample guard |
-| `3479eeb` | Track-record window pinned to `2026-10-25T00:00:00Z` |
+| `3479eeb` | Track-record window pinned to `2026-10-25T00:00:00Z`                      |
 
 The website is now a **pure read-only mirror**: the EzyAi bot pushes every live signal (autopilot opens + watch alerts) through the signal bridge; the site stores, serves, and renders what it is told. No Yahoo feeds, no indicators, no autopilot logic remain in the site codebase.
 
@@ -25,45 +25,52 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 ## 2. Code Map
 
 ### Types & Constants
+
 - `signals.ts` — `EzyAiSignal`, `SignalStatus`, `SignalDirection`, `SIGNAL_STATUSES`, `LIVE_STATUSES`, `CLOSED_STATUSES`, `STATUS_COLOR`, `liveR()`, `progressPercent()`, `entryMid()`, `summarisePerformance()`, `buildingTrackRecord()`, `EZYAI_TRACK_RECORD_SINCE`, `EZYAI_MIN_TRACK_RECORD_SAMPLE`
 - `visibility.ts` — `EZYAI_BOARD_VISIBLE: boolean = true` master switch
 - `redeem-code.ts` — `generateRedeemCode()`, `normalizeRedeemCode()`, `REDEEM_CODE_RE`
 - `dedup.ts` — `findLiveDuplicate()` pure matcher (symbol + direction + setup + 24h window, injectable `now`)
 
 ### Server / Database
+
 - `signals.server.ts` — `listLiveSignals()`, `listClosedSignals(.gte("opened_at", EZYAI_TRACK_RECORD_SINCE))`, `pushSignal()` (update-or-insert, 23505 retry), `recordBridgeHit()`, `recentBridgeHits()`
 - `signals.functions.ts` — `getEzyAiBoard`, `getEzyAiHistory` (dynamic-import server functions)
 - `entitlements.server.ts` — `recordEzyAiEntitlement()`, `listUnclaimedEntitlements()`, `findEntitlementByCode()`, `claimEntitlement()`, `isAuthorizedBotRequest()`
 - `site-access.server.ts` — `normalizeHandle()`
 
 ### Bridge Endpoints
+
 - `routes/api/public/ezyai/signals.ts` — GET (list/diagnose), POST (single/batch ≤50). Bearer-key auth with `safeEqual()`, SHA-256 fingerprint for diagnostics, 503 when unconfigured, 401 on bad key, 207 for partial batches. `normalise()` strips surrounding quotes/tickers.
 - `routes/api/public/ezyai/entitlements.ts` — GET (username/code/sweep lookup), POST (claim). UUID + telegram_id validation.
 
 ### Presentation
+
 - `components/ezyai/SignalCard.tsx` — status flag, stop→target rail, score ring, live R, staggered card entry animation, `prefers-reduced-motion`
 - `components/ezyai/PerformancePanel.tsx` — build-record guard, equity curve SVG, per-symbol win-rate bars, result list
 - `routes/ezyai.tsx` — ARIA tablist (live/history/about), 60s refetch, deep-linkable tabs, keyboard arrow navigation
 - `components/brand/EzyAiLogo.tsx` — SVG logo with `useId()` gradient scoping
 
 ### Tests
+
 - `lib/__tests__/ezyai-board.test.ts` — board visibility flag, scanner removal, sitemap inclusion, ARIA patterns, i18n consistency
 - `lib/__tests__/ezyai-track-record.test.ts` — track-record window (2026-10-25), min-sample guard (10), panel building notice, no fabricated-floor wording
 - `lib/ezyai/__tests__/dedup.test.ts` — 7 case tests for `findLiveDuplicate`
 
 ### Shared Utilities (reused across EzyAI and the rest of the site)
+
 - `safeEqual()` — defined in `lib/bot/telegram.server.ts`, imported by both `signals.ts` (route) and `entitlements.server.ts`. **Also duplicated** in `lib/telegram-login.server.ts:54` (a third copy).
 - `escapeLikePattern()` — `lib/like-escape.ts`
 - `useCountUp()`, `usePrefersReducedMotion()` — `lib/`
 - `formatLocalTime()`, `formatUsd()`, `getCatalogItem()`, `EZYAI_SKU_MONTHS` — all from `lib/catalog.ts`
 
 ### Trending Repos Researched
-| Repo | Stars | Relevance |
-|------|-------|-----------|
-| bennycode/trading-signals | 1.0k | TS financial indicators, tree-shakable exports, JSDoc on every fn |
-| Drakkar-Software/OctoBot | 6.9k | Python bot with structured outputs, backtesting engine, strategy registry |
-| naimkatiman/tradeclaw | ~500 | AI signal engine with inspectable "outcome ledger" |
-| cryptoyasenka/crypto-signal-board | ~200 | Crypto signals in a TEE (confidentiality pattern) |
+
+| Repo                              | Stars | Relevance                                                                 |
+| --------------------------------- | ----- | ------------------------------------------------------------------------- |
+| bennycode/trading-signals         | 1.0k  | TS financial indicators, tree-shakable exports, JSDoc on every fn         |
+| Drakkar-Software/OctoBot          | 6.9k  | Python bot with structured outputs, backtesting engine, strategy registry |
+| naimkatiman/tradeclaw             | ~500  | AI signal engine with inspectable "outcome ledger"                        |
+| cryptoyasenka/crypto-signal-board | ~200  | Crypto signals in a TEE (confidentiality pattern)                         |
 
 ---
 
@@ -94,6 +101,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 **Severity:** Maintenance debt, not a bug.
 
 **Where:**
+
 - `lib/bot/telegram.server.ts:95` — exported, used by `entitlements.server.ts`, `member.server.ts`, `stripe.server.ts`
 - `routes/api/public/ezyai/signals.ts:65` — local copy inside the route handler file
 - `lib/telegram-login.server.ts:54` — local (non-exported) copy
@@ -109,6 +117,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 **Where:** The route files at `src/routes/api/public/ezyai/signals.ts` and `src/routes/api/public/ezyai/entitlements.ts` have **zero unit tests**. The only test that touches the route is `ezyai-board.test.ts:46-53`, which string-slices the source to assert `guard(request)` is called before `diagnose` — a text-based assertion, not a behavioral test.
 
 **Why it matters:** The bridge is the attack surface (public POST endpoint with up to 50-signal batches). Key behaviors are untested:
+
 - 207 Partial Content when some signals in a batch fail
 - 200 when all succeed, 400 when all fail
 - Quote-trimming in `normalise()` (e.g. `"mykey"` → `mykey`)
@@ -126,6 +135,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 **Where:** `src/lib/ezyai/entitlements.server.ts` has no tests. The idempotency window on `claimEntitlement` (it `.is("claimed_at", null)` so a retry can't double-claim) is untested. The collision-retry loop in `recordEzyAiEntitlement` (the `for (let attempt = 0; ; attempt++)` with 23505 handling, signals.server.ts:82-118) is untested.
 
 **Fix:** Add `src/lib/ezyai/__tests__/entitlements.test.ts` with a mocked Supabase client. At minimum:
+
 - `claimEntitlement` on an already-claimed row returns null
 - `recordEzyAiEntitlement` retries on 23505 unique violation
 - `findEntitlementByCode` rejects malformed codes
@@ -233,6 +243,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 **Trending-repo benchmark:** All three repos (OctoBot, tradeclaw, crypto-signal-board) push updates via WebSocket or Server-Sent Events. Polling every 60s means a trade can close and the card still shows "running" for up to a minute.
 
 **Options:**
+
 - **TanStack Query `websocket` connector** — if the Supabase project has Realtime enabled, `supabaseAdmin` can subscribe to `ezyai_signals` changes. But the site currently uses the admin client (server-side only), not a public anon key.
 - **A lightweight SSE endpoint** that broadcasts `POST /api/public/ezyai/signals` pushes to connected clients. The route handler could call `res.write(...)` after each successful `pushSignal`.
 - **Keep polling but add a `/api/public/ezyai/last-update` endpoint** that returns the max `updated_at` — if it hasn't changed, skip the JSON fetch entirely. This is the lowest-lift option and still cuts bandwidth.
@@ -271,7 +282,7 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 
 **Severity:** Documentation opportunity.
 
-**Where:** `src/lib/ezyai/assets/ezyai_signal_client.py` — a Python reference implementation of the signal bridge POST. This is already a great pattern (the repo ships its own client SDK in a second language). 
+**Where:** `src/lib/ezyai/assets/ezyai_signal_client.py` — a Python reference implementation of the signal bridge POST. This is already a great pattern (the repo ships its own client SDK in a second language).
 
 **Trending-repo benchmark:** Drakkar-Software/OctoBot ships 5+ client libraries (Python, Node, Go, Rust, C#). tradeclaw ships a TypeScript SDK with typed payloads.
 
@@ -281,44 +292,45 @@ The website is now a **pure read-only mirror**: the EzyAi bot pushes every live 
 
 ## 4. Recommendation Summary
 
-| Phase | Priority | Fix | Effort |
-|-------|----------|-----|--------|
-| **1** | P1.1 | Consolidate `safeEqual` into one exported module | 15 min |
-| **1** | P1.2 | Add route-handler tests for signals bridge (mock Supabase) | 2–3 hrs |
-| **1** | P1.3 | Add tests for `claimEntitlement` idempotency + 23505 retry | 1–2 hrs |
-| **1** | P1.4 | `normalise()` — strip multiple quote layers or document intent | 5 min |
-| **1** | P1.5 | Add `color-mix()` fallbacks for Firefox < 113 | 15 min |
-| **2** | P2.1 | Split history fetch: performance summary vs. paginated results | 1 hr |
-| **2** | P2.2 | Add clipboard/share button on SignalCard | 30 min |
-| **2** | P2.3 | Label pending rails when levels are missing | 20 min |
-| **2** | P2.4 | Stagger score-ring and rail animations across cards | 20 min |
-| **2** | P2.5 | (EzyAI only) One `$lang/ezyai.tsx` replaces `ms/ezyai.tsx` | done |
-| **2** | P2.6 | `aria-live` announcement on board update | 30 min |
-| **2** | P2.7 | Coordinate home-page sample with live board visibility | 30 min |
-| **3** | P3.1 | SSE revision channel + revision poll underneath | done |
-| **3** | P3.2 | P&L breakdown (if bot pushes position size) | depends on bot |
-| **3** | P3.3 | Test CSS `prefers-reduced-motion` coverage | 15 min |
-| **3** | P3.4 | Type-check i18n key completeness across 6 locales | 30 min |
-| **3** | P3.5 | Promote reference client to living docs | 1 hr |
+| Phase | Priority | Fix                                                            | Effort         |
+| ----- | -------- | -------------------------------------------------------------- | -------------- |
+| **1** | P1.1     | Consolidate `safeEqual` into one exported module               | 15 min         |
+| **1** | P1.2     | Add route-handler tests for signals bridge (mock Supabase)     | 2–3 hrs        |
+| **1** | P1.3     | Add tests for `claimEntitlement` idempotency + 23505 retry     | 1–2 hrs        |
+| **1** | P1.4     | `normalise()` — strip multiple quote layers or document intent | 5 min          |
+| **1** | P1.5     | Add `color-mix()` fallbacks for Firefox < 113                  | 15 min         |
+| **2** | P2.1     | Split history fetch: performance summary vs. paginated results | 1 hr           |
+| **2** | P2.2     | Add clipboard/share button on SignalCard                       | 30 min         |
+| **2** | P2.3     | Label pending rails when levels are missing                    | 20 min         |
+| **2** | P2.4     | Stagger score-ring and rail animations across cards            | 20 min         |
+| **2** | P2.5     | (EzyAI only) One `$lang/ezyai.tsx` replaces `ms/ezyai.tsx`     | done           |
+| **2** | P2.6     | `aria-live` announcement on board update                       | 30 min         |
+| **2** | P2.7     | Coordinate home-page sample with live board visibility         | 30 min         |
+| **3** | P3.1     | SSE revision channel + revision poll underneath                | done           |
+| **3** | P3.2     | P&L breakdown (if bot pushes position size)                    | depends on bot |
+| **3** | P3.3     | Test CSS `prefers-reduced-motion` coverage                     | 15 min         |
+| **3** | P3.4     | Type-check i18n key completeness across 6 locales              | 30 min         |
+| **3** | P3.5     | Promote reference client to living docs                        | 1 hr           |
 
 ---
 
 ## 5. Trending-Repo Benchmarks
 
-| Pattern | EzyAI site does it? | Best-in-class example |
-|---------|---------------------|----------------------|
-| Bot-only write model | ✅ Yes (mirrors EzyAI bot) | OctoBot: strategy registry is the writer; UI is read-only |
-| Track-record honesty window | ✅ Yes (since 2026-10-25) | tradeclaw: all results have a verifiable "closed_at" timestamp |
-| Dedup logic is pure & tested | ✅ Yes (7 unit tests) | tradeclaw: outcome ledger dedups by signal_id hash |
-| Bearer-key auth with fingerprint diagnostics | ✅ Yes | crypto-signal-board: TEE attestation instead |
-| Partial-batch (207) reporting | ✅ Yes (max 50) | OctoBot: per-signal error reporting on bulk import |
-| `prefers-reduced-motion` everywhere | ✅ Yes | — most trading UIs ignore this entirely |
-| ARIA tablist with keyboard nav | ✅ Yes | — rare in trading dashboards |
-| `safeEqual` in one place | ❌ No — triple-copied | bennycode/trading-signals: single `consts.ts` for crypto fns |
-| Route-handler integration tests | ❌ No | OctoBot: full pytest suite on API endpoints |
-| i18n key completeness enforced | ❌ No (manual) | bennycode/trading-signals: `LocaleStrings` TS interface |
-| SSE/WS live updates | ✅ Yes — SSE revision channel, poll as fallback | tradeclaw: WebSocket stream with backpressure |
-| Reference client in multiple languages | ✅ Python only | OctoBot: Python + JS + Go + Rust + C# |
+| Pattern                                      | EzyAI site does it?                             | Best-in-class example                                          |
+| -------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| Bot-only write model                         | ✅ Yes (mirrors EzyAI bot)                      | OctoBot: strategy registry is the writer; UI is read-only      |
+| Track-record honesty window                  | ✅ Yes (since 2026-10-25)                       | tradeclaw: all results have a verifiable "closed_at" timestamp |
+| Dedup logic is pure & tested                 | ✅ Yes (7 unit tests)                           | tradeclaw: outcome ledger dedups by signal_id hash             |
+| Bearer-key auth with fingerprint diagnostics | ✅ Yes                                          | crypto-signal-board: TEE attestation instead                   |
+| Partial-batch (207) reporting                | ✅ Yes (max 50)                                 | OctoBot: per-signal error reporting on bulk import             |
+| `prefers-reduced-motion` everywhere          | ✅ Yes                                          | — most trading UIs ignore this entirely                        |
+| ARIA tablist with keyboard nav               | ✅ Yes                                          | — rare in trading dashboards                                   |
+| `safeEqual` in one place                     | ❌ No — triple-copied                           | bennycode/trading-signals: single `consts.ts` for crypto fns   |
+| Route-handler integration tests              | ❌ No                                           | OctoBot: full pytest suite on API endpoints                    |
+| i18n key completeness enforced               | ❌ No (manual)                                  | bennycode/trading-signals: `LocaleStrings` TS interface        |
+| SSE/WS live updates                          | ✅ Yes — SSE revision channel, poll as fallback | tradeclaw: WebSocket stream with backpressure                  |
+| Reference client in multiple languages       | ✅ Python only                                  | OctoBot: Python + JS + Go + Rust + C#                          |
+
 ---
 
 ## 6. Implementation status (26 Oct 2026)
@@ -355,6 +367,7 @@ All tasks implemented except the one that is blocked on the bot:
   and the page writes the tab it selected back into the URL (`replaceState`) so
   a reload or a copied link keeps the panel the reader was on. Both boards now
   answer the same URL the same way.
+
 - **P3.2 (P&L breakdown)** — blocked on the bot: `EzyAiSignal` has no
   `position_size`, so the site cannot compute dollar P&L from what it is
   told. Revisit when the bot pushes size.

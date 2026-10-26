@@ -154,7 +154,12 @@ export function SupportChat() {
         if (inbound.length) {
           setMessages((prev) => [
             ...prev,
-            ...inbound.map((r) => ({ id: r.id, role: "sarah" as const, author: r.author, text: r.text })),
+            ...inbound.map((r) => ({
+              id: r.id,
+              role: "sarah" as const,
+              author: r.author,
+              text: r.text,
+            })),
           ]);
         }
       } catch {

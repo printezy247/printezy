@@ -9,25 +9,25 @@ so RED/GREEN were captured locally and are recorded here.
 
 ## Test specification
 
-| # | What is guaranteed | Test file / command | Type | Result | Evidence |
-|---|--------------------|---------------------|------|--------|----------|
-| 1 | `localizedHead()` declares real 1200x630 og:image dimensions | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 2 | `twitter:description` defaults to the page description | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 3 | `theme-color` and `og:site_name` are emitted on every route | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 4 | `msPath: null` emits zero `ms` hreflang links | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 5 | `OG_IMAGES.default` is a real 1200x630 PNG | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 6 | A registry slug resolves to its real URL and width | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 7 | `buildBreadcrumbJsonLd()` honours an explicit crumb name | `src/lib/__tests__/seo.test.ts` | unit | PASS | `npm test` |
-| 8 | `ebookHead()` keeps the BreadcrumbList AND adds a Book node with `numberOfPages`, `bookFormat`, `url` | `src/routes/__tests__/ebook-head.test.ts` | unit | PASS | `npm test` |
-| 9 | The sitemap gives `/ms` its own `<loc>` and `/home` its twin alternates | `src/routes/__tests__/sitemap.test.ts` | unit | PASS | `npm test` |
-| 10 | `/` emits no alternates in the sitemap | `src/routes/__tests__/sitemap.test.ts` | unit | PASS | `npm test` |
-| 11 | The sitemap lists `/llms.txt` and `/.well-known/security.txt` | `src/routes/__tests__/sitemap.test.ts` | unit | PASS | `npm test` |
-| 12 | `/llms.txt` and `/.well-known/security.txt` serve `text/plain` | `src/routes/__tests__/geo-routes.test.ts` | integration | PASS | `npm test` |
-| 13 | `buildLlmsTxt()` lists the key URLs and every ebook from site data | `src/lib/__tests__/geo.test.ts` | unit | PASS | `npm test` |
-| 14 | `buildSecurityTxt()` has a Contact, a Canonical and a future Expires | `src/lib/__tests__/geo.test.ts` | unit | PASS | `npm test` |
-| 15 | `imgProps()` returns real width/height for known images (CLS) | `src/lib/__tests__/responsive-images.test.ts` | unit | PASS | `npm test` |
-| 16 | `imgProps()` carries intrinsic size for un-resized artwork | `src/lib/__tests__/responsive-images.test.ts` | unit | PASS | `npm test` |
-| 17 | `Welcome.tsx` lists the page `<h1>` before any `<h2>` in source order | `src/components/landing/__tests__/welcome-headings.test.ts` | unit | PASS | `npm test` |
+| #   | What is guaranteed                                                                                    | Test file / command                                         | Type        | Result | Evidence   |
+| --- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------- | ------ | ---------- |
+| 1   | `localizedHead()` declares real 1200x630 og:image dimensions                                          | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 2   | `twitter:description` defaults to the page description                                                | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 3   | `theme-color` and `og:site_name` are emitted on every route                                           | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 4   | `msPath: null` emits zero `ms` hreflang links                                                         | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 5   | `OG_IMAGES.default` is a real 1200x630 PNG                                                            | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 6   | A registry slug resolves to its real URL and width                                                    | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 7   | `buildBreadcrumbJsonLd()` honours an explicit crumb name                                              | `src/lib/__tests__/seo.test.ts`                             | unit        | PASS   | `npm test` |
+| 8   | `ebookHead()` keeps the BreadcrumbList AND adds a Book node with `numberOfPages`, `bookFormat`, `url` | `src/routes/__tests__/ebook-head.test.ts`                   | unit        | PASS   | `npm test` |
+| 9   | The sitemap gives `/ms` its own `<loc>` and `/home` its twin alternates                               | `src/routes/__tests__/sitemap.test.ts`                      | unit        | PASS   | `npm test` |
+| 10  | `/` emits no alternates in the sitemap                                                                | `src/routes/__tests__/sitemap.test.ts`                      | unit        | PASS   | `npm test` |
+| 11  | The sitemap lists `/llms.txt` and `/.well-known/security.txt`                                         | `src/routes/__tests__/sitemap.test.ts`                      | unit        | PASS   | `npm test` |
+| 12  | `/llms.txt` and `/.well-known/security.txt` serve `text/plain`                                        | `src/routes/__tests__/geo-routes.test.ts`                   | integration | PASS   | `npm test` |
+| 13  | `buildLlmsTxt()` lists the key URLs and every ebook from site data                                    | `src/lib/__tests__/geo.test.ts`                             | unit        | PASS   | `npm test` |
+| 14  | `buildSecurityTxt()` has a Contact, a Canonical and a future Expires                                  | `src/lib/__tests__/geo.test.ts`                             | unit        | PASS   | `npm test` |
+| 15  | `imgProps()` returns real width/height for known images (CLS)                                         | `src/lib/__tests__/responsive-images.test.ts`               | unit        | PASS   | `npm test` |
+| 16  | `imgProps()` carries intrinsic size for un-resized artwork                                            | `src/lib/__tests__/responsive-images.test.ts`               | unit        | PASS   | `npm test` |
+| 17  | `Welcome.tsx` lists the page `<h1>` before any `<h2>` in source order                                 | `src/components/landing/__tests__/welcome-headings.test.ts` | unit        | PASS   | `npm test` |
 
 RED evidence: the original `src/lib/__tests__/seo.test.ts` failed 4 of 5 tests
 before `src/lib/seo.ts` was rewritten (missing `theme-color`, missing

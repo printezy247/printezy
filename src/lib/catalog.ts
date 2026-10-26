@@ -91,7 +91,11 @@ export const CATALOG: CatalogItem[] = [
     description: "The full M1–H4 signal engine used in the Premium package.",
     amountCents: 24900,
     term: "One-time",
-    bullets: ["M1–H4 entry, SL and TP signals", "Multi-timeframe confluence filter", "Lifetime updates"],
+    bullets: [
+      "M1–H4 entry, SL and TP signals",
+      "Multi-timeframe confluence filter",
+      "Lifetime updates",
+    ],
     badge: "Most complete",
   },
 
@@ -286,7 +290,11 @@ export const CATALOG: CatalogItem[] = [
     description: "One premium card: news sentiment, whale alerts, options flow or Fed watch.",
     amountCents: 900,
     term: "1 Month",
-    bullets: ["Pick any single premium card", "Delivered in the MacroTrader bot", "Cancel any time"],
+    bullets: [
+      "Pick any single premium card",
+      "Delivered in the MacroTrader bot",
+      "Cancel any time",
+    ],
   },
   {
     sku: "macro_yield_optimizer",
@@ -307,7 +315,11 @@ export const CATALOG: CatalogItem[] = [
     description: "Live Watch alerts, Autopilot signals and deep Fundamentals in @ezytradeai_bot.",
     amountCents: 1499,
     term: "1 Month",
-    bullets: ["Live per-pair Watch alerts", "Autopilot signals", "Deep Fundamentals: scores, fair value, COT"],
+    bullets: [
+      "Live per-pair Watch alerts",
+      "Autopilot signals",
+      "Deep Fundamentals: scores, fair value, COT",
+    ],
   },
   {
     sku: "ezyai_pro_6m",

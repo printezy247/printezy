@@ -37,7 +37,10 @@ export function ConsentBanner() {
       <div className="flex flex-row items-center justify-between gap-3 sm:gap-4">
         <p className="text-[11.5px] leading-snug text-muted-foreground sm:text-sm [@media(max-height:500px)]:text-[11px]">
           We use measurement cookies to see which ads bring traders here.
-          <span className="hidden sm:inline [@media(max-height:500px)]:hidden"> Nothing is shared until you agree, and you can change your mind any time.</span>
+          <span className="hidden sm:inline [@media(max-height:500px)]:hidden">
+            {" "}
+            Nothing is shared until you agree, and you can change your mind any time.
+          </span>
         </p>
         <div className="flex shrink-0 gap-2">
           <button

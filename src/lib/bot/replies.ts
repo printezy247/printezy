@@ -38,8 +38,7 @@ const VANTAGE_PROMOS =
   "https://www.vantagemarketsea.com/ms/promotions/deposit-bonus/?affid=MjY0NjgwMDg=&invitecode=oQQlQ8yM";
 const VANTAGE_APP =
   "https://h5.vantagemarketapp.com/h5/thirdparty/support/register?agentAccount=MjY0NjgwMDg=&invitecode=oQQlQ8yM";
-const VANTAGE_ANDROID_APK =
-  "https://vau-usa.oss-accelerate.aliyuncs.com//apk/au/Vantage.apk";
+const VANTAGE_ANDROID_APK = "https://vau-usa.oss-accelerate.aliyuncs.com//apk/au/Vantage.apk";
 
 /** MT5 single-tool entries all share the same plan ladder. */
 function mt5Tool(
@@ -456,10 +455,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "🎁 See Packages", tiers: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "🎁 See Packages", tiers: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "🎁 Lihat Pakej", tiers: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -500,10 +496,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "🎁 See Packages", tiers: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "🎁 See Packages", tiers: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "🎁 Lihat Pakej", tiers: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -525,10 +518,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "🎁 See Packages", tiers: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "🎁 See Packages", tiers: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "🎁 Lihat Pakej", tiers: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -550,10 +540,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "🎁 See Packages", tiers: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "🎁 See Packages", tiers: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "🎁 Lihat Pakej", tiers: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -594,10 +581,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "🎯 See Packages", tiers: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "🎯 See Packages", tiers: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "🎯 Lihat Pakej", tiers: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -612,13 +596,12 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: ["Message Sarah directly to discuss. Refund/cancellation isn't handled automatically."],
-      ms: ["Mesej Sarah terus untuk berbincang. Pembatalan/refund tidak dikendalikan secara automatik."],
+      ms: [
+        "Mesej Sarah terus untuk berbincang. Pembatalan/refund tidak dikendalikan secara automatik.",
+      ],
     },
     buttons: {
-      en: [
-        [{ text: "💬 Ask Sarah", sarah: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "💬 Ask Sarah", sarah: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "💬 Tanya Sarah", sarah: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],
@@ -665,10 +648,7 @@ export const ENTRIES: Entry[] = [
       ],
     },
     buttons: {
-      en: [
-        [{ text: "💬 Ask Sarah", sarah: true }],
-        [{ text: "⬅ Back to FAQ", keyword: "faq" }],
-      ],
+      en: [[{ text: "💬 Ask Sarah", sarah: true }], [{ text: "⬅ Back to FAQ", keyword: "faq" }]],
       ms: [
         [{ text: "💬 Tanya Sarah", sarah: true }],
         [{ text: "⬅ Kembali ke FAQ", keyword: "faq" }],

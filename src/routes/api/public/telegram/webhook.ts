@@ -142,7 +142,6 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             }
           }
 
-
           // A reply from Sarah to a forwarded message goes back to the member.
           {
             const { getSarahChatId, relayFromSarah } = await import("@/lib/bot/sarah.server");
@@ -220,9 +219,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             // she is only pinged for questions the reply book can't handle.
             const { isInChatMode, relayToSarah } = await import("@/lib/bot/sarah.server");
             if (await isInChatMode(telegramId)) {
-              const { handleKeywordMessage, getLang } = await import(
-                "@/lib/bot/replies.server"
-              );
+              const { handleKeywordMessage, getLang } = await import("@/lib/bot/replies.server");
               const answered = await handleKeywordMessage(
                 telegramId,
                 text,
@@ -244,13 +241,10 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                   ? `✅ Sent to Sarah — her reply will land right here.`
                   : `Couldn't reach Sarah just now — try again in a moment.`,
               );
-
             } else {
               // Sarah's keyword reply book answers first; anything she has no
               // answer for gets forwarded to her once so nobody hits silence.
-              const { handleKeywordMessage, getLang } = await import(
-                "@/lib/bot/replies.server"
-              );
+              const { handleKeywordMessage, getLang } = await import("@/lib/bot/replies.server");
               const member = {
                 telegramId,
                 username: message?.from?.username ?? null,
@@ -261,9 +255,8 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                 text,
                 await getLang(telegramId),
               );
-              const { alertMissedMessage, clearMissedFlag } = await import(
-                "@/lib/bot/sarah.server"
-              );
+              const { alertMissedMessage, clearMissedFlag } =
+                await import("@/lib/bot/sarah.server");
               if (answered) {
                 await clearMissedFlag(telegramId);
               } else {

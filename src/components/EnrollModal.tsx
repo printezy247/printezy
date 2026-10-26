@@ -224,89 +224,88 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
 
   const detailsBody = (
     <>
-          <>
-            <h2 className="pr-8 text-lg text-foreground">{item.name}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Access is delivered to this Telegram account.
-            </p>
+      <>
+        <h2 className="pr-8 text-lg text-foreground">{item.name}</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Access is delivered to this Telegram account.
+        </p>
 
-            <form onSubmit={submitDetails} className="mt-5 flex flex-col gap-3">
-              <label className="text-sm text-muted-foreground">Telegram username</label>
+        <form onSubmit={submitDetails} className="mt-5 flex flex-col gap-3">
+          <label className="text-sm text-muted-foreground">Telegram username</label>
+          <input
+            ref={telegramRef}
+            value={telegramUsername}
+            onChange={(e) => setTelegramUsername(e.target.value)}
+            placeholder="your_telegram"
+            autoComplete="off"
+            spellCheck={false}
+            aria-invalid={showHandleError}
+            aria-describedby={
+              showHandleError
+                ? "enroll-telegram-hint enroll-telegram-error"
+                : "enroll-telegram-hint"
+            }
+            className={inputClass}
+          />
+          <p id="enroll-telegram-hint" className="-mt-1 text-xs text-muted-foreground">
+            5–32 characters, letters, numbers or underscores — without the @
+          </p>
+          {showHandleError ? (
+            <p id="enroll-telegram-error" role="alert" className="-mt-1 text-xs text-destructive">
+              Enter your Telegram username without the @ — 5 to 32 letters, numbers or underscores.
+            </p>
+          ) : null}
+
+          {requireMt5 ? (
+            <>
+              <label className="text-sm text-muted-foreground">MT5 account number</label>
               <input
-                ref={telegramRef}
-                value={telegramUsername}
-                onChange={(e) => setTelegramUsername(e.target.value)}
-                placeholder="your_telegram"
-                autoComplete="off"
-                spellCheck={false}
-                aria-invalid={showHandleError}
-                aria-describedby={
-                  showHandleError
-                    ? "enroll-telegram-hint enroll-telegram-error"
-                    : "enroll-telegram-hint"
-                }
+                ref={mt5Ref}
+                value={mt5Account}
+                onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}
+                placeholder="12345678"
+                inputMode="numeric"
+                aria-invalid={showMt5Error}
+                aria-describedby={showMt5Error ? "enroll-mt5-error" : undefined}
                 className={inputClass}
               />
-              <p id="enroll-telegram-hint" className="-mt-1 text-xs text-muted-foreground">
-                5–32 characters, letters, numbers or underscores — without the @
-              </p>
-              {showHandleError ? (
-                <p id="enroll-telegram-error" role="alert" className="-mt-1 text-xs text-destructive">
-                  Enter your Telegram username without the @ — 5 to 32 letters, numbers or
-                  underscores.
+              {showMt5Error ? (
+                <p id="enroll-mt5-error" role="alert" className="text-xs text-destructive">
+                  Enter your MT5 account number.
                 </p>
               ) : null}
+            </>
+          ) : null}
 
-              {requireMt5 ? (
-                <>
-                  <label className="text-sm text-muted-foreground">MT5 account number</label>
-                  <input
-                    ref={mt5Ref}
-                    value={mt5Account}
-                    onChange={(e) => setMt5Account(e.target.value.replace(/\D/g, ""))}
-                    placeholder="12345678"
-                    inputMode="numeric"
-                    aria-invalid={showMt5Error}
-                    aria-describedby={showMt5Error ? "enroll-mt5-error" : undefined}
-                    className={inputClass}
-                  />
-                  {showMt5Error ? (
-                    <p id="enroll-mt5-error" role="alert" className="text-xs text-destructive">
-                      Enter your MT5 account number.
-                    </p>
-                  ) : null}
-                </>
-              ) : null}
+          <label className="text-sm text-muted-foreground">Full name (optional)</label>
+          <input
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Your name"
+            className={inputClass}
+          />
 
-              <label className="text-sm text-muted-foreground">Full name (optional)</label>
-              <input
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Your name"
-                className={inputClass}
-              />
+          <label className="text-sm text-muted-foreground">Trading experience (optional)</label>
+          <Select
+            value={experienceLevel || "unspecified"}
+            onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
+          >
+            <SelectTrigger className={inputClass}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unspecified">Prefer not to say</SelectItem>
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advanced">Advanced</SelectItem>
+            </SelectContent>
+          </Select>
 
-              <label className="text-sm text-muted-foreground">Trading experience (optional)</label>
-              <Select
-                value={experienceLevel || "unspecified"}
-                onValueChange={(v) => setExperienceLevel(v === "unspecified" ? "" : v)}
-              >
-                <SelectTrigger className={inputClass}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="unspecified">Prefer not to say</SelectItem>
-                  <SelectItem value="beginner">Beginner</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button type="submit" disabled={checkoutLoading} className="mt-2 w-full">
-                Continue
-              </Button>
-            </form>
-          </>
+          <Button type="submit" disabled={checkoutLoading} className="mt-2 w-full">
+            Continue
+          </Button>
+        </form>
+      </>
     </>
   );
 
@@ -385,53 +384,53 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
           {step === "details" ? (
             detailsBody
           ) : (
-          <div className="relative min-h-[280px]">
-            {checkoutError ? (
-              <div className="flex flex-col items-center gap-3 p-8 text-center">
-                <p role="alert" className="text-sm text-destructive">
-                  {checkoutError}
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  <Button
-                    type="button"
-                    size="sm"
-                    onClick={() => {
-                      setCheckoutError(null);
-                      setCheckoutAttempt((n) => n + 1);
-                    }}
-                  >
-                    Try again
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setCheckoutError(null);
-                      setStep("details");
-                    }}
-                  >
-                    Back
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <>
-                {checkoutLoading ? (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <div className="relative min-h-[280px]">
+              {checkoutError ? (
+                <div className="flex flex-col items-center gap-3 p-8 text-center">
+                  <p role="alert" className="text-sm text-destructive">
+                    {checkoutError}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setCheckoutError(null);
+                        setCheckoutAttempt((n) => n + 1);
+                      }}
+                    >
+                      Try again
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setCheckoutError(null);
+                        setStep("details");
+                      }}
+                    >
+                      Back
+                    </Button>
                   </div>
-                ) : null}
-                <EmbeddedCheckoutProvider
-                  key={checkoutAttempt}
-                  stripe={getStripe()}
-                  options={{ fetchClientSecret }}
-                >
-                  <EmbeddedCheckout />
-                </EmbeddedCheckoutProvider>
-              </>
-            )}
-          </div>
+                </div>
+              ) : (
+                <>
+                  {checkoutLoading ? (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-background">
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : null}
+                  <EmbeddedCheckoutProvider
+                    key={checkoutAttempt}
+                    stripe={getStripe()}
+                    options={{ fetchClientSecret }}
+                  >
+                    <EmbeddedCheckout />
+                  </EmbeddedCheckoutProvider>
+                </>
+              )}
+            </div>
           )}
         </motion.div>
       </motion.div>

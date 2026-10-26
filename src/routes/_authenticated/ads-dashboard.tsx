@@ -31,8 +31,10 @@ export const Route = createFileRoute("/_authenticated/ads-dashboard")({
 });
 
 const money = (cents: number, currency: string) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: (currency || "usd").toUpperCase() })
-    .format(cents / 100);
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: (currency || "usd").toUpperCase(),
+  }).format(cents / 100);
 
 const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString() : "—");
 

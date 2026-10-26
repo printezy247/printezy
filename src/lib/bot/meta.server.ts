@@ -145,7 +145,6 @@ export async function reportMetaEvent(args: {
   }
 }
 
-
 /**
  * Site-side conversion (browser origin). Same pixel, same de-duplicating
  * event_id scheme as the bot events, but keyed on the analytics sessionId
@@ -216,7 +215,9 @@ export async function reportSiteEvent(args: {
       },
     );
     if (!response.ok) {
-      console.error(`[meta] site ${args.eventName} failed [${response.status}]: ${await response.text()}`);
+      console.error(
+        `[meta] site ${args.eventName} failed [${response.status}]: ${await response.text()}`,
+      );
       return false;
     }
     return true;

@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { getEventSummary, getCampaignEngagement, type CampaignEngagementRow } from "@/lib/analytics.functions";
+import {
+  getEventSummary,
+  getCampaignEngagement,
+  type CampaignEngagementRow,
+} from "@/lib/analytics.functions";
 import { getSupportInboxHealth, type SupportInboxHealth } from "@/lib/admin.functions";
 import { AdminGate } from "@/components/AdminGate";
 
@@ -137,7 +141,9 @@ function SiteAnalyticsPage() {
 
   const pageLoads = rows ? totalFor(rows, "landing") : 0;
   const otherEvents = rows
-    ? rows.filter((r) => !SCROLL_STEPS.includes(r.event_name) && !ENGAGEMENT_EVENTS.includes(r.event_name))
+    ? rows.filter(
+        (r) => !SCROLL_STEPS.includes(r.event_name) && !ENGAGEMENT_EVENTS.includes(r.event_name),
+      )
     : [];
 
   return (
@@ -214,7 +220,8 @@ function SiteAnalyticsPage() {
             <section className="space-y-3">
               <h2 className="text-xl ">By campaign</h2>
               <p className="text-sm text-muted-foreground">
-                Only sessions tagged with a UTM/fbclid ad click — organic visits aren't attributed to a campaign.
+                Only sessions tagged with a UTM/fbclid ad click — organic visits aren't attributed
+                to a campaign.
               </p>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-sm">
@@ -266,7 +273,10 @@ function SiteAnalyticsPage() {
                   </thead>
                   <tbody>
                     {otherEvents.map((r) => (
-                      <tr key={`${r.event_type}-${r.event_name}`} className="border-t border-border">
+                      <tr
+                        key={`${r.event_type}-${r.event_name}`}
+                        className="border-t border-border"
+                      >
                         <td className="px-4 py-3">{r.event_type}</td>
                         <td className="px-4 py-3">{r.event_name}</td>
                         <td className="px-4 py-3">{r.total}</td>

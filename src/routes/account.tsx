@@ -159,8 +159,7 @@ function AccountPage() {
 
       {canceled ? (
         <div className="mt-6 rounded-xl border border-accent/40 bg-accent/10 p-4 text-sm text-foreground">
-          Payment was cancelled. Your spot is still reserved — reopen the bot to finish
-          checkout.
+          Payment was cancelled. Your spot is still reserved — reopen the bot to finish checkout.
         </div>
       ) : null}
 
@@ -362,18 +361,11 @@ function SignalsTab({ data }: { data: MemberDashboard }) {
       {data.signals?.length ? (
         <div className="mt-4 space-y-3">
           {data.signals.map((sig) => (
-            <div
-              key={sig.id}
-              className="rounded-xl border border-border/60 bg-background/40 p-4"
-            >
+            <div key={sig.id} className="rounded-xl border border-border/60 bg-background/40 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold text-foreground">
                   {sig.symbol}{" "}
-                  <span
-                    className={
-                      sig.direction === "buy" ? "text-primary" : "text-destructive"
-                    }
-                  >
+                  <span className={sig.direction === "buy" ? "text-primary" : "text-destructive"}>
                     {sig.direction.toUpperCase()}
                   </span>
                 </p>
@@ -386,9 +378,7 @@ function SignalsTab({ data }: { data: MemberDashboard }) {
                 Entry {sig.entryPrice ?? "—"} · SL {sig.stopPrice ?? "—"} · TP{" "}
                 {sig.targetPrice ?? "—"} · {formatDate(sig.publishedAt)}
               </p>
-              {sig.note ? (
-                <p className="mt-2 text-sm text-foreground">{sig.note}</p>
-              ) : null}
+              {sig.note ? <p className="mt-2 text-sm text-foreground">{sig.note}</p> : null}
             </div>
           ))}
         </div>
@@ -440,7 +430,16 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
       }),
     onSuccess: () => {
       setOpen(false);
-      setForm({ ...form, symbol: "", entryPrice: "", exitPrice: "", size: "", pips: "", pnl: "", notes: "" });
+      setForm({
+        ...form,
+        symbol: "",
+        entryPrice: "",
+        exitPrice: "",
+        size: "",
+        pips: "",
+        pnl: "",
+        notes: "",
+      });
       invalidate();
     },
   });
@@ -483,9 +482,7 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
           <Field label="Direction">
             <select
               value={form.direction}
-              onChange={(e) =>
-                setForm({ ...form, direction: e.target.value as "buy" | "sell" })
-              }
+              onChange={(e) => setForm({ ...form, direction: e.target.value as "buy" | "sell" })}
               className={inputCls}
             >
               <option value="buy">Buy</option>
@@ -495,9 +492,7 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
           <Field label="Status">
             <select
               value={form.status}
-              onChange={(e) =>
-                setForm({ ...form, status: e.target.value as "open" | "closed" })
-              }
+              onChange={(e) => setForm({ ...form, status: e.target.value as "open" | "closed" })}
               className={inputCls}
             >
               <option value="open">Open</option>
@@ -573,19 +568,15 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
               <div>
                 <p className="font-semibold text-foreground">
                   {tr.symbol}{" "}
-                  <span
-                    className={tr.direction === "buy" ? "text-primary" : "text-destructive"}
-                  >
+                  <span className={tr.direction === "buy" ? "text-primary" : "text-destructive"}>
                     {tr.direction.toUpperCase()}
                   </span>
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Entry {tr.entryPrice ?? "—"} · Exit {tr.exitPrice ?? "—"} · Size{" "}
-                  {tr.size ?? "—"} · {formatDate(tr.openedAt)}
+                  Entry {tr.entryPrice ?? "—"} · Exit {tr.exitPrice ?? "—"} · Size {tr.size ?? "—"}{" "}
+                  · {formatDate(tr.openedAt)}
                 </p>
-                {tr.notes ? (
-                  <p className="mt-1 text-sm text-foreground">{tr.notes}</p>
-                ) : null}
+                {tr.notes ? <p className="mt-1 text-sm text-foreground">{tr.notes}</p> : null}
               </div>
               <div className="flex items-center gap-4">
                 <div className="text-right">

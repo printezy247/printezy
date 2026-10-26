@@ -69,7 +69,10 @@ export const requestLoginCode = createServerFn({ method: "POST" })
     const handle = data.handle.trim().replace(/^@+/, "").toLowerCase();
     // Each request DMs a fresh code and invalidates the previous one, so cap
     // per handle (and per IP inside checkRateLimit) to stop code spam.
-    const allowed = await checkRateLimit("login_code", handle, { max: 3, windowMs: 10 * 60 * 1000 });
+    const allowed = await checkRateLimit("login_code", handle, {
+      max: 3,
+      windowMs: 10 * 60 * 1000,
+    });
     if (!allowed) {
       return { sent: false, message: "Too many code requests — wait a few minutes and try again." };
     }
@@ -86,9 +89,7 @@ export const requestLoginCode = createServerFn({ method: "POST" })
 
 /** Step 2: exchange the code for a long-lived browser session token. */
 export const verifyLoginCode = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({ handle: z.string().min(2).max(64), code: z.string().min(4).max(8) }),
-  )
+  .inputValidator(z.object({ handle: z.string().min(2).max(64), code: z.string().min(4).max(8) }))
   .handler(async ({ data }): Promise<{ ok: boolean; token?: string; message?: string }> => {
     const { findMemberByHandle, verifyCode } = await import("@/lib/bot/member.server");
     const member = await findMemberByHandle(data.handle);
@@ -121,9 +122,8 @@ export const getDashboard = createServerFn({ method: "POST" })
   .inputValidator(sessionInput)
   .handler(async ({ data }): Promise<MemberDashboard> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { resolveSession, highestActiveTier, TIER_RANK } = await import(
-      "@/lib/bot/member.server"
-    );
+    const { resolveSession, highestActiveTier, TIER_RANK } =
+      await import("@/lib/bot/member.server");
     const { getTier } = await import("@/lib/bot/tiers");
 
     const telegramId = await resolveSession(data.token);

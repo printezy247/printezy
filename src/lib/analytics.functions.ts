@@ -22,17 +22,13 @@ export const recordEvent = createServerFn({ method: "POST" })
       return { ok: false, error: "Analytics backend not configured" };
     }
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY,
-      {
-        auth: {
-          storage: undefined,
-          persistSession: false,
-          autoRefreshToken: false,
-        },
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        storage: undefined,
+        persistSession: false,
+        autoRefreshToken: false,
       },
-    );
+    });
 
     const { error } = await supabase.from("analytics_events").insert({
       event_type: data.eventType,

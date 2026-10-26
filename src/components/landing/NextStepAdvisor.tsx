@@ -10,9 +10,24 @@ const LEVELS = [
 ] as const;
 
 const STEPS = {
-  ebook: { title: "Free Technical Analysis ebook", icon: BookOpen, to: "/ebooks/technical-analysis", cta: "Get the free ebook" },
-  analysis: { title: "Macro & Crypto analysis", icon: LineChart, to: "/macro", cta: "See the analysis" },
-  channel: { title: "Free Telegram channel", icon: Send, to: "/free-channel", cta: "Join the free channel" },
+  ebook: {
+    title: "Free Technical Analysis ebook",
+    icon: BookOpen,
+    to: "/ebooks/technical-analysis",
+    cta: "Get the free ebook",
+  },
+  analysis: {
+    title: "Macro & Crypto analysis",
+    icon: LineChart,
+    to: "/macro",
+    cta: "See the analysis",
+  },
+  channel: {
+    title: "Free Telegram channel",
+    icon: Send,
+    to: "/free-channel",
+    cta: "Join the free channel",
+  },
 } as const;
 
 type Result = { step: keyof typeof STEPS; reason: string };
@@ -31,7 +46,9 @@ export function NextStepAdvisor() {
     setError(null);
     setResult(null);
     try {
-      const r = await getNextStepRecommendation({ data: { experience, goals, sessionId: getSessionId() } });
+      const r = await getNextStepRecommendation({
+        data: { experience, goals, sessionId: getSessionId() },
+      });
       setResult(r);
       goTrack(`advisor_${r.step}`);
     } catch (err) {
@@ -49,12 +66,17 @@ export function NextStepAdvisor() {
         <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-primary">
           <Sparkles className="h-4 w-4" /> AI-powered guide
         </p>
-        <h2 className="mt-3 text-3xl font-semibold text-foreground sm:text-4xl">Not sure where to start?</h2>
+        <h2 className="mt-3 text-3xl font-semibold text-foreground sm:text-4xl">
+          Not sure where to start?
+        </h2>
         <p className="mt-3 text-muted-foreground">
           Share your experience and goals — we'll suggest the best free next step for you.
         </p>
 
-        <form onSubmit={submit} className="mt-8 rounded-2xl border border-border bg-card p-5 text-left sm:p-6">
+        <form
+          onSubmit={submit}
+          className="mt-8 rounded-2xl border border-border bg-card p-5 text-left sm:p-6"
+        >
           <span className="text-sm font-medium text-foreground">Your experience level</span>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {LEVELS.map((l) => (
@@ -92,11 +114,18 @@ export function NextStepAdvisor() {
           >
             {loading ? "Finding your next step…" : "Get my recommendation"}
           </button>
-          {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
+          {error && (
+            <p role="alert" className="mt-3 text-sm text-destructive">
+              {error}
+            </p>
+          )}
         </form>
 
         {result && step && (
-          <div className="mt-6 rounded-2xl border border-primary/40 bg-card p-6 text-center" aria-live="polite">
+          <div
+            className="mt-6 rounded-2xl border border-primary/40 bg-card p-6 text-center"
+            aria-live="polite"
+          >
             <step.icon className="mx-auto h-8 w-8 text-primary" />
             <h3 className="mt-3 text-xl font-semibold text-foreground">{step.title}</h3>
             {result.reason && <p className="mt-2 text-sm text-muted-foreground">{result.reason}</p>}

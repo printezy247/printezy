@@ -70,7 +70,9 @@ export async function grantMt5License(args: {
 
   const mapping = MT5_SKU_MAP[args.sku];
   if (!mapping) {
-    console.error(`[mt5-license] Unknown MT5 sku "${args.sku}" - cannot map to a license server product/tier`);
+    console.error(
+      `[mt5-license] Unknown MT5 sku "${args.sku}" - cannot map to a license server product/tier`,
+    );
     return false;
   }
 

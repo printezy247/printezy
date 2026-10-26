@@ -62,11 +62,11 @@ both for a client whose stream never connects at all.
   "status": "pending",
   "setup": "London continuation",
   "timeframe": "H1",
-  "entry_low": 2631.20,
-  "entry_high": 2633.00,
-  "stop_price": 2626.50,
-  "tp1": 2640.00,
-  "tp2": 2646.80,
+  "entry_low": 2631.2,
+  "entry_high": 2633.0,
+  "stop_price": 2626.5,
+  "tp1": 2640.0,
+  "tp2": 2646.8,
   "rr": 2.4,
   "setup_score": 78
 }
@@ -75,7 +75,7 @@ both for a client whose stream never connects at all.
 ### 2. Tick — the rail moves
 
 ```json
-{ "external_id": "watch-4821", "last_price": 2636.10 }
+{ "external_id": "watch-4821", "last_price": 2636.1 }
 ```
 
 ### 3. Close — the result counts

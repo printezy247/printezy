@@ -45,7 +45,9 @@ export const getAdDashboard = createServerFn({ method: "POST" })
     const [clicksRes, enrollRes] = await Promise.all([
       supabaseAdmin
         .from("ad_clicks")
-        .select("session_id, fbclid, utm_source, utm_medium, utm_campaign, landing_path, created_at")
+        .select(
+          "session_id, fbclid, utm_source, utm_medium, utm_campaign, landing_path, created_at",
+        )
         .order("created_at", { ascending: false })
         .limit(500),
       supabaseAdmin

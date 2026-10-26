@@ -52,7 +52,9 @@ export const saveMyProfile = createServerFn({ method: "POST" })
       mt5Account?: string;
       referredBy?: string;
     }) => {
-      const fullName = String(input?.fullName ?? "").trim().slice(0, 120);
+      const fullName = String(input?.fullName ?? "")
+        .trim()
+        .slice(0, 120);
       const telegramUsername = String(input?.telegramUsername ?? "")
         .trim()
         .replace(/^@+/, "")
@@ -66,7 +68,9 @@ export const saveMyProfile = createServerFn({ method: "POST" })
       const capitalRange = CAPITAL_RANGES.includes(input?.capitalRange as never)
         ? input.capitalRange
         : undefined;
-      const mt5Account = input?.mt5Account ? String(input.mt5Account).replace(/\D/g, "").slice(0, 20) : undefined;
+      const mt5Account = input?.mt5Account
+        ? String(input.mt5Account).replace(/\D/g, "").slice(0, 20)
+        : undefined;
       const referredBy = input?.referredBy
         ? String(input.referredBy).trim().toUpperCase().slice(0, 16)
         : undefined;
@@ -111,8 +115,8 @@ export const saveMyProfile = createServerFn({ method: "POST" })
       { onConflict: "id" },
     );
     if (error) {
-        console.error("[db] write failed", error);
-        throw new Error("Could not save your changes — please try again.");
-      }
+      console.error("[db] write failed", error);
+      throw new Error("Could not save your changes — please try again.");
+    }
     return { ok: true };
   });

@@ -23,11 +23,21 @@ function Section({ id, children }: { id?: string; children: ReactNode }) {
   );
 }
 
-function SectionHeading({ eyebrow, title, subtitle }: { eyebrow?: string; title: string; subtitle?: string }) {
+function SectionHeading({
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}) {
   return (
     <div className="mx-auto mb-12 max-w-2xl text-center">
       {eyebrow ? (
-        <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">{eyebrow}</p>
+        <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
+          {eyebrow}
+        </p>
       ) : null}
       <h2 className="text-3xl sm:text-4xl">{title}</h2>
       {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
@@ -35,7 +45,13 @@ function SectionHeading({ eyebrow, title, subtitle }: { eyebrow?: string; title:
   );
 }
 
-type TvProduct = { id: string; name: string; taglineKey: TranslationKey; bulletKeys: TranslationKey[]; highlightKey?: TranslationKey };
+type TvProduct = {
+  id: string;
+  name: string;
+  taglineKey: TranslationKey;
+  bulletKeys: TranslationKey[];
+  highlightKey?: TranslationKey;
+};
 
 const TV_PRODUCTS: TvProduct[] = [
   {
@@ -56,9 +72,19 @@ const TV_PRODUCTS: TvProduct[] = [
 const TV_PRICE: Record<string, number> = { tv_lite: 4900, tv_pro: 24900 };
 
 type Term = "1m" | "6m" | "1y";
-const TERM_LABEL_KEY: Record<Term, TranslationKey> = { "1m": "term_1m", "6m": "term_6m", "1y": "term_1y" };
+const TERM_LABEL_KEY: Record<Term, TranslationKey> = {
+  "1m": "term_1m",
+  "6m": "term_6m",
+  "1y": "term_1y",
+};
 
-type Mt5Product = { id: string; name: string; taglineKey: TranslationKey; bulletKeys: TranslationKey[]; highlightKey?: TranslationKey };
+type Mt5Product = {
+  id: string;
+  name: string;
+  taglineKey: TranslationKey;
+  bulletKeys: TranslationKey[];
+  highlightKey?: TranslationKey;
+};
 
 const MT5_PRODUCTS: Mt5Product[] = [
   {
@@ -92,7 +118,11 @@ const MT5_PRODUCTS: Mt5Product[] = [
     id: "mt5_currency_strength",
     name: "Currency Strength Meter",
     taglineKey: "mt5_currency_strength_tagline",
-    bulletKeys: ["mt5_currency_strength_b1", "mt5_currency_strength_b2", "mt5_currency_strength_b3"],
+    bulletKeys: [
+      "mt5_currency_strength_b1",
+      "mt5_currency_strength_b2",
+      "mt5_currency_strength_b3",
+    ],
   },
   {
     id: "mt5_mtf_bias",
@@ -109,7 +139,10 @@ function skuFor(productId: string, term: Term): string {
 function TvCard({ product }: { product: TvProduct }) {
   const { t } = useTranslation();
   return (
-    <article id={product.id} className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
+    <article
+      id={product.id}
+      className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6"
+    >
       {product.highlightKey ? (
         <span className="absolute right-4 top-4 rounded-full border border-[rgba(201,161,58,0.45)] bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
           {t(product.highlightKey)}
@@ -140,7 +173,10 @@ function Mt5Card({ product }: { product: Mt5Product }) {
   const { t } = useTranslation();
 
   return (
-    <article id={product.id} className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6">
+    <article
+      id={product.id}
+      className="glass-card card-lift relative flex h-full scroll-mt-24 flex-col rounded-xl p-6"
+    >
       {product.highlightKey ? (
         <span className="absolute right-4 top-4 rounded-full border border-[rgba(201,161,58,0.45)] bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-accent">
           {t(product.highlightKey)}
@@ -164,7 +200,9 @@ function Mt5Card({ product }: { product: Mt5Product }) {
             type="button"
             onClick={() => setTerm(tm)}
             className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-colors ${
-              term === tm ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              term === tm
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {t(TERM_LABEL_KEY[tm])}
@@ -193,7 +231,14 @@ export function Tools() {
       <div className="mt-8">
         <div className="flex items-center gap-3">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
-            <img src={tradingViewLogo} width={320} height={320} alt="TradingView logo" loading="lazy" className="h-full w-full object-contain" />
+            <img
+              src={tradingViewLogo}
+              width={320}
+              height={320}
+              alt="TradingView logo"
+              loading="lazy"
+              className="h-full w-full object-contain"
+            />
           </span>
           <div>
             <h3 className="text-xl font-semibold">{t("tools_tv_section_title")}</h3>
@@ -219,7 +264,12 @@ export function Tools() {
       <div className="mt-14">
         <div className="flex items-center gap-3">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
-            <img {...imgProps(mt5Logo)} alt="MetaTrader 5 logo" loading="lazy" className="h-full w-full object-contain" />
+            <img
+              {...imgProps(mt5Logo)}
+              alt="MetaTrader 5 logo"
+              loading="lazy"
+              className="h-full w-full object-contain"
+            />
           </span>
           <div>
             <h3 className="text-xl font-semibold">{t("tools_mt5_section_title")}</h3>

@@ -45,7 +45,6 @@ export function trackAdClick() {
   });
 }
 
-
 function getContext() {
   return {
     path: typeof window !== "undefined" ? window.location.pathname : "/",
@@ -89,8 +88,6 @@ export function goTrack(name: string) {
     });
   }
 }
-
-
 
 export function trackSectionVisibility(sectionIds: string[]) {
   if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") return;
@@ -163,17 +160,11 @@ export function trackEngagement() {
   };
 }
 
-
 /* ------------------------------------------------------------------ */
 /* Meta conversions fired from the site itself                         */
 /* ------------------------------------------------------------------ */
 
-export type SiteMetaEvent =
-  | "PageView"
-  | "ViewContent"
-  | "Lead"
-  | "InitiateCheckout"
-  | "StartTrial";
+export type SiteMetaEvent = "PageView" | "ViewContent" | "Lead" | "InitiateCheckout" | "StartTrial";
 
 type QueuedEvent = {
   eventName: SiteMetaEvent;

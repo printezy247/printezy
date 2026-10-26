@@ -22,7 +22,9 @@ export function AdminGate({ children }: { children: ReactNode }) {
   }, [check]);
 
   if (state === "loading") {
-    return <p className="mx-auto max-w-md px-4 py-24 text-sm text-muted-foreground">Checking access…</p>;
+    return (
+      <p className="mx-auto max-w-md px-4 py-24 text-sm text-muted-foreground">Checking access…</p>
+    );
   }
   if (state === "denied") {
     return (

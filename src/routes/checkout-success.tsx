@@ -8,7 +8,11 @@ import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
-import { getOrCreateReferralCode, getMyReferralStats, type ReferralStats } from "@/lib/referral.functions";
+import {
+  getOrCreateReferralCode,
+  getMyReferralStats,
+  type ReferralStats,
+} from "@/lib/referral.functions";
 import { getCatalogItem, formatUsd, isEzyAiSku, type CatalogGroup } from "@/lib/catalog";
 import { REGISTER_BOT, EZYAI_BOT, botStartLink, ezyAiStartLink } from "@/lib/telegram-links";
 import { claimCheckoutWithTelegram, getTelegramLoginConfig } from "@/lib/telegram-login.functions";
@@ -192,10 +196,13 @@ function SuccessPage() {
 
             {item ? (
               <div className="mx-auto mt-6 max-w-md rounded-xl border border-border bg-surface-elevated p-5 text-left">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">You purchased</p>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  You purchased
+                </p>
                 <p className="mt-1 text-base font-semibold text-foreground">{item.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {item.term} · <span className="font-mono tabular-nums">{formatUsd(item.amountCents)}</span>
+                  {item.term} ·{" "}
+                  <span className="font-mono tabular-nums">{formatUsd(item.amountCents)}</span>
                 </p>
                 {handle ? (
                   <p className="mt-3 border-t border-border pt-3 text-sm text-body">
@@ -283,7 +290,13 @@ function SuccessPage() {
 
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <a href={ezyai ? ezyAiStartLink("paid") : botStartLink(product ? `paid_${product}` : "paid")}>
+                <a
+                  href={
+                    ezyai
+                      ? ezyAiStartLink("paid")
+                      : botStartLink(product ? `paid_${product}` : "paid")
+                  }
+                >
                   <Send className="h-4 w-4" /> Open Telegram & claim access
                 </a>
               </Button>
@@ -307,12 +320,17 @@ function SuccessPage() {
                 </h2>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   {crossSell.map((cs) => (
-                    <div key={cs.sku} className="flex h-full flex-col rounded-xl border border-border bg-card p-4">
+                    <div
+                      key={cs.sku}
+                      className="flex h-full flex-col rounded-xl border border-border bg-card p-4"
+                    >
                       <h3 className="text-sm font-semibold text-foreground">{cs.name}</h3>
                       <p className="mt-1 flex-1 text-xs text-muted-foreground">{cs.description}</p>
                       <p className="mt-3 font-mono text-lg font-bold tabular-nums text-foreground">
                         {formatUsd(cs.amountCents)}{" "}
-                        <span className="font-sans text-xs font-normal text-muted-foreground">{cs.term}</span>
+                        <span className="font-sans text-xs font-normal text-muted-foreground">
+                          {cs.term}
+                        </span>
                       </p>
                       <BuyButton sku={cs.sku} label="Add this" className="mt-3" />
                     </div>
@@ -335,7 +353,9 @@ function SuccessPage() {
                     className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline disabled:opacity-50"
                   >
                     <Mail className="h-4 w-4" />
-                    {signInState === "sending" ? "Sending…" : "Email me a sign-in link to view my account"}
+                    {signInState === "sending"
+                      ? "Sending…"
+                      : "Email me a sign-in link to view my account"}
                   </button>
                 )}
               </div>
@@ -365,8 +385,9 @@ function SuccessPage() {
                 </div>
                 {referralStats ? (
                   <p className="mt-3 text-center text-xs text-muted-foreground">
-                    <span className="font-mono tabular-nums">{referralStats.signups}</span> signed up ·{" "}
-                    <span className="font-mono tabular-nums">{referralStats.purchases}</span> purchased
+                    <span className="font-mono tabular-nums">{referralStats.signups}</span> signed
+                    up · <span className="font-mono tabular-nums">{referralStats.purchases}</span>{" "}
+                    purchased
                   </p>
                 ) : null}
               </div>

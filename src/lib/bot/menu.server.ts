@@ -63,8 +63,7 @@ export async function sendMainMenu(chatId: number, firstName?: string | null) {
 /** Compact packages-only view (used by /packages and the nav row). */
 export async function sendPackages(chatId: number) {
   const lines = TIER_CATALOG.map((t) => {
-    const price =
-      t.id === "vantage" ? "free via Vantage" : formatPrice(t.amountCents);
+    const price = t.id === "vantage" ? "free via Vantage" : formatPrice(t.amountCents);
     return `<b>${t.name}</b> — ${price}\n<i>${t.blurb}</i>`;
   });
   const keyboard: InlineButton[][] = TIER_CATALOG.map((t) => [
@@ -73,11 +72,7 @@ export async function sendPackages(chatId: number) {
   keyboard.push(navRow());
   keyboard.push([BTN_ASK_SARAH]);
 
-  await sendMessage(
-    chatId,
-    `📦 <b>Packages</b>\n\n${lines.join("\n\n")}`,
-    keyboard,
-  );
+  await sendMessage(chatId, `📦 <b>Packages</b>\n\n${lines.join("\n\n")}`, keyboard);
 }
 
 const STATUS_ICON: Record<string, string> = {
@@ -120,8 +115,7 @@ export async function sendPaymentStatus(chatId: number, telegramId: number) {
   const pending = rows.find((r) => r.status === "pending");
   const hasActive = rows.some(
     (r) =>
-      r.status === "active" &&
-      (!r.expires_at || new Date(r.expires_at).getTime() > Date.now()),
+      r.status === "active" && (!r.expires_at || new Date(r.expires_at).getTime() > Date.now()),
   );
 
   const keyboard: InlineButton[][] = [];

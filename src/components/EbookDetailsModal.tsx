@@ -93,7 +93,12 @@ export function EbookDetailsModal({ slug, onClose }: Props) {
             aria-modal="true"
             aria-label={book.title}
             initial={reducedMotion ? false : { opacity: 0, scale: 0.96, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: reducedMotion ? 0 : 0.2, ease: "easeOut" } }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              transition: { duration: reducedMotion ? 0 : 0.2, ease: "easeOut" },
+            }}
             exit={{
               opacity: 0,
               scale: reducedMotion ? 1 : 0.96,
@@ -165,7 +170,10 @@ export function EbookDetailsModal({ slug, onClose }: Props) {
                 </h3>
                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                   {book.outcomes.map((o) => (
-                    <div key={o} className="flex h-full items-start gap-2.5 rounded-lg border border-border bg-card p-3">
+                    <div
+                      key={o}
+                      className="flex h-full items-start gap-2.5 rounded-lg border border-border bg-card p-3"
+                    >
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                       <p className="text-sm text-foreground">{o}</p>
                     </div>
@@ -179,8 +187,13 @@ export function EbookDetailsModal({ slug, onClose }: Props) {
                 </h3>
                 <ol className="mt-3 grid gap-2.5 sm:grid-cols-2">
                   {book.chapters.map((c, i) => (
-                    <li key={c.title} className="flex h-full gap-2.5 rounded-lg border border-border bg-card p-3">
-                      <span className="text-sm font-bold text-accent">{String(i + 1).padStart(2, "0")}</span>
+                    <li
+                      key={c.title}
+                      className="flex h-full gap-2.5 rounded-lg border border-border bg-card p-3"
+                    >
+                      <span className="text-sm font-bold text-accent">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                       <div className="min-w-0">
                         <h4 className="text-sm font-semibold text-foreground">{c.title}</h4>
                         <p className="mt-0.5 text-xs text-muted-foreground">{c.summary}</p>

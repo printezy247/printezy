@@ -1,13 +1,7 @@
 // Server-only enrollment domain logic shared by the Telegram webhook,
 // the Stripe webhook and the account portal server function.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import {
-  SITE_URL,
-  getTier,
-  formatPrice,
-  VANTAGE_LINK,
-  VANTAGE_TRIAL_DAYS,
-} from "./tiers";
+import { SITE_URL, getTier, formatPrice, VANTAGE_LINK, VANTAGE_TRIAL_DAYS } from "./tiers";
 import { sendMessage } from "./telegram.server";
 import { createCheckoutSession, retrieveCheckoutSession } from "./stripe.server";
 import { accountLinkFor } from "./member.server";
@@ -148,9 +142,7 @@ export async function activateVantageTrial(telegramId: number) {
   const stillLive = current && (!current.expires_at || current.expires_at > nowIso);
 
   const token = current?.portal_token ?? newPortalToken();
-  const expiresAt = new Date(
-    Date.now() + VANTAGE_TRIAL_DAYS * 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const expiresAt = new Date(Date.now() + VANTAGE_TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const sessionId = await getSessionTag(telegramId);
 
   if (!stillLive) {
@@ -236,12 +228,13 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
     contentId: tier.id,
   });
 
-
   await sendMessage(
     telegramId,
     `<b>${tier.name}</b> — ${formatPrice(tier.amountCents)}\n${tier.blurb}\n\n${tier.perks
       .map((p) => `• ${p}`)
-      .join("\n")}\n\nComplete your secure payment below. Your account activates the moment it clears.`,
+      .join(
+        "\n",
+      )}\n\nComplete your secure payment below. Your account activates the moment it clears.`,
     [
       [{ text: `Pay ${formatPrice(tier.amountCents)} securely`, url: checkout.url ?? SITE_URL }],
       [{ text: "My account", url: returnUrl }],

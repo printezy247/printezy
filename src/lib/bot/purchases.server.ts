@@ -173,8 +173,14 @@ async function notifyReferralConversion(buyerUserId: string, sku: string) {
     .select("full_name, telegram_username")
     .eq("id", referrerId)
     .maybeSingle();
-  const referrer = referrerProfile as { full_name: string | null; telegram_username: string | null } | null;
-  const buyer = buyerProfile as { full_name: string | null; telegram_username: string | null } | null;
+  const referrer = referrerProfile as {
+    full_name: string | null;
+    telegram_username: string | null;
+  } | null;
+  const buyer = buyerProfile as {
+    full_name: string | null;
+    telegram_username: string | null;
+  } | null;
 
   const item = getCatalogItem(sku);
   const sarah = await getSarahChatId();
@@ -213,7 +219,9 @@ async function notifySarah(meta: Record<string, string>, amountCents: number, cu
     `${escapeHtml(item?.name ?? meta.sku ?? "Unknown product")} — ${amount}`,
     `Telegram: @${escapeHtml(meta.telegram_username ?? "unknown")}`,
     meta.full_name ? `Name: ${escapeHtml(meta.full_name)}` : null,
-    meta.experience_level ? `Experience: ${escapeHtml(EXPERIENCE_LABEL[meta.experience_level] ?? meta.experience_level)}` : null,
+    meta.experience_level
+      ? `Experience: ${escapeHtml(EXPERIENCE_LABEL[meta.experience_level] ?? meta.experience_level)}`
+      : null,
     meta.mt5_account ? `MT5 account: ${escapeHtml(meta.mt5_account)}` : null,
   ].filter(Boolean);
 

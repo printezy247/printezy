@@ -58,8 +58,7 @@ export async function createCheckoutSession(args: {
     url: session.url,
     payment_status: session.payment_status,
     status: session.status ?? "",
-    payment_intent:
-      typeof session.payment_intent === "string" ? session.payment_intent : null,
+    payment_intent: typeof session.payment_intent === "string" ? session.payment_intent : null,
     metadata: (session.metadata as Record<string, string>) ?? null,
   };
 }
@@ -72,8 +71,7 @@ export async function retrieveCheckoutSession(id: string): Promise<CheckoutSessi
     url: session.url,
     payment_status: session.payment_status,
     status: session.status ?? "",
-    payment_intent:
-      typeof session.payment_intent === "string" ? session.payment_intent : null,
+    payment_intent: typeof session.payment_intent === "string" ? session.payment_intent : null,
     metadata: (session.metadata as Record<string, string>) ?? null,
   };
 }

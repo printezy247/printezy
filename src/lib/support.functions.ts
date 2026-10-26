@@ -133,17 +133,19 @@ export const fetchSupportMessages = createServerFn({ method: "POST" })
       return [];
     }
 
-    return (rows ?? [])
-      // relay-log rows (the copy sent to Sarah) are bookkeeping, not chat
-      .filter((row) => !(row.direction === "to_sarah" && row.sarah_message_id))
-      .map((row) => ({
-      id: Number(row.id),
-      role: row.direction === "to_sarah" ? ("visitor" as const) : ("sarah" as const),
-      author:
-        row.direction === "to_sarah"
-          ? (row.display_name ?? "You")
-          : (row.display_name ?? HUMAN_AUTHOR),
-      text: row.text ?? "",
-      createdAt: String(row.created_at),
-    }));
+    return (
+      (rows ?? [])
+        // relay-log rows (the copy sent to Sarah) are bookkeeping, not chat
+        .filter((row) => !(row.direction === "to_sarah" && row.sarah_message_id))
+        .map((row) => ({
+          id: Number(row.id),
+          role: row.direction === "to_sarah" ? ("visitor" as const) : ("sarah" as const),
+          author:
+            row.direction === "to_sarah"
+              ? (row.display_name ?? "You")
+              : (row.display_name ?? HUMAN_AUTHOR),
+          text: row.text ?? "",
+          createdAt: String(row.created_at),
+        }))
+    );
   });
