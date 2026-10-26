@@ -19,6 +19,34 @@ describe("ebookHead()", () => {
     expect(bookNode.inLanguage).toBe(book.language);
   });
 
+  it("treats every locale as an edition of the English page unless one exists", () => {
+    const book = EBOOK_PAGES[0];
+    type Head = {
+      links: Array<{ rel: string; href?: string; hrefLang?: string }>;
+      meta: Array<Record<string, string>>;
+    };
+
+    // Malay has a written edition, so /ms is its own canonical.
+    const ms = ebookHead(book, "ms") as Head;
+    expect(ms.links.find((l) => l.rel === "canonical")?.href).toBe(
+      `${SITE_URL}/ms/ebooks/${book.slug}`,
+    );
+
+    // Chinese has none: the page renders, but it is a view of the English copy.
+    const zh = ebookHead(book, "zh") as Head;
+    expect(zh.links.find((l) => l.rel === "canonical")?.href).toBe(
+      `${SITE_URL}/ebooks/${book.slug}`,
+    );
+    expect(zh.meta.find((m) => m.property === "og:url")?.content).toBe(
+      `${SITE_URL}/ebooks/${book.slug}`,
+    );
+    expect(zh.links.filter((l) => l.rel === "alternate").map((l) => l.hrefLang)).toEqual([
+      "en",
+      "ms",
+      "x-default",
+    ]);
+  });
+
   it("declares the cover's real pixel size as og:image", () => {
     const book = EBOOK_PAGES[0];
     const head = ebookHead(book, "en") as { meta: Array<Record<string, string>> };

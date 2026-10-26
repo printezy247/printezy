@@ -111,6 +111,23 @@ export function localizePath(path: string, locale: Locale): string {
   return `${target}${hash}`;
 }
 
+/**
+ * Where picking `next` should take the visitor, from the path they are on.
+ * Undefined when the page has no locale URL of its own (checkout, account,
+ * admin) — there the choice only applies to this visit.
+ *
+ * `/xx` is the twin of `/home` (the landing page), while `/` is the
+ * English-only welcome page, so leaving a localized landing for English has to
+ * land on `/home` rather than on a different page entirely.
+ */
+export function switchedPath(pathname: string, next: Locale): string | undefined {
+  const routeLocale = routeLocaleFor(pathname);
+  if (!routeLocale) return undefined;
+  const bare = stripLocale(pathname);
+  if (next === "en") return bare === "/" && routeLocale !== "en" ? "/home" : bare;
+  return localizePath(bare, next);
+}
+
 type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void };
 const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocale: () => {} });
 
@@ -167,12 +184,9 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
     // Every offered locale has a URL, so move to the right one when we are not
     // already on it. Same-URL picks just re-render from the value above.
-    if (routeLocale) {
-      const bare = stripLocale(location.pathname);
-      const target = next === "en" ? bare : localizePath(bare, next);
-      if (target !== location.pathname) {
-        window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
-      }
+    const target = switchedPath(location.pathname, next);
+    if (target && target !== location.pathname) {
+      window.location.href = `${target}${location.searchStr}${location.hash ? `#${location.hash}` : ""}`;
     }
   };
 

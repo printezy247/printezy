@@ -43,6 +43,11 @@ export function ebookHead(book: Ebook | undefined, locale: PageLocale) {
     image: book.slug,
     imageAlt: copy.title,
     crumbName: copy.title,
+    // The book itself exists in English, and in Malay where an edition was
+    // written. Every other locale renders English book copy inside translated
+    // chrome, so it canonicalises to the English page instead of claiming a
+    // translation the site does not have.
+    translations: (book.ms ? ["en", "ms"] : ["en"]) as PageLocale[],
   };
   return {
     ...localizedHead(opts),
@@ -150,9 +155,18 @@ export function EbookPage({ book: source }: { book: Ebook }) {
               <span className="inline-flex items-center gap-1.5 rounded-md border border-accent/50 bg-accent/8 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-accent">
                 <BookOpen className="h-3.5 w-3.5" /> {t("ebook_free_pdf")}
               </span>
-              <h1 className="mt-4 text-3xl leading-tight sm:text-4xl">{book.title}</h1>
-              <p className="mt-3 max-w-2xl text-lg text-muted-foreground">{book.tagline}</p>
-              <p className="mt-4 max-w-2xl text-body">{book.description}</p>
+              {/* The book's own copy is English (so is the PDF); lang marks it
+                  so a screen reader on /zh or /ar pronounces it correctly
+                  rather than reading English as Chinese. */}
+              <h1 lang={book.language} className="mt-4 text-3xl leading-tight sm:text-4xl">
+                {book.title}
+              </h1>
+              <p lang={book.language} className="mt-3 max-w-2xl text-lg text-muted-foreground">
+                {book.tagline}
+              </p>
+              <p lang={book.language} className="mt-4 max-w-2xl text-body">
+                {book.description}
+              </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <button

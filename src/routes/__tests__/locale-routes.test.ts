@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { SITE_URL } from "@/lib/bot/tiers";
-import { localizePath, routeLocaleFor, stripLocale, type Locale } from "@/lib/i18n";
+import { localizePath, routeLocaleFor, stripLocale, switchedPath, type Locale } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
 import { buildSitemap } from "@/routes/sitemap[.]xml";
 
@@ -80,6 +80,20 @@ describe("localizePath / routeLocaleFor", () => {
     expect(routeLocaleFor("/faq")).toBe("en");
     expect(routeLocaleFor("/dashboard")).toBeUndefined();
   });
+
+  it("keeps the visitor on the same page when they switch language", () => {
+    expect(switchedPath("/faq", "ar")).toBe("/ar/faq");
+    expect(switchedPath("/ar/faq", "en")).toBe("/faq");
+    expect(switchedPath("/ar/macro", "sw")).toBe("/sw/macro");
+    expect(switchedPath("/ms", "ms")).toBe("/ms");
+    // `/xx` is the landing page; `/` is the English-only welcome page, so the
+    // round trip has to stay on the landing in both directions.
+    expect(switchedPath("/", "zh")).toBe("/zh");
+    expect(switchedPath("/zh", "en")).toBe("/home");
+    expect(switchedPath("/home", "en")).toBe("/home");
+    // No locale URL of its own: the choice applies to this visit only.
+    expect(switchedPath("/dashboard", "ar")).toBeUndefined();
+  });
 });
 
 describe("the $lang twins", () => {
@@ -130,10 +144,19 @@ describe("sitemap", () => {
     return xml.slice(xml.lastIndexOf("<url>", at), xml.indexOf("</url>", at));
   };
 
-  it("lists every locale's FAQ and ebook page", () => {
+  it("lists every locale's FAQ", () => {
     for (const locale of PREFIXED) {
       expect(xml).toContain(`<loc>${SITE_URL}/${locale}/faq</loc>`);
-      expect(xml).toContain(`<loc>${SITE_URL}/${locale}/ebooks/mapping-like-a-pro</loc>`);
+    }
+  });
+
+  it("lists an ebook only where an edition of it exists", () => {
+    // Both books have an English and a Malay edition; the other four locales
+    // render English book copy, so they canonicalise to /ebooks/… and must not
+    // be advertised as translations.
+    expect(xml).toContain(`<loc>${SITE_URL}/ms/ebooks/mapping-like-a-pro</loc>`);
+    for (const locale of ["zh", "hi", "ar", "sw"]) {
+      expect(xml).not.toContain(`<loc>${SITE_URL}/${locale}/ebooks/mapping-like-a-pro</loc>`);
     }
   });
 

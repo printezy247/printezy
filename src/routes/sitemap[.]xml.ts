@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_URL } from "@/lib/bot/tiers";
 import { EBOOK_PAGES } from "@/lib/ebooks";
-import { LOCALES, localizePath } from "@/lib/i18n";
+import { LOCALES, localizePath, type Locale } from "@/lib/i18n";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
@@ -16,18 +16,23 @@ import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 type Alternate = { hrefLang: string; href: string };
 type UrlEntry = { path: string; priority: string; alternates?: Alternate[] };
 
-/** The alternate set for a page that exists in every offered locale. */
-function alternatesFor(path: string): Alternate[] {
+/**
+ * The alternate set for a page that exists in every listed locale. A page with
+ * fewer editions lists only those: an hreflang cluster is a claim that the
+ * page is written in that language, and an ebook exists in English and Malay
+ * only.
+ */
+function alternatesFor(path: string, locales: Locale[]): Alternate[] {
   return [
-    ...LOCALES.map((locale) => ({ hrefLang: locale, href: localizePath(path, locale) })),
+    ...locales.map((locale) => ({ hrefLang: locale, href: localizePath(path, locale) })),
     { hrefLang: "x-default", href: path },
   ];
 }
 
 /** One <loc> per locale for a translated page. */
-function localized(path: string, priority: string): UrlEntry[] {
-  const alternates = alternatesFor(path);
-  return LOCALES.map((locale) => ({
+function localized(path: string, priority: string, locales: Locale[] = LOCALES): UrlEntry[] {
+  const alternates = alternatesFor(path, locales);
+  return locales.map((locale) => ({
     path: localizePath(path, locale),
     priority,
     alternates,
@@ -69,8 +74,11 @@ function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {
 }
 
 export function buildSitemap(): string {
+  // Only the editions that exist are listed: the four locales without one
+  // still serve the page, but they canonicalise to the English copy, so a
+  // <loc> for them would advertise a translation the book does not have.
   const ebookEntries: UrlEntry[] = EBOOK_PAGES.flatMap((book) =>
-    localized(`/ebooks/${book.slug}`, "0.7"),
+    localized(`/ebooks/${book.slug}`, "0.7", book.ms ? ["en", "ms"] : ["en"]),
   );
 
   const urls = [...STATIC_ROUTES, ...ebookEntries].map(urlEntry);

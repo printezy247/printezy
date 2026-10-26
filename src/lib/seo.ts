@@ -90,6 +90,15 @@ export type LocalizedHeadOptions = {
    * `localizePath(path, locale)`, and the head advertises all of them.
    */
   twinPath?: null;
+  /**
+   * The locales this page's body is actually written in. Omitted means every
+   * offered locale. An ebook exists in English and Malay only, so the other
+   * locales still render (translated chrome around the English book) but point
+   * their canonical at the edition that is real and claim only that edition in
+   * the hreflang cluster — a page in four languages it does not have is how a
+   * site earns duplicate-content warnings.
+   */
+  translations?: PageLocale[];
   /** Breadcrumb leaf name; falls back to the title's first dash segment. */
   crumbName?: string;
 };
@@ -104,6 +113,18 @@ function hasTwins(o: LocalizedHeadOptions): boolean {
   return o.twinPath !== null;
 }
 
+/** The locales this page is written in — one locale means English only. */
+function editionsOf(o: LocalizedHeadOptions): PageLocale[] {
+  if (!hasTwins(o)) return ["en"];
+  return o.translations && o.translations.length > 0 ? o.translations : LOCALES;
+}
+
+/** Where this page's canonical lives: its own locale if it has an edition. */
+function canonicalLocaleFor(o: LocalizedHeadOptions): PageLocale {
+  const editions = editionsOf(o);
+  return editions.includes(o.locale) ? o.locale : editions[0];
+}
+
 /** Leaf name for the breadcrumb, preferring the explicit `crumbName`. */
 function crumbFor(o: LocalizedHeadOptions): string {
   return o.crumbName ?? o.title.split(/ [—|–-] /)[0];
@@ -114,7 +135,7 @@ function crumbFor(o: LocalizedHeadOptions): string {
  * script (a Book, a HowTo) can keep the breadcrumb instead of dropping it.
  */
 export function buildBreadcrumbJsonLd(o: LocalizedHeadOptions): string {
-  const self = `${SITE_URL}${pathFor(o, o.locale)}`;
+  const self = `${SITE_URL}${pathFor(o, canonicalLocaleFor(o))}`;
   const home = o.locale === "en" ? `${SITE_URL}/` : `${SITE_URL}/${o.locale}`;
   return JSON.stringify({
     "@context": "https://schema.org",
@@ -139,7 +160,10 @@ export function buildBreadcrumbJsonLd(o: LocalizedHeadOptions): string {
  */
 export function localizedHead(o: LocalizedHeadOptions) {
   const twins = hasTwins(o);
-  const self = `${SITE_URL}${pathFor(o, o.locale)}`;
+  const editions = editionsOf(o);
+  // Self unless this locale has no edition of the page, in which case the
+  // edition that does exist is canonical and this URL is one of its views.
+  const canonical = `${SITE_URL}${pathFor(o, canonicalLocaleFor(o))}`;
   const og = resolveOgImage(o.image);
   const image = `${SITE_URL}${og.image}`;
   const ogTitle = o.ogTitle ?? o.title;
@@ -147,13 +171,10 @@ export function localizedHead(o: LocalizedHeadOptions) {
   const meta: Array<Record<string, string>> = [
     { title: o.title },
     { name: "description", content: o.description },
-    // Search engines read the language a page is written in from here, not
-    // from <html lang>, when the page is fetched by a crawler without scripts.
-    { httpEquiv: "content-language", content: o.locale },
     { property: "og:title", content: ogTitle },
     { property: "og:description", content: o.ogDescription ?? o.description },
     { property: "og:type", content: o.ogType ?? "website" },
-    { property: "og:url", content: self },
+    { property: "og:url", content: canonical },
     { property: "og:site_name", content: "EzyMap ALGO" },
     { property: "og:locale", content: localeTag },
     { property: "og:image", content: image },
@@ -180,10 +201,9 @@ export function localizedHead(o: LocalizedHeadOptions) {
   });
 
   const links: Array<{ rel: string; href: string; hrefLang?: string }> = [
-    { rel: "canonical", href: self },
+    { rel: "canonical", href: canonical },
   ];
-  const alternates = twins ? LOCALES : (["en"] as Locale[]);
-  for (const locale of alternates) {
+  for (const locale of editions) {
     links.push({
       rel: "alternate",
       hrefLang: locale,

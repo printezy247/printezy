@@ -786,7 +786,7 @@ function Bars() {
             <label className="relative inline-flex items-center">
               <span className="sr-only">Language</span>
               <select
-                defaultValue=""
+                defaultValue="en"
                 onChange={(event) => {
                   const next = event.target.value as Locale;
                   goTrack(`welcome_lang_${next}`);
