@@ -20,6 +20,7 @@ import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
 import markImg from "@/assets/ezymap-mark.webp";
 import { LINKS } from "@/lib/links";
 import { STEPS, FAQ } from "./welcome-data";
+import { ProofWall } from "./ProofWall";
 
 /**
  * The first page a visitor sees. Direct-response layout: light page, one bold
@@ -513,34 +514,6 @@ function HowItWorks() {
   );
 }
 
-type Testimonial = { quote: string; name: string; role?: string };
-/** Real member quotes only, with permission. Empty means the section is not rendered. */
-const TESTIMONIALS: Testimonial[] = [];
-
-function Testimonials() {
-  if (TESTIMONIALS.length === 0) return null;
-  return (
-    <section className="bg-white px-5 py-12 sm:px-8 sm:py-16">
-      <Reveal>
-        <Heading>What members say</Heading>
-      </Reveal>
-      <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-3 md:gap-6">
-        {TESTIMONIALS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 0.1}>
-            <figure className="h-full rounded-lg border-2 border-neutral-900 bg-white p-5 shadow-[5px_5px_0_0_#171717]">
-              <blockquote className="leading-relaxed text-neutral-800">“{t.quote}”</blockquote>
-              <figcaption className="mt-3 text-sm font-bold text-neutral-950">
-                {t.name}
-                {t.role ? <span className="font-normal text-neutral-600"> · {t.role}</span> : null}
-              </figcaption>
-            </figure>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 const CHAT: { who: "you" | "bot"; text: string }[] = [
   { who: "you", text: "Is gold worth buying right now?" },
   {
@@ -883,7 +856,7 @@ export function Welcome({ initialMembers }: { initialMembers?: number }) {
         <Pain />
         <HowItWorks />
         <EzyAi />
-        <Testimonials />
+        <ProofWall />
         <Faq />
         <FinalCta members={members} />
       </main>
