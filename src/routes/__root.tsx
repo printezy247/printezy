@@ -9,18 +9,24 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { ConsentBanner } from "../components/ConsentBanner";
 import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
-import { SupportChat } from "../components/SupportChat";
-import { EbookAutoPopup } from "../components/EbookAutoPopup";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
 import { LocaleProvider, localeFromPath } from "../lib/i18n";
 import { SITE_URL } from "../lib/bot/tiers";
+
+// Loaded after first paint so neither ships in the entry chunk.
+const SupportChat = lazy(() =>
+  import("../components/SupportChat").then((m) => ({ default: m.SupportChat })),
+);
+const EbookAutoPopup = lazy(() =>
+  import("../components/EbookAutoPopup").then((m) => ({ default: m.EbookAutoPopup })),
+);
 
 /**
  * The 404 body, shared by the root's `notFoundComponent` (a route that throws
@@ -243,9 +249,13 @@ function RootComponent() {
         <div id="main" tabIndex={-1} className="outline-none">
           <Outlet />
         </div>
-        <SupportChat />
+        <Suspense fallback={null}>
+          <SupportChat />
+        </Suspense>
         <ConsentBanner />
-        <EbookAutoPopup />
+        <Suspense fallback={null}>
+          <EbookAutoPopup />
+        </Suspense>
         <Toaster position="bottom-right" />
       </LocaleProvider>
     </QueryClientProvider>

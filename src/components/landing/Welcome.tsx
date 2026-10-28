@@ -18,7 +18,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack, trackEngagement, trackPageLoad } from "@/lib/analytics";
 import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
 import markImg from "@/assets/ezymap-mark.webp";
-import { LINKS } from "./Landing";
+import { LINKS } from "@/lib/links";
 import { STEPS, FAQ } from "./welcome-data";
 
 /**

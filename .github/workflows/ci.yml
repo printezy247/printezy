@@ -14,3 +14,4 @@ jobs:
       - run: bunx eslint . --max-warnings 40
       - run: bunx vitest run
       - run: bunx vite build
+      - run: node scripts/check-bundle.mjs

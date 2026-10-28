@@ -33,6 +33,7 @@ import {
 } from "@/lib/i18n";
 import { LiveSampleSignal } from "./LiveSampleSignal";
 import type { TranslationKey } from "@/lib/translations";
+import { LINKS } from "@/lib/links";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
@@ -96,17 +97,7 @@ const mt5Logo = mt5LogoAsset;
 /* Links                                                               */
 /* ------------------------------------------------------------------ */
 
-export const LINKS = {
-  freeChannel: "https://t.me/ezymap",
-  support: "https://t.me/ezysarah",
-  bot: "https://t.me/ezyregisterbot",
-  macro: "https://t.me/xaubtcmacro_bot",
-  ebook: "https://t.me/m/r7Oig5BLMTk9",
-  vantage:
-    "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
-  tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
-  ezyai: "https://t.me/ezytradeai_bot",
-};
+
 
 /**
  * Bot links carry `?start=<sessionId>` so the Telegram bot can look the

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowRight, Send, ShieldCheck, Zap } from "lucide-react";
-import { Nav, Footer, LINKS } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/Landing";
+import { LINKS } from "@/lib/links";
 import { Tools } from "@/components/landing/Tools";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n";

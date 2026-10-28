@@ -27,7 +27,7 @@ import {
 import { getTelegramLoginConfig, signInWithTelegram } from "@/lib/telegram-login.functions";
 import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 import { formatPrice } from "@/lib/bot/tiers";
-import { LINKS } from "@/components/landing/Landing";
+import { LINKS } from "@/lib/links";
 
 const STORAGE_KEY = "ezymap_member_session";
 
