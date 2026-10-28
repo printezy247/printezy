@@ -144,9 +144,10 @@ export async function latestSignalUpdate(): Promise<string | null> {
 
 /**
  * Finished trades, newest close first — the input to every performance
- * number. The opened_at window is the reset of 24 Oct: the Yahoo scanner's
- * rows (voided as cancelled in the database) and anything older than the
- * bot's first real push must never leak back into a public stat.
+ * number. The opened_at window is the upgraded-bot reset of 28 Oct: the
+ * Yahoo scanner's rows (voided as cancelled in the database), the bridge
+ * tests, and the pre-upgrade bot era must never leak back into a public
+ * stat.
  */
 export async function listClosedSignals(limit = 200): Promise<EzyAiSignal[]> {
   const { data, error } = await supabaseAdmin

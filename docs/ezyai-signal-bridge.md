@@ -92,7 +92,7 @@ subscriber, so dedup folds duplicate live cards into one (see
 ## Honesty rules the site enforces
 
 - Performance counts from `EZYAI_TRACK_RECORD_SINCE`
-  (2026-10-25 — the board relaunch), disclosed as "Counted from …".
+  (2026-10-28 — the upgraded bot era), disclosed as "Counted from …".
 - Below `EZYAI_MIN_TRACK_RECORD_SAMPLE` (10) closed signals the panel says
   "building track record" instead of publishing a jumpy win rate.
 - The website never decides an outcome; it renders what the bot reports.

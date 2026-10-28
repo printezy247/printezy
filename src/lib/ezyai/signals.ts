@@ -34,15 +34,16 @@ export const CLOSED_STATUSES: SignalStatus[] = ["tp", "be", "sl"];
 export const BOARD_REVISION_QUERY_KEY = ["ezyai-board-revision"] as const;
 
 /**
- * The performance panel counts signals from the board relaunch (25 Oct) —
- * the day the bot became the only writer and watch alerts started mirroring.
- * Before it: the website's own Yahoo scanner (voided in the database) and a
- * one-morning bridge-test batch (ids ezyai-812..821, ticks stopped 15 Oct).
- * Neither describes what the board does now, so the window excludes both.
- * Everything the bot closes from here counts, wins and losses alike — the
- * era start is disclosed on the panel as "Counted from {date}".
+ * The performance panel counts signals from the upgraded bot era (28 Oct) —
+ * the day the upgraded EzyAI bot started pushing. Before it: the website's
+ * own Yahoo scanner (voided in the database), a one-morning bridge-test
+ * batch (ids ezyai-812..821, ticks stopped 15 Oct), and the pre-upgrade bot
+ * era (25–27 Oct). None describes what the upgraded bot does now, so the
+ * window excludes all of them.
+ * Everything the upgraded bot closes from here counts, wins and losses
+ * alike — the era start is disclosed on the panel as "Counted from {date}".
  */
-export const EZYAI_TRACK_RECORD_SINCE = "2026-10-25T00:00:00Z";
+export const EZYAI_TRACK_RECORD_SINCE = "2026-10-28T00:00:00Z";
 
 /**
  * A handful of trades is not a win rate — it is a coin toss with a chart.
