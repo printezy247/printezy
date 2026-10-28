@@ -23,7 +23,6 @@ import type { TranslationKey } from "@/lib/translations";
 import {
   MACRO_FILTERS,
   MACRO_PRICES,
-  fetchFearGreed,
   fetchMacroDesk,
   GAUGE_TRACK,
   CALENDAR_CURRENCIES,
@@ -39,8 +38,10 @@ import {
   type TrendCard,
 } from "@/lib/macro-desk";
 import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { getEconomicCalendar, type EconomicCalendar } from "@/lib/macro-calendar.functions";
 import { getMacroLive, type MacroLive } from "@/lib/macro-live.functions";
+import { getCryptoFearGreed } from "@/lib/macro-fear-greed.functions";
 import { formatLocalTime } from "@/lib/local-time";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 
@@ -274,7 +275,7 @@ function CalendarFilters({
       active
         ? "border-primary/50 bg-primary/10 text-primary"
         : "border-border text-muted-foreground hover:text-foreground"
-    }`;
+    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background`;
   const filtered = shown !== total;
 
   return (
@@ -324,7 +325,7 @@ function CalendarFilters({
           <button
             type="button"
             onClick={onReset}
-            className="font-semibold text-primary hover:underline"
+            className="font-semibold text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {t("macro_filter_reset")}
           </button>
@@ -613,34 +614,44 @@ const FILTER_LABEL_KEY: Record<MacroFilter, TranslationKey> = {
 
 export function MacroPage() {
   const [filter, setFilter] = useState<MacroFilter>("All");
-  const [desk, setDesk] = useState<MacroDesk | null>(null);
-  const [fng, setFng] = useState<FearGreed | null>(null);
-  const [cal, setCal] = useState<EconomicCalendar | null>(null);
-  const [live, setLive] = useState<MacroLive>(null);
   const clock = useLocalClock();
   const { t } = useTranslation();
   const fetchCalendar = useServerFn(getEconomicCalendar);
   const fetchLive = useServerFn(getMacroLive);
+  const fetchFearGreed = useServerFn(getCryptoFearGreed);
+  const { data: desk } = useQuery({
+    queryKey: ["macro-desk-seed"],
+    queryFn: () => fetchMacroDesk(),
+    staleTime: Infinity,
+  });
+  const { data: fng = null } = useQuery<FearGreed>({
+    queryKey: ["macro-fear-greed"],
+    queryFn: () => fetchFearGreed(),
+    staleTime: 60_000,
+    refetchInterval: 5 * 60_000,
+  });
+  const { data: cal = null } = useQuery<EconomicCalendar>({
+    queryKey: ["macro-economic-calendar"],
+    queryFn: async () => {
+      try {
+        return await fetchCalendar();
+      } catch {
+        return { day: null, isToday: false, rows: [], source: null, updatedAt: null };
+      }
+    },
+    staleTime: 60_000,
+    refetchInterval: 15 * 60_000,
+  });
+  const { data: live = null } = useQuery<MacroLive>({
+    queryKey: ["macro-live-desk"],
+    queryFn: () => fetchLive(),
+    staleTime: 60_000,
+    refetchInterval: 60 * 60_000,
+  });
 
   useEffect(() => {
     trackPageLoad("macro");
-    const stop = trackEngagement();
-    let alive = true;
-    fetchMacroDesk().then((d) => alive && setDesk(d));
-    fetchFearGreed().then((f) => alive && setFng(f));
-    fetchCalendar()
-      .then((c) => alive && setCal(c))
-      .catch(() => {
-        if (alive) setCal({ day: null, isToday: false, rows: [], source: null, updatedAt: null });
-      });
-    fetchLive()
-      .then((l) => alive && setLive(l))
-      .catch(() => {});
-    return () => {
-      alive = false;
-      stop?.();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return trackEngagement();
   }, []);
 
   // Central banks, recession odds, decision dates and the two trend cards
@@ -808,7 +819,7 @@ export function MacroPage() {
               key={f}
               type="button"
               onClick={() => setFilter(f)}
-              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${
+              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 filter === f
                   ? "border-primary bg-primary/15 text-primary"
                   : "border-border text-body hover:border-accent/50 hover:text-foreground"
@@ -1159,11 +1170,15 @@ export function MacroPage() {
                 </p>
               }
             >
-              <p className="text-4xl font-black">
+              <p className="text-4xl font-black" aria-live="polite" aria-atomic="true">
                 {fng?.value ?? "—"}
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
-              <p className="mt-1 text-sm font-bold text-accent">
+              <p
+                className="mt-1 text-sm font-bold text-accent"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {fng?.label ?? t("macro_loading")}
               </p>
               <div className="mt-3">

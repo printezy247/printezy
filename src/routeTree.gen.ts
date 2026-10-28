@@ -42,6 +42,7 @@ import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authen
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as LangEbooksSlugRouteImport } from './routes/$lang/ebooks.$slug'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
+import { Route as ApiPublicEzyaiLedgerRouteImport } from './routes/api/public/ezyai/ledger'
 import { Route as ApiPublicEzyaiSignalsRouteImport } from './routes/api/public/ezyai/signals'
 import { Route as ApiPublicEzyaiStreamRouteImport } from './routes/api/public/ezyai/stream'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -215,6 +216,11 @@ const ApiPublicEzyaiEntitlementsRoute =
     path: '/api/public/ezyai/entitlements',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicEzyaiLedgerRoute = ApiPublicEzyaiLedgerRouteImport.update({
+  id: '/api/public/ezyai/ledger',
+  path: '/api/public/ezyai/ledger',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEzyaiSignalsRoute = ApiPublicEzyaiSignalsRouteImport.update({
   id: '/api/public/ezyai/signals',
   path: '/api/public/ezyai/signals',
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -309,6 +316,7 @@ export interface FileRoutesByTo {
   '/$lang': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -349,6 +357,7 @@ export interface FileRoutesById {
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -389,6 +398,7 @@ export interface FileRouteTypes {
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -427,6 +437,7 @@ export interface FileRouteTypes {
     | '/$lang'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -466,6 +477,7 @@ export interface FileRouteTypes {
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -504,6 +516,7 @@ export interface RootRouteChildren {
   LangIndexRoute: typeof LangIndexRoute
   LangEbooksSlugRoute: typeof LangEbooksSlugRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
+  ApiPublicEzyaiLedgerRoute: typeof ApiPublicEzyaiLedgerRoute
   ApiPublicEzyaiSignalsRoute: typeof ApiPublicEzyaiSignalsRoute
   ApiPublicEzyaiStreamRoute: typeof ApiPublicEzyaiStreamRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -743,6 +756,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicEzyaiEntitlementsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ezyai/ledger': {
+      id: '/api/public/ezyai/ledger'
+      path: '/api/public/ezyai/ledger'
+      fullPath: '/api/public/ezyai/ledger'
+      preLoaderRoute: typeof ApiPublicEzyaiLedgerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ezyai/signals': {
       id: '/api/public/ezyai/signals'
       path: '/api/public/ezyai/signals'
@@ -819,6 +839,7 @@ const rootRouteChildren: RootRouteChildren = {
   LangIndexRoute: LangIndexRoute,
   LangEbooksSlugRoute: LangEbooksSlugRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
+  ApiPublicEzyaiLedgerRoute: ApiPublicEzyaiLedgerRoute,
   ApiPublicEzyaiSignalsRoute: ApiPublicEzyaiSignalsRoute,
   ApiPublicEzyaiStreamRoute: ApiPublicEzyaiStreamRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

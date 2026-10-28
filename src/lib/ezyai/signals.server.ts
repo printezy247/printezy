@@ -144,9 +144,10 @@ export async function latestSignalUpdate(): Promise<string | null> {
 
 /**
  * Finished trades, newest close first — the input to every performance
- * number. The opened_at window is the reset of 24 Oct: the Yahoo scanner's
- * rows (voided as cancelled in the database) and anything older than the
- * bot's first real push must never leak back into a public stat.
+ * number. The opened_at window is the upgraded-bot reset of 28 Oct: the
+ * Yahoo scanner's rows (voided as cancelled in the database), the bridge
+ * tests, and the pre-upgrade bot era must never leak back into a public
+ * stat.
  */
 export async function listClosedSignals(limit = 200): Promise<EzyAiSignal[]> {
   const { data, error } = await supabaseAdmin
@@ -288,6 +289,37 @@ export async function pushSignal(payload: SignalPush): Promise<PushResult> {
   // A close that forgets its timestamp still gets one, so the history can be
   // ordered and the streak counted.
   if (becomingClosed && closedAt === undefined) patch.closed_at = nowIso;
+
+  // Sealed record: once the bot closes a signal, its outcome is frozen. A
+  // reopen (or any outcome change) is refused so a bot bug or a replayed
+  // payload can never rewrite published history; a bare note/last_price
+  // tick on a closed signal still merges, changing nothing material.
+  if (known && (CLOSED_STATUSES as readonly string[]).includes(known.status)) {
+    if (status !== undefined && status !== known.status) {
+      return { ok: false, error: "signal is closed; outcome is sealed" };
+    }
+    for (const key of [
+      "symbol",
+      "direction",
+      "status",
+      "setup",
+      "timeframe",
+      "entry_low",
+      "entry_high",
+      "entry_fill",
+      "stop_price",
+      "tp1",
+      "tp2",
+      "rr",
+      "setup_score",
+      "result_pips",
+      "result_r",
+      "opened_at",
+      "closed_at",
+    ]) {
+      delete patch[key];
+    }
+  }
 
   // Deliberately not an upsert. Postgres builds the candidate row and checks
   // its NOT NULL columns *before* it notices the conflict, so an upsert of a

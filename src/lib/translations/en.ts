@@ -486,6 +486,7 @@ const en = {
   ezyai_sig_streak_wins: "wins",
   ezyai_sig_streak_losses: "losses",
   ezyai_sig_best_worst: "Best {best} · worst {worst}",
+  ezyai_sig_drawdown: "Max drawdown {value}",
   ezyai_sig_since: "Counted from {date} — real bot signals only.",
   ezyai_sig_building: "Building track record — {closed} closed signals so far.",
   ezyai_sig_curve: "Cumulative R",

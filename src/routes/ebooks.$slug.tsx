@@ -34,6 +34,17 @@ export function ebookHead(book: Ebook | undefined, locale: PageLocale) {
     bookFormat: "Ebook",
     url: `${SITE_URL}${localizePath(`/ebooks/${book.slug}`, locale)}`,
   });
+  const articleJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: copy.title,
+    description: copy.description,
+    image: `${SITE_URL}${book.image}`,
+    author: { "@type": "Organization", name: book.author },
+    publisher: { "@type": "Organization", name: "EzyMap ALGO" },
+    inLanguage: book.language,
+    mainEntityOfPage: `${SITE_URL}${localizePath(`/ebooks/${book.slug}`, locale)}`,
+  });
   const opts = {
     path: `/ebooks/${book.slug}`,
     locale,
@@ -55,6 +66,7 @@ export function ebookHead(book: Ebook | undefined, locale: PageLocale) {
     scripts: [
       { type: "application/ld+json", children: buildBreadcrumbJsonLd(opts) },
       { type: "application/ld+json", children: bookJsonLd },
+      { type: "application/ld+json", children: articleJsonLd },
     ],
   };
 }

@@ -1,31 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Faq, Nav, Footer, FAQ_GROUPS } from "@/components/landing/Landing";
+import { Faq, Nav, Footer } from "@/components/landing/Landing";
 import { trackPageLoad, trackEngagement } from "@/lib/analytics";
 import { localizePath } from "@/lib/i18n";
 import { localizedHead, type PageLocale } from "@/lib/seo";
-import { translations, type TranslationKey } from "@/lib/translations";
+import { translations } from "@/lib/translations";
+import { buildFaqJsonLd } from "@/lib/faq-schema";
+export { buildFaqJsonLd } from "@/lib/faq-schema";
 import { useTranslation, useLocale } from "@/lib/i18n";
-
-/**
- * Generated from the exact same FAQ_GROUPS + translations that <Faq />
- * renders, so the schema can never drift from the visible text.
- */
-export function buildFaqJsonLd(locale: PageLocale) {
-  const dict = translations[locale];
-  return JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ_GROUPS.flatMap((group) =>
-      group.items.map((item: { qKey: TranslationKey; aKey: TranslationKey }) => ({
-        "@type": "Question",
-        name: dict[item.qKey],
-        acceptedAnswer: { "@type": "Answer", text: dict[item.aKey] },
-      })),
-    ),
-  });
-}
 
 /** The FAQ head, shared by `/faq` and every translated twin. */
 export function faqHead(locale: PageLocale) {

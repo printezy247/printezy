@@ -473,6 +473,7 @@ const hi: Record<TranslationKey, string> = {
   ezyai_sig_streak_wins: "जीत",
   ezyai_sig_streak_losses: "हार",
   ezyai_sig_best_worst: "सर्वोत्तम {best} · सबसे खराब {worst}",
+  ezyai_sig_drawdown: "अधिकतम ड्रॉडाउन {value}",
   ezyai_sig_since: "{date} से गिना जाता है — केवल बॉट के असली सिग्नल।",
   ezyai_sig_building: "ट्रैक रिकॉर्ड बन रहा है — अब तक {closed} सिग्नल बंद हुए।",
   ezyai_sig_curve: "संचयी R",

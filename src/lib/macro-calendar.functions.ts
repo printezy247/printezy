@@ -13,7 +13,7 @@
 // Whichever answers first supplies the whole day. Rows are never stitched
 // across providers, so a row's three numbers always come from one source and
 // cannot disagree with each other. Each provider's raw payload is cached in
-// macro_calendar_cache for an hour and served from there; when a provider is
+// macro_calendar_cache for fifteen minutes and served from there; when a provider is
 // down its last good copy is used, so the card degrades to "stale" rather
 // than "empty".
 import { createServerFn } from "@tanstack/react-start";
@@ -24,7 +24,7 @@ const TV_URL = "https://economic-calendar.tradingview.com/events";
 const TV_CACHE_KEY = "tv_calendar";
 const FF_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
 const FF_CACHE_KEY = "ff_thisweek";
-const FRESH_MS = 60 * 60 * 1000;
+const FRESH_MS = 15 * 60 * 1000;
 
 /** The majors ForexFactory covers, so both providers show the same desk. */
 const TV_COUNTRIES = "US,EU,JP,GB,CH,AU,CA,NZ,CN";

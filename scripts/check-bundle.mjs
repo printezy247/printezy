@@ -2,7 +2,7 @@
 // Run after `vite build`. Raise LIMIT_KB on purpose, never by accident.
 import { readdirSync, statSync } from "node:fs";
 
-const LIMIT_KB = 1100;
+const LIMIT_KB = 450;
 const dir = ".output/public/assets";
 const entry = readdirSync(dir)
   .filter((f) => /^index-.*\.js$/.test(f))

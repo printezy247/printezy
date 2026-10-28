@@ -2,8 +2,9 @@ import { recordEvent } from "./analytics.functions";
 import { recordAdClick } from "./adclick.functions";
 import { reportSiteMetaEvent } from "./metaevent.functions";
 import { hasAdConsent, onConsentChange } from "./consent";
+import { getStoredConsent, isRegulatedRegion } from "./consent";
 
-export type AnalyticsEventType = "click" | "section_view" | "page_load";
+export type AnalyticsEventType = "click" | "section_view" | "page_load" | "web_vital";
 
 export function getSessionId(): string {
   if (typeof window === "undefined") return "ssr";
@@ -54,11 +55,43 @@ function getContext() {
   };
 }
 
-export function track(eventType: AnalyticsEventType, eventName: string) {
+export function track(eventType: AnalyticsEventType, eventName: string, metricValue?: number) {
   const ctx = getContext();
-  recordEvent({ data: { eventType, eventName, ...ctx } }).catch(() => {
+  recordEvent({ data: { eventType, eventName, metricValue, ...ctx } }).catch(() => {
     // Silent fail: analytics should never break the landing page.
   });
+}
+
+/** Record browser performance metrics only after analytics consent is granted. */
+let webVitalsRegistered = false;
+
+export async function trackWebVitals() {
+  if (typeof window === "undefined" || webVitalsRegistered) return;
+  const stored = getStoredConsent();
+  const mayReport = stored ? stored === "granted" : !(await isRegulatedRegion());
+  if (!mayReport || webVitalsRegistered) return;
+  webVitalsRegistered = true;
+  const { onCLS, onINP, onLCP, onTTFB } = await import("web-vitals");
+  const report = ({ name, value }: { name: string; value: number }) =>
+    track("web_vital", name, value);
+  onCLS(report);
+  onINP(report);
+  onLCP(report);
+  onTTFB(report);
+
+  // If a previously undecided visitor later accepts, start collecting for the
+  // remainder of this page session. A later decline cannot retract metrics
+  // already collected, so stop registering new observations immediately.
+  if (!stored) {
+    onConsentChange((value) => {
+      if (value !== "granted" || webVitalsRegistered) return;
+      webVitalsRegistered = true;
+      onCLS(report);
+      onINP(report);
+      onLCP(report);
+      onTTFB(report);
+    });
+  }
 }
 
 /** Site clicks that are also Meta conversions, with the tier value where known. */
@@ -78,6 +111,7 @@ const META_CLICK_EVENTS: Record<
 /** Shared click-tracking helper used by product/landing pages — also fires the matching Meta conversion, if any. */
 export function goTrack(name: string) {
   track("click", name);
+  if (/telegram|free_channel|join_free|_bot/.test(name)) track("click", "telegram_link");
   const meta = META_CLICK_EVENTS[name];
   if (meta) {
     metaTrack(meta.event, {
@@ -99,6 +133,7 @@ export function trackSectionVisibility(sectionIds: string[]) {
         if (entry.isIntersecting && !seen.has(entry.target.id)) {
           seen.add(entry.target.id);
           track("section_view", entry.target.id);
+          if (entry.target.id === "packages") track("section_view", "pricing_view");
         }
       });
     },

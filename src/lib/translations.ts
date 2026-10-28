@@ -12,7 +12,7 @@
  * Until a locale has loaded, `translations[locale]` is English, never empty.
  */
 import en from "./translations/en";
-import type { Locale } from "./i18n";
+import type { Locale } from "./locale-constants";
 
 export type TranslationKey = keyof typeof en;
 type Dict = Record<TranslationKey, string>;

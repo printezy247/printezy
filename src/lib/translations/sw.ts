@@ -475,6 +475,7 @@ const sw: Record<TranslationKey, string> = {
   ezyai_sig_streak_wins: "ushindi",
   ezyai_sig_streak_losses: "kushindwa",
   ezyai_sig_best_worst: "Bora {best} · mbaya {worst}",
+  ezyai_sig_drawdown: "Drawdown kubwa {value}",
   ezyai_sig_since: "Huhesabiwa tangu {date} — ishara halisi za boti pekee.",
   ezyai_sig_building: "Rekodi inaundwa — ishara {closed} zimefungwa hadi sasa.",
   ezyai_sig_curve: "R iliyokusanywa",

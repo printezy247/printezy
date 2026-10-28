@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/bot/tiers";
-import { LOCALES, LOCALE_TAGS, localizePath, type Locale } from "@/lib/i18n";
+import { LOCALES, LOCALE_TAGS, type Locale } from "@/lib/locale-constants";
+import { localizePath } from "@/lib/locale-routing";
 import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
 
 export type PageLocale = Locale;
@@ -195,12 +196,13 @@ export function localizedHead(o: LocalizedHeadOptions) {
   // page advertised sw_KE). The complete language cluster is in the hreflang
   // links below, which is what crawlers actually read; this tag names the
   // site's other primary market, and with no twins the page is its own.
+  const alternateLocale = editions.find((locale) => locale !== o.locale) ?? o.locale;
   meta.push({
     property: "og:locale:alternate",
-    content: LOCALE_TAGS[twins ? (o.locale === "ms" ? "en" : "ms") : o.locale],
+    content: LOCALE_TAGS[alternateLocale],
   });
 
-  const links: Array<{ rel: string; href: string; hrefLang?: string }> = [
+  const links: Array<{ rel: string; href: string; hrefLang?: string; as?: string }> = [
     { rel: "canonical", href: canonical },
   ];
   for (const locale of editions) {
@@ -211,6 +213,7 @@ export function localizedHead(o: LocalizedHeadOptions) {
     });
   }
   links.push({ rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}${o.path}` });
+  links.push({ rel: "preload", as: "image", href: image });
 
   return {
     meta,

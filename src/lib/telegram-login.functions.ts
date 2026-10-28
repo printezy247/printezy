@@ -32,6 +32,17 @@ const loginPayload = z.object({
 type LoginPayload = z.infer<typeof loginPayload>;
 
 const REJECTED = "That Telegram sign-in could not be verified. Please try again.";
+const TELEGRAM_LOGIN_RATE_LIMIT = {
+  max: 10,
+  windowMs: 60_000,
+  ipMultiplier: 1,
+  failClosed: true,
+} as const;
+
+async function allowTelegramLogin(endpoint: string, identifier: string): Promise<boolean> {
+  const { checkRateLimit } = await import("@/lib/rate-limit.server");
+  return checkRateLimit(endpoint, identifier || "anonymous", TELEGRAM_LOGIN_RATE_LIMIT);
+}
 
 /** Strips the optional keys Zod leaves as undefined — they are not signed. */
 function signedFields(payload: LoginPayload): Record<string, string> {
@@ -84,6 +95,12 @@ export const signInWithTelegram = createServerFn({ method: "POST" })
       claimed?: number;
       message?: string;
     }> => {
+      if (!(await allowTelegramLogin("telegram_login_member", data.id))) {
+        return {
+          ok: false,
+          message: "Too many sign-in attempts. Please wait a minute and try again.",
+        };
+      }
       const { verifyTelegramLogin } = await import("@/lib/telegram-login.server");
       const user = await verifyTelegramLogin(signedFields(data));
       if (!user) return { ok: false, message: REJECTED };
@@ -121,6 +138,12 @@ export const linkTelegramAccount = createServerFn({ method: "POST" })
       data,
       context,
     }): Promise<{ ok: boolean; username?: string | null; claimed?: number; message?: string }> => {
+      if (!(await allowTelegramLogin("telegram_link_account", data.id))) {
+        return {
+          ok: false,
+          message: "Too many sign-in attempts. Please wait a minute and try again.",
+        };
+      }
       const { verifyTelegramLogin } = await import("@/lib/telegram-login.server");
       const user = await verifyTelegramLogin(signedFields(data));
       if (!user) return { ok: false, message: REJECTED };
@@ -203,6 +226,12 @@ export const signInWithTelegramToWebsite = createServerFn({ method: "POST" })
       | { ok: true; mode: "member"; token: string; claimed: number }
       | { ok: false; message: string }
     > => {
+      if (!(await allowTelegramLogin("telegram_login_website", data.id))) {
+        return {
+          ok: false,
+          message: "Too many sign-in attempts. Please wait a minute and try again.",
+        };
+      }
       const { verifyTelegramLogin } = await import("@/lib/telegram-login.server");
       const user = await verifyTelegramLogin(signedFields(data));
       if (!user) return { ok: false, message: REJECTED };
@@ -255,6 +284,12 @@ export const claimCheckoutWithTelegram = createServerFn({ method: "POST" })
   .inputValidator(loginPayload.extend({ sessionId: z.string().min(8).max(200) }))
   .handler(async ({ data }): Promise<{ ok: boolean; claimed?: number; message?: string }> => {
     const { sessionId, ...payload } = data;
+    if (!(await allowTelegramLogin("telegram_claim_checkout", data.id))) {
+      return {
+        ok: false,
+        message: "Too many sign-in attempts. Please wait a minute and try again.",
+      };
+    }
     const { verifyTelegramLogin } = await import("@/lib/telegram-login.server");
     const user = await verifyTelegramLogin(signedFields(payload));
     if (!user) return { ok: false, message: REJECTED };

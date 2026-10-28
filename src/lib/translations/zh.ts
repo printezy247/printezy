@@ -472,6 +472,7 @@ const zh: Record<TranslationKey, string> = {
   ezyai_sig_streak_wins: "连胜",
   ezyai_sig_streak_losses: "连负",
   ezyai_sig_best_worst: "最佳 {best} · 最差 {worst}",
+  ezyai_sig_drawdown: "最大回撤 {value}",
   ezyai_sig_since: "自{date}起统计——仅机器人真实信号。",
   ezyai_sig_building: "战绩积累中——目前已收盘 {closed} 个信号。",
   ezyai_sig_curve: "累计 R 曲线",

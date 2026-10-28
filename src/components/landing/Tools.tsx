@@ -198,8 +198,9 @@ function Mt5Card({ product }: { product: Mt5Product }) {
           <button
             key={tm}
             type="button"
+            aria-pressed={term === tm}
             onClick={() => setTerm(tm)}
-            className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-colors ${
+            className={`flex-1 rounded-md py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
               term === tm
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
@@ -210,7 +211,11 @@ function Mt5Card({ product }: { product: Mt5Product }) {
         ))}
       </div>
 
-      <p className="mt-4 flex-1 text-center font-mono text-2xl font-bold tabular-nums text-foreground">
+      <p
+        className="mt-4 flex-1 text-center font-mono text-2xl font-bold tabular-nums text-foreground"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {item ? formatUsd(item.amountCents) : "—"}
       </p>
       <BuyButton sku={sku} label={t("tools_buy")} inlineForm className="mt-3" />

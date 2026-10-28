@@ -17,7 +17,8 @@ import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
-import { LocaleProvider, localeFromPath } from "../lib/i18n";
+import { LocaleProvider } from "../lib/i18n";
+import { localeFromPath } from "../lib/locale-routing";
 import { SITE_URL } from "../lib/bot/tiers";
 
 // Loaded after first paint so neither ships in the entry chunk.

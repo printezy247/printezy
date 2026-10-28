@@ -10,6 +10,23 @@ function signedR(value: number | null): string {
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}R`;
 }
 
+/**
+ * Largest peak-to-trough fall in the cumulative-R curve, as a positive R
+ * magnitude. Returns null before two closes — the same threshold the curve
+ * itself uses to render. A win rate without this number hides how deep the
+ * hole got between the wins.
+ */
+function maxDrawdown(points: number[]): number | null {
+  if (points.length < 2) return null;
+  let peak = points[0] ?? 0;
+  let worst = 0;
+  for (const p of points) {
+    peak = Math.max(peak, p);
+    worst = Math.max(worst, peak - p);
+  }
+  return worst;
+}
+
 function Metric({
   label,
   value,
@@ -88,6 +105,29 @@ function Curve({ points }: { points: number[] }) {
   );
 }
 
+/**
+ * "Counted from {date}" — rendered above both the empty state and the
+ * numbers, so a fresh era reads as tracking (not broken) before the first
+ * close lands. One component so the wording and the date format cannot drift
+ * between the two branches.
+ */
+function EraNote() {
+  const { t } = useTranslation();
+  return (
+    <p className="text-xs text-muted-foreground">
+      {t("ezyai_sig_since").replace(
+        "{date}",
+        new Date(EZYAI_TRACK_RECORD_SINCE).toLocaleDateString(undefined, {
+          timeZone: "UTC",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      )}
+    </p>
+  );
+}
+
 export function PerformancePanel({
   performance,
   signals,
@@ -101,9 +141,12 @@ export function PerformancePanel({
 
   if (performance.total === 0) {
     return (
-      <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-        {t("ezyai_sig_history_empty")}
-      </p>
+      <div className="space-y-4">
+        <EraNote />
+        <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+          {t("ezyai_sig_history_empty")}
+        </p>
+      </div>
     );
   }
 
@@ -116,20 +159,10 @@ export function PerformancePanel({
 
   return (
     <div className="space-y-6">
-      {/* Say what era the numbers are from: the website's own scanner feed
-          pre-dated the bot and was voided on 24 Oct, so this panel is bot
-          history only, counted from the first push it ever delivered. */}
-      <p className="text-xs text-muted-foreground">
-        {t("ezyai_sig_since").replace(
-          "{date}",
-          new Date(EZYAI_TRACK_RECORD_SINCE).toLocaleDateString(undefined, {
-            timeZone: "UTC",
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
-        )}
-      </p>
+      {/* Era of the numbers below: everything before the upgraded bot era
+          (scanner feed, bridge tests, pre-upgrade bot) is excluded. The same
+          note sits above the empty state, via EraNote. */}
+      <EraNote />
 
       {buildingTrackRecord(performance.total) ? (
         /* A handful of trades is not a win rate — it is a coin toss with a
@@ -179,6 +212,14 @@ export function PerformancePanel({
       <section className="rounded-xl border border-border bg-card p-5">
         <h3 className="text-sm font-semibold text-foreground">{t("ezyai_sig_curve")}</h3>
         <p className="text-xs text-muted-foreground">{t("ezyai_sig_curve_note")}</p>
+        {maxDrawdown(performance.curve) !== null ? (
+          <p className="mt-1 font-mono text-xs tabular-nums text-muted-foreground">
+            {t("ezyai_sig_drawdown").replace(
+              "{value}",
+              signedR(-(maxDrawdown(performance.curve) ?? 0)),
+            )}
+          </p>
+        ) : null}
         <div className="mt-3">
           <Curve points={performance.curve} />
         </div>

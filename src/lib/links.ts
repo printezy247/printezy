@@ -1,4 +1,3 @@
-/** Outbound links shared across the site. Kept out of Landing.tsx so small pages do not import the whole full-site page. */
 export const LINKS = {
   freeChannel: "https://t.me/ezymap",
   support: "https://t.me/ezysarah",

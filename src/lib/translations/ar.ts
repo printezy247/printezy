@@ -466,6 +466,7 @@ const ar: Record<TranslationKey, string> = {
   ezyai_sig_streak_wins: "رابحة",
   ezyai_sig_streak_losses: "خاسرة",
   ezyai_sig_best_worst: "الأفضل {best} · الأسوأ {worst}",
+  ezyai_sig_drawdown: "أقصى تراجع {value}",
   ezyai_sig_since: "تُحتسب منذ {date} — إشارات البوت الحقيقية فقط.",
   ezyai_sig_building: "بناء السجل — تم إغلاق {closed} إشارة حتى الآن.",
   ezyai_sig_curve: "R التراكمي",

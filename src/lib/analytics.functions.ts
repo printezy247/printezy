@@ -3,17 +3,21 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const recordSchema = z.object({
-  eventType: z.enum(["click", "section_view", "page_load"]),
+  eventType: z.enum(["click", "section_view", "page_load", "web_vital"]),
   eventName: z.string().min(1).max(120),
   path: z.string().max(500),
   referrer: z.string().max(2000).nullable().optional(),
   userAgent: z.string().max(1000).nullable().optional(),
   sessionId: z.string().min(1).max(200),
+  metricValue: z.number().finite().optional(),
 });
 
 export const recordEvent = createServerFn({ method: "POST" })
   .inputValidator(recordSchema)
   .handler(async ({ data }) => {
+    if (data.eventType === "web_vital" && data.metricValue === undefined) {
+      return { ok: false, error: "A web vital measurement is required" };
+    }
     const { createClient } = await import("@supabase/supabase-js");
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -37,6 +41,7 @@ export const recordEvent = createServerFn({ method: "POST" })
       referrer: data.referrer,
       user_agent: data.userAgent,
       session_id: data.sessionId,
+      metric_value: data.metricValue ?? null,
     });
 
     if (error) {

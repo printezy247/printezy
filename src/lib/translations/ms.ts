@@ -494,6 +494,7 @@ const ms: Record<TranslationKey, string> = {
   ezyai_sig_streak_wins: "menang",
   ezyai_sig_streak_losses: "kalah",
   ezyai_sig_best_worst: "Terbaik {best} · terburuk {worst}",
+  ezyai_sig_drawdown: "Drawdown maksimum {value}",
   ezyai_sig_since: "Dikira sejak {date} — isyarat bot sebenar sahaja.",
   ezyai_sig_building: "Rekod sedang dibina — {closed} isyarat tutup setakat ini.",
   ezyai_sig_curve: "R terkumpul",

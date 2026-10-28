@@ -1,40 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { type StripeEnv, detectStripeEnv, verifyWebhook } from "@/lib/stripe.server";
+import { fulfillSession } from "@/lib/bot/fulfillment.server";
 
 /**
  * Built-in payments webhook (test + live, selected via ?env=).
- *
- * Three purchase flows land here:
- * - Website catalog checkouts (metadata.source = "website"): record the
- *   site_purchases row and grant access via EzyRegisterBot.
- * - Website EzyAI PRO checkouts (same source, sku ezyai_*): record the
- *   site_purchases row for the books, then hand delivery to the
- *   ezyai_entitlements bridge polled by @ezytradeai_bot.
- * - In-bot tier checkouts: activate the pending enrollment.
+ * Fulfillment itself lives in lib/bot/fulfillment.server.ts so the
+ * reconciliation sweep grants exactly what the webhook would have.
  */
-async function fulfillSession(
-  sessionId: string,
-  meta: { source?: string; sku?: string } | null | undefined,
-  env: StripeEnv,
-) {
-  if (meta?.source === "website") {
-    const { recordSitePurchase } = await import("@/lib/bot/purchases.server");
-    const recorded = await recordSitePurchase(sessionId, env);
-    if (!recorded) return;
-    const { isEzyAiSku } = await import("@/lib/catalog");
-    if (isEzyAiSku(meta.sku)) {
-      const { recordEzyAiEntitlement } = await import("@/lib/ezyai/entitlements.server");
-      await recordEzyAiEntitlement(sessionId, env);
-      return;
-    }
-    const { grantRecordedPurchase } = await import("@/lib/bot/site-access.server");
-    await grantRecordedPurchase(sessionId);
-    return;
-  }
-  // Bot-initiated tier checkout (or legacy session): try enrollment activation.
-  const { activatePaidEnrollment } = await import("@/lib/bot/enrollment.server");
-  await activatePaidEnrollment(sessionId);
-}
 
 export const Route = createFileRoute("/api/public/payments/webhook")({
   server: {

@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/bot/tiers";
 import { CATALOG, type CatalogItem } from "@/lib/catalog";
 import { localizedHead, type PageLocale } from "@/lib/seo";
 import { translations } from "@/lib/translations";
+import { buildFaqJsonLd } from "@/lib/faq-schema";
 
 /**
  * Where a sku's purchase anchor actually lives, so Offer.url points at a
@@ -73,7 +74,11 @@ export function homeHead(locale: PageLocale) {
         ? [{ name: "facebook-domain-verification", content: "tbn6gbwzvnlav1zi9hbxkcc1jve6bn" }]
         : []),
     ],
-    scripts: [...HEAD.scripts, { type: "application/ld+json", children: PRODUCTS_JSON_LD }],
+    scripts: [
+      ...HEAD.scripts,
+      { type: "application/ld+json", children: PRODUCTS_JSON_LD },
+      { type: "application/ld+json", children: buildFaqJsonLd(locale) },
+    ],
   };
 }
 

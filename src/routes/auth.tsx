@@ -10,6 +10,7 @@ import {
 } from "@/lib/telegram-login.functions";
 import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 import { useTranslation } from "@/lib/i18n";
+import { checkAuthAttempt } from "@/lib/auth-rate-limit.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -49,6 +50,7 @@ function AuthPage() {
 
   const loadTelegramConfig = useServerFn(getTelegramLoginConfig);
   const telegramSignIn = useServerFn(signInWithTelegramToWebsite);
+  const checkAuthRate = useServerFn(checkAuthAttempt);
 
   useEffect(() => {
     let alive = true;
@@ -115,6 +117,11 @@ function AuthPage() {
     setGoogleBusy(true);
     setError(null);
     try {
+      const allowed = await checkAuthRate({
+        data: { email: email.trim(), action: "google_oauth" },
+      });
+      if (!allowed)
+        throw new Error("Too many sign-in attempts. Please wait a minute and try again.");
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: window.location.origin + destination },
@@ -132,6 +139,15 @@ function AuthPage() {
     if (state !== "idle") return;
     setState("sending");
     setError(null);
+    try {
+      const allowed = await checkAuthRate({ data: { email: email.trim(), action: "magic_link" } });
+      if (!allowed)
+        throw new Error("Too many sign-in attempts. Please wait a minute and try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("auth_error_generic"));
+      setState("idle");
+      return;
+    }
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: { emailRedirectTo: window.location.origin + destination },

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { pageLocaleParam } from "@/lib/i18n";
-import { FaqPage, buildFaqJsonLd, faqHead } from "../faq";
+import { FaqPage, faqHead } from "../faq";
+import { buildFaqJsonLd } from "@/lib/faq-schema";
 
 export const Route = createFileRoute("/$lang/faq")({
   beforeLoad: ({ params }) => {

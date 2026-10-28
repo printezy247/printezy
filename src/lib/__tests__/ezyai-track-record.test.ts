@@ -7,19 +7,21 @@ import {
 } from "@/lib/ezyai/signals";
 
 /**
- * The track record was reset on 24 Oct: the Yahoo-scanner rows are voided in
- * the database, the bot's own signals count from 15 Oct, and a small sample
- * must not masquerade as a win rate. These tests pin that contract down.
+ * The track record was reset on 28 Oct for the upgraded bot: the
+ * Yahoo-scanner rows are voided in the database, the pre-upgrade bot era
+ * (25–27 Oct) no longer counts, and a small sample must not masquerade as
+ * a win rate. These tests pin that contract down.
  */
 
 const read = (p: string) => readFileSync(new URL(p, import.meta.url), "utf8");
 
 describe("track-record window", () => {
-  it("counts from the board relaunch, not from the scanner or the bridge-test batch", () => {
-    expect(EZYAI_TRACK_RECORD_SINCE.startsWith("2026-10-25")).toBe(true);
-    // Scanner era (Sep) and the one-morning bridge test batch (15 Oct,
-    // ids ezyai-812..821, ticks frozen) are both before the relaunch.
-    expect(Date.parse(EZYAI_TRACK_RECORD_SINCE)).toBeGreaterThan(Date.parse("2026-10-16"));
+  it("counts from the upgraded bot era, not from the scanner, bridge tests, or pre-upgrade bot", () => {
+    expect(EZYAI_TRACK_RECORD_SINCE.startsWith("2026-10-28")).toBe(true);
+    // Scanner era (Sep), the one-morning bridge test batch (15 Oct,
+    // ids ezyai-812..821, ticks frozen), and the pre-upgrade bot era
+    // (25–27 Oct) are all before the upgraded bot era.
+    expect(Date.parse(EZYAI_TRACK_RECORD_SINCE)).toBeGreaterThan(Date.parse("2026-10-27"));
   });
 
   it("the closed-signals query actually applies the window", () => {
@@ -51,6 +53,19 @@ describe("panel honours the guard", () => {
   it("states the era the numbers come from", () => {
     expect(panel).toContain("ezyai_sig_since");
     expect(panel).toContain("EZYAI_TRACK_RECORD_SINCE");
+  });
+
+  it("names the era above the empty state, so a fresh reset reads as tracking", () => {
+    const emptyBranch = panel.slice(
+      panel.indexOf("performance.total === 0"),
+      panel.indexOf("buildingTrackRecord(performance.total)"),
+    );
+    expect(emptyBranch).toContain("EraNote");
+  });
+
+  it("shows risk next to return — the curve carries a max-drawdown figure", () => {
+    expect(panel).toContain("maxDrawdown");
+    expect(panel).toContain("ezyai_sig_drawdown");
   });
 
   it("does not claim a win rate while building", () => {

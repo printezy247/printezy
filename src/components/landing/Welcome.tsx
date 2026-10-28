@@ -15,7 +15,7 @@ import {
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { useCountUp } from "@/lib/use-count-up";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import { goTrack, trackEngagement, trackPageLoad } from "@/lib/analytics";
+import { goTrack, trackEngagement, trackPageLoad, trackWebVitals } from "@/lib/analytics";
 import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
 import markImg from "@/assets/ezymap-mark.webp";
 import { LINKS } from "@/lib/links";
@@ -868,6 +868,7 @@ export function Welcome({ initialMembers }: { initialMembers?: number }) {
         });
     }
     trackPageLoad("welcome");
+    void trackWebVitals().catch(() => {});
     const stop = trackEngagement();
     return () => stop?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
