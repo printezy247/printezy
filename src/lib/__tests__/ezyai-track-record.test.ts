@@ -55,6 +55,14 @@ describe("panel honours the guard", () => {
     expect(panel).toContain("EZYAI_TRACK_RECORD_SINCE");
   });
 
+  it("names the era above the empty state, so a fresh reset reads as tracking", () => {
+    const emptyBranch = panel.slice(
+      panel.indexOf("performance.total === 0"),
+      panel.indexOf("buildingTrackRecord(performance.total)"),
+    );
+    expect(emptyBranch).toContain("EraNote");
+  });
+
   it("does not claim a win rate while building", () => {
     // The win-rate Metric must sit after the building branch returns early
     // from that block, i.e. be guarded — not rendered unconditionally.

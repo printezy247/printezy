@@ -88,6 +88,29 @@ function Curve({ points }: { points: number[] }) {
   );
 }
 
+/**
+ * "Counted from {date}" — rendered above both the empty state and the
+ * numbers, so a fresh era reads as tracking (not broken) before the first
+ * close lands. One component so the wording and the date format cannot drift
+ * between the two branches.
+ */
+function EraNote() {
+  const { t } = useTranslation();
+  return (
+    <p className="text-xs text-muted-foreground">
+      {t("ezyai_sig_since").replace(
+        "{date}",
+        new Date(EZYAI_TRACK_RECORD_SINCE).toLocaleDateString(undefined, {
+          timeZone: "UTC",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      )}
+    </p>
+  );
+}
+
 export function PerformancePanel({
   performance,
   signals,
@@ -101,9 +124,12 @@ export function PerformancePanel({
 
   if (performance.total === 0) {
     return (
-      <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-        {t("ezyai_sig_history_empty")}
-      </p>
+      <div className="space-y-4">
+        <EraNote />
+        <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+          {t("ezyai_sig_history_empty")}
+        </p>
+      </div>
     );
   }
 
@@ -116,20 +142,10 @@ export function PerformancePanel({
 
   return (
     <div className="space-y-6">
-      {/* Say what era the numbers are from: the website's own scanner feed
-          pre-dated the bot and was voided on 24 Oct, so this panel is bot
-          history only, counted from the first push it ever delivered. */}
-      <p className="text-xs text-muted-foreground">
-        {t("ezyai_sig_since").replace(
-          "{date}",
-          new Date(EZYAI_TRACK_RECORD_SINCE).toLocaleDateString(undefined, {
-            timeZone: "UTC",
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
-        )}
-      </p>
+      {/* Era of the numbers below: everything before the upgraded bot era
+          (scanner feed, bridge tests, pre-upgrade bot) is excluded. The same
+          note sits above the empty state, via EraNote. */}
+      <EraNote />
 
       {buildingTrackRecord(performance.total) ? (
         /* A handful of trades is not a win rate — it is a coin toss with a
