@@ -79,21 +79,20 @@ describe("panel honours the guard", () => {
 });
 
 describe("copy exists in every locale and never promises results", () => {
-  const src = read("../translations.ts");
-  const locales = ["en:", "ms:", "zh:", "hi:", "ar:", "sw:"] as const;
+  const locales = ["en", "ms", "zh", "hi", "ar", "sw"] as const;
+  const files = Object.fromEntries(locales.map((l) => [l, read(`../translations/${l}.ts`)]));
+  const en = files.en;
+  const src = locales.map((l) => files[l]).join("\n");
 
   it.each(locales)("locale %s carries both keys", (locale) => {
-    const start = src.indexOf(`\n  ${locale}`);
-    const end = src.indexOf("\n  }", start);
-    const block = src.slice(start, end);
-    expect(block).toContain("ezyai_sig_since");
-    expect(block).toContain("ezyai_sig_building");
+    expect(files[locale]).toContain("ezyai_sig_since");
+    expect(files[locale]).toContain("ezyai_sig_building");
   });
 
   it("the English strings keep their placeholders", () => {
-    const since = src.slice(src.indexOf("ezyai_sig_since"), src.indexOf("ezyai_sig_building"));
+    const since = en.slice(en.indexOf("ezyai_sig_since"), en.indexOf("ezyai_sig_building"));
     expect(since).toContain("{date}");
-    expect(src.slice(src.indexOf("ezyai_sig_building"))).toContain("{closed}");
+    expect(en.slice(en.indexOf("ezyai_sig_building"))).toContain("{closed}");
   });
 
   it("no fabricated-floor wording anywhere near the record", () => {

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, ArrowLeft, Users, ShieldCheck, Clock, Zap } from "lucide-react";
 import { saveLead } from "@/lib/leads.functions";
-import { LINKS } from "@/components/landing/Landing";
+import { LINKS } from "@/lib/links";
 import { getSessionId } from "@/lib/analytics";
 import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations, type TranslationKey } from "@/lib/translations";

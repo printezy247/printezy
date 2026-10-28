@@ -13,6 +13,7 @@ import {
 } from "@/lib/support.functions";
 import { onOpenSupportChatRequested } from "@/lib/support-chat-trigger";
 import { useTranslation } from "@/lib/i18n";
+import { mergeInbound } from "@/lib/support-poll";
 import type { TranslationKey } from "@/lib/translations";
 
 type Bubble = {
@@ -141,7 +142,11 @@ export function SupportChat() {
     if (!open) return;
     let cancelled = false;
 
+    let inFlight = false;
     const poll = async () => {
+      // One request at a time, and none while the tab is hidden.
+      if (inFlight || document.hidden) return;
+      inFlight = true;
       try {
         const rows = await fetchSupportMessages({
           data: { sessionId: getSessionId(), afterId: lastIdRef.current },
@@ -150,20 +155,11 @@ export function SupportChat() {
         lastIdRef.current = rows[rows.length - 1]!.id;
         // Only Sarah's inbound replies are pulled in; our own optimistic
         // bubbles are already on screen.
-        const inbound = rows.filter((r) => r.role === "sarah" && r.author === "Sarah");
-        if (inbound.length) {
-          setMessages((prev) => [
-            ...prev,
-            ...inbound.map((r) => ({
-              id: r.id,
-              role: "sarah" as const,
-              author: r.author,
-              text: r.text,
-            })),
-          ]);
-        }
+        setMessages((prev) => mergeInbound(prev, rows));
       } catch {
         // Polling must never surface an error to the visitor.
+      } finally {
+        inFlight = false;
       }
     };
 

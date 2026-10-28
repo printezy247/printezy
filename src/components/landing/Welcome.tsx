@@ -18,7 +18,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { goTrack, trackEngagement, trackPageLoad, trackWebVitals } from "@/lib/analytics";
 import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
 import markImg from "@/assets/ezymap-mark.webp";
-import { LINKS } from "./Landing";
+import { LINKS } from "@/lib/links";
 import { STEPS, FAQ } from "./welcome-data";
 
 /**
@@ -750,16 +750,25 @@ function Bars() {
   const [past, setPast] = useState(false);
   const bar = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const onScroll = () => {
+    // One layout read per frame instead of one per scroll event.
+    let frame = 0;
+    const update = () => {
+      frame = 0;
       setPast(window.scrollY > 300);
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (bar.current) {
         bar.current.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
       }
     };
-    onScroll();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
   }, []);
   return (
     <>
@@ -786,7 +795,7 @@ function Bars() {
             <label className="relative inline-flex items-center">
               <span className="sr-only">Language</span>
               <select
-                defaultValue="en"
+                value="en"
                 onChange={(event) => {
                   const next = event.target.value as Locale;
                   goTrack(`welcome_lang_${next}`);
@@ -845,16 +854,19 @@ function Bars() {
   );
 }
 
-export function Welcome() {
-  const [members, setMembers] = useState(FALLBACK_MEMBERS);
+export function Welcome({ initialMembers }: { initialMembers?: number }) {
+  const [members, setMembers] = useState(initialMembers ?? FALLBACK_MEMBERS);
   const getMembers = useServerFn(getActiveMemberCount);
 
   useEffect(() => {
-    void getMembers({ data: undefined })
-      .then(setMembers)
-      .catch(() => {
-        /* keep the fallback; the count must never block the page */
-      });
+    // The route loader normally supplies the count; fetch only without it.
+    if (initialMembers === undefined) {
+      void getMembers({ data: undefined })
+        .then(setMembers)
+        .catch(() => {
+          /* keep the fallback; the count must never block the page */
+        });
+    }
     trackPageLoad("welcome");
     void trackWebVitals().catch(() => {});
     const stop = trackEngagement();

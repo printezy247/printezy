@@ -1,7 +1,7 @@
 import { Bell, LayoutDashboard, Newspaper, Rocket, Search, Send } from "lucide-react";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
-import { LINKS } from "@/components/landing/Landing";
+import { LINKS } from "@/lib/links";
 import { useTranslation } from "@/lib/i18n";
 import { goTrack } from "@/lib/analytics";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";

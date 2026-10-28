@@ -50,8 +50,26 @@ const SECURITY_HEADERS: Record<string, string> = {
     "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://js.stripe.com https://telegram.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-src https://js.stripe.com https://*.stripe.com https://checkout.stripe.com https://oauth.telegram.org https://www.facebook.com; base-uri 'self'; form-action 'self' https://checkout.stripe.com; frame-ancestors 'self' https://*.lovable.dev https://*.lovable.app https://*.lovableproject.com",
 };
 
+// Report-only: the browser logs what a full policy WOULD block, and blocks
+// nothing, so checkout cannot break. Watch the console on checkout, login and
+// the landing page; once clean, promote this to Content-Security-Policy.
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://js.stripe.com https://connect.facebook.net https://telegram.org",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "img-src 'self' data: blob: https:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://www.facebook.com https://*.facebook.com",
+  "frame-src https://js.stripe.com https://hooks.stripe.com https://oauth.telegram.org",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join("; ");
+
 function withSecurityHeaders(response: Response): Response {
   const out = new Response(response.body, response);
+  if (!out.headers.has("Content-Security-Policy-Report-Only")) {
+    out.headers.set("Content-Security-Policy-Report-Only", CSP_REPORT_ONLY);
+  }
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
     if (!out.headers.has(name)) out.headers.set(name, value);
   }

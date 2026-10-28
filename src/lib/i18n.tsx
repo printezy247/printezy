@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
-import { translations, type TranslationKey } from "./translations";
+import { isLocaleLoaded, loadLocale, translations, type TranslationKey } from "./translations";
 import { LOCALES, type Locale } from "./locale-constants";
 export {
   LOCALES,
@@ -82,6 +82,18 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   // this browser once picked Malay. Pages with no locale URL of their own fall
   // back to the stored choice.
   const locale = routeLocale ?? storedLocale;
+
+  // A locale picked after load (stored preference, switcher) may not have its
+  // copy yet; fetch it, then re-render. English shows in the meantime.
+  const [, setCopyReady] = useState(0);
+  useEffect(() => {
+    if (isLocaleLoaded(locale)) return;
+    let live = true;
+    void loadLocale(locale).then(() => live && setCopyReady((n) => n + 1));
+    return () => {
+      live = false;
+    };
+  }, [locale]);
 
   useEffect(() => {
     document.documentElement.lang = locale;
