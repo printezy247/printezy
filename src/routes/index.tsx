@@ -10,7 +10,7 @@ const DESC =
 /**
  * HowTo + FAQPage generated from the same STEPS and FAQ the page renders, so
  * the schema can never drift from the visible copy. The `/` page has no Malay
- * twin (see docs/SEO-KNOWN-GAPS.md), hence msPath: null.
+ * twin (see docs/SEO-KNOWN-GAPS.md), hence twinPath: null.
  */
 const HOWTO_JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
