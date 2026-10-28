@@ -92,9 +92,18 @@ subscriber, so dedup folds duplicate live cards into one (see
 ## Honesty rules the site enforces
 
 - Performance counts from `EZYAI_TRACK_RECORD_SINCE`
-  (2026-10-28 — the upgraded bot era), disclosed as "Counted from …".
+  (2026-10-28 — the upgraded bot era), disclosed as "Counted from …" —
+  above the numbers and above the empty state, so a fresh era reads as
+  tracking rather than broken.
 - Below `EZYAI_MIN_TRACK_RECORD_SAMPLE` (10) closed signals the panel says
   "building track record" instead of publishing a jumpy win rate.
+- The equity curve carries its max drawdown next to the return tiles, so a
+  win rate never hides how deep the hole got between the wins.
+- Closed outcomes are sealed: once a signal reaches `tp`/`be`/`sl`, a reopen
+  is refused and outcome fields are ignored (see `pushSignal`), so a bot bug
+  or a replayed close can never rewrite published history.
+- The full ledger is public at `GET /api/public/ezyai/ledger` — every closed
+  row the panel summarises, downloadable so anyone can check the aggregate.
 - The website never decides an outcome; it renders what the bot reports.
 
 ## Reference client

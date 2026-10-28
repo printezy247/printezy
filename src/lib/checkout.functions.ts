@@ -96,8 +96,8 @@ export const createCheckout = createServerFn({ method: "POST" })
       // Resolve the human-readable sku to the Stripe price via lookup_keys.
       // A catalog item with no Stripe price yet gets one created on first
       // checkout, so adding a SKU to catalog.ts is the only setup step.
-      const prices = await stripe.prices.list({ lookup_keys: [item.sku] });
-      const stripePrice =
+      const prices = await stripe.prices.list({ lookup_keys: [item.sku], active: true });
+      let stripePrice =
         prices.data[0] ??
         (await stripe.prices.create({
           currency: "usd",
@@ -105,6 +105,22 @@ export const createCheckout = createServerFn({ method: "POST" })
           lookup_key: item.sku,
           product_data: { name: item.name },
         }));
+      if (stripePrice.unit_amount !== item.amountCents) {
+        // The catalog price moved after this lookup key was minted. Mint a
+        // fresh price so the buyer is charged what the site shows, and
+        // retire the stale one so the next checkout can't pick it again.
+        stripePrice = await stripe.prices.create({
+          currency: "usd",
+          unit_amount: item.amountCents,
+          lookup_key: item.sku,
+          product_data: { name: item.name },
+        });
+        try {
+          await stripe.prices.update(prices.data[0].id, { active: false });
+        } catch {
+          // Retiring is hygiene, not fulfillment — the fresh price is used.
+        }
+      }
 
       const productId =
         typeof stripePrice.product === "string" ? stripePrice.product : stripePrice.product.id;

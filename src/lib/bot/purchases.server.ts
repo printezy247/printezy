@@ -130,6 +130,11 @@ export async function recordSitePurchase(
   } as never);
 
   if (error) {
+    // Lost the race: a concurrent delivery recorded this session first (the
+    // column is unique). The winner already notified Sarah, so report
+    // success without a second notification — and without a 400 that would
+    // make Stripe retry a purchase that is already recorded.
+    if ((error as { code?: string }).code === "23505") return true;
     console.error("[purchases] failed to record site purchase", error);
     throw new Error(error.message);
   }

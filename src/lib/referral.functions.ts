@@ -1,12 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-function randomCode(): string {
-  const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no ambiguous chars
+const REFERRAL_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no ambiguous chars
+
+/**
+ * 8 symbols × ~4.95 bits from a CSPRNG — the same bar as the redeem
+ * codes. Math.random() is observable and seedable; referral credit rides
+ * on these, so they get real randomness.
+ */
+export function generateReferralCode(): string {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
   let code = "";
-  for (let i = 0; i < 8; i++) {
-    code += alphabet[Math.floor(Math.random() * alphabet.length)];
-  }
+  for (const b of bytes) code += REFERRAL_ALPHABET[b % REFERRAL_ALPHABET.length];
   return code;
 }
 
@@ -23,7 +29,7 @@ export const getOrCreateReferralCode = createServerFn({ method: "POST" })
 
     // Retry on the rare collision — code is globally unique.
     for (let attempt = 0; attempt < 5; attempt++) {
-      const code = randomCode();
+      const code = generateReferralCode();
       const { error } = await supabaseAdmin
         .from("referral_codes")
         .insert({ user_id: context.userId, code } as never);

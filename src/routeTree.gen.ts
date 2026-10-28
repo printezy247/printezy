@@ -26,7 +26,6 @@ import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as LangIndexRouteImport } from './routes/$lang/index'
@@ -43,6 +42,7 @@ import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authen
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as LangEbooksSlugRouteImport } from './routes/$lang/ebooks.$slug'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
+import { Route as ApiPublicEzyaiLedgerRouteImport } from './routes/api/public/ezyai/ledger'
 import { Route as ApiPublicEzyaiSignalsRouteImport } from './routes/api/public/ezyai/signals'
 import { Route as ApiPublicEzyaiStreamRouteImport } from './routes/api/public/ezyai/stream'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -132,11 +132,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: '/robots.txt',
-  path: '/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -221,6 +216,11 @@ const ApiPublicEzyaiEntitlementsRoute =
     path: '/api/public/ezyai/entitlements',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicEzyaiLedgerRoute = ApiPublicEzyaiLedgerRouteImport.update({
+  id: '/api/public/ezyai/ledger',
+  path: '/api/public/ezyai/ledger',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicEzyaiSignalsRoute = ApiPublicEzyaiSignalsRouteImport.update({
   id: '/api/public/ezyai/signals',
   path: '/api/public/ezyai/signals',
@@ -261,7 +261,6 @@ export interface FileRoutesByFullPath {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
@@ -278,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -300,7 +300,6 @@ export interface FileRoutesByTo {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
@@ -317,6 +316,7 @@ export interface FileRoutesByTo {
   '/$lang': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -341,7 +341,6 @@ export interface FileRoutesById {
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/$lang/ezyai': typeof LangEzyaiRoute
@@ -358,6 +357,7 @@ export interface FileRoutesById {
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
+  '/api/public/ezyai/ledger': typeof ApiPublicEzyaiLedgerRoute
   '/api/public/ezyai/signals': typeof ApiPublicEzyaiSignalsRoute
   '/api/public/ezyai/stream': typeof ApiPublicEzyaiStreamRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -382,7 +382,6 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
@@ -399,6 +398,7 @@ export interface FileRouteTypes {
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -421,7 +421,6 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
@@ -438,6 +437,7 @@ export interface FileRouteTypes {
     | '/$lang'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -461,7 +461,6 @@ export interface FileRouteTypes {
     | '/macro'
     | '/pricing'
     | '/privacy'
-    | '/robots.txt'
     | '/sitemap.xml'
     | '/terms'
     | '/$lang/ezyai'
@@ -478,6 +477,7 @@ export interface FileRouteTypes {
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
+    | '/api/public/ezyai/ledger'
     | '/api/public/ezyai/signals'
     | '/api/public/ezyai/stream'
     | '/api/public/payments/webhook'
@@ -502,7 +502,6 @@ export interface RootRouteChildren {
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
-  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   LangEzyaiRoute: typeof LangEzyaiRoute
@@ -517,6 +516,7 @@ export interface RootRouteChildren {
   LangIndexRoute: typeof LangIndexRoute
   LangEbooksSlugRoute: typeof LangEbooksSlugRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
+  ApiPublicEzyaiLedgerRoute: typeof ApiPublicEzyaiLedgerRoute
   ApiPublicEzyaiSignalsRoute: typeof ApiPublicEzyaiSignalsRoute
   ApiPublicEzyaiStreamRoute: typeof ApiPublicEzyaiStreamRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -644,13 +644,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/robots.txt': {
-      id: '/robots.txt'
-      path: '/robots.txt'
-      fullPath: '/robots.txt'
-      preLoaderRoute: typeof RobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -763,6 +756,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicEzyaiEntitlementsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ezyai/ledger': {
+      id: '/api/public/ezyai/ledger'
+      path: '/api/public/ezyai/ledger'
+      fullPath: '/api/public/ezyai/ledger'
+      preLoaderRoute: typeof ApiPublicEzyaiLedgerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ezyai/signals': {
       id: '/api/public/ezyai/signals'
       path: '/api/public/ezyai/signals'
@@ -825,7 +825,6 @@ const rootRouteChildren: RootRouteChildren = {
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
-  RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   LangEzyaiRoute: LangEzyaiRoute,
@@ -840,6 +839,7 @@ const rootRouteChildren: RootRouteChildren = {
   LangIndexRoute: LangIndexRoute,
   LangEbooksSlugRoute: LangEbooksSlugRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,
+  ApiPublicEzyaiLedgerRoute: ApiPublicEzyaiLedgerRoute,
   ApiPublicEzyaiSignalsRoute: ApiPublicEzyaiSignalsRoute,
   ApiPublicEzyaiStreamRoute: ApiPublicEzyaiStreamRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
