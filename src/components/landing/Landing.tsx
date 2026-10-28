@@ -223,10 +223,11 @@ function TelegramCta({
 }
 
 function SupportCta({ className = "" }: { className?: string }) {
+  const { t } = useTranslation();
   return (
     <Button asChild variant="outline" size="sm" className={className}>
       <a href={LINKS.support} onClick={() => goTrack("support_click")}>
-        <Send className="h-4 w-4" /> Ask Sarah
+        <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
       </a>
     </Button>
   );
