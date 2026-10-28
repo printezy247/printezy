@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { mergeInbound } from "../support-poll";
 
-const row = (id: number, author = "Sarah", role = "sarah") => ({ id, role, author, text: `m${id}` });
+const row = (id: number, author = "Sarah", role = "sarah") => ({
+  id,
+  role,
+  author,
+  text: `m${id}`,
+});
 
 describe("mergeInbound", () => {
   it("appends new Sarah replies", () => {

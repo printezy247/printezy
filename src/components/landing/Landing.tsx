@@ -97,8 +97,6 @@ const mt5Logo = mt5LogoAsset;
 /* Links                                                               */
 /* ------------------------------------------------------------------ */
 
-
-
 /**
  * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
  * visitor's fbclid back up. sessionId only exists client-side, so render the
