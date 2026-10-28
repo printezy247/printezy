@@ -65,6 +65,7 @@ export type Database = {
           event_name: string;
           event_type: string;
           id: string;
+          metric_value: number | null;
           path: string;
           referrer: string | null;
           session_id: string;
@@ -75,6 +76,7 @@ export type Database = {
           event_name: string;
           event_type: string;
           id?: string;
+          metric_value?: number | null;
           path: string;
           referrer?: string | null;
           session_id: string;

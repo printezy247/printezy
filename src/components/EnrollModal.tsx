@@ -11,6 +11,7 @@ import { createCheckout } from "@/lib/checkout.functions";
 import { getStoredReferralCode } from "@/lib/referral-capture";
 import { getSessionId } from "@/lib/analytics";
 import { getCatalogItem } from "@/lib/catalog";
+import { track } from "@/lib/analytics";
 import {
   Select,
   SelectContent,
@@ -163,6 +164,7 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
   function submitDetails(e: React.FormEvent) {
     e.preventDefault();
     if (checkoutLoading) return;
+    track("click", `checkout_start_${sku}`);
     setAttempted(true);
     if (!handleOk) {
       setPulse((p) => p + 1);

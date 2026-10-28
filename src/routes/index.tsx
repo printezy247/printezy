@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Welcome } from "@/components/landing/Welcome";
-import { STEPS, FAQ } from "@/components/landing/welcome-data";
+import { STEPS, buildWelcomeFaqJsonLd } from "@/components/landing/welcome-data";
 import { localizedHead } from "@/lib/seo";
 
 const TITLE = "Never Miss a Trade Setup — Free Signals on Telegram | EzyMap ALGO";
@@ -25,16 +25,6 @@ const HOWTO_JSON_LD = JSON.stringify({
   })),
 });
 
-const FAQ_JSON_LD = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: FAQ.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-});
-
 const HEAD = localizedHead({
   path: "/",
   locale: "en",
@@ -51,7 +41,7 @@ export const Route = createFileRoute("/")({
     scripts: [
       ...HEAD.scripts,
       { type: "application/ld+json", children: HOWTO_JSON_LD },
-      { type: "application/ld+json", children: FAQ_JSON_LD },
+      { type: "application/ld+json", children: buildWelcomeFaqJsonLd() },
     ],
   }),
   component: Welcome,

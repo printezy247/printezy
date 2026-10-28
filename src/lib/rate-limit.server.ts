@@ -10,7 +10,7 @@ import { getRequest } from "@tanstack/react-start/server";
 export async function checkRateLimit(
   endpoint: string,
   identifier: string,
-  opts: { max: number; windowMs: number },
+  opts: { max: number; windowMs: number; ipMultiplier?: number; failClosed?: boolean },
 ): Promise<boolean> {
   const windowStart = new Date(Math.floor(Date.now() / opts.windowMs) * opts.windowMs);
 
@@ -19,14 +19,20 @@ export async function checkRateLimit(
   // IP with a looser cap. Either bucket over its limit rejects the request.
   const ip = clientIp();
   const checks = [
-    bump(`${endpoint}:${identifier}:${windowStart.toISOString()}`, windowStart, opts.max),
+    bump(
+      `${endpoint}:${identifier}:${windowStart.toISOString()}`,
+      windowStart,
+      opts.max,
+      opts.failClosed ?? false,
+    ),
   ];
   if (ip)
     checks.push(
       bump(
         `${endpoint}:ip:${ip}:${windowStart.toISOString()}`,
         windowStart,
-        opts.max * IP_MULTIPLIER,
+        opts.max * (opts.ipMultiplier ?? IP_MULTIPLIER),
+        opts.failClosed ?? false,
       ),
     );
   const results = await Promise.all(checks);
@@ -49,7 +55,12 @@ function clientIp(): string | null {
   }
 }
 
-async function bump(bucketKey: string, windowStart: Date, max: number): Promise<boolean> {
+async function bump(
+  bucketKey: string,
+  windowStart: Date,
+  max: number,
+  failClosed: boolean,
+): Promise<boolean> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin.rpc("increment_rate_limit", {
     p_bucket_key: bucketKey,
@@ -57,10 +68,12 @@ async function bump(bucketKey: string, windowStart: Date, max: number): Promise<
   });
 
   if (error) {
-    // Fail open: a rate-limit outage should never take down checkout/leads/chat.
-    console.error("[rate-limit] check failed, allowing request", error);
-    return true;
+    // Public business workflows may fail open; authentication endpoints set
+    // failClosed so storage outages cannot disable their abuse protection.
+    console.error("[rate-limit] check failed", error);
+    return !failClosed;
   }
 
-  return (data as number) <= max;
+  if (typeof data !== "number" || !Number.isFinite(data)) return !failClosed;
+  return data <= max;
 }

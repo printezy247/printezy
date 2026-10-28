@@ -3,7 +3,6 @@
  * FAQPage JSON-LD, so the structured data can never drift from the visible
  * text. Kept out of Welcome.tsx so that file exports only components.
  */
-
 export const STEPS = [
   {
     n: "1",
@@ -44,3 +43,15 @@ export const FAQ = [
     a: "Yes. Leave or mute the channel whenever you like. There is nothing to cancel.",
   },
 ];
+
+export function buildWelcomeFaqJsonLd(): string {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  });
+}

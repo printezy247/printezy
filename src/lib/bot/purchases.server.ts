@@ -134,6 +134,15 @@ export async function recordSitePurchase(
     throw new Error(error.message);
   }
 
+  await supabaseAdmin.from("analytics_events").insert({
+    event_type: "click",
+    event_name: `purchase_complete_${meta.sku ?? "unknown"}`,
+    path: "/checkout-success",
+    session_id: meta.analytics_session_id ?? `stripe_${stripeSessionId}`,
+    user_agent: null,
+    referrer: null,
+  });
+
   await notifySarah(meta, session.amount_total ?? 0, session.currency ?? "usd");
   if (userId) {
     // Awaited: an un-awaited send is dropped when the worker finishes the request.

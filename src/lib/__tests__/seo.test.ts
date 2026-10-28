@@ -68,6 +68,23 @@ describe("localizedHead()", () => {
     expect(ogLocale?.content).toBe("ar_SA");
   });
 
+  it("preloads the resolved social image", () => {
+    const head = localizedHead({ ...base, image: "welcome" });
+    expect(head.links).toContainEqual({
+      rel: "preload",
+      as: "image",
+      href: `${SITE_URL}${OG_IMAGES.welcome.image}`,
+    });
+  });
+
+  it("chooses the first available different edition for og:locale:alternate", () => {
+    const head = localizedHead({ ...base, locale: "zh", translations: ["en", "ms"] });
+    const alternate = head.meta.find(
+      (m) => (m as Record<string, string>).property === "og:locale:alternate",
+    );
+    expect(alternate?.content).toBe("en_US");
+  });
+
   it("uses the registry slug's real dimensions and URL", () => {
     const head = localizedHead({ ...base, image: "welcome" });
     const ogImage = head.meta.find((m) => (m as Record<string, string>).property === "og:image");

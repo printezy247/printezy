@@ -90,8 +90,9 @@ export async function verifyTelegramLogin(
   if (!safeEqual(toHex(signature), hash.trim().toLowerCase())) return null;
 
   const authDate = Number(fields.auth_date);
-  if (!Number.isFinite(authDate)) return null;
-  if (Date.now() - authDate * 1000 > MAX_AGE_MS) return null;
+  if (!Number.isSafeInteger(authDate) || authDate <= 0) return null;
+  const ageMs = Date.now() - authDate * 1000;
+  if (ageMs < -60_000 || ageMs > MAX_AGE_MS) return null;
 
   const id = Number(fields.id);
   if (!Number.isSafeInteger(id) || id <= 0) return null;

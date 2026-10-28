@@ -5,7 +5,7 @@
 // GET /api/desk behind a bearer key. Reading from there, rather than
 // recomputing here, is what keeps the website and the Telegram bot showing
 // the same numbers. Cached in macro_calendar_cache for a few hours; the last
-// good copy is served when the bot is unreachable.
+// good copy is served when the bot is unreachable; the website refreshes hourly.
 import { createServerFn } from "@tanstack/react-start";
 import type { Json } from "@/integrations/supabase/types";
 
@@ -72,7 +72,7 @@ export type BotDesk = {
 export type MacroLive = { desk: BotDesk; updatedAt: string } | null;
 
 const CACHE_KEY = "bot_desk";
-const FRESH_MS = 3 * 60 * 60 * 1000;
+const FRESH_MS = 60 * 60 * 1000;
 
 export const getMacroLive = createServerFn({ method: "GET" }).handler(
   async (): Promise<MacroLive> => {

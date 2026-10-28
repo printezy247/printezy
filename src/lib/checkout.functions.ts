@@ -126,6 +126,7 @@ export const createCheckout = createServerFn({ method: "POST" })
         metadata: {
           sku: item.sku,
           source: "website",
+          ...(data.sessionId ? { analytics_session_id: data.sessionId } : {}),
           telegram_username: data.telegramUsername,
           ...(redeemCode ? { redeem_code: redeemCode } : {}),
           ...(data.fullName ? { full_name: data.fullName } : {}),
@@ -155,7 +156,6 @@ export const getCheckoutStatus = createServerFn({ method: "POST" })
     const session = await stripe.checkout.sessions.retrieve(data.sessionId);
     const paid = session.payment_status === "paid";
     const sku = session.metadata?.sku ?? null;
-
     // The success page shows the PRO code right away; make sure the bot can
     // already redeem it even when the webhook is a few seconds behind. Same
     // idempotent recorder the webhook uses, so no double rows.

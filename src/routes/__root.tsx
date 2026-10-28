@@ -19,7 +19,8 @@ import { EbookAutoPopup } from "../components/EbookAutoPopup";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { captureReferralCode } from "../lib/referral-capture";
-import { LocaleProvider, localeFromPath } from "../lib/i18n";
+import { LocaleProvider } from "../lib/i18n";
+import { localeFromPath } from "../lib/locale-routing";
 import { SITE_URL } from "../lib/bot/tiers";
 
 /**

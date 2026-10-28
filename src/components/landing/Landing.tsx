@@ -9,6 +9,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
@@ -22,15 +23,8 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-import {
-  useTranslation,
-  useLocale,
-  localizePath,
-  LOCALES,
-  LOCALE_LABELS,
-  LOCALE_FLAGS,
-  LOCALE_NATIVE_NAMES,
-} from "@/lib/i18n";
+import { useTranslation, useLocale, localizePath } from "@/lib/i18n";
+import { LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/locale-constants";
 import { LiveSampleSignal } from "./LiveSampleSignal";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
@@ -71,13 +65,20 @@ import {
   getSessionId,
   metaTrack,
   goTrack,
+  trackWebVitals,
 } from "@/lib/analytics";
 import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
+import { FAQ_GROUPS } from "@/lib/faq-data";
+import { LINKS } from "@/lib/links";
+import { buildFaqJsonLd } from "@/lib/faq-schema";
+import { formatLocalPriceEstimate } from "@/lib/locale-pricing";
+import { getLocaleFxRates } from "@/lib/locale-pricing.functions";
+export { LINKS } from "@/lib/links";
 
 const jackPhoto = "/__l5e/assets-v1/a88ab471-0335-452e-86ce-a8f7301811e3/jack-photo.png";
 /** Exported for reuse as og:image on routes that don't have a more specific banner. */
-export const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
-export const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
+const brandLogo = "/__l5e/assets-v1/1d73bbe2-5c3b-4399-8e48-1eace4a5ed77/ezymap-logo.png";
+const macroLogo = "/__l5e/assets-v1/398fbb63-d47e-4553-8892-9dfb7bda17d4/macro-logo.png";
 
 /** Imported, not copied: one place to swap a cover (see lib/ebooks.ts). */
 const ebookMapping = EBOOK_COVER_MAPPING;
@@ -95,18 +96,6 @@ const mt5Logo = mt5LogoAsset;
 /* ------------------------------------------------------------------ */
 /* Links                                                               */
 /* ------------------------------------------------------------------ */
-
-export const LINKS = {
-  freeChannel: "https://t.me/ezymap",
-  support: "https://t.me/ezysarah",
-  bot: "https://t.me/ezyregisterbot",
-  macro: "https://t.me/xaubtcmacro_bot",
-  ebook: "https://t.me/m/r7Oig5BLMTk9",
-  vantage:
-    "https://www.vantagemarketsea.com/ms/open-live-account/?affid=MjY0NjgwMDg%3D&invitecode=oQQlQ8yM",
-  tradingView: "https://www.tradingview.com/pricing/?share_your_love=printezyusd",
-  ezyai: "https://t.me/ezytradeai_bot",
-};
 
 /**
  * Bot links carry `?start=<sessionId>` so the Telegram bot can look the
@@ -940,7 +929,7 @@ function Hero() {
 
 const PLATFORMS = ["Telegram", "TradingView", "Vantage Markets", "ForexFactory"];
 
-export function TrustStrip() {
+function TrustStrip() {
   const { t } = useTranslation();
   return (
     <div className="border-b border-border bg-surface">
@@ -962,7 +951,7 @@ export function TrustStrip() {
 /* Stats strip                                                         */
 /* ------------------------------------------------------------------ */
 
-export function StatsStrip() {
+function StatsStrip() {
   const { formatted: memberCount } = useMemberCount();
   const { t } = useTranslation();
   const stats: [string, string][] = [
@@ -1034,7 +1023,7 @@ const SHOWCASE: ShowcaseRow[] = [
   },
 ];
 
-export function Showcase() {
+function Showcase() {
   const { t, locale } = useTranslation();
   return (
     <Section id="showcase">
@@ -1080,7 +1069,7 @@ export function Showcase() {
 /* Gradient CTA band                                                   */
 /* ------------------------------------------------------------------ */
 
-export function CtaBand() {
+function CtaBand() {
   const { t, locale } = useTranslation();
   return (
     <section id="cta-band" className="py-10 sm:py-12">
@@ -1114,7 +1103,7 @@ export function CtaBand() {
 /* Track record                                                        */
 /* ------------------------------------------------------------------ */
 
-export function TrackRecord() {
+function TrackRecord() {
   const { t } = useTranslation();
   return (
     <Section id="track-record" className="bg-surface">
@@ -1173,7 +1162,7 @@ const FEATURES = [
   { icon: Smartphone, titleKey: "feature_mobile_title", bodyKey: "feature_mobile_body" },
 ] as const;
 
-export function Features() {
+function Features() {
   const { formatted: memberCount } = useMemberCount();
   const { t } = useTranslation();
   return (
@@ -1289,10 +1278,27 @@ const TIERS: Tier[] = [
   },
 ];
 
-export function Pricing() {
+function Pricing() {
   const botHref = useBotLink();
   const { formatted: memberCount } = useMemberCount();
-  const { t: tt } = useTranslation();
+  const { t: tt, locale } = useTranslation();
+  const fetchFxRates = useServerFn(getLocaleFxRates);
+  const [fxRates, setFxRates] = useState<Awaited<ReturnType<typeof getLocaleFxRates>>>(null);
+  const [fxLoaded, setFxLoaded] = useState(false);
+  useEffect(() => {
+    if (locale !== "ms" && locale !== "hi" && locale !== "ar") return;
+    let active = true;
+    void fetchFxRates({ data: undefined })
+      .then((rates) => {
+        if (!active) return;
+        setFxRates(rates);
+        setFxLoaded(true);
+      })
+      .catch(() => active && setFxLoaded(true));
+    return () => {
+      active = false;
+    };
+  }, [fetchFxRates, locale]);
   return (
     <Section id="packages" className="bg-surface/40">
       <SectionHeading
@@ -1348,6 +1354,23 @@ export function Pricing() {
                   <span className="font-mono text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
                     {t.price}
                   </span>
+                  {fxLoaded
+                    ? (() => {
+                        const estimate = formatLocalPriceEstimate(
+                          Number(t.price.replace(/[^0-9.]/g, "")) * 100,
+                          locale,
+                          fxRates?.quotes ?? {},
+                        );
+                        return estimate ? (
+                          <span
+                            className="text-xs text-muted-foreground"
+                            title="Daily reference-rate estimate; checkout is charged in USD"
+                          >
+                            ≈ {estimate} estimate
+                          </span>
+                        ) : null;
+                      })()
+                    : null}
                   {t.priceNote ? (
                     <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                       {t.priceNote}
@@ -1449,7 +1472,7 @@ export function Pricing() {
 /* Products                                                            */
 /* ------------------------------------------------------------------ */
 
-export const EBOOKS = [
+const EBOOKS = [
   {
     title: "Mapping Like A Pro",
     slug: "mapping-like-a-pro",
@@ -1492,7 +1515,7 @@ function Book3D({ image, title }: { image: string; title: string }) {
   );
 }
 
-export function Products() {
+function Products() {
   const botHref = useBotLink();
   const [detailsSlug, setDetailsSlug] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -1742,7 +1765,7 @@ const STEPS: { titleKey: TranslationKey; bodyKey: TranslationKey }[] = [
   { titleKey: "how_step3_title", bodyKey: "how_step3_body" },
 ];
 
-export function HowItWorks() {
+function HowItWorks() {
   const reducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
   return (
@@ -1778,7 +1801,7 @@ export function HowItWorks() {
 /* Ambassador                                                          */
 /* ------------------------------------------------------------------ */
 
-export function Ambassador() {
+function Ambassador() {
   const { formatted: memberCount } = useMemberCount();
   const { t } = useTranslation();
   return (
@@ -1843,6 +1866,7 @@ export function Ambassador() {
 
 type Testimonial = {
   name: string;
+  locale: "ms" | "en";
   roleKey: TranslationKey;
   quoteKey: TranslationKey;
   /** Real Telegram handle, only set for testimonials that can genuinely be verified. */
@@ -1850,15 +1874,36 @@ type Testimonial = {
 };
 
 const TESTIMONIALS: Testimonial[] = [
-  { name: "Budi D.", roleKey: "testimonial_budi_role", quoteKey: "testimonial_budi_quote" },
-  { name: "Priya R.", roleKey: "testimonial_priya_role", quoteKey: "testimonial_priya_quote" },
-  { name: "Luqman R.", roleKey: "testimonial_luqman_role", quoteKey: "testimonial_luqman_quote" },
-  { name: "Chen W.", roleKey: "testimonial_chen_role", quoteKey: "testimonial_chen_quote" },
+  {
+    name: "Budi D.",
+    locale: "ms",
+    roleKey: "testimonial_budi_role",
+    quoteKey: "testimonial_budi_quote",
+  },
+  {
+    name: "Priya R.",
+    locale: "en",
+    roleKey: "testimonial_priya_role",
+    quoteKey: "testimonial_priya_quote",
+  },
+  {
+    name: "Luqman R.",
+    locale: "ms",
+    roleKey: "testimonial_luqman_role",
+    quoteKey: "testimonial_luqman_quote",
+  },
+  {
+    name: "Chen W.",
+    locale: "en",
+    roleKey: "testimonial_chen_role",
+    quoteKey: "testimonial_chen_quote",
+  },
 ];
 
-export function SocialProof() {
+function SocialProof() {
   const { formatted: memberCount } = useMemberCount();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const testimonials = TESTIMONIALS.filter((item) => item.locale === locale);
   return (
     <Section id="testimonials" className="bg-surface/40">
       <SectionHeading
@@ -1883,9 +1928,9 @@ export function SocialProof() {
             </Reveal>
           );
         })}
-      </div>
+      </div>{" "}
       <div className="flex flex-wrap justify-center gap-5">
-        {TESTIMONIALS.map((item, i) => (
+        {testimonials.map((item, i) => (
           <Reveal
             key={item.name}
             delay={i * 0.04}
@@ -1921,47 +1966,15 @@ export function SocialProof() {
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
-export const FAQ_GROUPS: {
-  titleKey: TranslationKey;
-  items: { qKey: TranslationKey; aKey: TranslationKey }[];
-}[] = [
-  {
-    titleKey: "faq_group1_title",
-    items: [
-      { qKey: "faq_g1_q1", aKey: "faq_g1_a1" },
-      { qKey: "faq_g1_q2", aKey: "faq_g1_a2" },
-      { qKey: "faq_g1_q3", aKey: "faq_g1_a3" },
-      { qKey: "faq_g1_q4", aKey: "faq_g1_a4" },
-      { qKey: "faq_g1_q5", aKey: "faq_g1_a5" },
-    ],
-  },
-  {
-    titleKey: "faq_group2_title",
-    items: [
-      { qKey: "faq_g2_q1", aKey: "faq_g2_a1" },
-      { qKey: "faq_g2_q2", aKey: "faq_g2_a2" },
-      { qKey: "faq_g2_q3", aKey: "faq_g2_a3" },
-      { qKey: "faq_g2_q4", aKey: "faq_g2_a4" },
-    ],
-  },
-  {
-    titleKey: "faq_group3_title",
-    items: [
-      { qKey: "faq_g3_q1", aKey: "faq_g3_a1" },
-      { qKey: "faq_g3_q2", aKey: "faq_g3_a2" },
-      { qKey: "faq_g3_q3", aKey: "faq_g3_a3" },
-      { qKey: "faq_g3_q4", aKey: "faq_g3_a4" },
-    ],
-  },
-];
-
 export function Faq() {
   const [openIds, setOpenIds] = useState<string[]>([]);
   const toggle = (id: string) =>
     setOpenIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const faqJsonLd = useMemo(() => buildFaqJsonLd(locale), [locale]);
   return (
     <Section id="faq">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
       <SectionHeading eyebrow={t("faq_eyebrow")} title={t("faq_title")} />
       <div className="mx-auto max-w-3xl space-y-10">
         {FAQ_GROUPS.map((g, gi) => (
@@ -2169,6 +2182,7 @@ export function Landing() {
 
   useEffect(() => {
     trackPageLoad("landing");
+    void trackWebVitals().catch(() => {});
     trackAdClick();
     // The site's own page view, reported to Meta through the same pipeline
     // as the bot events (consent-gated where required).

@@ -11,12 +11,17 @@ describe("ebookHead()", () => {
     const types = nodes.map((n) => n["@type"]);
     expect(types).toContain("BreadcrumbList");
     expect(types).toContain("Book");
+    expect(types).toContain("Article");
 
     const bookNode = nodes.find((n) => n["@type"] === "Book");
     expect(bookNode.numberOfPages).toBe(book.pages);
     expect(bookNode.bookFormat).toBe("Ebook");
     expect(bookNode.url).toBe(`${SITE_URL}/ebooks/${book.slug}`);
     expect(bookNode.inLanguage).toBe(book.language);
+
+    const articleNode = nodes.find((n) => n["@type"] === "Article");
+    expect(articleNode.headline).toBe(book.title);
+    expect(articleNode.inLanguage).toBe(book.language);
   });
 
   it("treats every locale as an edition of the English page unless one exists", () => {

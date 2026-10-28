@@ -47,7 +47,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Content-Security-Policy":
-    "frame-ancestors 'self' https://*.lovable.dev https://*.lovable.app https://*.lovableproject.com",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://js.stripe.com https://telegram.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-src https://js.stripe.com https://*.stripe.com https://checkout.stripe.com https://oauth.telegram.org https://www.facebook.com; base-uri 'self'; form-action 'self' https://checkout.stripe.com; frame-ancestors 'self' https://*.lovable.dev https://*.lovable.app https://*.lovableproject.com",
 };
 
 function withSecurityHeaders(response: Response): Response {
