@@ -685,6 +685,18 @@ const sw: Record<TranslationKey, string> = {
   dash_save: "Hifadhi",
   dash_saved: "Wasifu umehifadhiwa",
   dash_save_failed: "Imeshindwa kuhifadhi wasifu wako.",
+  prelanding_badge: "Karibu",
+  prelanding_title: "Chagua pa kuanzia",
+  prelanding_subtitle:
+    "Tembelea tovuti nzima, jiunge na chaneli ya Telegram bila malipo, au muulize Sarah.",
+  prelanding_view_now: "Jiunge na chaneli ya bure",
+  prelanding_view_now_desc: "Tembelea chaneli ya umma ya EzyMap kwenye Telegram.",
+  prelanding_chat_now: "Muulize Sarah",
+  prelanding_chat_now_desc: "Wasiliana na Sarah kwenye Telegram upate msaada.",
+  prelanding_find_out_more: "Gundua EzyMap",
+  prelanding_find_out_more_desc: "Vinjari ishara, zana, vifurushi na nyenzo za kujifunza.",
+  prelanding_trust_note: "Biashara ina hatari. Haya ni maelezo ya jumla, si ushauri wa kifedha.",
+  prelanding_close: "Funga dirisha la kukaribisha",
 
   home_meta_title: "EzyMap ALGO — Ishara za Biashara za Kitaalamu kwenye Telegram",
   home_meta_desc:

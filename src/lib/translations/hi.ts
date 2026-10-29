@@ -680,6 +680,17 @@ const hi: Record<TranslationKey, string> = {
   dash_save: "सहेजें",
   dash_saved: "प्रोफ़ाइल सहेजी गई",
   dash_save_failed: "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी।",
+  prelanding_badge: "स्वागत है",
+  prelanding_title: "शुरुआत के लिए जगह चुनें",
+  prelanding_subtitle: "पूरी साइट देखें, मुफ़्त Telegram चैनल से जुड़ें या Sarah से सवाल पूछें।",
+  prelanding_view_now: "मुफ़्त चैनल से जुड़ें",
+  prelanding_view_now_desc: "EzyMap के सार्वजनिक Telegram चैनल पर जाएँ।",
+  prelanding_chat_now: "Sarah से पूछें",
+  prelanding_chat_now_desc: "मदद के लिए Telegram पर Sarah से संपर्क करें।",
+  prelanding_find_out_more: "EzyMap देखें",
+  prelanding_find_out_more_desc: "सिग्नल, टूल, पैकेज और सीखने के संसाधन देखें।",
+  prelanding_trust_note: "ट्रेडिंग में जोखिम है। यह सामान्य जानकारी है, वित्तीय सलाह नहीं।",
+  prelanding_close: "स्वागत संवाद बंद करें",
 
   home_meta_title: "EzyMap ALGO — Telegram पर पेशेवर ट्रेडिंग सिग्नल",
   home_meta_desc:

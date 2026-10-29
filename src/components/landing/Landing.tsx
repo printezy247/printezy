@@ -31,6 +31,7 @@ import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { PreLandingSection } from "./PreLandingSection";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
 
@@ -2210,6 +2211,7 @@ export function Landing() {
 
   return (
     <MemberCountContext.Provider value={memberCount}>
+      <PreLandingSection />
       <div className="min-h-screen bg-background text-foreground">
         <Nav />
         <main role="main">

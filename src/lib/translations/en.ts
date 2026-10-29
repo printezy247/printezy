@@ -692,6 +692,19 @@ const en = {
   dash_save: "Save",
   dash_saved: "Profile saved",
   dash_save_failed: "Could not save your profile.",
+  prelanding_badge: "Welcome",
+  prelanding_title: "Choose where to start",
+  prelanding_subtitle:
+    "Explore the full site, join the free Telegram channel, or ask Sarah a question.",
+  prelanding_view_now: "Join the free channel",
+  prelanding_view_now_desc: "Visit the public EzyMap Telegram channel.",
+  prelanding_chat_now: "Ask Sarah",
+  prelanding_chat_now_desc: "Contact Sarah on Telegram for help.",
+  prelanding_find_out_more: "Explore EzyMap",
+  prelanding_find_out_more_desc: "Browse signals, tools, packages, and learning resources.",
+  prelanding_trust_note:
+    "Trading involves risk. This is general information, not financial advice.",
+  prelanding_close: "Close welcome dialog",
 
   // Page metadata for the translated twins. Head-only: never rendered in
   // the body, but it is the copy a crawler and a shared link show.

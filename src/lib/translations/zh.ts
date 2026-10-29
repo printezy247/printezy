@@ -669,6 +669,17 @@ const zh: Record<TranslationKey, string> = {
   dash_save: "保存",
   dash_saved: "资料已保存",
   dash_save_failed: "无法保存你的资料。",
+  prelanding_badge: "欢迎",
+  prelanding_title: "选择你的起点",
+  prelanding_subtitle: "浏览完整网站、加入免费的 Telegram 频道，或向 Sarah 提问。",
+  prelanding_view_now: "加入免费频道",
+  prelanding_view_now_desc: "访问 EzyMap 的公开 Telegram 频道。",
+  prelanding_chat_now: "联系 Sarah",
+  prelanding_chat_now_desc: "通过 Telegram 联系 Sarah 获取帮助。",
+  prelanding_find_out_more: "探索 EzyMap",
+  prelanding_find_out_more_desc: "浏览信号、工具、套餐和学习资源。",
+  prelanding_trust_note: "交易有风险。这是一般信息，不构成财务建议。",
+  prelanding_close: "关闭欢迎对话框",
 
   home_meta_title: "EzyMap ALGO — Telegram 上的专业交易信号",
   home_meta_desc:

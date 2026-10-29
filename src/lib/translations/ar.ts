@@ -672,6 +672,17 @@ const ar: Record<TranslationKey, string> = {
   dash_save: "حفظ",
   dash_saved: "تم حفظ الملف الشخصي",
   dash_save_failed: "تعذّر حفظ ملفك الشخصي.",
+  prelanding_badge: "مرحبًا",
+  prelanding_title: "اختر نقطة البداية",
+  prelanding_subtitle: "استكشف الموقع الكامل، أو انضم إلى قناة تيليجرام المجانية، أو اسأل سارة.",
+  prelanding_view_now: "انضم إلى القناة المجانية",
+  prelanding_view_now_desc: "زر قناة EzyMap العامة على تيليجرام.",
+  prelanding_chat_now: "اسأل سارة",
+  prelanding_chat_now_desc: "تواصل مع سارة عبر تيليجرام للحصول على المساعدة.",
+  prelanding_find_out_more: "استكشف EzyMap",
+  prelanding_find_out_more_desc: "تصفح الإشارات والأدوات والباقات وموارد التعلّم.",
+  prelanding_trust_note: "التداول ينطوي على مخاطر. هذه معلومات عامة وليست نصيحة مالية.",
+  prelanding_close: "إغلاق نافذة الترحيب",
 
   home_meta_title: "EzyMap ALGO — إشارات تداول احترافية على تيليجرام",
   home_meta_desc:

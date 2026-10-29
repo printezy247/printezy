@@ -703,6 +703,17 @@ const ms: Record<TranslationKey, string> = {
   dash_save: "Simpan",
   dash_saved: "Profil disimpan",
   dash_save_failed: "Tidak dapat menyimpan profil anda.",
+  prelanding_badge: "Selamat datang",
+  prelanding_title: "Pilih tempat untuk bermula",
+  prelanding_subtitle: "Terokai laman penuh, sertai saluran Telegram percuma atau tanya Sarah.",
+  prelanding_view_now: "Sertai saluran percuma",
+  prelanding_view_now_desc: "Lawati saluran Telegram awam EzyMap.",
+  prelanding_chat_now: "Tanya Sarah",
+  prelanding_chat_now_desc: "Hubungi Sarah di Telegram untuk mendapatkan bantuan.",
+  prelanding_find_out_more: "Terokai EzyMap",
+  prelanding_find_out_more_desc: "Lihat signal, alat, pakej dan sumber pembelajaran.",
+  prelanding_trust_note: "Dagangan melibatkan risiko. Ini maklumat umum, bukan nasihat kewangan.",
+  prelanding_close: "Tutup dialog alu-aluan",
 
   home_meta_title: "EzyMap ALGO — Isyarat Dagangan Profesional di Telegram",
   home_meta_desc:
