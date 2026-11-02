@@ -40,7 +40,7 @@ import { Route as DotwellKnownSecurityDottxtRouteImport } from './routes/[.]well
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
-import { Route as EzyaiExternalIdRouteImport } from './routes/ezyai.$externalId'
+import { Route as SignalExternalIdRouteImport } from './routes/signal.$externalId'
 import { Route as LangEbooksSlugRouteImport } from './routes/$lang/ebooks.$slug'
 import { Route as ApiPublicEzyaiEntitlementsRouteImport } from './routes/api/public/ezyai/entitlements'
 import { Route as ApiPublicEzyaiLedgerRouteImport } from './routes/api/public/ezyai/ledger'
@@ -206,10 +206,10 @@ const EbooksSlugRoute = EbooksSlugRouteImport.update({
   path: '/ebooks/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EzyaiExternalIdRoute = EzyaiExternalIdRouteImport.update({
-  id: '/$externalId',
-  path: '/$externalId',
-  getParentRoute: () => EzyaiRoute,
+const SignalExternalIdRoute = SignalExternalIdRouteImport.update({
+  id: '/signal/$externalId',
+  path: '/signal/$externalId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LangEbooksSlugRoute = LangEbooksSlugRouteImport.update({
   id: '/$lang/ebooks/$slug',
@@ -257,7 +257,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
   '/dashboard': typeof DashboardRoute
-  '/ezyai': typeof EzyaiRouteWithChildren
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -280,7 +280,7 @@ export interface FileRoutesByFullPath {
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ezyai/$externalId': typeof EzyaiExternalIdRoute
+  '/signal/$externalId': typeof SignalExternalIdRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
@@ -297,7 +297,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
   '/dashboard': typeof DashboardRoute
-  '/ezyai': typeof EzyaiRouteWithChildren
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -320,7 +320,7 @@ export interface FileRoutesByTo {
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ezyai/$externalId': typeof EzyaiExternalIdRoute
+  '/signal/$externalId': typeof SignalExternalIdRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
@@ -339,7 +339,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
   '/dashboard': typeof DashboardRoute
-  '/ezyai': typeof EzyaiRouteWithChildren
+  '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
   '/free-ebook': typeof FreeEbookRoute
@@ -362,7 +362,7 @@ export interface FileRoutesById {
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
-  '/ezyai/$externalId': typeof EzyaiExternalIdRoute
+  '/signal/$externalId': typeof SignalExternalIdRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/ebooks/$slug': typeof LangEbooksSlugRoute
   '/api/public/ezyai/entitlements': typeof ApiPublicEzyaiEntitlementsRoute
@@ -404,7 +404,7 @@ export interface FileRouteTypes {
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ezyai/$externalId'
+    | '/signal/$externalId'
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
@@ -444,7 +444,7 @@ export interface FileRouteTypes {
     | '/ads-dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
-    | '/ezyai/$externalId'
+    | '/signal/$externalId'
     | '/$lang'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
@@ -485,7 +485,7 @@ export interface FileRouteTypes {
     | '/_authenticated/ads-dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
-    | '/ezyai/$externalId'
+    | '/signal/$externalId'
     | '/$lang/'
     | '/$lang/ebooks/$slug'
     | '/api/public/ezyai/entitlements'
@@ -504,7 +504,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   DashboardRoute: typeof DashboardRoute
-  EzyaiRoute: typeof EzyaiRouteWithChildren
+  EzyaiRoute: typeof EzyaiRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
   FreeEbookRoute: typeof FreeEbookRoute
@@ -525,6 +525,7 @@ export interface RootRouteChildren {
   LangTermsRoute: typeof LangTermsRoute
   DotwellKnownSecurityDottxtRoute: typeof DotwellKnownSecurityDottxtRoute
   EbooksSlugRoute: typeof EbooksSlugRoute
+  SignalExternalIdRoute: typeof SignalExternalIdRoute
   LangIndexRoute: typeof LangIndexRoute
   LangEbooksSlugRoute: typeof LangEbooksSlugRoute
   ApiPublicEzyaiEntitlementsRoute: typeof ApiPublicEzyaiEntitlementsRoute
@@ -754,12 +755,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EbooksSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ezyai/$externalId': {
-      id: '/ezyai/$externalId'
-      path: '/$externalId'
-      fullPath: '/ezyai/$externalId'
-      preLoaderRoute: typeof EzyaiExternalIdRouteImport
-      parentRoute: typeof EzyaiRoute
+    '/signal/$externalId': {
+      id: '/signal/$externalId'
+      path: '/signal/$externalId'
+      fullPath: '/signal/$externalId'
+      preLoaderRoute: typeof SignalExternalIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/$lang/ebooks/$slug': {
       id: '/$lang/ebooks/$slug'
@@ -826,16 +827,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface EzyaiRouteChildren {
-  EzyaiExternalIdRoute: typeof EzyaiExternalIdRoute
-}
-
-const EzyaiRouteChildren: EzyaiRouteChildren = {
-  EzyaiExternalIdRoute: EzyaiExternalIdRoute,
-}
-
-const EzyaiRouteWithChildren = EzyaiRoute._addFileChildren(EzyaiRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -844,7 +835,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   DashboardRoute: DashboardRoute,
-  EzyaiRoute: EzyaiRouteWithChildren,
+  EzyaiRoute: EzyaiRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,
   FreeEbookRoute: FreeEbookRoute,
@@ -865,6 +856,7 @@ const rootRouteChildren: RootRouteChildren = {
   LangTermsRoute: LangTermsRoute,
   DotwellKnownSecurityDottxtRoute: DotwellKnownSecurityDottxtRoute,
   EbooksSlugRoute: EbooksSlugRoute,
+  SignalExternalIdRoute: SignalExternalIdRoute,
   LangIndexRoute: LangIndexRoute,
   LangEbooksSlugRoute: LangEbooksSlugRoute,
   ApiPublicEzyaiEntitlementsRoute: ApiPublicEzyaiEntitlementsRoute,

@@ -7,7 +7,7 @@ import { localizedHead } from "@/lib/seo";
 import { getEzyAiSignal } from "@/lib/ezyai/signals.functions";
 import { liveR, progressPercent, entryMid } from "@/lib/ezyai/signals";
 
-export const Route = createFileRoute("/ezyai/$externalId")({
+export const Route = createFileRoute("/signal/$externalId")({
   head: () =>
     localizedHead({
       path: "/ezyai",

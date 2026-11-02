@@ -209,15 +209,22 @@ export function EbookClaimModal({ slug, onClose }: Props) {
   async function submitLead(e: React.FormEvent) {
     e.preventDefault();
     if (!leadEmail.trim() || leadBusy) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leadEmail.trim())) {
+      setError("Enter a valid email address.");
+      return;
+    }
     setLeadBusy(true);
     try {
       await saveLeadFn({
         data: { email: leadEmail.trim(), source: "free-ebook", sessionId: getSessionId() },
       });
+      setError(null);
       setLeadSaved(true);
       goTrack(`ebook_lead_${slug}`);
     } catch {
-      // Non-critical — fail silently, sign-in remains the primary path.
+      // Sign-in remains the primary path, but never fail silently — the
+      // visitor just handed over contact details and deserves an answer.
+      setError("Could not save your email. Please try again.");
     } finally {
       setLeadBusy(false);
     }
