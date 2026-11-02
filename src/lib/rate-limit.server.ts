@@ -42,6 +42,26 @@ export async function checkRateLimit(
 /** One IP may legitimately host several sessions (office NAT, family). */
 const IP_MULTIPLIER = 5;
 
+/**
+ * Auth-adjacent callers (login, redeem, claim) must fail closed: a storage
+ * outage must not disable abuse protection. Business workflows (checkout,
+ * leads) may fail open to avoid blocking sales.
+ */
+export async function checkAuthRateLimit(
+  endpoint: string,
+  identifier: string,
+  opts: { max: number; windowMs: number; ipMultiplier?: number },
+): Promise<boolean> {
+  return checkRateLimit(endpoint, identifier, { ...opts, failClosed: true });
+}
+
+/**
+ * Best-effort client IP for abuse bucketing only — never for auth decisions.
+ * Trusts `cf-connecting-ip` then the first `x-forwarded-for` entry, so it is
+ * only correct behind a trusted proxy/CDN that strips spoofed headers.
+ * A storage outage must not disable protection: callers on auth paths
+ * (login, redeem, claim) must use `checkAuthRateLimit` (failClosed:true).
+ */
 function clientIp(): string | null {
   try {
     const headers = getRequest().headers;

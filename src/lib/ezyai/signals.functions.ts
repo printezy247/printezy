@@ -63,3 +63,16 @@ export const getEzyAiHistory = createServerFn({ method: "GET" }).handler(
     };
   },
 );
+
+export const getEzyAiSignal = createServerFn({ method: "GET" })
+  .inputValidator((input: { externalId: string }) => {
+    const id = String(input?.externalId ?? "")
+      .trim()
+      .slice(0, 120);
+    if (!id) throw new Error("externalId is required");
+    return { externalId: id };
+  })
+  .handler(async ({ data }): Promise<{ signal: EzyAiSignal | null }> => {
+    const { getSignalByExternalId } = await import("./signals.server");
+    return { signal: await getSignalByExternalId(data.externalId) };
+  });

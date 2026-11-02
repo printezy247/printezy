@@ -257,7 +257,9 @@ function PurchasesCard() {
                         <button
                           type="button"
                           onClick={() => {
-                            void navigator.clipboard.writeText(p.redeemCode!);
+                            void (p.redeemCode
+                              ? navigator.clipboard.writeText(p.redeemCode)
+                              : Promise.resolve());
                             toast.success(t("dash_copied"));
                           }}
                           aria-label={t("dash_copy")}

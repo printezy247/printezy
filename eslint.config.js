@@ -36,5 +36,15 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // TanStack route modules must export `Route` alongside the page component,
+    // and shared UI/i18n modules mix components with constants by design.
+    // Splitting every route would churn 12+ files for no runtime gain, so the
+    // fast-refresh rule is scoped off here instead of per-line disables.
+    files: ["src/routes/**/*.{ts,tsx}", "src/components/ui/*.tsx", "src/lib/i18n.tsx"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
   eslintPluginPrettier,
 );

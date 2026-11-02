@@ -16,7 +16,12 @@ import { escapeLikePattern } from "@/lib/like-escape";
 import { normalizeHandle } from "@/lib/bot/site-access.server";
 import { safeEqual } from "@/lib/secure-compare";
 import { createStripeClient, type StripeEnv } from "@/lib/stripe.server";
-import { REDEEM_CODE_RE, generateRedeemCode, normalizeRedeemCode } from "./redeem-code";
+import {
+  REDEEM_CODE_RE,
+  generateRedeemCode,
+  hashRedeemCode,
+  normalizeRedeemCode,
+} from "./redeem-code";
 
 export type EntitlementRow = {
   id: string;
@@ -26,13 +31,14 @@ export type EntitlementRow = {
   telegram_id: number | null;
   stripe_session_id: string;
   redeem_code: string | null;
+  redeem_code_hash: string | null;
   status: "paid" | "claimed" | "revoked";
   claimed_at: string | null;
   created_at: string;
 };
 
 const PUBLIC_COLUMNS =
-  "id, sku, months, telegram_username, telegram_id, stripe_session_id, redeem_code, status, claimed_at, created_at";
+  "id, sku, months, telegram_username, telegram_id, stripe_session_id, redeem_code, redeem_code_hash, status, claimed_at, created_at";
 
 /**
  * Bearer key shared with the bot (EZYAI_ENTITLEMENT_KEY here, EZYAI_SITE_KEY
@@ -78,6 +84,7 @@ export async function recordEzyAiEntitlement(
   // Sessions created before codes existed get a fresh one here.
   const minted = meta.redeem_code ?? "";
   let redeemCode = REDEEM_CODE_RE.test(minted) ? minted : generateRedeemCode();
+  let redeemHash = await hashRedeemCode(redeemCode);
 
   for (let attempt = 0; ; attempt++) {
     const { data, error } = await supabaseAdmin
@@ -91,6 +98,7 @@ export async function recordEzyAiEntitlement(
         currency: session.currency ?? "usd",
         stripe_session_id: stripeSessionId,
         redeem_code: redeemCode,
+        redeem_code_hash: redeemHash,
         status: "paid",
       })
       .select(PUBLIC_COLUMNS)
@@ -109,6 +117,7 @@ export async function recordEzyAiEntitlement(
       if (raced) return raced as EntitlementRow;
       if (attempt < 2) {
         redeemCode = generateRedeemCode();
+        redeemHash = await hashRedeemCode(redeemCode);
         continue;
       }
     }
@@ -151,18 +160,43 @@ export async function listUnclaimedEntitlements(
 export async function findEntitlementByCode(input: unknown): Promise<EntitlementRow[]> {
   const code = normalizeRedeemCode(input);
   if (!code) return [];
-  const { data, error } = await supabaseAdmin
-    .from("ezyai_entitlements")
-    .select(PUBLIC_COLUMNS)
-    .eq("redeem_code", code)
-    .eq("status", "paid")
-    .is("claimed_at", null)
-    .limit(1);
-  if (error) {
-    console.error("[ezyai] code lookup failed", error);
-    throw new Error(error.message);
+  const hash = await hashRedeemCode(code);
+  const base = () =>
+    supabaseAdmin
+      .from("ezyai_entitlements")
+      .select(PUBLIC_COLUMNS)
+      .eq("status", "paid")
+      .is("claimed_at", null)
+      .limit(1);
+  const hashed = await base().eq("redeem_code_hash", hash);
+  if (hashed.error) {
+    console.error("[ezyai] code lookup failed", hashed.error);
+    throw new Error(hashed.error.message);
   }
-  return (data ?? []) as EntitlementRow[];
+  let rows = (hashed.data ?? []) as EntitlementRow[];
+  if (rows.length === 0) {
+    // Legacy rows minted before hashing carry only plaintext.
+    const legacy = await base().eq("redeem_code", code);
+    if (legacy.error) {
+      console.error("[ezyai] code lookup failed", legacy.error);
+      throw new Error(legacy.error.message);
+    }
+    rows = (legacy.data ?? []) as EntitlementRow[];
+  }
+  if (rows.length === 0) return [];
+  // Backfill the hash for rows minted before hashing, so the plaintext path
+  // disappears over time without a data migration that touches secrets.
+  const row = rows[0] as (EntitlementRow & { redeem_code_hash?: string | null }) | undefined;
+  if (row && !row.redeem_code_hash) {
+    void supabaseAdmin
+      .from("ezyai_entitlements")
+      .update({ redeem_code_hash: hash } as never)
+      .eq("id", row.id)
+      .then(({ error: backfillError }) => {
+        if (backfillError) console.error("[ezyai] redeem hash backfill failed", backfillError);
+      });
+  }
+  return rows;
 }
 
 /**
@@ -189,5 +223,13 @@ export async function claimEntitlement(
     console.error("[ezyai] claim failed", error);
     throw new Error(error.message);
   }
-  return (data as EntitlementRow | null) ?? null;
+  const claimed = (data as EntitlementRow | null) ?? null;
+  if (claimed) {
+    const { error: auditError } = await supabaseAdmin.from("ezyai_redeem_audit").insert({
+      entitlement_id: claimed.id,
+      telegram_id: telegramId,
+    } as never);
+    if (auditError) console.error("[ezyai] redeem audit failed", auditError);
+  }
+  return claimed;
 }

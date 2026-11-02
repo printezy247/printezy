@@ -73,7 +73,8 @@ export const createCheckout = createServerFn({ method: "POST" })
     },
   )
   .handler(async ({ data }): Promise<{ clientSecret: string } | { error: string }> => {
-    const item = getCatalogItem(data.sku)!;
+    const item = getCatalogItem(data.sku);
+    if (!item) throw new Error("Unknown product");
     try {
       const { checkRateLimit } = await import("@/lib/rate-limit.server");
       const allowed = await checkRateLimit("create_checkout", data.sessionId || "anonymous", {

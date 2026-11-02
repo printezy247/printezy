@@ -149,7 +149,8 @@ export const getEbookDownloadUrl = createServerFn({ method: "POST" })
     return { slug: input.slug };
   })
   .handler(async ({ data, context }): Promise<{ downloadUrl: string; readUrl: string }> => {
-    const book = getEbook(data.slug)!;
+    const book = getEbook(data.slug);
+    if (!book) throw new Error("Unknown ebook");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: claim } = await supabaseAdmin
       .from("ebook_claims")

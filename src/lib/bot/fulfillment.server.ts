@@ -34,6 +34,15 @@ export async function fulfillSession(
     await grantRecordedPurchase(sessionId);
     return;
   }
+  if (!meta || !meta.source) {
+    console.error(
+      "[fulfillment] session with no metadata source — attempting legacy enrollment activation",
+      {
+        sessionId,
+        env,
+      },
+    );
+  }
   // Bot-initiated tier checkout (or legacy session): try enrollment activation.
   const { activatePaidEnrollment } = await import("@/lib/bot/enrollment.server");
   await activatePaidEnrollment(sessionId);

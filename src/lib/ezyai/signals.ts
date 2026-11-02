@@ -72,6 +72,9 @@ export function isLive(status: SignalStatus): boolean {
 
 export type EzyAiSignal = {
   id: string;
+  externalId: string;
+  sourceChannelId: number | null;
+  sourceMessageId: number | null;
   symbol: string;
   direction: SignalDirection;
   status: SignalStatus;

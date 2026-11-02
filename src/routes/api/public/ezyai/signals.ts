@@ -232,9 +232,10 @@ export const Route = createFileRoute("/api/public/ezyai/signals")({
               console.error("[ezyai signals] could not nudge the board streams", error);
             }
           }
-          const firstId = batch.find((e) => e && typeof e === "object")
-            ? String((batch[0] as Record<string, unknown>).external_id ?? "")
-            : "";
+          const firstValid = batch.find((e) => e && typeof e === "object") as
+            | Record<string, unknown>
+            | undefined;
+          const firstId = String(firstValid?.external_id ?? "");
           await logAttempt(
             accepted === results.length ? "accepted" : accepted === 0 ? "rejected" : "partial",
             {

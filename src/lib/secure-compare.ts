@@ -7,6 +7,10 @@
  * attacker narrow down the correct secret one character at a time by measuring
  * response times. This XORs every character pair regardless of early mismatches
  * and returns only the final boolean, so timing leaks no positional info.
+ *
+ * Note: length mismatch returns early, so key length is not protected.
+ * That is intentional — bridge keys are fixed-length secrets whose length
+ * is not sensitive. Do not "fix" with padding without measuring first.
  */
 export function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;

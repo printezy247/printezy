@@ -16,6 +16,11 @@ dist-ssr
 .nitro
 *.local
 
+# Lockfiles: bun is the only package manager (bun.lock tracked).
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars

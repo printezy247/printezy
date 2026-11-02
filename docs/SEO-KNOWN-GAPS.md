@@ -19,10 +19,11 @@ Fixing this properly needs a real Malay Welcome page plus a translation layer
 for its copy. Until that exists, `/` stays English-only in the head and
 sitemap, even though the page still links to `/ms` in its nav.
 
-## No CI
+## CI
 
-There is no `.github/workflows/` in this repo, so a pull request cannot wait on
-a check run. Merge on green local `npm test` / `npm run build` only.
+`.github/workflows/test.yml` runs `bun run lint`, `tsc --noEmit`, `bun run test`,
+`bun run build` and `node scripts/check-bundle.mjs` on PRs and `main` pushes.
+Merge on green CI; local `bun run check` mirrors it.
 
 ## Sitemap deliberately omits `<lastmod>`
 

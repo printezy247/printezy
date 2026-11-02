@@ -28,11 +28,10 @@ export const checkAuthAttempt = createServerFn({ method: "POST" })
           .map((byte) => byte.toString(16).padStart(2, "0"))
           .join("")
       : crypto.randomUUID();
-    const { checkRateLimit } = await import("@/lib/rate-limit.server");
-    return checkRateLimit(`auth_${data.action}`, emailKey, {
+    const { checkAuthRateLimit } = await import("@/lib/rate-limit.server");
+    return checkAuthRateLimit(`auth_${data.action}`, emailKey, {
       max: 10,
       windowMs: 60_000,
       ipMultiplier: 1,
-      failClosed: true,
     });
   });

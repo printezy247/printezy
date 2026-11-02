@@ -14,13 +14,20 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
       POST: async ({ request }) => {
         const rawEnv = new URL(request.url).searchParams.get("env");
         if (rawEnv !== "sandbox" && rawEnv !== "live") {
-          console.error("[payments webhook] invalid env:", rawEnv);
+          console.error(
+            "[payments webhook] invalid env — check Stripe webhook URL config:",
+            rawEnv,
+          );
           return Response.json({ received: true, ignored: "invalid env" });
         }
         const env: StripeEnv = rawEnv;
         // Only the environment this deployment actually runs may fulfil
         // orders: a sandbox event must never grant access on the live site.
         if (env !== detectStripeEnv()) {
+          console.error("[payments webhook] env mismatch — misconfigured webhook URL:", {
+            received: env,
+            active: detectStripeEnv(),
+          });
           return Response.json({ received: true, ignored: "env not active here" });
         }
 

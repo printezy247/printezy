@@ -40,9 +40,10 @@ export const reconcilePurchases = createServerFn({ method: "POST" })
       const fulfilled: { sessionId: string; ok: boolean; error?: string }[] = [];
       if (data.fulfill) {
         const { fulfillSession } = await import("@/lib/bot/fulfillment.server");
+        const { createStripeClient } = await import("@/lib/stripe.server");
+        const stripe = createStripeClient(env);
         for (const m of missing) {
           try {
-            const stripe = (await import("@/lib/stripe.server")).createStripeClient(env);
             const session = await stripe.checkout.sessions.retrieve(m.sessionId);
             await fulfillSession(m.sessionId, session.metadata as Record<string, string>, env);
             fulfilled.push({ sessionId: m.sessionId, ok: true });

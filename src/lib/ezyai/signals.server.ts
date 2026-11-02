@@ -30,13 +30,15 @@ import {
 const TABLE = "ezyai_signals";
 
 const COLUMNS =
-  "id, external_id, symbol, direction, status, setup, timeframe, entry_low, entry_high, " +
-  "entry_fill, stop_price, tp1, tp2, rr, setup_score, last_price, result_pips, result_r, " +
-  "note, opened_at, closed_at, updated_at";
+  "id, external_id, source_channel_id, source_message_id, symbol, direction, status, setup, timeframe, " +
+  "entry_low, entry_high, entry_fill, stop_price, tp1, tp2, rr, setup_score, last_price, " +
+  "result_pips, result_r, note, opened_at, closed_at, updated_at";
 
 type Row = {
   id: string;
   external_id: string;
+  source_channel_id: number | null;
+  source_message_id: number | null;
   symbol: string;
   direction: string;
   status: string;
@@ -60,15 +62,24 @@ type Row = {
 };
 
 function toSignal(row: Row): EzyAiSignal {
+  const directionOk = (SIGNAL_DIRECTIONS as readonly string[]).includes(row.direction);
+  const statusOk = (SIGNAL_STATUSES as readonly string[]).includes(row.status);
+  if (!directionOk || !statusOk) {
+    console.error("[ezyai-signals] unknown enum in row", {
+      id: row.id,
+      external_id: row.external_id,
+      direction: row.direction,
+      status: row.status,
+    });
+  }
   return {
     id: row.id,
+    externalId: row.external_id,
+    sourceChannelId: row.source_channel_id,
+    sourceMessageId: row.source_message_id,
     symbol: row.symbol,
-    direction: (SIGNAL_DIRECTIONS as readonly string[]).includes(row.direction)
-      ? (row.direction as SignalDirection)
-      : "buy",
-    status: (SIGNAL_STATUSES as readonly string[]).includes(row.status)
-      ? (row.status as SignalStatus)
-      : "pending",
+    direction: directionOk ? (row.direction as SignalDirection) : "buy",
+    status: statusOk ? (row.status as SignalStatus) : "pending",
     setup: row.setup,
     timeframe: row.timeframe,
     entryLow: row.entry_low,
@@ -166,12 +177,30 @@ export async function listClosedSignals(limit = 200): Promise<EzyAiSignal[]> {
   return ((data ?? []) as unknown as Row[]).map(toSignal);
 }
 
+/** One signal by the bot's external id, for the detail route. Null when unknown. */
+export async function getSignalByExternalId(externalId: string): Promise<EzyAiSignal | null> {
+  const id = externalId.trim().slice(0, 120);
+  if (!id) return null;
+  const { data, error } = await supabaseAdmin
+    .from(TABLE)
+    .select(COLUMNS)
+    .eq("external_id", id)
+    .maybeSingle();
+  if (error) {
+    console.error("[ezyai-signals] detail lookup failed", error);
+    throw new Error("signal lookup failed");
+  }
+  return data ? toSignal(data as unknown as Row) : null;
+}
+
 /* ------------------------------------------------------------------ */
 /* Ingest                                                              */
 /* ------------------------------------------------------------------ */
 
 export type SignalPush = {
   external_id?: unknown;
+  source_channel_id?: unknown;
+  source_message_id?: unknown;
   symbol?: unknown;
   direction?: unknown;
   status?: unknown;
@@ -216,6 +245,15 @@ function timestamp(value: unknown): string | null | undefined {
   if (value === null || value === "") return null;
   const at = new Date(String(value));
   return Number.isNaN(at.getTime()) ? undefined : at.toISOString();
+}
+
+/** Telegram snowflake, or undefined so the column is left alone. Null clears it. */
+function intId(value: unknown): number | null | undefined {
+  if (value === undefined) return undefined;
+  if (value === null || value === "") return null;
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isInteger(n)) return undefined;
+  return n;
 }
 
 /**
@@ -266,6 +304,8 @@ export async function pushSignal(payload: SignalPush): Promise<PushResult> {
   const set = (key: string, value: unknown) => {
     if (value !== undefined) patch[key] = value;
   };
+  set("source_channel_id", intId(payload.source_channel_id));
+  set("source_message_id", intId(payload.source_message_id));
   set("symbol", symbol?.toUpperCase());
   set("direction", direction);
   set("status", status);

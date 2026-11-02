@@ -65,11 +65,12 @@ export const requestLoginCode = createServerFn({ method: "POST" })
   .inputValidator(z.object({ handle: z.string().min(2).max(64) }))
   .handler(async ({ data }): Promise<{ sent: boolean; message: string }> => {
     const { findMemberByHandle, issueLoginCode } = await import("@/lib/bot/member.server");
-    const { checkRateLimit } = await import("@/lib/rate-limit.server");
+    const { checkAuthRateLimit } = await import("@/lib/rate-limit.server");
     const handle = data.handle.trim().replace(/^@+/, "").toLowerCase();
     // Each request DMs a fresh code and invalidates the previous one, so cap
-    // per handle (and per IP inside checkRateLimit) to stop code spam.
-    const allowed = await checkRateLimit("login_code", handle, {
+    // per handle (and per IP inside checkAuthRateLimit) to stop code spam.
+    // Auth path: fail closed so a storage outage cannot disable protection.
+    const allowed = await checkAuthRateLimit("login_code", handle, {
       max: 3,
       windowMs: 10 * 60 * 1000,
     });

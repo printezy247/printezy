@@ -269,6 +269,15 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
           return Response.json({ ok: true });
         } catch (error) {
           console.error("[telegram webhook] handler error", error);
+          try {
+            const { recordSarahSendFailure } = await import("@/lib/bot/sarah.server");
+            await recordSarahSendFailure(
+              "telegram webhook",
+              error instanceof Error ? error.message : String(error),
+            );
+          } catch {
+            // Health write is best-effort; the 200 below must still send.
+          }
           // Always 200 so Telegram does not hammer retries on a logic bug.
           return Response.json({ ok: true, handled: false });
         }

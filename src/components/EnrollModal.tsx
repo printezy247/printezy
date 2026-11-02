@@ -200,9 +200,9 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
       if (!result.clientSecret) throw new Error("Stripe did not return a client secret");
       return result.clientSecret;
     } catch (err) {
-      // The real cause is for us, in the console; the buyer gets a sentence
-      // they can act on.
-      console.error("[checkout] could not start", err);
+      // The real cause is for us, in dev console; the buyer gets a sentence
+      // they can act on. Server-side detail is in Stripe webhook logs.
+      if (import.meta.env.DEV) console.error("[checkout] could not start", err);
       setCheckoutError(checkoutUserMessage(err));
       throw err;
     } finally {

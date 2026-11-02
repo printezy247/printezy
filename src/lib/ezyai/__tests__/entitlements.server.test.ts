@@ -93,14 +93,23 @@ describe("findEntitlementByCode", () => {
   });
 
   it("looks a well-formed code up as an unclaimed paid row", async () => {
-    const row = { id: "e2", redeem_code: "EZY-ABCD-1234" };
+    const row = { id: "e2", redeem_code: "EZY-ABCD-1234", redeem_code_hash: "abc" };
     fromMock.mockReturnValue(chain({ data: [row], error: null }));
     const got = await findEntitlementByCode("EZY-ABCD-1234");
     expect(got).toEqual([row]);
     const c = fromMock.mock.results[0].value;
-    expect(c.eq).toHaveBeenCalledWith("redeem_code", "EZY-ABCD-1234");
+    expect(c.eq).toHaveBeenCalledWith("redeem_code_hash", expect.stringMatching(/^[0-9a-f]{64}$/));
     expect(c.eq).toHaveBeenCalledWith("status", "paid");
     expect(c.is).toHaveBeenCalledWith("claimed_at", null);
+  });
+
+  it("falls back to plaintext for legacy rows without a hash", async () => {
+    const row = { id: "e2", redeem_code: "EZY-ABCD-1234", redeem_code_hash: null };
+    fromMock
+      .mockReturnValueOnce(chain({ data: [], error: null }))
+      .mockReturnValueOnce(chain({ data: [row], error: null }));
+    const got = await findEntitlementByCode("EZY-ABCD-1234");
+    expect(got).toEqual([row]);
   });
 });
 

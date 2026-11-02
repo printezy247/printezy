@@ -25,6 +25,12 @@ export function generateRedeemCode(): string {
   return "EZY-" + body.match(/.{4}/g)!.join("-");
 }
 
+/** SHA-256 hex of the canonical code. Lookup key; the code itself is a bearer secret. */
+export async function hashRedeemCode(code: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 /**
  * Turn whatever a person typed into the canonical code, or null when it can't
  * be one. Mirrors the bot: strip whitespace/underscores, uppercase, O→0, I→1,

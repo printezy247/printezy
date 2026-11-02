@@ -34,7 +34,9 @@ export function loadLocale(locale: Locale): Promise<void> {
   pending[locale] ??= loaders[locale]().then((m) => {
     loaded[locale] = m.default;
   });
-  return pending[locale]!;
+  const queued = pending[locale];
+  if (!queued) return Promise.resolve();
+  return queued;
 }
 
 export function isLocaleLoaded(locale: Locale): boolean {

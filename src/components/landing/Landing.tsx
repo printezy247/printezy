@@ -1403,7 +1403,9 @@ function Pricing() {
                   <div className="mt-6 flex justify-center">
                     <a
                       href={t.openAccountHref}
-                      onClick={() => goTrack(t.openAccountEvent!)}
+                      onClick={() => {
+                        if (t.openAccountEvent) goTrack(t.openAccountEvent);
+                      }}
                       className="neon-free-btn neon-pearl neon-free-btn--compact"
                     >
                       <span className="neon-free-btn-inner">Open Account</span>
@@ -1976,6 +1978,7 @@ export function Faq() {
   const faqJsonLd = useMemo(() => buildFaqJsonLd(locale), [locale]);
   return (
     <Section id="faq">
+      {/* faqJsonLd is JSON.stringify output from buildFaqJsonLd — no user HTML */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
       <SectionHeading eyebrow={t("faq_eyebrow")} title={t("faq_title")} />
       <div className="mx-auto max-w-3xl space-y-10">

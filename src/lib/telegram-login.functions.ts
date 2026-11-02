@@ -36,12 +36,11 @@ const TELEGRAM_LOGIN_RATE_LIMIT = {
   max: 10,
   windowMs: 60_000,
   ipMultiplier: 1,
-  failClosed: true,
 } as const;
 
 async function allowTelegramLogin(endpoint: string, identifier: string): Promise<boolean> {
-  const { checkRateLimit } = await import("@/lib/rate-limit.server");
-  return checkRateLimit(endpoint, identifier || "anonymous", TELEGRAM_LOGIN_RATE_LIMIT);
+  const { checkAuthRateLimit } = await import("@/lib/rate-limit.server");
+  return checkAuthRateLimit(endpoint, identifier || "anonymous", TELEGRAM_LOGIN_RATE_LIMIT);
 }
 
 /** Strips the optional keys Zod leaves as undefined — they are not signed. */
