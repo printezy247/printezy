@@ -1,49 +1,17 @@
 import { imgProps } from "@/lib/responsive-images";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { Check, ArrowRight } from "lucide-react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { BuyButton } from "@/components/BuyButton";
 import { formatUsd, getCatalogItem } from "@/lib/catalog";
 import { goTrack } from "@/lib/analytics";
 import { useTranslation } from "@/lib/i18n";
+import { LINKS } from "@/lib/links";
 import type { TranslationKey } from "@/lib/translations";
-
-// Not imported from Landing.tsx to avoid a circular module dependency
-// (Landing.tsx mounts <Tools />) — kept in sync manually if it changes.
-const TRADINGVIEW_LINK = "https://www.tradingview.com/pricing/?share_your_love=printezyusd";
+import { Section, SectionHeading } from "./primitives";
 
 const tradingViewLogo = "https://s3.tradingview.com/userpics/6171439-mFQX_big.png";
 const mt5Logo = mt5LogoAsset;
-
-function Section({ id, children }: { id?: string; children: ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-24 py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">{children}</div>
-    </section>
-  );
-}
-
-function SectionHeading({
-  eyebrow,
-  title,
-  subtitle,
-}: {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      {eyebrow ? (
-        <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
-          {eyebrow}
-        </p>
-      ) : null}
-      <h2 className="text-3xl sm:text-4xl">{title}</h2>
-      {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
-    </div>
-  );
-}
 
 type TvProduct = {
   id: string;
@@ -256,7 +224,7 @@ export function Tools() {
           ))}
         </div>
         <a
-          href={TRADINGVIEW_LINK}
+          href={LINKS.tradingView}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => goTrack("tools_tv_open_account")}

@@ -190,6 +190,8 @@ export function localizedHead(o: LocalizedHeadOptions) {
     { name: "twitter:title", content: o.twitterTitle ?? ogTitle },
     { name: "twitter:description", content: o.twitterDescription ?? o.description },
     { name: "twitter:image", content: image },
+    // No twitter:site/creator: the brand has no X profile yet, and a handle
+    // that doesn't resolve is worse than none.
   ];
   // One tag only, deliberately: the router keeps a single meta per property, so
   // five og:locale:alternate tags collapsed into whichever came last (every
@@ -213,7 +215,9 @@ export function localizedHead(o: LocalizedHeadOptions) {
     });
   }
   links.push({ rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}${o.path}` });
-  links.push({ rel: "preload", as: "image", href: image });
+  // No OG-image preload here: the social card is never rendered by the page,
+  // so preloading it only stole bandwidth (and often LCP slots) from assets
+  // a visitor actually sees. Pages preload their real hero instead.
 
   return {
     meta,

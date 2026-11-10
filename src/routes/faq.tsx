@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Faq, Nav, Footer } from "@/components/landing/Landing";
+import { Faq } from "@/components/landing/FaqSection";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { trackPageLoad, trackEngagement } from "@/lib/analytics";
 import { localizePath } from "@/lib/i18n";
 import { localizedHead, type PageLocale } from "@/lib/seo";

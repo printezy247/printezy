@@ -1,9 +1,8 @@
 import { imgProps } from "@/lib/responsive-images";
 import { createFileRoute, Link, notFound, useSearch } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Download, FileText, Clock, BookOpen } from "lucide-react";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { getEbook, localizeEbook, EBOOK_PAGES, type Ebook } from "@/lib/ebooks";
 import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations } from "@/lib/translations";
@@ -231,13 +230,11 @@ export function EbookPage({ book: source }: { book: Ebook }) {
           </div>
         </section>
 
-        <AnimatePresence>
-          {claiming ? (
-            <Suspense fallback={null}>
-              <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} />
-            </Suspense>
-          ) : null}
-        </AnimatePresence>
+        {claiming ? (
+          <Suspense fallback={null}>
+            <EbookClaimModal slug={book.slug} onClose={() => setClaiming(false)} />
+          </Suspense>
+        ) : null}
 
         {/* Outcomes */}
         <section className="border-y border-border bg-surface/40">

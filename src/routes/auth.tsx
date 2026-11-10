@@ -1,9 +1,9 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/integrations/supabase/lazy";
 import { useServerFn } from "@tanstack/react-start";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import {
   getTelegramLoginConfig,
   signInWithTelegramToWebsite,
@@ -77,6 +77,7 @@ function AuthPage() {
         return;
       }
       if (res.mode === "website") {
+        const supabase = await getSupabase();
         const { error: otpError } = await supabase.auth.verifyOtp({
           token_hash: res.tokenHash,
           type: "magiclink",
@@ -98,18 +99,24 @@ function AuthPage() {
   // plain location replace rather than the typed router navigate.
   useEffect(() => {
     let active = true;
+    let unsubscribe: (() => void) | undefined;
     const go = () => window.location.replace(destination);
-    void supabase.auth.getSession().then(({ data }) => {
-      if (active && data.session) go();
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active && session) go();
-    });
+    void (async () => {
+      const supabase = await getSupabase();
+      if (!active) return;
+      void supabase.auth.getSession().then(({ data }) => {
+        if (active && data.session) go();
+      });
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (active && session) go();
+      });
+      unsubscribe = () => subscription.unsubscribe();
+    })();
     return () => {
       active = false;
-      subscription.unsubscribe();
+      unsubscribe?.();
     };
   }, [destination]);
 
@@ -122,6 +129,7 @@ function AuthPage() {
       });
       if (!allowed)
         throw new Error("Too many sign-in attempts. Please wait a minute and try again.");
+      const supabase = await getSupabase();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: window.location.origin + destination },
@@ -148,6 +156,7 @@ function AuthPage() {
       setState("idle");
       return;
     }
+    const supabase = await getSupabase();
     const { error: otpError } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: { emailRedirectTo: window.location.origin + destination },

@@ -772,7 +772,9 @@ function Bars() {
                 onChange={(event) => {
                   const next = event.target.value as Locale;
                   goTrack(`welcome_lang_${next}`);
-                  window.location.href = localizePath("/", next);
+                  // The translated home lives at /<locale>/home — "/" has no
+                  // twins, so localizePath("/") would land on a 404.
+                  window.location.href = localizePath("/home", next);
                 }}
                 className="min-h-11 min-w-11 appearance-none rounded-sm border-2 border-neutral-300 bg-white py-2 pl-3 pr-8 text-sm font-extrabold uppercase tracking-wide text-neutral-800 hover:border-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
               >

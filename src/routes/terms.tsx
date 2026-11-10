@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { localizePath, useTranslation } from "@/lib/i18n";
 import { translations, type TranslationKey } from "@/lib/translations";
 import { localizedHead, type PageLocale } from "@/lib/seo";

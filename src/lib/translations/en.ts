@@ -136,6 +136,8 @@ const en = {
   pricing_title: "Start with clarity. Upgrade when you're ready.",
   pricing_subtitle:
     "All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required.",
+  pricing_duration_note:
+    "Every package is one payment. No subscription, nothing auto-renews. MT5 tools and EzyAI PRO are licensed per term (1, 6 or 12 months).",
   pricing_most_popular: "Most popular",
   pricing_free_alt: "or free access by Vantage activation",
   pricing_cta: "Enroll Now",
@@ -249,7 +251,7 @@ const en = {
   faq_group2_title: "Pricing tiers",
   faq_g2_q1: "Is there a free option?",
   faq_g2_a1:
-    "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29/month is the paid entry point.",
+    "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29 one-time is the paid entry point — a single payment, nothing renews.",
   faq_g2_q2: "What's included in Pro, Premium and Elite?",
   faq_g2_a2:
     "Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",

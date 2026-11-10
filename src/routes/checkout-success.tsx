@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Send, Copy, Gift, Mail } from "lucide-react";
+import { CheckCircle2, Clock, Loader2, Send, Copy, Gift, Mail } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/integrations/supabase/lazy";
 import { getCheckoutStatus } from "@/lib/checkout.functions";
 import {
   getOrCreateReferralCode,
@@ -114,15 +114,37 @@ function SuccessPage() {
       return;
     }
     setSessionId(sessionId);
-    check({ data: { sessionId } })
-      .then((res) => {
-        setState(res.paid ? "paid" : "pending");
-        setProduct(res.product);
-        setHandle(res.telegramUsername);
-        setEmail(res.email);
-        setRedeemCode(res.redeemCode);
-      })
-      .catch(() => setState("pending"));
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let alive = true;
+    // Poll briefly: right after redirect, Stripe's own record of the session
+    // is the fastest confirmation. The webhook is the source of truth for
+    // delivery and keeps working even if this polling never succeeds, so a
+    // buyer who gives up and closes the tab loses nothing.
+    const poll = () => {
+      if (!alive) return;
+      attempts += 1;
+      check({ data: { sessionId } })
+        .then((res) => {
+          if (!alive) return;
+          setState(res.paid ? "paid" : "pending");
+          setProduct(res.product);
+          setHandle(res.telegramUsername);
+          setEmail(res.email);
+          setRedeemCode(res.redeemCode);
+          if (!res.paid && attempts < 12) timer = setTimeout(poll, 5000);
+        })
+        .catch(() => {
+          if (!alive) return;
+          setState("pending");
+          if (attempts < 12) timer = setTimeout(poll, 5000);
+        });
+    };
+    poll();
+    return () => {
+      alive = false;
+      if (timer) clearTimeout(timer);
+    };
   }, [check]);
 
   async function loadReferralInfo() {
@@ -140,18 +162,22 @@ function SuccessPage() {
 
   useEffect(() => {
     let active = true;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!active || !data.session) return;
-      void loadReferralInfo();
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) void loadReferralInfo();
-    });
+    let unsubscribe: (() => void) | undefined;
+    void (async () => {
+      const supabase = await getSupabase();
+      if (!active) return;
+      const { data } = await supabase.auth.getSession();
+      if (active && data.session) void loadReferralInfo();
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) void loadReferralInfo();
+      });
+      unsubscribe = () => subscription.unsubscribe();
+    })();
     return () => {
       active = false;
-      subscription.unsubscribe();
+      unsubscribe?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -159,6 +185,7 @@ function SuccessPage() {
   async function sendMagicLink() {
     if (!email || signInState !== "idle") return;
     setSignInState("sending");
+    const supabase = await getSupabase();
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: window.location.href },
@@ -249,6 +276,23 @@ function SuccessPage() {
                 ? "PRO switches on for your Telegram account within a minute, or instantly with the code above."
                 : "your channels, indicators and ebooks are unlocked there within a minute."}
             </p>
+
+            {state === "pending" ? (
+              <div className="mx-auto mt-6 max-w-md rounded-xl border border-border bg-surface-elevated p-4 text-left text-sm text-body">
+                <p>
+                  We're still confirming with Stripe — this page rechecks itself every few seconds.
+                  You can safely close it: the payment is recorded, and access still arrives in
+                  Telegram once confirmation lands.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => window.location.reload()}
+                  className="mt-3 inline-flex items-center gap-1.5 font-semibold text-primary hover:underline"
+                >
+                  <Clock className="h-3.5 w-3.5" /> Check again now
+                </button>
+              </div>
+            ) : null}
 
             {botUsername && !ezyai && state === "paid" ? (
               <div className="mt-6 rounded-xl border border-primary/25 bg-primary/5 p-4 text-left">

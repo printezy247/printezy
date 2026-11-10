@@ -70,11 +70,10 @@ describe("localizedHead()", () => {
 
   it("preloads the resolved social image", () => {
     const head = localizedHead({ ...base, image: "welcome" });
-    expect(head.links).toContainEqual({
-      rel: "preload",
-      as: "image",
-      href: `${SITE_URL}${OG_IMAGES.welcome.image}`,
-    });
+    // The OG card is never rendered by the page — preloading it stole
+    // bandwidth (and often the LCP slot) from assets a visitor actually
+    // sees, so the head must not contain any image preload at all.
+    expect(head.links.filter((l) => (l as Record<string, string>).rel === "preload")).toEqual([]);
   });
 
   it("chooses the first available different edition for og:locale:alternate", () => {

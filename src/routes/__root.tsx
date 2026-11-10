@@ -107,7 +107,10 @@ const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://js.stripe.com https://telegram.org",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https:",
+  // Allowlist, not https:: the only third-party images the site draws are the
+  // TradingView logo and Supabase-hosted files; anything else would now fail
+  // loudly in dev instead of silently allowing any host.
+  "img-src 'self' data: blob: https://s3.tradingview.com https://*.supabase.co",
   "font-src 'self' data: https://fonts.gstatic.com",
   `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace(/^https/, "wss")} https://api.stripe.com https://*.stripe.com https://www.facebook.com https://connect.facebook.net`,
   "frame-src https://js.stripe.com https://*.stripe.com https://checkout.stripe.com https://oauth.telegram.org https://www.facebook.com",
@@ -178,8 +181,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://s3.tradingview.com" },
       {
         rel: "preload",
         as: "style",

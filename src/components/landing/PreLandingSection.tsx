@@ -62,6 +62,11 @@ export function PreLandingSection() {
       ref={dialog}
       aria-labelledby="prelanding-title"
       aria-describedby="prelanding-description"
+      onClick={(event) => {
+        // Native <dialog> leaves backdrop clicks alone; clicking outside the
+        // card should dismiss it like every other modal on the site.
+        if (event.target === dialog.current) dismiss("prelanding_backdrop");
+      }}
       onClose={() => {
         try {
           sessionStorage.setItem(SEEN_KEY, "true");
