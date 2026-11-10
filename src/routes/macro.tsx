@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { ArrowRight, Send } from "lucide-react";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { LINKS } from "@/lib/links";
 import { BuyButton } from "@/components/BuyButton";
 import { trackPageLoad, trackEngagement, track } from "@/lib/analytics";

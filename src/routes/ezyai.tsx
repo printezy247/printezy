@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Send } from "lucide-react";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { LINKS } from "@/lib/links";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n";
@@ -85,15 +85,24 @@ export function EzyAiPage() {
     queryKey: BOARD_REVISION_QUERY_KEY,
     queryFn: () => loadRevision(),
     refetchInterval: 30_000,
+    staleTime: 15_000,
+    gcTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
   });
   const board = useQuery({
     queryKey: ["ezyai-board", revision.data?.updatedAt ?? null],
     queryFn: () => loadBoard(),
+    staleTime: 20_000,
+    gcTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
   });
   const history = useQuery({
     queryKey: ["ezyai-history"],
     queryFn: () => loadHistory(),
     enabled: tab === "history",
+    staleTime: 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
   });
 
   const streamLive = useBoardStream();

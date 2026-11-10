@@ -1,28 +1,14 @@
 import { imgProps } from "@/lib/responsive-images";
 import { NextStepAdvisor } from "./NextStepAdvisor";
-import {
-  createContext,
-  lazy,
-  Suspense,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from "react";
+import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
-import { getTicker } from "@/lib/ticker.functions";
-import { useQuery } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
-import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { useTranslation, useLocale, localizePath } from "@/lib/i18n";
 import { LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib/locale-constants";
 import { LiveSampleSignal } from "./LiveSampleSignal";
@@ -30,17 +16,17 @@ import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { PreLandingSection } from "./PreLandingSection";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 import { Tools } from "@/components/landing/Tools";
+import { Faq } from "./FaqSection";
+import { Reveal, Section, SectionHeading } from "./primitives";
+import { Footer, Nav, useBotLink } from "./SiteChrome";
 
 const EbookDetailsModal = lazy(() =>
   import("@/components/EbookDetailsModal").then((m) => ({ default: m.EbookDetailsModal })),
 );
 import {
-  LogIn,
-  UserRound,
   Zap,
   GraduationCap,
   Users,
@@ -49,12 +35,8 @@ import {
   Check,
   Star,
   ArrowRight,
-  ShieldCheck,
   Clock,
   Activity,
-  ChevronDown,
-  Menu,
-  X,
   BookOpen,
   Lock,
 } from "lucide-react";
@@ -69,9 +51,7 @@ import {
   trackWebVitals,
 } from "@/lib/analytics";
 import { EBOOK_COVER_MAPPING, EBOOK_COVER_TECHNICAL } from "@/lib/ebooks";
-import { FAQ_GROUPS } from "@/lib/faq-data";
 import { LINKS } from "@/lib/links";
-import { buildFaqJsonLd } from "@/lib/faq-schema";
 import { formatLocalPriceEstimate } from "@/lib/locale-pricing";
 import { getLocaleFxRates } from "@/lib/locale-pricing.functions";
 export { LINKS } from "@/lib/links";
@@ -103,14 +83,6 @@ const mt5Logo = mt5LogoAsset;
  * visitor's fbclid back up. sessionId only exists client-side, so render the
  * plain href on first paint and swap it in after mount (no hydration mismatch).
  */
-function useBotLink() {
-  const [href, setHref] = useState(LINKS.bot);
-  useEffect(() => {
-    setHref(`${LINKS.bot}?start=${encodeURIComponent(getSessionId())}`);
-  }, []);
-  return href;
-}
-
 /**
  * Live Telegram channel member count (falls back to 640 while loading or on
  * fetch failure), fetched once at the page root and shared everywhere the
@@ -128,77 +100,6 @@ function useMemberCount() {
 /* ------------------------------------------------------------------ */
 /* Primitives                                                          */
 /* ------------------------------------------------------------------ */
-
-/* Apple-style easing: slow, buttery, settles gently */
-const APPLE_EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-function Reveal({
-  children,
-  delay = 0,
-  y = 32,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  y?: number;
-  className?: string;
-}) {
-  const reducedMotion = usePrefersReducedMotion();
-  if (reducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y, scale: 0.985 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.4, delay, ease: APPLE_EASE }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-export function Section({
-  id,
-  className = "",
-  children,
-}: {
-  id?: string;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section id={id} className={`scroll-mt-24 py-20 sm:py-24 ${className}`}>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">{children}</div>
-    </section>
-  );
-}
-
-export function SectionHeading({
-  eyebrow,
-  title,
-  subtitle,
-}: {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <Reveal>
-      <div className="mx-auto mb-12 max-w-2xl text-center">
-        {eyebrow ? (
-          <p className="mb-3 font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-primary">
-            {eyebrow}
-          </p>
-        ) : null}
-        <h2 className="text-3xl sm:text-4xl">{title}</h2>
-        {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
-      </div>
-    </Reveal>
-  );
-}
 
 function TelegramCta({
   label = "Join Free Channel",
@@ -245,389 +146,6 @@ function NeonFreeAccessButton({ href, event }: { href: string; event: string }) 
         <span className="neon-free-btn-inner">Get Free Access</span>
       </a>
     </div>
-  );
-}
-
-function Logo() {
-  return (
-    <span className="inline-flex items-center gap-2">
-      <img
-        {...imgProps(brandLogo)}
-        alt="EzyMap Algo logo"
-        className="h-8 w-8 rounded-md object-contain"
-      />
-      <span className="font-display text-[17px] font-bold tracking-tight text-foreground">
-        EzyMap<span className="text-accent">Algo</span>
-      </span>
-    </span>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Market ticker (static reference quotes)                             */
-/* ------------------------------------------------------------------ */
-
-/**
- * The symbols the header shows, in order. Prices come from the live feed; this
- * list only decides what is asked for and how it is ordered.
- *
- * Until the feed answers, each row shows its symbol and a dash. It previously
- * showed fifteen hardcoded prices — real-looking numbers that had not moved
- * since the day they were typed — and a placeholder that admits it is a
- * placeholder is worth more than one that lies convincingly.
- */
-const TICKER_SYMBOLS = [
-  "XAU/USD",
-  "XAG/USD",
-  "EUR/USD",
-  "GBP/USD",
-  "USD/JPY",
-  "AUD/USD",
-  "USD/CAD",
-  "BTC/USD",
-  "ETH/USD",
-  "SOL/USD",
-  "US30",
-  "US500",
-  "NAS100",
-  "USOIL",
-  "UKOIL",
-];
-
-export function Ticker() {
-  const loadTicker = useServerFn(getTicker);
-  // Fetched after mount, never during render: this bar sits on every page, and
-  // a header that waits on a market feed is a site that waits on a market feed.
-  const { data } = useQuery({
-    queryKey: ["header-ticker"],
-    queryFn: () => loadTicker(),
-    refetchInterval: 60_000,
-    staleTime: 55_000,
-  });
-
-  const quotes = data?.quotes ?? [];
-  const rows = quotes.length
-    ? quotes
-    : TICKER_SYMBOLS.map((symbol) => ({ symbol, price: "—", change: "", up: true }));
-  // Doubled so the marquee can loop without a visible seam. The second copy
-  // exists only for the animation, so it is hidden from assistive tech —
-  // otherwise the strip is announced twice on every page.
-  const items = [...rows, ...rows];
-
-  return (
-    <div
-      role="region"
-      aria-label="Market prices"
-      className="w-full border-b border-border bg-surface-elevated text-foreground"
-    >
-      <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        <div className="ticker-track animate-ticker gap-8">
-          {items.map((t, i) => (
-            <span
-              key={`${t.symbol}-${i}`}
-              aria-hidden={i >= rows.length ? true : undefined}
-              className="flex shrink-0 items-baseline gap-1.5"
-            >
-              <span className="font-semibold text-body">{t.symbol}</span>
-              <span className="font-mono tabular-nums text-foreground">{t.price}</span>
-              {t.change ? (
-                <span
-                  className="font-mono tabular-nums font-semibold"
-                  style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
-                >
-                  {t.change}
-                </span>
-              ) : null}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Nav                                                                 */
-/* ------------------------------------------------------------------ */
-
-const NAV_ITEMS = [
-  { key: "nav_signals", href: "/home#features" },
-  { key: "nav_packages", href: "/home#packages" },
-  { key: "nav_tools", href: "/home#tools" },
-  { key: "nav_macro", href: "/macro" },
-  // The board's nav item comes and goes with the board itself, rather than
-  // being deleted — see src/lib/ezyai/visibility.ts.
-  ...(EZYAI_BOARD_VISIBLE ? ([{ key: "nav_ezyai", href: "/ezyai" }] as const) : []),
-] as const;
-
-/** Not in the header nav — footer-only wayfinding links. */
-const FOOTER_ONLY_ITEMS = [
-  { key: "footer_track_record", href: "/home#track-record" },
-  { key: "footer_faq", href: "/faq" },
-] as const;
-
-function LocaleSwitcher({ className = "" }: { className?: string }) {
-  const { locale, setLocale } = useLocale();
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setOpen(false);
-        triggerRef.current?.focus();
-      }
-    }
-    function onPointerDown(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
-    }
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("mousedown", onPointerDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("mousedown", onPointerDown);
-    };
-  }, [open]);
-
-  return (
-    <div ref={rootRef} className={`relative ${className}`}>
-      <button
-        ref={triggerRef}
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className="flex min-h-9 items-center gap-1.5 rounded-md border border-border px-2.5 text-xs font-semibold text-body transition-colors hover:bg-surface"
-      >
-        <span aria-hidden="true">{LOCALE_FLAGS[locale]}</span>
-        {LOCALE_LABELS[locale]}
-        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
-      </button>
-      {open ? (
-        <ul
-          role="listbox"
-          className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-lg border border-border bg-card py-1 shadow-elevated"
-        >
-          {LOCALES.map((l) => (
-            <li key={l}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={locale === l}
-                onClick={() => {
-                  setLocale(l);
-                  setOpen(false);
-                }}
-                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm transition-colors ${
-                  locale === l ? "bg-primary-tint text-primary" : "text-body hover:bg-surface"
-                }`}
-              >
-                <span aria-hidden="true">{LOCALE_FLAGS[l]}</span>
-                <span className="flex-1">{LOCALE_NATIVE_NAMES[l]}</span>
-                {locale === l ? <Check className="h-3.5 w-3.5" /> : null}
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
-
-/**
- * "Sign in" for visitors, "My account" once a Supabase session exists.
- * Client-only: renders an empty placeholder until the session is known so
- * SSR and the first client paint agree.
- */
-function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
-  const { t } = useTranslation();
-  const [state, setState] = useState<"unknown" | "out" | "in">("unknown");
-
-  useEffect(() => {
-    let active = true;
-    void supabase.auth.getSession().then(({ data }) => {
-      if (active) setState(data.session ? "in" : "out");
-    });
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (active) setState(session ? "in" : "out");
-    });
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  if (state === "unknown") {
-    return <span aria-hidden="true" className={mobile ? "block h-11" : "inline-block h-8 w-16"} />;
-  }
-  const redirect = typeof window !== "undefined" ? window.location.pathname : "/";
-  return (
-    <Button
-      asChild
-      variant="ghost"
-      size={mobile ? "md" : "sm"}
-      className={mobile ? "w-full justify-start" : ""}
-    >
-      {state === "in" ? (
-        <Link to="/dashboard" onClick={onNavigate}>
-          <UserRound className="h-4 w-4" /> {t("nav_my_account")}
-        </Link>
-      ) : (
-        <Link to="/auth" search={{ redirect }} onClick={onNavigate}>
-          <LogIn className="h-4 w-4" /> {t("nav_sign_in")}
-        </Link>
-      )}
-    </Button>
-  );
-}
-
-export function Nav() {
-  const { t, locale } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const toggleBtnRef = useRef<HTMLButtonElement>(null);
-
-  const closeMenu = useCallback(() => {
-    setOpen(false);
-    toggleBtnRef.current?.focus();
-  }, []);
-
-  // Body scroll lock, focus trap, Escape-to-close and click-outside-to-dismiss
-  // while the mobile menu is open.
-  useEffect(() => {
-    if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        closeMenu();
-        return;
-      }
-      if (e.key !== "Tab" || !menuRef.current) return;
-      const focusable = menuRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    }
-
-    function onPointerDown(e: MouseEvent) {
-      const target = e.target as Node;
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(target) &&
-        !toggleBtnRef.current?.contains(target)
-      ) {
-        closeMenu();
-      }
-    }
-
-    document.addEventListener("keydown", onKeyDown);
-    document.addEventListener("mousedown", onPointerDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-      document.removeEventListener("mousedown", onPointerDown);
-    };
-  }, [open, closeMenu]);
-
-  return (
-    <>
-      <Ticker />
-      <header role="banner" className="sticky top-0 z-50 bg-background">
-        <nav className="border-b border-border">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href={localizePath("/", locale)} aria-label="EzyMap Algo home">
-              <Logo />
-            </a>
-
-            <ul className="hidden items-center gap-6 lg:flex">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={localizePath(item.href, locale)}
-                    className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
-                  >
-                    {t(item.key)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-
-            <div className="hidden items-center gap-4 lg:flex">
-              <LocaleSwitcher />
-              <AuthMenu />
-              <Button asChild variant="outline" size="sm">
-                <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah")}>
-                  <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
-                </a>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-2 lg:hidden">
-              <LocaleSwitcher />
-              <button
-                ref={toggleBtnRef}
-                type="button"
-                aria-label={t("nav_toggle_menu")}
-                aria-expanded={open}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-foreground"
-                onClick={() => setOpen((v) => !v)}
-              >
-                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        {open ? (
-          <div
-            ref={menuRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={t("nav_site_menu")}
-            className="border-b border-border bg-background lg:hidden"
-          >
-            <ul className="space-y-1 px-4 py-4">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={localizePath(item.href, locale)}
-                    onClick={closeMenu}
-                    className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
-                  >
-                    {t(item.key)}
-                  </a>
-                </li>
-              ))}
-              <li className="pt-2">
-                <AuthMenu mobile onNavigate={closeMenu} />
-              </li>
-              <li className="pt-2">
-                <Button asChild variant="outline" size="md" className="w-full">
-                  <a href={LINKS.support} onClick={() => goTrack("nav_ask_sarah_mobile")}>
-                    <Send className="h-4 w-4" /> {t("nav_ask_sarah")}
-                  </a>
-                </Button>
-              </li>
-            </ul>
-          </div>
-        ) : null}
-      </header>
-    </>
   );
 }
 
@@ -859,7 +377,7 @@ function Hero() {
                 <Send className="h-4 w-4" /> {t("hero_cta_join")}
               </Link>
               <a
-                href="/home#packages"
+                href={`${localizePath("/home", locale)}#packages`}
                 onClick={() => goTrack("hero_see_packages")}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
               >
@@ -1442,6 +960,9 @@ function Pricing() {
           </Reveal>
         ))}
       </div>
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        {tt("pricing_duration_note")}
+      </p>
       <div className="mt-8 rounded-md border border-border bg-card p-5">
         <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-accent">
           Risk &amp; affiliate disclosure
@@ -1574,13 +1095,11 @@ function Products() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {detailsSlug ? (
-          <Suspense fallback={null}>
-            <EbookDetailsModal slug={detailsSlug} onClose={() => setDetailsSlug(null)} />
-          </Suspense>
-        ) : null}
-      </AnimatePresence>
+      {detailsSlug ? (
+        <Suspense fallback={null}>
+          <EbookDetailsModal slug={detailsSlug} onClose={() => setDetailsSlug(null)} />
+        </Suspense>
+      ) : null}
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* TradingView indicators */}
@@ -1770,28 +1289,22 @@ const STEPS: { titleKey: TranslationKey; bodyKey: TranslationKey }[] = [
 ];
 
 function HowItWorks() {
-  const reducedMotion = usePrefersReducedMotion();
   const { t } = useTranslation();
   return (
     <Section id="how-it-works" className="bg-surface/40">
       <SectionHeading eyebrow={t("how_eyebrow")} title={t("how_title")} />
       <ol className="grid gap-5 md:grid-cols-3">
         {STEPS.map((s, i) => (
-          <motion.li
-            key={s.titleKey}
-            className="glass-card card-lift relative flex h-full flex-col rounded-xl p-6"
-            initial={reducedMotion ? false : { opacity: 0, y: 32, scale: 0.985 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={
-              reducedMotion ? { duration: 0 } : { duration: 0.4, delay: i * 0.04, ease: APPLE_EASE }
-            }
-          >
-            <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
-            <span className="gradient-tick mt-2" aria-hidden="true" />
-            <h3 className="mt-2 text-lg font-semibold">{t(s.titleKey)}</h3>
-            <p className="mt-2 flex-1 text-sm text-body">{t(s.bodyKey)}</p>
-          </motion.li>
+          <li key={s.titleKey} className="h-full">
+            <Reveal delay={i * 0.04} className="h-full">
+              <div className="glass-card card-lift relative flex h-full flex-col rounded-xl p-6">
+                <span className="font-display text-4xl font-bold text-accent/40">0{i + 1}</span>
+                <span className="gradient-tick mt-2" aria-hidden="true" />
+                <h3 className="mt-2 text-lg font-semibold">{t(s.titleKey)}</h3>
+                <p className="mt-2 flex-1 text-sm text-body">{t(s.bodyKey)}</p>
+              </div>
+            </Reveal>
+          </li>
         ))}
       </ol>
       <div className="mt-10 text-center">
@@ -1873,8 +1386,6 @@ type Testimonial = {
   locale: "ms" | "en";
   roleKey: TranslationKey;
   quoteKey: TranslationKey;
-  /** Real Telegram handle, only set for testimonials that can genuinely be verified. */
-  verifiedHandle?: string;
 };
 
 const TESTIMONIALS: Testimonial[] = [
@@ -1907,7 +1418,11 @@ const TESTIMONIALS: Testimonial[] = [
 function SocialProof() {
   const { formatted: memberCount } = useMemberCount();
   const { t, locale } = useTranslation();
-  const testimonials = TESTIMONIALS.filter((item) => item.locale === locale);
+  // Testimonials exist in en/ms only; other locales fall back to English
+  // rather than rendering an empty section.
+  const inLocale = TESTIMONIALS.filter((item) => item.locale === locale);
+  const testimonials =
+    inLocale.length > 0 ? inLocale : TESTIMONIALS.filter((i) => i.locale === "en");
   return (
     <Section id="testimonials" className="bg-surface/40">
       <SectionHeading
@@ -1952,11 +1467,6 @@ function SocialProof() {
               <figcaption className="mt-4 text-sm">
                 <span className="font-semibold">{item.name}</span>
                 <span className="block text-xs text-muted-foreground">{t(item.roleKey)}</span>
-                {item.verifiedHandle ? (
-                  <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                    <ShieldCheck className="h-3 w-3" /> {t("testimonial_verified")}
-                  </span>
-                ) : null}
               </figcaption>
             </figure>
           </Reveal>
@@ -1969,57 +1479,6 @@ function SocialProof() {
 /* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
-
-export function Faq() {
-  const [openIds, setOpenIds] = useState<string[]>([]);
-  const toggle = (id: string) =>
-    setOpenIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-  const { t, locale } = useTranslation();
-  const faqJsonLd = useMemo(() => buildFaqJsonLd(locale), [locale]);
-  return (
-    <Section id="faq">
-      {/* faqJsonLd is JSON.stringify output from buildFaqJsonLd — no user HTML */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
-      <SectionHeading eyebrow={t("faq_eyebrow")} title={t("faq_title")} />
-      <div className="mx-auto max-w-3xl space-y-10">
-        {FAQ_GROUPS.map((g, gi) => (
-          <div key={g.titleKey}>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-              {t(g.titleKey)}
-            </h3>
-            <div className="space-y-3">
-              {g.items.map((f, i) => {
-                const id = `${gi}-${i}`;
-                return (
-                  <Reveal key={f.qKey} delay={i * 0.04} y={20}>
-                    <div className="glass-card overflow-hidden rounded-xl">
-                      <button
-                        type="button"
-                        onClick={() => toggle(id)}
-                        aria-expanded={openIds.includes(id)}
-                        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                      >
-                        <span className="text-sm font-semibold">{t(f.qKey)}</span>
-                        <ChevronDown
-                          className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${openIds.includes(id) ? "rotate-180" : ""}`}
-                        />
-                      </button>
-                      {openIds.includes(id) ? (
-                        <p className="border-t border-border px-5 py-4 text-sm leading-relaxed text-body">
-                          {t(f.aKey)}
-                        </p>
-                      ) : null}
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Final CTA                                                           */
@@ -2053,120 +1512,6 @@ function FinalCta() {
 /* ------------------------------------------------------------------ */
 /* Footer                                                              */
 /* ------------------------------------------------------------------ */
-
-export function Footer() {
-  const botHref = useBotLink();
-  const { t, locale } = useTranslation();
-  return (
-    <footer className="border-t border-border/60 bg-background">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div>
-            <Logo />
-            <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t("footer_tagline")}</p>
-            <a
-              href={LINKS.freeChannel}
-              onClick={() => goTrack("footer_telegram")}
-              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-glow"
-            >
-              <Send className="h-4 w-4" /> t.me/ezymap
-            </a>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold">{t("footer_navigate")}</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
-                <li key={i.href}>
-                  <a href={localizePath(i.href, locale)} className="hover:text-foreground">
-                    {t(i.key)}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold">{t("footer_links")}</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a
-                  href={botHref}
-                  onClick={() => goTrack("footer_bot")}
-                  className="hover:text-foreground"
-                >
-                  {t("footer_enrollment_bot")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKS.support}
-                  onClick={() => goTrack("footer_support")}
-                  className="hover:text-foreground"
-                >
-                  {t("footer_support")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKS.macro}
-                  onClick={() => goTrack("footer_macro")}
-                  className="hover:text-foreground"
-                >
-                  {t("footer_macro_fundamentals")}
-                </a>
-              </li>
-              <li>
-                <Link to="/dashboard" className="hover:text-foreground">
-                  {t("nav_my_account")}
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={LINKS.vantage}
-                  onClick={() => goTrack("footer_vantage")}
-                  className="hover:text-foreground"
-                >
-                  {t("footer_vantage_markets")}
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold">{t("footer_legal")}</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a href={localizePath("/privacy", locale)} className="hover:text-foreground">
-                  {t("footer_privacy")}
-                </a>
-              </li>
-              <li>
-                <a href={localizePath("/terms", locale)} className="hover:text-foreground">
-                  {t("footer_terms")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKS.support}
-                  onClick={() => goTrack("footer_contact")}
-                  className="hover:text-foreground"
-                >
-                  {t("footer_contact")}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
-          <p>{t("footer_copyright")}</p>
-          <p>{t("footer_risk_disclaimer")}</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Page                                                                */
@@ -2217,7 +1562,7 @@ export function Landing() {
       <PreLandingSection />
       <div className="min-h-screen bg-background text-foreground">
         <Nav />
-        <main role="main">
+        <main>
           <Hero />
           <TrustStrip />
           <StatsStrip />

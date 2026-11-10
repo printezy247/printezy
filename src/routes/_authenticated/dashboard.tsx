@@ -14,9 +14,9 @@ import {
   ShoppingBag,
   UserRound,
 } from "lucide-react";
-import { Nav, Footer } from "@/components/landing/Landing";
+import { Nav, Footer } from "@/components/landing/SiteChrome";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/integrations/supabase/lazy";
 import { localizePath, useTranslation } from "@/lib/i18n";
 import { getCatalogItem, formatUsd } from "@/lib/catalog";
 import { EBOOK_PAGES, localizeEbook } from "@/lib/ebooks";
@@ -27,7 +27,7 @@ import { getOrCreateReferralCode, getMyReferralStats } from "@/lib/referral.func
 import { getTelegramLoginConfig, linkTelegramAccount } from "@/lib/telegram-login.functions";
 import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/TelegramLoginButton";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   ssr: false,
   head: () => ({
     meta: [{ title: "My account — EzyMap ALGO" }, { name: "robots", content: "noindex, nofollow" }],
@@ -44,24 +44,31 @@ function DashboardPage() {
   const [email, setEmail] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
-  // Client-side gate: no session → /auth, which brings the visitor back here.
+  // Auth is enforced by the _authenticated layout guard before this renders,
+  // so there is no redirect logic here — just read the session for the email.
+  // If the session expired between guard and render, sign-in state resolves
+  // on the next navigation rather than fighting /auth in a loop.
   useEffect(() => {
     let active = true;
-    void supabase.auth.getSession().then(({ data }) => {
+    void (async () => {
+      const supabase = await getSupabase();
       if (!active) return;
-      if (!data.session) {
+      const { data, error } = await supabase.auth.getSession();
+      if (!active) return;
+      if (error || !data.session) {
         void navigate({ to: "/auth", search: { redirect: "/dashboard" }, replace: true });
         return;
       }
       setEmail(data.session.user.email ?? null);
       setReady(true);
-    });
+    })();
     return () => {
       active = false;
     };
   }, [navigate]);
 
   async function signOut() {
+    const supabase = await getSupabase();
     await supabase.auth.signOut();
     void navigate({ to: "/", replace: true });
   }

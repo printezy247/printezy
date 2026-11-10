@@ -122,10 +122,19 @@ export function progressPercent(
   target: number | null | undefined,
   direction: SignalDirection,
 ): number | null {
-  if (price == null || stop == null || target == null) return null;
+  if (
+    price == null ||
+    stop == null ||
+    target == null ||
+    !Number.isFinite(price) ||
+    !Number.isFinite(stop) ||
+    !Number.isFinite(target)
+  )
+    return null;
   const span = direction === "buy" ? target - stop : stop - target;
   if (!Number.isFinite(span) || span <= 0) return null;
   const travelled = direction === "buy" ? price - stop : stop - price;
+  if (!Number.isFinite(travelled)) return null;
   return Math.max(0, Math.min(100, (travelled / span) * 100));
 }
 
@@ -135,11 +144,14 @@ export function entryMid(signal: {
   entryHigh: number | null;
   entryFill: number | null;
 }): number | null {
-  if (signal.entryFill != null) return signal.entryFill;
+  if (signal.entryFill != null) return Number.isFinite(signal.entryFill) ? signal.entryFill : null;
   if (signal.entryLow != null && signal.entryHigh != null) {
-    return (signal.entryLow + signal.entryHigh) / 2;
+    const mid = (signal.entryLow + signal.entryHigh) / 2;
+    return Number.isFinite(mid) ? mid : null;
   }
-  return signal.entryLow ?? signal.entryHigh ?? null;
+  const single = signal.entryLow ?? signal.entryHigh ?? null;
+  if (single == null || !Number.isFinite(single)) return null;
+  return single;
 }
 
 /**
@@ -150,10 +162,17 @@ export function entryMid(signal: {
 export function liveR(signal: EzyAiSignal): number | null {
   const entry = entryMid(signal);
   if (entry == null || signal.lastPrice == null || signal.stopPrice == null) return null;
+  if (
+    !Number.isFinite(entry) ||
+    !Number.isFinite(signal.lastPrice) ||
+    !Number.isFinite(signal.stopPrice)
+  )
+    return null;
   const risk = Math.abs(entry - signal.stopPrice);
-  if (risk <= 0) return null;
+  if (!Number.isFinite(risk) || risk <= 0) return null;
   const move = signal.direction === "buy" ? signal.lastPrice - entry : entry - signal.lastPrice;
-  return move / risk;
+  const r = move / risk;
+  return Number.isFinite(r) ? r : null;
 }
 
 /* ------------------------------------------------------------------ */

@@ -1,5 +1,4 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import { CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -96,13 +95,11 @@ export function BuyButton({
         <CreditCard className="h-4 w-4" />
         {label}
       </Button>
-      <AnimatePresence>
-        {open ? (
-          <Suspense fallback={null}>
-            <EnrollModal sku={sku} inline={inlineForm} onClose={() => setOpen(false)} />
-          </Suspense>
-        ) : null}
-      </AnimatePresence>
+      {open ? (
+        <Suspense fallback={null}>
+          <EnrollModal sku={sku} inline={inlineForm} onClose={() => setOpen(false)} />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

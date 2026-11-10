@@ -98,6 +98,7 @@ export type StripeCheckoutSession = {
 };
 
 export type StripeWebhookEvent = {
+  id: string;
   type: string;
   data: { object: StripeCheckoutSession };
 };

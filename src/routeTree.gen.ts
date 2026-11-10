@@ -15,7 +15,6 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout-success'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EzyaiRouteImport } from './routes/ezyai'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FreeChannelRouteImport } from './routes/free-channel'
@@ -38,6 +37,7 @@ import { Route as LangPrivacyRouteImport } from './routes/$lang/privacy'
 import { Route as LangTermsRouteImport } from './routes/$lang/terms'
 import { Route as DotwellKnownSecurityDottxtRouteImport } from './routes/[.]well-known/security[.]txt'
 import { Route as AuthenticatedAdsDashboardRouteImport } from './routes/_authenticated/ads-dashboard'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSiteAnalyticsRouteImport } from './routes/_authenticated/site-analytics'
 import { Route as EbooksSlugRouteImport } from './routes/ebooks.$slug'
 import { Route as SignalExternalIdRouteImport } from './routes/signal.$externalId'
@@ -76,11 +76,6 @@ const AuthRoute = AuthRouteImport.update({
 const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout-success',
   path: '/checkout-success',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EzyaiRoute = EzyaiRouteImport.update({
@@ -195,6 +190,11 @@ const AuthenticatedAdsDashboardRoute =
     path: '/ads-dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSiteAnalyticsRoute =
   AuthenticatedSiteAnalyticsRouteImport.update({
     id: '/site-analytics',
@@ -256,7 +256,6 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
-  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -278,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/signal/$externalId': typeof SignalExternalIdRoute
@@ -296,7 +296,6 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
-  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -318,6 +317,7 @@ export interface FileRoutesByTo {
   '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/signal/$externalId': typeof SignalExternalIdRoute
@@ -338,7 +338,6 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/checkout-success': typeof CheckoutSuccessRoute
-  '/dashboard': typeof DashboardRoute
   '/ezyai': typeof EzyaiRoute
   '/faq': typeof FaqRoute
   '/free-channel': typeof FreeChannelRoute
@@ -360,6 +359,7 @@ export interface FileRoutesById {
   '/$lang/terms': typeof LangTermsRoute
   '/.well-known/security.txt': typeof DotwellKnownSecurityDottxtRoute
   '/_authenticated/ads-dashboard': typeof AuthenticatedAdsDashboardRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/site-analytics': typeof AuthenticatedSiteAnalyticsRoute
   '/ebooks/$slug': typeof EbooksSlugRoute
   '/signal/$externalId': typeof SignalExternalIdRoute
@@ -380,7 +380,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
-    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -402,6 +401,7 @@ export interface FileRouteTypes {
     | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
+    | '/dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
     | '/signal/$externalId'
@@ -420,7 +420,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
-    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -442,6 +441,7 @@ export interface FileRouteTypes {
     | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/ads-dashboard'
+    | '/dashboard'
     | '/site-analytics'
     | '/ebooks/$slug'
     | '/signal/$externalId'
@@ -461,7 +461,6 @@ export interface FileRouteTypes {
     | '/account'
     | '/auth'
     | '/checkout-success'
-    | '/dashboard'
     | '/ezyai'
     | '/faq'
     | '/free-channel'
@@ -483,6 +482,7 @@ export interface FileRouteTypes {
     | '/$lang/terms'
     | '/.well-known/security.txt'
     | '/_authenticated/ads-dashboard'
+    | '/_authenticated/dashboard'
     | '/_authenticated/site-analytics'
     | '/ebooks/$slug'
     | '/signal/$externalId'
@@ -503,7 +503,6 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
-  DashboardRoute: typeof DashboardRoute
   EzyaiRoute: typeof EzyaiRoute
   FaqRoute: typeof FaqRoute
   FreeChannelRoute: typeof FreeChannelRoute
@@ -578,13 +577,6 @@ declare module '@tanstack/react-router' {
       path: '/checkout-success'
       fullPath: '/checkout-success'
       preLoaderRoute: typeof CheckoutSuccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ezyai': {
@@ -741,6 +733,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdsDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/site-analytics': {
       id: '/_authenticated/site-analytics'
       path: '/site-analytics'
@@ -816,11 +815,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdsDashboardRoute: typeof AuthenticatedAdsDashboardRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSiteAnalyticsRoute: typeof AuthenticatedSiteAnalyticsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdsDashboardRoute: AuthenticatedAdsDashboardRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSiteAnalyticsRoute: AuthenticatedSiteAnalyticsRoute,
 }
 
@@ -834,7 +835,6 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
-  DashboardRoute: DashboardRoute,
   EzyaiRoute: EzyaiRoute,
   FaqRoute: FaqRoute,
   FreeChannelRoute: FreeChannelRoute,

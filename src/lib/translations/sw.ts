@@ -134,6 +134,8 @@ const sw: Record<TranslationKey, string> = {
   pricing_title: "Anza kwa uwazi. Boresha ukiwa tayari.",
   pricing_subtitle:
     "Viwango vyote hujiandikisha kupitia bot yetu. Unataka ufikiaji wa bure? Amilisha kupitia Vantage Markets — hakuna kadi inayohitajika.",
+  pricing_duration_note:
+    "Kila kifurushi ni malipo ya mara moja. Hakuna usajili, hakuna kujipya kiotomatiki. Leseni za zana za MT5 na EzyAI PRO ni kwa muda (miezi 1, 6 au 12).",
   pricing_most_popular: "Maarufu zaidi",
   pricing_free_alt: "au ufikiaji wa bure kwa kuamilisha akaunti ya Vantage",
   pricing_cta: "Jiandikishe Sasa",
@@ -242,7 +244,7 @@ const sw: Record<TranslationKey, string> = {
   faq_group2_title: "Viwango vya bei",
   faq_g2_q1: "Je, kuna chaguo la bure?",
   faq_g2_a1:
-    "Jiunge na kituo chetu cha bure cha Telegram kwa signals za mfano na elimu. Unaweza pia kufungua kiwango chochote cha malipo bila malipo kwa kuamilisha akaunti ya Vantage Markets — hakuna kadi inayohitajika. Kiwango cha Beginner kwa $29/mwezi ndicho kianzio cha malipo.",
+    "Jiunge na kituo chetu cha bure cha Telegram kwa signals za mfano na elimu. Unaweza pia kufungua kiwango chochote cha malipo bila malipo kwa kuamilisha akaunti ya Vantage Markets — hakuna kadi inayohitajika. Kiwango cha Beginner kwa $29 ya mara moja ndicho kianzio cha malipo — malipo ya mara moja, hakuna kujipya kiotomatiki.",
   faq_g2_q2: "Ni nini kimejumuishwa katika Pro, Premium na Elite?",
   faq_g2_a2:
     "Pro ($49) inaongeza mfuatano kamili wa signal na indicators. Premium ($99) inaongeza dawati la uchumi mkuu na misingi pamoja na msaada wa kipaumbele. Elite ($299) inaongeza taratibu binafsi za Jack, uongozaji wa mtu-mmoja na kila kitu kingine.",

@@ -6,8 +6,13 @@ import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 
 /**
  * Generated, not hand-written, so it can never go stale. Only the static
- * indexable routes plus one entry per real ebook — never a fabricated
- * <lastmod>, since none of these routes have a real timestamp to report.
+ * indexable routes plus one entry per real ebook.
+ *
+ * <lastmod> is the build date, injected by vite define (__BUILD_DATE__).
+ * Every deploy rewrites the page bundles, so "the site changed when this
+ * was built" is true — but it is a site-wide date, not per-route editorial
+ * history. Crawlers treat lastmod as a hint; one accurate-at-deploy date
+ * beats none.
  *
  * A page with translated twins gets one <loc> per offered locale, and every
  * one of those entries carries the same complete alternate set: an hreflang
@@ -69,6 +74,7 @@ function urlEntry({ path, priority, alternates = [] }: UrlEntry): string {
     .join("");
   return `  <url>
     <loc>${SITE_URL}${path}</loc>
+    <lastmod>${__BUILD_DATE__}</lastmod>
     <priority>${priority}</priority>${altXml}
   </url>`;
 }

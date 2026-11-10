@@ -140,6 +140,8 @@ const ms: Record<TranslationKey, string> = {
   pricing_title: "Mula dengan kejelasan. Naik taraf bila anda bersedia.",
   pricing_subtitle:
     "Semua peringkat mendaftar melalui bot kami. Mahu akses percuma? Aktifkan melalui Vantage Markets — tiada kad diperlukan.",
+  pricing_duration_note:
+    "Setiap pakej ialah satu bayaran. Tiada langganan, tiada renewal automatik. Lesen alat MT5 dan EzyAI PRO adalah mengikut tempoh (1, 6 atau 12 bulan).",
   pricing_most_popular: "Paling popular",
   pricing_free_alt: "atau akses percuma melalui pengaktifan Vantage",
   pricing_cta: "Daftar Sekarang",
@@ -255,7 +257,7 @@ const ms: Record<TranslationKey, string> = {
   faq_group2_title: "Peringkat harga",
   faq_g2_q1: "Adakah terdapat pilihan percuma?",
   faq_g2_a1:
-    "Sertai saluran Telegram percuma kami untuk contoh signals dan pendidikan. Anda juga boleh membuka mana-mana peringkat berbayar secara percuma dengan mengaktifkan akaun Vantage Markets — tiada kad diperlukan. Peringkat Beginner pada $29/bulan ialah titik masuk berbayar.",
+    "Sertai saluran Telegram percuma kami untuk contoh signals dan pendidikan. Anda juga boleh membuka mana-mana peringkat berbayar secara percuma dengan mengaktifkan akaun Vantage Markets — tiada kad diperlukan. Peringkat Beginner pada $29 sekali bayar ialah titik masuk berbayar — bayar sekali, tiada renewal automatik.",
   faq_g2_q2: "Apa yang termasuk dalam Pro, Premium dan Elite?",
   faq_g2_a2:
     "Pro ($49) menambah suapan signal penuh dan indicators. Premium ($99) menambah meja macro & asas serta sokongan keutamaan. Elite ($299) menambah rutin peribadi Jack, onboarding 1-lawan-1 dan semua yang lain.",

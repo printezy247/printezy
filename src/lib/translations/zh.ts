@@ -131,6 +131,8 @@ const zh: Record<TranslationKey, string> = {
   pricing_title: "从清晰开始,准备好后再升级。",
   pricing_subtitle:
     "所有套餐均通过我们的机器人注册。想要免费访问?通过 Vantage Markets 激活 — 无需信用卡。",
+  pricing_duration_note:
+    "每个套餐均为一次性付款。没有订阅，不会自动续费。MT5 工具与 EzyAI PRO 按期限（1、6 或 12 个月）授权。",
   pricing_most_popular: "最受欢迎",
   pricing_free_alt: "或通过 Vantage 激活免费访问",
   pricing_cta: "立即注册",
@@ -239,7 +241,7 @@ const zh: Record<TranslationKey, string> = {
   faq_group2_title: "价格套餐",
   faq_g2_q1: "有免费选项吗?",
   faq_g2_a1:
-    "加入我们的免费 Telegram 频道,获取示例 signals 和教学内容。您也可以通过激活 Vantage Markets 账户免费解锁任何付费套餐 — 无需信用卡。Beginner 套餐每月 $29 是付费入门点。",
+    "加入我们的免费 Telegram 频道,获取示例 signals 和教学内容。您也可以通过激活 Vantage Markets 账户免费解锁任何付费套餐 — 无需信用卡。Beginner 套餐 $29 一次性付清是付费入门点 — 单次付款,不会自动续费。",
   faq_g2_q2: "Pro、Premium 和 Elite 套餐分别包含什么?",
   faq_g2_a2:
     "Pro($49)增加完整 signal 推送和 indicators。Premium($99)增加 macro 与基本面分析台以及优先支持。Elite($299)增加 Jack 的个人指导、一对一入门辅导以及其他一切内容。",

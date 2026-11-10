@@ -11,6 +11,30 @@ const EXPERIENCE_LABEL: Record<string, string> = {
 };
 
 /**
+ * Find an auth user by exact email. listUsers has no email filter, so walk
+ * pages until found — a single perPage:1000 call silently misses everyone
+ * past the first thousand, which is exactly the repeat buyer this lookup
+ * exists for. Capped at 50 pages (10k users); past that, manual review.
+ */
+async function findAuthUserIdByEmail(email: string): Promise<string | null> {
+  const target = email.toLowerCase();
+  const perPage = 200;
+  for (let page = 1; page <= 50; page++) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage });
+    if (error) {
+      console.error("[purchases] listUsers page failed", { page, error });
+      return null;
+    }
+    const users = data?.users ?? [];
+    const hit = users.find((u) => u.email?.toLowerCase() === target);
+    if (hit) return hit.id;
+    if (users.length < perPage) return null; // last page
+  }
+  console.error("[purchases] email lookup exhausted 10k users without a match", { email });
+  return null;
+}
+
+/**
  * Guest checkout: no account exists before payment. Create one now (or
  * find the existing one for a repeat buyer's email) from the Stripe
  * session's email + checkout metadata, then upsert their profile.
@@ -32,8 +56,7 @@ async function provisionAccount(
 
     if (!userId) {
       // Most likely "already registered" — look up the existing account.
-      const { data: list } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
-      userId = list?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase())?.id ?? null;
+      userId = await findAuthUserIdByEmail(email);
     }
     if (!userId) return null;
 
