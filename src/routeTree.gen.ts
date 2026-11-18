@@ -21,6 +21,7 @@ import { Route as FreeChannelRouteImport } from './routes/free-channel'
 import { Route as FreeEbookRouteImport } from './routes/free-ebook'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndicatorsRouteImport } from './routes/indicators'
+import { Route as LinksRouteImport } from './routes/links'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as MacroRouteImport } from './routes/macro'
 import { Route as PricingRouteImport } from './routes/pricing'
@@ -106,6 +107,11 @@ const HomeRoute = HomeRouteImport.update({
 const IndicatorsRoute = IndicatorsRouteImport.update({
   id: '/indicators',
   path: '/indicators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinksRoute = LinksRouteImport.update({
+  id: '/links',
+  path: '/links',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/links': typeof LinksRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/links': typeof LinksRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -344,6 +352,7 @@ export interface FileRoutesById {
   '/free-ebook': typeof FreeEbookRoute
   '/home': typeof HomeRoute
   '/indicators': typeof IndicatorsRoute
+  '/links': typeof LinksRoute
   '/llms.txt': typeof LlmsDottxtRoute
   '/macro': typeof MacroRoute
   '/pricing': typeof PricingRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/links'
     | '/llms.txt'
     | '/macro'
     | '/pricing'
@@ -426,6 +436,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/links'
     | '/llms.txt'
     | '/macro'
     | '/pricing'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
     | '/free-ebook'
     | '/home'
     | '/indicators'
+    | '/links'
     | '/llms.txt'
     | '/macro'
     | '/pricing'
@@ -509,6 +521,7 @@ export interface RootRouteChildren {
   FreeEbookRoute: typeof FreeEbookRoute
   HomeRoute: typeof HomeRoute
   IndicatorsRoute: typeof IndicatorsRoute
+  LinksRoute: typeof LinksRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
   MacroRoute: typeof MacroRoute
   PricingRoute: typeof PricingRoute
@@ -619,6 +632,13 @@ declare module '@tanstack/react-router' {
       path: '/indicators'
       fullPath: '/indicators'
       preLoaderRoute: typeof IndicatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/links': {
+      id: '/links'
+      path: '/links'
+      fullPath: '/links'
+      preLoaderRoute: typeof LinksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/llms.txt': {
@@ -841,6 +861,7 @@ const rootRouteChildren: RootRouteChildren = {
   FreeEbookRoute: FreeEbookRoute,
   HomeRoute: HomeRoute,
   IndicatorsRoute: IndicatorsRoute,
+  LinksRoute: LinksRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
   MacroRoute: MacroRoute,
   PricingRoute: PricingRoute,
