@@ -12,7 +12,6 @@ import {
 import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { ConsentBanner } from "../components/ConsentBanner";
 import { PaymentTestModeBanner } from "../components/PaymentTestModeBanner";
 import { Toaster } from "../components/ui/sonner";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -27,6 +26,11 @@ const SupportChat = lazy(() =>
 );
 const EbookAutoPopup = lazy(() =>
   import("../components/EbookAutoPopup").then((m) => ({ default: m.EbookAutoPopup })),
+);
+// The consent banner only ever renders for visitors in regulated regions who
+// have not decided yet, so it has no business in the entry chunk.
+const ConsentBanner = lazy(() =>
+  import("../components/ConsentBanner").then((m) => ({ default: m.ConsentBanner })),
 );
 
 /**
@@ -189,11 +193,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "preload",
         as: "style",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap",
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap",
       },
     ],
     scripts: [
@@ -259,7 +263,9 @@ function RootComponent() {
         <Suspense fallback={null}>
           <SupportChat />
         </Suspense>
-        <ConsentBanner />
+        <Suspense fallback={null}>
+          <ConsentBanner />
+        </Suspense>
         <Suspense fallback={null}>
           <EbookAutoPopup />
         </Suspense>
