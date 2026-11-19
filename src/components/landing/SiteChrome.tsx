@@ -292,8 +292,35 @@ function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate
 export function Nav() {
   const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Scroll state for the frosted header and the reading-progress hairline.
+  // rAF-throttled so a scroll burst costs one style read per frame, and both
+  // values bail out of re-render when unchanged.
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, Math.max(0, y / max)) : 0);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   const closeMenu = useCallback(() => {
     setOpen(false);
@@ -351,7 +378,11 @@ export function Nav() {
   return (
     <>
       <Ticker />
-      <header role="banner" className="sticky top-0 z-50 bg-background">
+      <div aria-hidden="true" className="scroll-progress" style={{ width: `${progress * 100}%` }} />
+      <header
+        role="banner"
+        className={`site-header sticky top-0 z-50 bg-background ${scrolled ? "site-header--scrolled" : ""}`}
+      >
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href={localizePath("/", locale)} aria-label="EzyMap Algo home">
