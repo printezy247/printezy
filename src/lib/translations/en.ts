@@ -100,6 +100,11 @@ const en = {
   hero_disclaimer:
     "Illustrative example of signal format. Trading carries risk of loss. Signals are for education only and are not personalized financial advice.",
 
+  zoom_badge: "Every week · Free",
+  zoom_title: "Free weekly Zoom class on the channel",
+  zoom_body:
+    "Jack breaks down the week's best setups live — entries, targets and risk — then answers your questions. Free forever, no card.",
+  zoom_cta: "Join the free channel",
   trust_strip_label: "Trusted platforms we operate on",
 
   track_record_eyebrow: "Track record",

@@ -101,6 +101,11 @@ const sw: Record<TranslationKey, string> = {
   hero_card_profile: "Ndani ya siku · hatari ya kawaida",
   hero_disclaimer:
     "Mfano wa maelezo wa muundo wa signal. Biashara ina hatari ya hasara. signal ni kwa madhumuni ya kielimu tu na si ushauri wa kifedha wa kibinafsi.",
+  zoom_badge: "Kila wiki · bure",
+  zoom_title: "Somo la Zoom la bure kila wiki kwenye channel",
+  zoom_body:
+    "Jack huchambua setups bora za wiki moja kwa moja — entry, targets na risk — kisha hujibu maswali yako. Bure milele, bila kadi.",
+  zoom_cta: "Jiunge na channel ya bure",
   trust_strip_label: "Majukwaa yanayoaminika tunayofanyia kazi",
   track_record_eyebrow: "Rekodi ya Utendaji",
   track_record_title: "Chunguza historia mwenyewe",
