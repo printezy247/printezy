@@ -20,7 +20,7 @@ export function ebookHead(book: Ebook | undefined, locale: PageLocale) {
     return { meta: [{ title: t.ebook_not_found_meta }, { name: "robots", content: "noindex" }] };
   }
   const copy = localizeEbook(book, locale);
-  const title = `${copy.title} — ${t.ebook_meta_suffix}`;
+  const title = `${copy.title}: ${t.ebook_meta_suffix}`;
   const bookJsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Book",

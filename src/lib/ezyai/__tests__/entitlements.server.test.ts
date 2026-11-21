@@ -161,7 +161,7 @@ describe("recordEzyAiEntitlement", () => {
     expect(fromMock).not.toHaveBeenCalled();
   });
 
-  it("is idempotent — an existing row for the session is returned, not re-inserted", async () => {
+  it("is idempotent. An existing row for the session is returned, not re-inserted", async () => {
     retrieveSession.mockResolvedValue(paidSession);
     const existing = { id: "e1", stripe_session_id: "cs_1" };
     const c = chain({ data: existing, error: null });

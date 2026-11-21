@@ -16,11 +16,11 @@ const hi: Record<TranslationKey, string> = {
   chat_you: "आप",
   chat_assistant: "Sarah (सहायक)",
   chat_greeting:
-    "नमस्ते! मैं Sarah हूँ। रूटीन, पैकेज, भुगतान या अकाउंट अनलॉक करने के बारे में कुछ भी पूछें — मैं तुरंत जवाब देती हूँ, और जो नहीं दे पाती वह सीधे मेरे Telegram पर जाता है।",
+    "नमस्ते! मैं Sarah हूँ। रूटीन, पैकेज, भुगतान या अकाउंट अनलॉक करने के बारे में कुछ भी पूछें: मैं तुरंत जवाब देती हूँ, और जो नहीं दे पाती वह सीधे मेरे Telegram पर जाता है।",
   chat_error:
     "भेजा नहीं जा सका। फिर कोशिश करें, या Telegram पर Sarah को संदेश भेजें: https://t.me/ezysarah",
   chat_notice_relayed:
-    "Sarah को भेज दिया — वह खुद जवाब देती हैं, आमतौर पर कुछ घंटों में। यह चैट खुली रखें, जवाब यहीं आएगा।",
+    "Sarah को भेज दिया: वह खुद जवाब देती हैं, आमतौर पर कुछ घंटों में। यह चैट खुली रखें, जवाब यहीं आएगा।",
   chat_notice_unreachable:
     "Sarah अभी उपलब्ध नहीं हैं। Telegram पर सीधे संदेश भेजें: https://t.me/ezysarah",
   chat_link_telegram: "Telegram पर Sarah को संदेश भेजें",
@@ -41,16 +41,16 @@ const hi: Record<TranslationKey, string> = {
   show_signals_cta: "पैकेज देखें",
   show_learn_title: "कॉल के पीछे का तरीका सीखें",
   show_learn_body:
-    "स्ट्रक्चर मैपिंग और टेक्निकल पढ़ने पर दो मुफ़्त ईबुक — वही प्लेबुक जिससे डेस्क ट्रेड करता है।",
+    "स्ट्रक्चर मैपिंग और टेक्निकल पढ़ने पर दो मुफ़्त ईबुक. वही प्लेबुक जिससे डेस्क ट्रेड करता है।",
   show_learn_cta: "मुफ़्त ईबुक पाएँ",
   show_macro_title: "कैलेंडर पढ़ने वाला macro डेस्क",
   show_macro_body:
-    "केंद्रीय बैंकों का रुख, मंदी की संभावना और आज के रिलीज़ — MacroTrader बॉट से लाइव।",
+    "केंद्रीय बैंकों का रुख, मंदी की संभावना और आज के रिलीज़: MacroTrader बॉट से लाइव।",
   show_macro_cta: "Macro डेस्क खोलें",
   band_eyebrow: "EzyAI PRO",
   band_title: "विश्लेषण बॉट को करने दें",
   band_body:
-    "किसी भी pair के लिए trend, levels, entries और रिस्क — Telegram में ऑन-डिमांड, मुफ़्त ट्रायल।",
+    "किसी भी pair के लिए trend, levels, entries और रिस्क: Telegram में ऑन-डिमांड, मुफ़्त ट्रायल।",
   band_cta: "EzyAI खोलें",
   hero_title: "पेशेवर ट्रेडिंग signals, सीधे आपके फोन पर।",
   hero_subtitle:
@@ -93,7 +93,7 @@ const hi: Record<TranslationKey, string> = {
   hero_card_atr: "ATR (15m)",
   hero_card_size: "1% जोखिम पर पोज़िशन",
   hero_card_lots: "लॉट",
-  hero_card_plan_1: "ज़ोन के भीतर ही एंट्री लें — इसके ऊपर कभी पीछा न करें।",
+  hero_card_plan_1: "ज़ोन के भीतर ही एंट्री लें: इसके ऊपर कभी पीछा न करें।",
   hero_card_plan_2: "एंट्री के साथ ही स्टॉप लगता है और कभी आपके विरुद्ध नहीं हटता।",
   hero_card_plan_3: "Target 1 पर आधा निकालें, स्टॉप ब्रेक-ईवन पर ले जाएँ।",
   hero_card_plan_4: "बाकी को Target 2 तक चलने दें, स्ट्रक्चर के पीछे ट्रेल करते हुए।",
@@ -105,7 +105,7 @@ const hi: Record<TranslationKey, string> = {
   zoom_badge: "हर हफ़्ते · मुफ़्त",
   zoom_title: "चैनल पर हर हफ़्ते मुफ़्त Zoom क्लास",
   zoom_body:
-    "Jack हर हफ़्ते के सर्वश्रेष्ठ setups को लाइव समझाते हैं — entry, targets और risk — फिर आपके सवालों के जवाब देते हैं। हमेशा मुफ़्त, कोई कार्ड नहीं।",
+    "Jack हर हफ़्ते के सर्वश्रेष्ठ setups को लाइव समझाते हैं, entry, targets और risk, फिर आपके सवालों के जवाब देते हैं। हमेशा मुफ़्त, कोई कार्ड नहीं।",
   zoom_cta: "मुफ़्त चैनल से जुड़ें",
   trust_strip_label: "भरोसेमंद प्लेटफ़ॉर्म जिन पर हम काम करते हैं",
   track_record_eyebrow: "ट्रैक रिकॉर्ड",
@@ -135,11 +135,11 @@ const hi: Record<TranslationKey, string> = {
   feature_community_title: "समुदाय",
   feature_community_body: "टेलीग्राम के अंदर {memberCount} ट्रेडर्स से जुड़ें।",
   feature_mobile_title: "मोबाइल फर्स्ट",
-  feature_mobile_body: "कहीं भी, कभी भी अलर्ट पाएं — टर्मिनल की ज़रूरत नहीं।",
+  feature_mobile_body: "कहीं भी, कभी भी अलर्ट पाएं: टर्मिनल की ज़रूरत नहीं।",
   pricing_eyebrow: "पैकेज",
   pricing_title: "स्पष्टता से शुरू करें। तैयार होने पर अपग्रेड करें।",
   pricing_subtitle:
-    "सभी स्तर हमारे बॉट के ज़रिए दाखिला लेते हैं। मुफ़्त एक्सेस चाहिए? Vantage Markets के ज़रिए सक्रिय करें — कार्ड की ज़रूरत नहीं।",
+    "सभी स्तर हमारे बॉट के ज़रिए दाखिला लेते हैं। मुफ़्त एक्सेस चाहिए? Vantage Markets के ज़रिए सक्रिय करें: कार्ड की ज़रूरत नहीं।",
   pricing_duration_note:
     "हर पैकेज एक ही भुगतान है। कोई सदस्यता नहीं, कुछ भी ऑटो-रिन्यू नहीं होता। MT5 टूल्स और EzyAI PRO अवधि (1, 6 या 12 महीने) के अनुसार लाइसेंस्ड हैं।",
   pricing_most_popular: "सबसे लोकप्रिय",
@@ -166,7 +166,7 @@ const hi: Record<TranslationKey, string> = {
   footer_faq: "सामान्य प्रश्न",
   products_eyebrow: "उत्पाद",
   products_title: "पूरा EzyMap टूलकिट",
-  products_subtitle: "ईबुक, indicators और macro रिसर्च — signals के पीछे सब कुछ।",
+  products_subtitle: "ईबुक, indicators और macro रिसर्च: signals के पीछे सब कुछ।",
   products_ebooks_heading: "ईबुक",
   ebook_get_it_free: "मुफ़्त पाएं",
   ebook_mapping_b1: "Support व रेसिस्टेंस ज़ोन में महारत हासिल करें",
@@ -196,11 +196,11 @@ const hi: Record<TranslationKey, string> = {
   how_title: "आपके पहले signal तक तीन चरण",
   how_step1_title: "t.me/ezymap जॉइन करें",
   how_step1_body:
-    "एक टैप। कोई भुगतान नहीं, कोई फॉर्म नहीं — आप तुरंत मुफ़्त चैनल में शामिल हो जाते हैं।",
+    "एक टैप। कोई भुगतान नहीं, कोई फॉर्म नहीं. आप तुरंत मुफ़्त चैनल में शामिल हो जाते हैं।",
   how_step2_title: "तुरंत signal अलर्ट प्राप्त करें",
   how_step2_body: "Setup की पुष्टि होते ही entry, stop loss लॉस और targets आ जाते हैं।",
   how_step3_title: "Vantage Markets पर निष्पादित करें",
-  how_step3_body: "अपने ब्रोकर के साथ ट्रेड करें — हम Vantage Markets की सिफारिश करते हैं।",
+  how_step3_body: "अपने ब्रोकर के साथ ट्रेड करें. हम Vantage Markets की सिफारिश करते हैं।",
   ambassador_eyebrow: "एंबेसडर",
   ambassador_title: "जैक से मिलें",
   ambassador_role: "संस्थापक, EzyMap ALGO",
@@ -224,7 +224,7 @@ const hi: Record<TranslationKey, string> = {
     "साफ़ entries, स्पष्ट इनवैलिडेशन। इससे मेरी जर्नलिंग और रिस्क साइज़िंग बहुत आसान हो गई।",
   testimonial_luqman_role: "Scalperर",
   testimonial_luqman_quote:
-    "M5 चैनल मेरे पहले से ट्रेडिंग करने के तरीके से मेल खाता है — यह बस दुविधा हटा देता है।",
+    "M5 चैनल मेरे पहले से ट्रेडिंग करने के तरीके से मेल खाता है: यह बस दुविधा हटा देता है।",
   testimonial_chen_role: "नया ट्रेडर",
   testimonial_chen_quote:
     "सीखने के लिए मुफ़्त चैनल से शुरुआत की। सिर्फ शिक्षा ही जॉइन करने लायक थी।",
@@ -233,7 +233,7 @@ const hi: Record<TranslationKey, string> = {
   faq_group1_title: "रूटीन व signals",
   faq_g1_q1: "आप कितनी बार signals भेजते हैं?",
   faq_g1_a1:
-    "ट्रेडिंग घंटों (24/5) के दौरान दिन में कई बार। आवृत्ति बाज़ार की स्थितियों पर निर्भर करती है — हम केवल तभी अलर्ट करते हैं जब setup हमारे मानदंडों पर खरा उतरे। गुणवत्ता, मात्रा से ज़्यादा महत्वपूर्ण।",
+    "ट्रेडिंग घंटों (24/5) के दौरान दिन में कई बार। आवृत्ति बाज़ार की स्थितियों पर निर्भर करती है. हम केवल तभी अलर्ट करते हैं जब Setup हमारे मानदंडों पर खरा उतरे। गुणवत्ता, मात्रा से ज़्यादा महत्वपूर्ण।",
   faq_g1_q2: "आप किन बाज़ारों में ट्रेड करते हैं?",
   faq_g1_a2:
     "फॉरेक्स (प्रमुख जोड़े), क्रिप्टो और कमोडिटी। हमारा मुख्य फोकस इंट्राडे ट्रेडिंग है, ऊंचे टाइमफ्रेम पर स्विंग सेटअप के साथ।",
@@ -249,7 +249,7 @@ const hi: Record<TranslationKey, string> = {
   faq_group2_title: "मूल्य निर्धारण स्तर",
   faq_g2_q1: "क्या कोई मुफ़्त विकल्प है?",
   faq_g2_a1:
-    "नमूना signals और शिक्षा के लिए हमारे मुफ़्त टेलीग्राम चैनल में शामिल हों। आप Vantage Markets खाता सक्रिय करके किसी भी पेड टियर को मुफ़्त में अनलॉक भी कर सकते हैं — कार्ड की ज़रूरत नहीं। $29 का एक बार भुगतान वाला Beginner टियर पेड entry पॉइंट है — एक बार भुगतान, कोई ऑटो-रिन्यूअल नहीं।",
+    "नमूना signals और शिक्षा के लिए हमारे मुफ़्त टेलीग्राम चैनल में शामिल हों। आप Vantage Markets खाता सक्रिय करके किसी भी पेड टियर को मुफ़्त में अनलॉक भी कर सकते हैं, कार्ड की ज़रूरत नहीं। $29 का एक बार भुगतान वाला Beginner टियर पेड entry पॉइंट है, एक बार भुगतान, कोई ऑटो-रिन्यूअल नहीं।",
   faq_g2_q2: "Pro, Premium और Elite में क्या शामिल है?",
   faq_g2_a2:
     "Pro ($49) पूरा signal फीड और indicators जोड़ता है। Premium ($99) macro व फंडामेंटल डेस्क और प्राथमिकता सहायता जोड़ता है। Elite ($299) जैक की व्यक्तिगत रूटीन, 1-ऑन-1 ऑनबोर्डिंग और बाकी सब कुछ जोड़ता है।",
@@ -258,14 +258,14 @@ const hi: Record<TranslationKey, string> = {
     "हां। एनरोलमेंट बॉट खोलें, अपना नया पैकेज चुनें, भुगतान की पुष्टि होते ही आपका खाता अपडेट हो जाता है। आपका ट्रेड लॉग और इतिहास बना रहता है।",
   faq_g2_q4: "क्या आप रिफंड देते हैं?",
   faq_g2_a4:
-    "बॉट के ज़रिए अपने टेलीग्राम यूज़रनेम और ऑर्डर विवरण के साथ सारा को संदेश भेजें — वह हर मामले को अलग-अलग देखकर रिफंड अनुरोध संभालती हैं।",
+    "बॉट के ज़रिए अपने टेलीग्राम यूज़रनेम और ऑर्डर विवरण के साथ सारा को संदेश भेजें. वह हर मामले को अलग-अलग देखकर रिफंड अनुरोध संभालती हैं।",
   faq_group3_title: "दाखिला व आपका खाता",
   faq_g3_q1: "मैं पेड टियर में दाखिला कैसे लूं?",
   faq_g3_a1:
     "किसी भी पैकेज पर Enroll Now टैप करके टेलीग्राम पर हमारा एनरोलमेंट बॉट खोलें, अपना टियर चुनें, और Stripe के ज़रिए कार्ड से सुरक्षित भुगतान करें। भुगतान की पुष्टि होते ही आपका एक्सेस सक्रिय हो जाता है।",
   faq_g3_q2: "मैं अपने खाते तक कैसे पहुंचूं?",
   faq_g3_a2:
-    "एक-टैप साइन-इन लिंक के लिए बॉट में /account टाइप करें, या साइट पर बॉट द्वारा आपके टेलीग्राम पर भेजे गए 6-अंकीय कोड से साइन इन करें — कोई पासवर्ड नहीं।",
+    "एक-टैप साइन-इन लिंक के लिए बॉट में /account टाइप करें, या साइट पर बॉट द्वारा आपके टेलीग्राम पर भेजे गए 6-अंकीय कोड से साइन इन करें: कोई पासवर्ड नहीं।",
   faq_g3_q3: "भुगतान के बाद क्या होता है?",
   faq_g3_a3:
     "बॉट तुरंत आपका भुगतान पुष्टि करता है और आपका डैशबोर्ड अनलॉक हो जाता है: टियर-गेटेड signal फीड, आपका व्यक्तिगत ट्रेड लॉग, प्रदर्शन आंकड़े और बिलिंग इतिहास।",
@@ -293,11 +293,11 @@ const hi: Record<TranslationKey, string> = {
   footer_risk_disclaimer: "ट्रेडिंग में जोखिम शामिल है। signals शैक्षिक हैं, वित्तीय सलाह नहीं।",
   tools_eyebrow: "टूल्स",
   tools_title: "TradingView और MT5 indicators",
-  tools_subtitle: "हमारे सदस्य जिन टूल्स से ट्रेड करते हैं वही — लाइव कीमतें, कोई अलग पेज नहीं।",
+  tools_subtitle: "हमारे सदस्य जिन टूल्स से ट्रेड करते हैं वही: लाइव कीमतें, कोई अलग पेज नहीं।",
   tools_tv_section_title: "TradingView indicators",
   tools_tv_section_sub: "एक बार का लाइसेंस, आजीवन अपडेट।",
   tools_mt5_section_title: "MT5 indicators",
-  tools_mt5_section_sub: "अवधि चुनें — मासिक, 6-माह या वार्षिक।",
+  tools_mt5_section_sub: "अवधि चुनें: मासिक, 6-माह या वार्षिक।",
   tools_buy: "खरीदें",
   tools_open_tv_account: "मुफ़्त TradingView खाता खोलें",
   term_1m: "1 माह",
@@ -315,7 +315,7 @@ const hi: Record<TranslationKey, string> = {
   tv_pro_b1: "M1–H4 entry, SL और TP signals",
   tv_pro_b2: "मल्टी-timeframe संगम फ़िल्टर",
   tv_pro_b3: "आजीवन अपडेट शामिल",
-  mt5_bundle_tagline: "नीचे दिए सभी MT5 टूल एक लाइसेंस में — $999 मूल्य के।",
+  mt5_bundle_tagline: "नीचे दिए सभी MT5 टूल एक लाइसेंस में: $999 मूल्य के।",
   mt5_bundle_b1: "सभी MT5 indicators शामिल",
   mt5_bundle_b2: "प्राथमिकता setup सहायता",
   mt5_bundle_b3: "प्रॉप-फर्म फ्रेंडली सेटिंग्स",
@@ -355,12 +355,12 @@ const hi: Record<TranslationKey, string> = {
   macro_filter_sentiment: "सेंटीमेंट",
   macro_calendar_title: "आज का आर्थिक कैलेंडर",
   macro_calendar_note: "समय {tz} में दिखाया गया है",
-  macro_calendar_next_day: "आज और कुछ नहीं — {day} दिखाया जा रहा है",
-  macro_calendar_empty: "कोई रिलीज़ निर्धारित नहीं — पूरे सप्ताह के लिए ForexFactory देखें।",
-  macro_calendar_unavailable: "लाइव कैलेंडर अभी उपलब्ध नहीं — ForexFactory खोलें।",
+  macro_calendar_next_day: "आज और कुछ नहीं: {day} दिखाया जा रहा है",
+  macro_calendar_empty: "कोई रिलीज़ निर्धारित नहीं. पूरे सप्ताह के लिए ForexFactory देखें।",
+  macro_calendar_unavailable: "लाइव कैलेंडर अभी उपलब्ध नहीं: ForexFactory खोलें।",
   macro_calendar_updated: "{source} · {time} पर अपडेट",
   macro_live_note: "MacroTrader बॉट से लाइव · {time} पर अपडेट",
-  macro_sample_note: "नमूना डेटा — लाइव फ़ीड अभी कनेक्ट नहीं",
+  macro_sample_note: "नमूना डेटा: लाइव फ़ीड अभी कनेक्ट नहीं",
   macro_sample_short: "नमूना",
   macro_tone_readout: "7-दिन का रुख: {label}",
   macro_sentiment_readout: "7-दिन की भावना: {label}",
@@ -405,7 +405,7 @@ const hi: Record<TranslationKey, string> = {
   macro_crypto_desk_title: "Crypto डेस्क",
   macro_crypto_desk_note: "ऐड-ऑन, अलग से बिल किया गया",
   macro_pay_with_card: "कार्ड से भुगतान करें",
-  macro_pay_with_card_price: "कार्ड से भुगतान करें — {price}",
+  macro_pay_with_card_price: "कार्ड से भुगतान करें: {price}",
   macro_subscribe_telegram: "या टेलीग्राम के ज़रिए सब्सक्राइब करें",
   macro_fear_greed_title: "Crypto Fear & Greed",
   macro_gold_fg_title: "Gold Fear & Greed",
@@ -422,11 +422,11 @@ const hi: Record<TranslationKey, string> = {
   macro_next_rate_decisions_title: "अगले दर निर्णय",
   macro_full_desk_label: "पूरा macro डेस्क",
   macro_full_desk_desc:
-    "सभी चार प्रीमियम हीटमैप अनलॉक करें — केंद्रीय बैंक भिन्नता, मंदी संभावना, संपत्ति सहसंबंध और भू-राजनीतिक जोखिम — रोज़ाना {time} पर, आपके स्थानीय डाइजेस्ट समय पर डिलीवर।",
+    "सभी चार प्रीमियम हीटमैप अनलॉक करें, केंद्रीय बैंक भिन्नता, मंदी संभावना, संपत्ति सहसंबंध और भू-राजनीतिक जोखिम, रोज़ाना {time} पर, आपके स्थानीय डाइजेस्ट समय पर डिलीवर।",
   macro_subscribe_via_telegram_full: "टेलीग्राम के ज़रिए सब्सक्राइब करें",
   macro_payment_methods_note: "कार्ड, टेलीग्राम स्टार्स या USDT · कभी भी रद्द करें",
   macro_disclaimer_before:
-    "Macro डेटा केवल शिक्षा व शोध के लिए दिया जाता है और यह व्यक्तिगत निवेश सलाह नहीं है। आंकड़े थर्ड-पार्टी स्रोतों से आते हैं और देरी से या संशोधित हो सकते हैं — कार्रवाई से पहले",
+    "Macro डेटा केवल शिक्षा व शोध के लिए दिया जाता है और यह व्यक्तिगत निवेश सलाह नहीं है। आंकड़े थर्ड-पार्टी स्रोतों से आते हैं और देरी से या संशोधित हो सकते हैं: कार्रवाई से पहले",
   macro_disclaimer_after: "से क्रॉस-चेक करें। ट्रेडिंग में नुकसान का जोखिम है।",
   macro_dovish: "Dovish",
   macro_hawkish: "Hawkish",
@@ -445,7 +445,7 @@ const hi: Record<TranslationKey, string> = {
   ezyai_tab_about: "EzyAI के बारे में",
   ezyai_sig_title: "बॉट से लाइव",
   ezyai_sig_desc:
-    "बॉट अपने अकाउंट पर हर सिग्नल लेता है — autopilot और watch अलर्ट दोनों — जैसे ही वे आते हैं। कार्ड तब तक रहते हैं जब तक ट्रेड TP, break-even या SL पर बंद न हो — कुछ भी चुपचाप हटाया नहीं जाता।",
+    "बॉट अपने अकाउंट पर हर सिग्नल लेता है, autopilot और watch अलर्ट दोनों, जैसे ही वे आते हैं। कार्ड तब तक रहते हैं जब तक ट्रेड TP, break-even या SL पर बंद न हो, कुछ भी चुपचाप हटाया नहीं जाता।",
   ezyai_sig_empty: "अभी कोई खुला सिग्नल नहीं। सिग्नल आते ही बॉट यहाँ कार्ड पोस्ट करेगा।",
   ezyai_sig_updated: "{time} पर अपडेट",
   ezyai_load_failed: "बोर्ड लोड नहीं हो सका। यह अस्थायी गड़बड़ी हो सकती है।",
@@ -456,7 +456,7 @@ const hi: Record<TranslationKey, string> = {
   ezyai_sig_copied: "कॉपी हो गया",
   ezyai_sig_awaiting_levels: "स्तरों की प्रतीक्षा में",
   ezyai_see_live_board: "लाइव बोर्ड देखें",
-  ezyai_sig_exclusive: "इस पेज पर मुफ़्त — लाइव अलर्ट बॉट में PRO के साथ आते हैं।",
+  ezyai_sig_exclusive: "इस पेज पर मुफ़्त. लाइव अलर्ट बॉट में PRO के साथ आते हैं।",
   ezyai_sig_status_pending: "प्रतीक्षा",
   ezyai_sig_status_running: "चालू",
   ezyai_sig_status_tp: "टारगेट",
@@ -481,21 +481,21 @@ const hi: Record<TranslationKey, string> = {
   ezyai_sig_streak_losses: "हार",
   ezyai_sig_best_worst: "सर्वोत्तम {best} · सबसे खराब {worst}",
   ezyai_sig_drawdown: "अधिकतम ड्रॉडाउन {value}",
-  ezyai_sig_since: "{date} से गिना जाता है — केवल बॉट के असली सिग्नल।",
-  ezyai_sig_building: "ट्रैक रिकॉर्ड बन रहा है — अब तक {closed} सिग्नल बंद हुए।",
+  ezyai_sig_since: "{date} से गिना जाता है: केवल बॉट के असली सिग्नल।",
+  ezyai_sig_building: "ट्रैक रिकॉर्ड बन रहा है: अब तक {closed} सिग्नल बंद हुए।",
   ezyai_sig_curve: "संचयी R",
   ezyai_sig_curve_note: "हर बंद ट्रेड, पुराना पहले। ब्रेक-ईवन सपाट रहते हैं।",
   ezyai_sig_by_pair: "जोड़ी अनुसार",
   ezyai_sig_results: "नतीजे",
   ezyai_page_title: "AI ट्रेडिंग सिग्नल",
   ezyai_page_desc:
-    "एक टेलीग्राम बॉट जो मुफ़्त बाज़ार डेटा को ट्रेडिंग संगम में बदल देता है — entry/एग्ज़िट स्तरों के साथ तकनीकी विश्लेषण, लाइव प्रति-जोड़ी अलर्ट, स्रोतों के साथ फंडामेंटल, और रैंडमाइज़्ड ऑटो-signals, सब आपकी स्टाइल और रिस्क मोड से संचालित।",
+    "एक टेलीग्राम बॉट जो मुफ़्त बाज़ार डेटा को ट्रेडिंग संगम में बदल देता है. Entry/एग्ज़िट स्तरों के साथ तकनीकी विश्लेषण, लाइव प्रति-जोड़ी अलर्ट, स्रोतों के साथ फंडामेंटल, और रैंडमाइज़्ड ऑटो-signals, सब आपकी स्टाइल और रिस्क मोड से संचालित।",
   ezyai_feature_analyze_title: "Analyze",
   ezyai_feature_analyze_desc:
     "मांग पर बाज़ार विश्लेषण: trend, support/रेसिस्टेंस, entry ज़ोन, stop loss लॉस, TP1/TP2, रिस्क-रिवॉर्ड और एक कॉन्फिडेंस स्कोर।",
   ezyai_feature_watch_title: "Watch",
   ezyai_feature_watch_desc:
-    "किसी विशेष जोड़ी के लिए लाइव ट्रेड अलर्ट — आपकी स्टाइल timeframe तय करती है, आपका रिस्क मोड targets और दैनिक सीमाएं तय करता है।",
+    "किसी विशेष जोड़ी के लिए लाइव ट्रेड अलर्ट. आपकी स्टाइल Timeframe तय करती है, आपका रिस्क मोड targets और दैनिक सीमाएं तय करता है।",
   ezyai_feature_fundamentals_title: "Fundamentals",
   ezyai_feature_fundamentals_desc:
     "किसी भी जोड़ी के लिए फंडामेंटल और स्रोत लिंक, साथ ही ताज़ा सुर्खियां।",
@@ -504,60 +504,60 @@ const hi: Record<TranslationKey, string> = {
     "बॉट यूनिवर्स से जोड़ियां चुनता है और स्वचालित रूप से signals जारी करता है, आपके रिस्क मोड की दैनिक सीमा तक सीमित।",
   ezyai_feature_dashboard_title: "Dashboard",
   ezyai_feature_dashboard_desc:
-    "हर watch, autopilot और फीड के लिए एक स्टेटस ओवरव्यू — सभी क्रियाएं बटन मेनू में रहती हैं।",
+    "हर watch, autopilot और फीड के लिए एक स्टेटस ओवरव्यू. सभी क्रियाएं बटन मेनू में रहती हैं।",
   ezyai_free_pro_title: "मुफ़्त बनाम PRO",
   ezyai_free_label: "मुफ़्त",
   ezyai_pro_label: "PRO",
-  ezyai_free_desc: "Analyze, Quote और Dashboard प्रीव्यू — कार्ड की ज़रूरत नहीं।",
+  ezyai_free_desc: "Analyze, Quote और Dashboard प्रीव्यू: कार्ड की ज़रूरत नहीं।",
   ezyai_pro_desc:
-    "लाइव Watch अलर्ट, Autopilot signals, और गहरे Fundamentals — स्कोर, फेयर वैल्यू, पोज़िशनिंग और एक macro निष्कर्ष।",
+    "लाइव Watch अलर्ट, Autopilot signals, और गहरे Fundamentals: स्कोर, फेयर वैल्यू, पोज़िशनिंग और एक macro निष्कर्ष।",
   ezyai_pricing_eyebrow: "प्लान",
   ezyai_pricing_title: "सरल मासिक PRO एक्सेस",
   ezyai_pricing_subtitle:
-    "यहीं कार्ड से भुगतान करें — PRO एक मिनट के भीतर आपके टेलीग्राम खाते पर सक्रिय हो जाता है। टेलीग्राम स्टार्स या USDT पसंद है? बॉट के अंदर अपग्रेड करें। 3-दिन का मुफ़्त ट्रायल, प्रति खाता एक बार।",
+    "यहीं कार्ड से भुगतान करें. PRO एक मिनट के भीतर आपके टेलीग्राम खाते पर सक्रिय हो जाता है। टेलीग्राम स्टार्स या USDT पसंद है? बॉट के अंदर अपग्रेड करें। 3-दिन का मुफ़्त ट्रायल, प्रति खाता एक बार।",
   ezyai_tier_1m_label: "1 माह",
   ezyai_tier_6m_label: "6 माह",
   ezyai_tier_12m_label: "12 माह",
-  ezyai_tier_6m_badge: "सबसे लोकप्रिय — 50% बचाएं",
+  ezyai_tier_6m_badge: "सबसे लोकप्रिय: 50% बचाएं",
   ezyai_tier_12m_badge: "44% बचाएं",
   ezyai_start_trial: "मुफ़्त ट्रायल शुरू करें",
   ezyai_upgrade_pro: "या टेलीग्राम के अंदर स्टार्स / USDT से भुगतान करें",
   ezyai_buy_pro: "PRO खरीदें",
   ezyai_markets_title: "कवर किए गए बाज़ार",
   ezyai_markets_desc:
-    "Crypto, forex, स्टॉक्स/ETF, धातु, ऊर्जा और इंडेक्स — मुफ़्त सार्वजनिक डेटा फ़ीड द्वारा संचालित, कोई API कुंजी आवश्यक नहीं।",
+    "Crypto, forex, स्टॉक्स/ETF, धातु, ऊर्जा और इंडेक्स. मुफ़्त सार्वजनिक डेटा फ़ीड द्वारा संचालित, कोई API कुंजी आवश्यक नहीं।",
   ezyai_disclaimer:
-    "Signals नियम-आधारित संगम पर आधारित हैं — निश्चित और समझाने योग्य। केवल शैक्षिक, व्यक्तिगत वित्तीय सलाह नहीं। कार्रवाई से पहले अपने ब्रोकर से कीमतें सत्यापित करें।",
+    "Signals नियम-आधारित संगम पर आधारित हैं. निश्चित और समझाने योग्य। केवल शैक्षिक, व्यक्तिगत वित्तीय सलाह नहीं। कार्रवाई से पहले अपने ब्रोकर से कीमतें सत्यापित करें।",
   ezyai_final_title: "आज ही मुफ़्त विश्लेषण से शुरुआत करें",
   ezyai_final_body:
     "कोई भुगतान नहीं, कोई प्रतिबद्धता नहीं। टेलीग्राम में मुफ़्त स्तर आज़माएं, फिर जब आपको लाइव अलर्ट और ऑटोपायलट चाहिए तो PRO में अपग्रेड करें।",
   ezyai_cta_open_bot: "टेलीग्राम में EzyAI खोलें",
-  indicators_meta_title: "Indicators और कीमतें — EzyMap Algo",
+  indicators_meta_title: "Indicators और कीमतें: EzyMap Algo",
   indicators_meta_desc:
     "EzyMap TradingView और MT5 indicators असली कीमतों के साथ: EzyMap Lite $49, EzyMap Pro $249, MT5 बंडल $99/माह से और सिंगल टूल $9/माह से।",
   indicators_og_desc:
-    "EzyMap Algo के TradingView और MT5 indicators — Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias और अधिक, लाइव कीमतों के साथ।",
+    "EzyMap Algo के TradingView और MT5 indicators: Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias और अधिक, लाइव कीमतों के साथ।",
   indicators_desk_label: "EzyMap indicator डेस्क",
   indicators_title: "Indicators",
   indicators_subtitle:
-    "वही TradingView और MT5 टूल जिनसे हमारे सदस्य ट्रेड करते हैं — मैपिंग, रिस्क कंट्रोल और मल्टी-टाइमफ़्रेम बायस।",
+    "वही TradingView और MT5 टूल जिनसे हमारे सदस्य ट्रेड करते हैं: मैपिंग, रिस्क कंट्रोल और मल्टी-टाइमफ़्रेम बायस।",
   indicators_cta_get: "अपना indicator पाएं",
   indicators_cta_ask: "Sarah से पूछें",
   indicators_vantage_title: "Vantage एक्टिवेशन के साथ मुफ़्त एक्सेस",
   indicators_vantage_body:
-    "IB 26468008 के तहत खाता खोलें और आपके पैकेज में शामिल indicators बिना अतिरिक्त शुल्क अनलॉक हो जाते हैं — Beginner पर Lite, Pro पर Currency Strength, Premium पर Auto TPSL और MTF Bias, Elite पर पूरा MT5 सेट।",
+    "IB 26468008 के तहत खाता खोलें और आपके पैकेज में शामिल indicators बिना अतिरिक्त शुल्क अनलॉक हो जाते हैं: Beginner पर Lite, Pro पर Currency Strength, Premium पर Auto TPSL और MTF Bias, Elite पर पूरा MT5 सेट।",
   indicators_vantage_open: "खाता खोलें",
   indicators_vantage_free: "मुफ़्त एक्सेस पाएं",
   indicators_footnote:
     "कीमतें USD में हैं और भुगतान से पहले एनरोलमेंट बॉट में पुष्टि की जाती हैं। ट्रेडिंग में नुकसान का जोखिम है।",
-  macro_meta_title: "Macro और crypto डेस्क — EzyMap Algo",
+  macro_meta_title: "Macro और crypto डेस्क: EzyMap Algo",
   macro_meta_desc:
-    "MacroTrader डेस्क: आर्थिक कैलेंडर, केंद्रीय बैंक नीति में विचलन, मंदी की संभावना, Fed का रुख, समाचार सेंटीमेंट और crypto ऐड-ऑन — समय आपके अपने टाइमज़ोन में।",
+    "MacroTrader डेस्क: आर्थिक कैलेंडर, केंद्रीय बैंक नीति में विचलन, मंदी की संभावना, Fed का रुख, समाचार सेंटीमेंट और crypto ऐड-ऑन: समय आपके अपने टाइमज़ोन में।",
   macro_og_desc:
     "MacroTrader टेलीग्राम डेस्क से आर्थिक कैलेंडर, केंद्रीय बैंक विचलन, मंदी की संभावना और crypto डेस्क ऐड-ऑन।",
   macro_twitter_desc: "Macro हीटमैप, आर्थिक कैलेंडर और crypto ऐड-ऑन, आपके अपने टाइमज़ोन में।",
   macro_per_month: "/माह",
-  fc_meta_title: "मुफ़्त टेलीग्राम चैनल से जुड़ें — EzyMap",
+  fc_meta_title: "मुफ़्त टेलीग्राम चैनल से जुड़ें: EzyMap",
   fc_meta_desc: "टेलीग्राम पर लाइव मुफ़्त फ़ॉरेक्स, गोल्ड और crypto ट्रेडिंग signals पाएं।",
   fc_back_home: "होम पर वापस",
   fc_title: "मुफ़्त टेलीग्राम चैनल से जुड़ें",
@@ -585,7 +585,7 @@ const hi: Record<TranslationKey, string> = {
   fc_benefit_members_desc: "सक्रिय ट्रेडर समुदाय",
   legal_updated: "अंतिम अपडेट: 2026",
   legal_back_home: "← होम पर वापस",
-  privacy_meta_title: "गोपनीयता नीति — EzyMap ALGO",
+  privacy_meta_title: "गोपनीयता नीति: EzyMap ALGO",
   privacy_meta_desc:
     "EzyMap ALGO विज़िटर और टेलीग्राम सब्सक्राइबर से एकत्र सीमित जानकारी को कैसे इकट्ठा, उपयोग और सुरक्षित करता है।",
   privacy_og_desc: "EzyMap ALGO आपके डेटा को कैसे संभालता है।",
@@ -603,7 +603,7 @@ const hi: Record<TranslationKey, string> = {
     "हमारे चैनलों से जुड़ना टेलीग्राम की अपनी गोपनीयता नीति के अधीन है। हम केवल वही सार्वजनिक प्रोफ़ाइल जानकारी देखते हैं जो टेलीग्राम चैनल एडमिन को दिखाता है।",
   privacy_contact_title: "संपर्क",
   privacy_contact_body: "सवाल हैं? हमें टेलीग्राम पर संदेश भेजें:",
-  terms_meta_title: "सेवा की शर्तें — EzyMap ALGO",
+  terms_meta_title: "सेवा की शर्तें: EzyMap ALGO",
   terms_meta_desc:
     "EzyMap ALGO ट्रेडिंग signals, शिक्षा सामग्री और पैकेज एक्सेस के उपयोग को नियंत्रित करने वाली शर्तें।",
   terms_og_desc: "EzyMap ALGO signals और सब्सक्रिप्शन के उपयोग की शर्तें।",
@@ -621,14 +621,14 @@ const hi: Record<TranslationKey, string> = {
   terms_access_body:
     "निजी चैनल सामग्री या लॉगिन क्रेडेंशियल साझा करने पर बिना रिफ़ंड तत्काल हटा दिया जाएगा।",
   ebook_meta_suffix: "मुफ़्त ट्रेडिंग PDF | EzyMap ALGO",
-  ebook_not_found_meta: "ईबुक नहीं मिली — EzyMap ALGO",
+  ebook_not_found_meta: "ईबुक नहीं मिली: EzyMap ALGO",
   ebook_not_found_title: "ईबुक नहीं मिली",
   ebook_not_found_body: "वह गाइड मौजूद नहीं है। नीचे उपलब्ध गाइड देखें।",
   ebook_back_home: "होम पर वापस",
   ebook_free_pdf: "मुफ़्त PDF",
   ebook_pages_pdf: "{n} पेज · PDF",
   ebook_gate_vantage: "साइन-इन + Vantage खाता पुष्टि के साथ मुफ़्त",
-  ebook_gate_signin: "त्वरित साइन-इन के साथ मुफ़्त — तत्काल डाउनलोड",
+  ebook_gate_signin: "त्वरित साइन-इन के साथ मुफ़्त: तत्काल डाउनलोड",
   ebook_for_you_if: "यह आपके लिए है अगर",
   ebook_outcomes_title: "आप क्या कर पाएंगे",
   ebook_chapters_title: "गाइड के अंदर",
@@ -650,7 +650,7 @@ const hi: Record<TranslationKey, string> = {
   dash_tg_link: "Telegram डिलीवरी",
   dash_tg_linked: "{handle} पर डिलीवरी",
   dash_tg_link_hint:
-    "अपना Telegram लिंक करें और हर खरीद उसी अकाउंट पर जाएगी — कोई हैंडल टाइप नहीं करना।",
+    "अपना Telegram लिंक करें और हर खरीद उसी अकाउंट पर जाएगी: कोई हैंडल टाइप नहीं करना।",
   dash_tg_claimed: "आपके Telegram पर {count} खरीद डिलीवर हुई।",
   auth_email_label: "ईमेल",
   auth_send_link: "मुझे साइन-इन लिंक ईमेल करें",
@@ -667,7 +667,7 @@ const hi: Record<TranslationKey, string> = {
   dash_browse_packages: "पैकेज देखें",
   dash_delivered_to: "डिलीवर किया गया",
   dash_pro_code: "PRO कोड",
-  dash_pro_code_redeemed: "रिडीम हो गया — @ezytradeai_bot में PRO सक्रिय है।",
+  dash_pro_code_redeemed: "रिडीम हो गया. @Ezytradeai_bot में PRO सक्रिय है।",
   dash_pro_code_hint: "@ezytradeai_bot खोलें और PRO सक्रिय करने के लिए /redeem {code} भेजें।",
   dash_ebooks: "मुफ़्त ईबुक",
   dash_ebook_download: "डाउनलोड",
@@ -699,15 +699,15 @@ const hi: Record<TranslationKey, string> = {
   prelanding_trust_note: "ट्रेडिंग में जोखिम है। यह सामान्य जानकारी है, वित्तीय सलाह नहीं।",
   prelanding_close: "स्वागत संवाद बंद करें",
 
-  home_meta_title: "EzyMap ALGO — Telegram पर पेशेवर ट्रेडिंग सिग्नल",
+  home_meta_title: "EzyMap ALGO: Telegram पर पेशेवर ट्रेडिंग सिग्नल",
   home_meta_desc:
     "640+ ट्रेडर्स के साथ जुड़ें और Telegram पर लाइव ट्रेडिंग सिग्नल तथा शिक्षा पाएं। TradingView इंडिकेटर्स से फॉरेक्स, क्रिप्टो और कमोडिटी के रियल-टाइम अलर्ट।",
-  faq_meta_title: "सामान्य प्रश्न — EzyMap ALGO ट्रेडिंग सिग्नल",
+  faq_meta_title: "सामान्य प्रश्न: EzyMap ALGO ट्रेडिंग सिग्नल",
   faq_meta_desc:
     "EzyMap ALGO की ट्रेडिंग दिनचर्या, प्राइसिंग प्लान, 30-दिन का Vantage ट्रायल, रजिस्ट्रेशन, आपका अकाउंट और सहायता से जुड़े जवाब।",
-  ezyai_meta_title: "EzyAI — Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo",
+  ezyai_meta_title: "EzyAI: Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo",
   ezyai_meta_desc:
-    "EzyAI मुफ़्त मार्केट डेटा को Telegram पर ट्रेडिंग कॉन्फ़्लुएंस में बदलता है — तकनीकी विश्लेषण, लाइव वॉच अलर्ट, फंडामेंटल और ऑटोपायलट सिग्नल, शुरुआत मुफ़्त।",
+    "EzyAI मुफ़्त मार्केट डेटा को Telegram पर ट्रेडिंग कॉन्फ़्लुएंस में बदलता है: तकनीकी विश्लेषण, लाइव वॉच अलर्ट, फंडामेंटल और ऑटोपायलट सिग्नल, शुरुआत मुफ़्त।",
 };
 
 export default hi;

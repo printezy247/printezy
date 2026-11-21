@@ -116,7 +116,7 @@ export const saveMyProfile = createServerFn({ method: "POST" })
     );
     if (error) {
       console.error("[db] write failed", error);
-      throw new Error("Could not save your changes — please try again.");
+      throw new Error("Could not save your changes: please try again.");
     }
     return { ok: true };
   });

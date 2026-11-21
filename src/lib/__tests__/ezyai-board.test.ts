@@ -40,7 +40,7 @@ describe("the site-side scanner is removed", () => {
     }
   });
 
-  it("never runs code when the board loads — reading only", () => {
+  it("never runs code when the board loads: reading only", () => {
     expect(read("src/lib/ezyai/signals.functions.ts")).not.toMatch(/runAutopilot/);
   });
 });
@@ -87,7 +87,7 @@ describe("the board page is keyboard- and screen-reader-shaped", () => {
 describe("copy matches what actually runs", () => {
   const locales = Object.keys(translations) as (keyof typeof translations)[];
 
-  it("advertises no scalp style anywhere — it is retired", () => {
+  it("advertises no scalp style anywhere: it is retired", () => {
     for (const locale of locales) {
       const strings = translations[locale];
       for (const key of ["hero_stat_styles", "faq_g1_a2", "faq_g1_a3"] as const) {

@@ -50,7 +50,7 @@ describe("findLiveDuplicate", () => {
     }
   });
 
-  it("stops folding once the window is past — a fresh call two days on is fresh", () => {
+  it("stops folding once the window is past. A fresh call two days on is fresh", () => {
     const old = live({ openedAt: "2026-10-23T10:00:00.000Z" });
     expect(findLiveDuplicate([old], SAME, NOW)).toBeNull();
   });

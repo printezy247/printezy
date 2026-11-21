@@ -16,6 +16,7 @@ import { LOCALES, LOCALE_LABELS, LOCALE_FLAGS, LOCALE_NATIVE_NAMES } from "@/lib
 import { LiveSampleSignal } from "./LiveSampleSignal";
 import type { TranslationKey } from "@/lib/translations";
 import { useCountUp } from "@/lib/use-count-up";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import { BuyButton } from "@/components/BuyButton";
 import { Button } from "@/components/ui/button";
 import { PreLandingSection } from "./PreLandingSection";
@@ -159,7 +160,7 @@ function NeonFreeAccessButton({ href, event }: { href: string; event: string }) 
 
 /* The hero chart's own frame. The plot band is inset from the viewBox so wicks
    and the level tags have room, and the aspect matches the 16/7 box the card
-   gives it — which is what lets the SVG fill edge to edge instead of sitting
+   gives it. Which is what lets the SVG fill edge to edge instead of sitting
    letterboxed inside its own padding at wide widths. */
 const CHART = { w: 480, h: 210, top: 40, bottom: 178, left: 20, right: 460 };
 
@@ -345,6 +346,7 @@ function ChartGraphic({ live }: { live: DemoPrice }) {
 function Hero() {
   const { formatted: memberCount } = useMemberCount();
   const { t, locale } = useTranslation();
+  const reducedMotion = usePrefersReducedMotion();
   // One walk, two readers: the chart and the card's rail.
   const live = useDemoPrice();
   return (
@@ -357,6 +359,27 @@ function Hero() {
         decoding="async"
         className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 [mask-image:linear-gradient(to_bottom,transparent,#000_30%,#000_75%,transparent)]"
       />
+      {/* Cinematic desk loop rendered through the video-system HyperFrames
+          pipeline. Decorative only: muted, looping, and unmounted entirely
+          under prefers-reduced-motion, where the still above carries the frame. */}
+      {!reducedMotion ? (
+        <video
+          className="hero-video-drift pointer-events-none absolute inset-0 h-full w-full object-cover opacity-55 [mask-image:linear-gradient(to_bottom,transparent,#000_22%,#000_78%,transparent)]"
+          src="/ezymap-hero-loop.mp4"
+          poster={heroMonitor}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+      ) : null}
+      {/* Legibility scrim: the video stays ambient, the copy stays first-read. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/80 via-background/35 to-background/85"
+      />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
       <div
         aria-hidden="true"
@@ -364,7 +387,7 @@ function Hero() {
       />
       <PointerGlyphs />
 
-      {/* Headline block — centred like a product launch page. */}
+      {/* Headline block. Centred like a product launch page. */}
       <div className="relative mx-auto max-w-6xl px-4 pb-8 pt-12 text-center sm:px-6 sm:pb-10 lg:px-8 lg:pt-16">
         <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
           <Users className="h-3.5 w-3.5 text-primary" />
@@ -414,7 +437,10 @@ function Hero() {
             ["24/5", t("hero_stat_coverage")],
             ["3 Styles", t("hero_stat_styles")],
           ].map(([v, l]) => (
-            <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
+            <div
+              key={l}
+              className="glow-ring card-lift rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur"
+            >
               <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
               <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                 {l}
@@ -424,9 +450,9 @@ function Hero() {
         </dl>
       </div>
 
-      {/* Product stage — the desk itself, in a window frame. */}
+      {/* Product stage: the desk itself, in a window frame. */}
       <div className="relative mx-auto max-w-4xl px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card/80 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
+        <div className="card-lift relative overflow-hidden rounded-[1.75rem] border border-border bg-card/80 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
           <div className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-3">
             <img
               src={markImg}
@@ -450,7 +476,7 @@ function Hero() {
               <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
               {/* This card is a demo walk, not the desk. When the real board
                   is open, point at it so nobody mistakes the sample for live
-                  data — and so a buyer can jump straight to the real thing. */}
+                  data. And so a buyer can jump straight to the real thing. */}
               {EZYAI_BOARD_VISIBLE ? (
                 <p className="mt-3 text-center text-xs text-muted-foreground">
                   <a
@@ -1131,7 +1157,7 @@ function Products() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* TradingView indicators */}
         <Reveal className="h-full">
-          <article className="glass-card flex h-full flex-col rounded-xl p-6">
+          <article className="glass-card card-lift flex h-full flex-col rounded-xl p-6">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#0a0c0b] p-1.5">
               <img
                 src={tradingViewLogo}
@@ -1182,7 +1208,7 @@ function Products() {
 
         {/* MT5 indicators */}
         <Reveal className="h-full" delay={0.1}>
-          <article className="glass-card flex h-full flex-col rounded-xl p-6">
+          <article className="glass-card card-lift flex h-full flex-col rounded-xl p-6">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-[#f4f1ea] p-1.5">
               <img
                 {...imgProps(mt5Logo)}
@@ -1224,7 +1250,7 @@ function Products() {
 
         {/* Macro & Fundamentals */}
         <Reveal className="h-full" delay={0.2}>
-          <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
+          <article className="glass-card card-lift relative flex h-full flex-col overflow-hidden rounded-xl p-6">
             <img
               {...imgProps(macroLogo)}
               alt="Gold, Forex & Crypto Macros"
@@ -1266,7 +1292,7 @@ function Products() {
 
         {/* EzyAI */}
         <Reveal className="h-full" delay={0.3}>
-          <article className="glass-card relative flex h-full flex-col overflow-hidden rounded-xl p-6">
+          <article className="glass-card card-lift relative flex h-full flex-col overflow-hidden rounded-xl p-6">
             <EzyAiLogo className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 opacity-15" />
             <EzyAiLogo className="h-12 w-12 rounded-full ring-1 ring-primary/30" title="EzyAI" />
             <h3 className="mt-4 text-lg font-semibold">{t("products_ezyai_heading")}</h3>
@@ -1549,10 +1575,10 @@ function ZoomClassBand() {
   return (
     <Section className="bg-surface/40">
       <Reveal>
-        <div className="relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-primary/10 p-6 sm:p-10">
+        <div className="card-lift relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-primary/10 p-6 sm:p-10">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
+            className="animate-float-slow pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
           />
           <div className="relative flex flex-col items-center gap-6 text-center lg:flex-row lg:gap-8 lg:text-left">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-accent/40 bg-accent/15 text-accent">

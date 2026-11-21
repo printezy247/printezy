@@ -20,7 +20,7 @@ export const saveLead = createServerFn({ method: "POST" })
       windowMs: 60 * 60 * 1000,
     });
     if (!allowed) {
-      throw new Error("Too many requests — please try again in a bit.");
+      throw new Error("Too many requests: please try again in a bit.");
     }
 
     const email = data.email.trim().toLowerCase();

@@ -14,10 +14,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
       POST: async ({ request }) => {
         const rawEnv = new URL(request.url).searchParams.get("env");
         if (rawEnv !== "sandbox" && rawEnv !== "live") {
-          console.error(
-            "[payments webhook] invalid env — check Stripe webhook URL config:",
-            rawEnv,
-          );
+          console.error("[payments webhook] invalid env. Check Stripe webhook URL config:", rawEnv);
           return Response.json({ received: true, ignored: "invalid env" });
         }
         const env: StripeEnv = rawEnv;
@@ -29,7 +26,7 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
         // (deduped via the same event table), so the misconfiguration gets
         // fixed instead of quietly dropping fulfilments.
         if (env !== detectStripeEnv()) {
-          console.error("[payments webhook] env mismatch — misconfigured webhook URL:", {
+          console.error("[payments webhook] env mismatch: misconfigured webhook URL:", {
             received: env,
             active: detectStripeEnv(),
           });

@@ -38,13 +38,13 @@ export const Route = createFileRoute("/account")({
   }),
   head: () => ({
     meta: [
-      { title: "My Trading Account — EzyMap ALGO Members" },
+      { title: "My Trading Account: EzyMap ALGO Members" },
       {
         name: "description",
         content:
           "Sign in with a code from the EzyMap ALGO bot to see your signals, your trade log, performance stats and billing history.",
       },
-      { property: "og:title", content: "My Trading Account — EzyMap ALGO" },
+      { property: "og:title", content: "My Trading Account: EzyMap ALGO" },
       {
         property: "og:description",
         content: "Your signals, trade log, performance stats and billing in one place.",
@@ -159,7 +159,7 @@ function AccountPage() {
 
       {canceled ? (
         <div className="mt-6 rounded-xl border border-accent/40 bg-accent/10 p-4 text-sm text-foreground">
-          Payment was cancelled. Your spot is still reserved — reopen the bot to finish checkout.
+          Payment was cancelled. Your spot is still reserved. Reopen the bot to finish checkout.
         </div>
       ) : null}
 
@@ -267,7 +267,7 @@ function SignIn({ onSignedIn }: { onSignedIn: (token: string) => void }) {
       <p className="text-sm text-muted-foreground">
         Your account is tied to your Telegram.
         {botUsername
-          ? " Sign in with it directly — anything you have already paid for is delivered the moment you do."
+          ? " Sign in with it directly. Anything you have already paid for is delivered the moment you do."
           : " Enter your handle and the enrollment bot sends you a 6-digit sign-in code."}
       </p>
 
@@ -356,7 +356,7 @@ function SignalsTab({ data }: { data: MemberDashboard }) {
   return (
     <Panel>
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-        Signal history — {data.tier?.name} access
+        Signal history: {data.tier?.name} access
       </p>
       {data.signals?.length ? (
         <div className="mt-4 space-y-3">
@@ -375,8 +375,8 @@ function SignalsTab({ data }: { data: MemberDashboard }) {
                 </span>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
-                Entry {sig.entryPrice ?? "—"} · SL {sig.stopPrice ?? "—"} · TP{" "}
-                {sig.targetPrice ?? "—"} · {formatDate(sig.publishedAt)}
+                Entry {sig.entryPrice ?? "N/A"} · SL {sig.stopPrice ?? "N/A"} · TP{" "}
+                {sig.targetPrice ?? "N/A"} · {formatDate(sig.publishedAt)}
               </p>
               {sig.note ? <p className="mt-2 text-sm text-foreground">{sig.note}</p> : null}
             </div>
@@ -573,8 +573,8 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
                   </span>
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Entry {tr.entryPrice ?? "—"} · Exit {tr.exitPrice ?? "—"} · Size {tr.size ?? "—"}{" "}
-                  · {formatDate(tr.openedAt)}
+                  Entry {tr.entryPrice ?? "N/A"} · Exit {tr.exitPrice ?? "N/A"} · Size{" "}
+                  {tr.size ?? "N/A"} · {formatDate(tr.openedAt)}
                 </p>
                 {tr.notes ? <p className="mt-1 text-sm text-foreground">{tr.notes}</p> : null}
               </div>
@@ -585,7 +585,7 @@ function TradesTab({ data, token }: { data: MemberDashboard; token: string }) {
                       (tr.pnl ?? tr.pips ?? 0) >= 0 ? "text-primary" : "text-destructive"
                     }`}
                   >
-                    {tr.pips != null ? `${tr.pips} pips` : "—"}
+                    {tr.pips != null ? `${tr.pips} pips` : "N/A"}
                   </p>
                   <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground">
                     {tr.status}
@@ -771,7 +771,7 @@ function AccessLink({ href, children }: { href: string; children: React.ReactNod
 }
 
 function formatDate(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return "N/A";
   return new Date(value).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",

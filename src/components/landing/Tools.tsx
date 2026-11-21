@@ -24,13 +24,13 @@ type TvProduct = {
 const TV_PRODUCTS: TvProduct[] = [
   {
     id: "tv_lite",
-    name: "TradingView — EzyMap Lite",
+    name: "TradingView: EzyMap Lite",
     taglineKey: "tv_lite_tagline",
     bulletKeys: ["tv_lite_b1", "tv_lite_b2", "tv_lite_b3"],
   },
   {
     id: "tv_pro",
-    name: "TradingView — EzyMap Pro",
+    name: "TradingView: EzyMap Pro",
     taglineKey: "tv_pro_tagline",
     bulletKeys: ["tv_pro_b1", "tv_pro_b2", "tv_pro_b3"],
     highlightKey: "highlight_most_complete",
@@ -64,7 +64,7 @@ const MT5_PRODUCTS: Mt5Product[] = [
   },
   {
     id: "mt5_bulk_close",
-    name: "Bulk Close — BONUS Layer Close",
+    name: "Bulk Close: BONUS Layer Close",
     taglineKey: "mt5_bulk_close_tagline",
     bulletKeys: ["mt5_bulk_close_b1", "mt5_bulk_close_b2", "mt5_bulk_close_b3"],
     highlightKey: "highlight_top_selling",
@@ -184,7 +184,7 @@ function Mt5Card({ product }: { product: Mt5Product }) {
         aria-live="polite"
         aria-atomic="true"
       >
-        {item ? formatUsd(item.amountCents) : "—"}
+        {item ? formatUsd(item.amountCents) : "N/A"}
       </p>
       <BuyButton sku={sku} label={t("tools_buy")} inlineForm className="mt-3" />
     </article>

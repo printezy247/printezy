@@ -14,10 +14,10 @@ const en = {
   chat_you: "You",
   chat_assistant: "Sarah (assistant)",
   chat_greeting:
-    "Hi! I'm Sarah. Ask me anything about the routines, packages, payment or getting your account unlocked — I answer instantly, and anything I can't answer goes straight to me on Telegram.",
+    "Hi! I'm Sarah. Ask me anything about the routines, packages, payment or getting your account unlocked: I answer instantly, and anything I can't answer goes straight to me on Telegram.",
   chat_error: "That didn't send. Try again, or message Sarah on Telegram: https://t.me/ezysarah",
   chat_notice_relayed:
-    "Sent to Sarah — she answers personally, usually within a few hours. Keep this chat open and her reply lands right here.",
+    "Sent to Sarah: she answers personally, usually within a few hours. Keep this chat open and her reply lands right here.",
   chat_notice_unreachable:
     "Sarah isn't reachable this second. Message her directly on Telegram and she'll pick it up: https://t.me/ezysarah",
   chat_link_telegram: "Message Sarah on Telegram",
@@ -39,7 +39,7 @@ const en = {
   show_signals_cta: "See packages",
   show_learn_title: "Learn the method behind the calls",
   show_learn_body:
-    "Two free ebooks on mapping structure and reading technicals — the same playbook the desk trades.",
+    "Two free ebooks on mapping structure and reading technicals. The same playbook the desk trades.",
   show_learn_cta: "Get the free ebook",
   show_macro_title: "A macro desk that reads the calendar",
   show_macro_body:
@@ -47,7 +47,7 @@ const en = {
   show_macro_cta: "Open the Macro desk",
   band_eyebrow: "EzyAI PRO",
   band_title: "Let the bot do the analysis",
-  band_body: "Trend, levels, entries and risk for any pair — on demand in Telegram, free to try.",
+  band_body: "Trend, levels, entries and risk for any pair: on demand in Telegram, free to try.",
   band_cta: "Open EzyAI",
   hero_title: "Professional trading signals, delivered live to your phone.",
   hero_subtitle:
@@ -90,7 +90,7 @@ const en = {
   hero_card_atr: "ATR (15m)",
   hero_card_size: "Position at 1% risk",
   hero_card_lots: "lots",
-  hero_card_plan_1: "Fill inside the zone — never chase above it.",
+  hero_card_plan_1: "Fill inside the zone: never chase above it.",
   hero_card_plan_2: "The stop goes on with the fill and never moves against you.",
   hero_card_plan_3: "Take half at Target 1, move the stop to break-even.",
   hero_card_plan_4: "Let the rest run to Target 2, trailing behind structure.",
@@ -103,7 +103,7 @@ const en = {
   zoom_badge: "Every week · Free",
   zoom_title: "Free weekly Zoom class on the channel",
   zoom_body:
-    "Jack breaks down the week's best setups live — entries, targets and risk — then answers your questions. Free forever, no card.",
+    "Jack breaks down the week's best setups live, entries, targets and risk, then answers your questions. Free forever, no card.",
   zoom_cta: "Join the free channel",
   trust_strip_label: "Trusted platforms we operate on",
 
@@ -135,12 +135,12 @@ const en = {
   feature_community_title: "Community",
   feature_community_body: "Connect with {memberCount} traders worldwide inside Telegram.",
   feature_mobile_title: "Mobile First",
-  feature_mobile_body: "Get alerts anywhere, anytime — no terminal required.",
+  feature_mobile_body: "Get alerts anywhere, anytime: no terminal required.",
 
   pricing_eyebrow: "Packages",
   pricing_title: "Start with clarity. Upgrade when you're ready.",
   pricing_subtitle:
-    "All tiers enroll through our bot. Want free access? Activate through Vantage Markets — no card required.",
+    "All tiers enroll through our bot. Want free access? Activate through Vantage Markets: no card required.",
   pricing_duration_note:
     "Every package is one payment. No subscription, nothing auto-renews. MT5 tools and EzyAI PRO are licensed per term (1, 6 or 12 months).",
   pricing_most_popular: "Most popular",
@@ -170,7 +170,7 @@ const en = {
 
   products_eyebrow: "Products",
   products_title: "The full EzyMap toolkit",
-  products_subtitle: "Ebooks, indicators and macro research — everything behind the signals.",
+  products_subtitle: "Ebooks, indicators and macro research: everything behind the signals.",
   products_ebooks_heading: "Ebooks",
   ebook_get_it_free: "Get it free",
   ebook_mapping_b1: "Master support & resistance zones",
@@ -200,11 +200,11 @@ const en = {
   how_eyebrow: "How it works",
   how_title: "Three steps to your first signal",
   how_step1_title: "Join t.me/ezymap",
-  how_step1_body: "One tap. No payment, no forms — you're in the free channel instantly.",
+  how_step1_body: "One tap. No payment, no forms. You're in the free channel instantly.",
   how_step2_title: "Receive instant signal alerts",
   how_step2_body: "Entry, stop loss and targets arrive as soon as a setup confirms.",
   how_step3_title: "Execute on Vantage Markets",
-  how_step3_body: "Place the trade with your own broker — we recommend Vantage Markets.",
+  how_step3_body: "Place the trade with your own broker: we recommend Vantage Markets.",
 
   ambassador_eyebrow: "Ambassador",
   ambassador_title: "Meet Jack",
@@ -230,7 +230,7 @@ const en = {
     "Clean entries, clear invalidation. It made my journaling and risk sizing far easier.",
   testimonial_luqman_role: "Scalper",
   testimonial_luqman_quote:
-    "The M5 channel matches how I already trade — it just removes the second-guessing.",
+    "The M5 channel matches how I already trade. It just removes the second-guessing.",
   testimonial_chen_role: "New trader",
   testimonial_chen_quote:
     "Started on the free channel to learn. The education alone was worth joining.",
@@ -240,7 +240,7 @@ const en = {
   faq_group1_title: "Routines & signals",
   faq_g1_q1: "How often do you send signals?",
   faq_g1_a1:
-    "Multiple times daily during trading hours (24/5). Frequency depends on market conditions — we only alert when a setup meets our criteria. Quality over quantity.",
+    "Multiple times daily during trading hours (24/5). Frequency depends on market conditions. We only alert when a setup meets our criteria. Quality over quantity.",
   faq_g1_q2: "What markets do you trade?",
   faq_g1_a2:
     "Forex (major pairs), crypto and commodities. Our primary focus is intraday trading, with swing setups on higher timeframes.",
@@ -256,7 +256,7 @@ const en = {
   faq_group2_title: "Pricing tiers",
   faq_g2_q1: "Is there a free option?",
   faq_g2_a1:
-    "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account — no card required. The Beginner tier at $29 one-time is the paid entry point — a single payment, nothing renews.",
+    "Join our free Telegram channel for sample signals and education. You can also unlock any paid tier free by activating a Vantage Markets account, no card required. The Beginner tier at $29 one-time is the paid entry point, a single payment, nothing renews.",
   faq_g2_q2: "What's included in Pro, Premium and Elite?",
   faq_g2_a2:
     "Pro ($49) adds the full signal feed and indicators. Premium ($99) adds the macro & fundamentals desk and priority support. Elite ($299) adds Jack's personal routines, 1-on-1 onboarding and everything else.",
@@ -265,14 +265,14 @@ const en = {
     "Yes. Open the enrollment bot, choose your new package, and your account updates once payment is confirmed. Your trade log and history carry over.",
   faq_g2_q4: "Do you offer refunds?",
   faq_g2_a4:
-    "Message Sarah through the bot with your Telegram username and order details — she handles refund requests case by case.",
+    "Message Sarah through the bot with your Telegram username and order details. She handles refund requests case by case.",
   faq_group3_title: "Enrollment & your account",
   faq_g3_q1: "How do I enroll in a paid tier?",
   faq_g3_a1:
     "Tap Enroll Now on any package to open our enrollment bot on Telegram, pick your tier, and pay securely by card through Stripe. Your access activates the moment payment is confirmed.",
   faq_g3_q2: "How do I access my account?",
   faq_g3_a2:
-    "Type /account in the bot for a one-tap signed-in link, or sign in on the site with a 6-digit code the bot sends to your Telegram — no passwords.",
+    "Type /account in the bot for a one-tap signed-in link, or sign in on the site with a 6-digit code the bot sends to your Telegram: no passwords.",
   faq_g3_q3: "What happens after I pay?",
   faq_g3_a3:
     "The bot confirms your payment instantly and your dashboard unlocks: the tier-gated signal feed, your personal trade log, performance stats and billing history.",
@@ -303,11 +303,11 @@ const en = {
 
   tools_eyebrow: "Tools",
   tools_title: "TradingView and MT5 indicators",
-  tools_subtitle: "The same tools our members trade with — live prices, no separate page.",
+  tools_subtitle: "The same tools our members trade with: live prices, no separate page.",
   tools_tv_section_title: "TradingView Indicators",
   tools_tv_section_sub: "One-time licence, lifetime updates.",
   tools_mt5_section_title: "MT5 Indicators",
-  tools_mt5_section_sub: "Pick a term — monthly, 6-month or yearly.",
+  tools_mt5_section_sub: "Pick a term: monthly, 6-month or yearly.",
   tools_buy: "Buy",
   tools_open_tv_account: "Open a free TradingView account",
   term_1m: "1 Month",
@@ -325,7 +325,7 @@ const en = {
   tv_pro_b1: "M1–H4 entry, SL and TP signals",
   tv_pro_b2: "Multi-timeframe confluence filter",
   tv_pro_b3: "Lifetime updates included",
-  mt5_bundle_tagline: "Every MT5 tool below in one licence — worth $999.",
+  mt5_bundle_tagline: "Every MT5 tool below in one licence: worth $999.",
   mt5_bundle_b1: "All MT5 indicators included",
   mt5_bundle_b2: "Priority setup help",
   mt5_bundle_b3: "Prop-firm friendly settings",
@@ -366,12 +366,12 @@ const en = {
   macro_filter_sentiment: "Sentiment",
   macro_calendar_title: "Today's Economic Calendar",
   macro_calendar_note: "Times shown in {tz}",
-  macro_calendar_next_day: "Nothing left today — showing {day}",
-  macro_calendar_empty: "No releases scheduled — check ForexFactory for the full week.",
-  macro_calendar_unavailable: "Live calendar unavailable right now — open ForexFactory.",
+  macro_calendar_next_day: "Nothing left today: showing {day}",
+  macro_calendar_empty: "No releases scheduled. Check ForexFactory for the full week.",
+  macro_calendar_unavailable: "Live calendar unavailable right now: open ForexFactory.",
   macro_calendar_updated: "{source} · updated {time}",
   macro_live_note: "Live from the MacroTrader bot · updated {time}",
-  macro_sample_note: "Sample data — live feed not connected yet",
+  macro_sample_note: "Sample data: live feed not connected yet",
   macro_sample_short: "sample",
   macro_tone_readout: "7-day tone: {label}",
   macro_sentiment_readout: "7-day sentiment: {label}",
@@ -416,7 +416,7 @@ const en = {
   macro_crypto_desk_title: "Crypto Desk",
   macro_crypto_desk_note: "Add-ons, billed separately",
   macro_pay_with_card: "Pay with card",
-  macro_pay_with_card_price: "Pay with card — {price}",
+  macro_pay_with_card_price: "Pay with card: {price}",
   macro_subscribe_telegram: "or subscribe via Telegram",
   macro_fear_greed_title: "Crypto Fear & Greed",
   macro_gold_fg_title: "Gold Fear & Greed",
@@ -433,11 +433,11 @@ const en = {
   macro_next_rate_decisions_title: "Next Rate Decisions",
   macro_full_desk_label: "Full macro desk",
   macro_full_desk_desc:
-    "Unlocks all four premium heatmaps — central bank divergence, recession probability, asset correlation and geopolitical risk — delivered daily at {time}, your local digest time.",
+    "Unlocks all four premium heatmaps, central bank divergence, recession probability, asset correlation and geopolitical risk, delivered daily at {time}, your local digest time.",
   macro_subscribe_via_telegram_full: "Subscribe via Telegram",
   macro_payment_methods_note: "Card, Telegram Stars or USDT · cancel anytime",
   macro_disclaimer_before:
-    "Macro data is provided for education and research only and is not personalized investment advice. Figures come from third-party sources and may be delayed or revised — cross-check against",
+    "Macro data is provided for education and research only and is not personalized investment advice. Figures come from third-party sources and may be delayed or revised: cross-check against",
   macro_disclaimer_after: "before acting. Trading carries a risk of loss.",
   macro_dovish: "Dovish",
   macro_hawkish: "Hawkish",
@@ -457,7 +457,7 @@ const en = {
   ezyai_tab_about: "About EzyAI",
   ezyai_sig_title: "Live from the bot",
   ezyai_sig_desc:
-    "Every signal the bot takes on its own account — autopilot opens and watch alerts alike — as it happens. Cards stay up until the trade closes at target, break-even or stop — nothing is quietly removed.",
+    "Every signal the bot takes on its own account, autopilot opens and watch alerts alike, as it happens. Cards stay up until the trade closes at target, break-even or stop, nothing is quietly removed.",
   ezyai_sig_empty:
     "No open signals right now. The bot posts a card here the moment a signal fires.",
   ezyai_sig_updated: "Updated {time}",
@@ -469,7 +469,7 @@ const en = {
   ezyai_sig_copied: "Copied",
   ezyai_sig_awaiting_levels: "waiting for levels",
   ezyai_see_live_board: "See the live board",
-  ezyai_sig_exclusive: "Free on this page — live alerts arrive in the bot with PRO.",
+  ezyai_sig_exclusive: "Free on this page. Live alerts arrive in the bot with PRO.",
   ezyai_sig_status_pending: "Waiting",
   ezyai_sig_status_running: "Running",
   ezyai_sig_status_tp: "Target",
@@ -494,21 +494,21 @@ const en = {
   ezyai_sig_streak_losses: "losses",
   ezyai_sig_best_worst: "Best {best} · worst {worst}",
   ezyai_sig_drawdown: "Max drawdown {value}",
-  ezyai_sig_since: "Counted from {date} — real bot signals only.",
-  ezyai_sig_building: "Building track record — {closed} closed signals so far.",
+  ezyai_sig_since: "Counted from {date}: real bot signals only.",
+  ezyai_sig_building: "Building track record: {closed} closed signals so far.",
   ezyai_sig_curve: "Cumulative R",
   ezyai_sig_curve_note: "Every closed trade, oldest first. Break-even trades sit flat.",
   ezyai_sig_by_pair: "By pair",
   ezyai_sig_results: "Results",
   ezyai_page_title: "AI Trading Signals",
   ezyai_page_desc:
-    "A Telegram bot that turns free market data into trading confluence — technical analysis with entry/exit levels, live per-pair alerts, fundamentals with sources, and randomized auto-signals, all driven by your style and risk mode.",
+    "A Telegram bot that turns free market data into trading confluence. Technical analysis with entry/exit levels, live per-pair alerts, fundamentals with sources, and randomized auto-signals, all driven by your style and risk mode.",
   ezyai_feature_analyze_title: "Analyze",
   ezyai_feature_analyze_desc:
     "On-demand market analysis: trend, support/resistance, entry zone, stop loss, TP1/TP2, risk-reward and a confidence score.",
   ezyai_feature_watch_title: "Watch",
   ezyai_feature_watch_desc:
-    "Live trade alerts for a specific pair — your style sets the timeframe, your risk mode sets targets and daily limits.",
+    "Live trade alerts for a specific pair: your style sets the timeframe, your risk mode sets targets and daily limits.",
   ezyai_feature_fundamentals_title: "Fundamentals",
   ezyai_feature_fundamentals_desc:
     "Fundamentals and source links for any pair, plus recent headlines.",
@@ -517,60 +517,60 @@ const en = {
     "The bot picks pairs from the universe and releases signals automatically, capped by your risk mode's daily limit.",
   ezyai_feature_dashboard_title: "Dashboard",
   ezyai_feature_dashboard_desc:
-    "One status overview for every watch, autopilot and feed — all actions live in the button menu.",
+    "One status overview for every watch, autopilot and feed. All actions live in the button menu.",
   ezyai_free_pro_title: "Free vs PRO",
   ezyai_free_label: "Free",
   ezyai_pro_label: "PRO",
-  ezyai_free_desc: "Analyze, Quote and a Dashboard preview — no card required.",
+  ezyai_free_desc: "Analyze, Quote and a Dashboard preview: no card required.",
   ezyai_pro_desc:
-    "Live Watch alerts, Autopilot signals, and deep Fundamentals — scores, fair value, positioning and a macro verdict.",
+    "Live Watch alerts, Autopilot signals, and deep Fundamentals: scores, fair value, positioning and a macro verdict.",
   ezyai_pricing_eyebrow: "Plans",
   ezyai_pricing_title: "Simple monthly PRO access",
   ezyai_pricing_subtitle:
-    "Pay by card right here — PRO activates on your Telegram account within a minute. Prefer Telegram Stars or USDT? Upgrade inside the bot. 3-day free trial, once per account.",
+    "Pay by card right here. PRO activates on your Telegram account within a minute. Prefer Telegram Stars or USDT? Upgrade inside the bot. 3-day free trial, once per account.",
   ezyai_tier_1m_label: "1 Month",
   ezyai_tier_6m_label: "6 Months",
   ezyai_tier_12m_label: "12 Months",
-  ezyai_tier_6m_badge: "Most popular — save 50%",
+  ezyai_tier_6m_badge: "Most popular: save 50%",
   ezyai_tier_12m_badge: "Save 44%",
   ezyai_start_trial: "Start free trial",
   ezyai_upgrade_pro: "or pay with Stars / USDT inside Telegram",
   ezyai_buy_pro: "Buy PRO",
   ezyai_markets_title: "Markets covered",
   ezyai_markets_desc:
-    "Crypto, forex, stocks/ETFs, metals, energy and indices — powered by free public data feeds, no API keys required.",
+    "Crypto, forex, stocks/ETFs, metals, energy and indices. Powered by free public data feeds, no API keys required.",
   ezyai_disclaimer:
-    "Signals are rule-based confluence — deterministic and explainable. Educational only, not personalized financial advice. Verify prices with your broker before acting.",
+    "Signals are rule-based confluence. Deterministic and explainable. Educational only, not personalized financial advice. Verify prices with your broker before acting.",
   ezyai_final_title: "Start with a free analysis today",
   ezyai_final_body:
     "No payment, no commitment. Try the free tier in Telegram, then upgrade to PRO when you want live alerts and autopilot.",
   ezyai_cta_open_bot: "Open EzyAI in Telegram",
-  indicators_meta_title: "Indicators & Pricing — EzyMap Algo",
+  indicators_meta_title: "Indicators & Pricing: EzyMap Algo",
   indicators_meta_desc:
     "EzyMap TradingView and MT5 indicators with real prices: EzyMap Lite $49, EzyMap Pro $249, MT5 bundle from $99/month and single tools from $9/month.",
   indicators_og_desc:
-    "TradingView and MT5 indicators from EzyMap Algo — Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias and more, with live pricing.",
+    "TradingView and MT5 indicators from EzyMap Algo: Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias and more, with live pricing.",
   indicators_desk_label: "EzyMap indicator desk",
   indicators_title: "Indicators",
   indicators_subtitle:
-    "The same TradingView and MT5 tools our members trade with — mapping, risk control and multi-timeframe bias.",
+    "The same TradingView and MT5 tools our members trade with: mapping, risk control and multi-timeframe bias.",
   indicators_cta_get: "Get Your Indicator",
   indicators_cta_ask: "Ask Sarah",
   indicators_vantage_title: "Free access with a Vantage activation",
   indicators_vantage_body:
-    "Open an account under IB 26468008 and the indicators bundled with your package are unlocked at no extra cost — Lite on Beginner, Currency Strength on Pro, Auto TPSL and MTF Bias on Premium, the full MT5 set on Elite.",
+    "Open an account under IB 26468008 and the indicators bundled with your package are unlocked at no extra cost: Lite on Beginner, Currency Strength on Pro, Auto TPSL and MTF Bias on Premium, the full MT5 set on Elite.",
   indicators_vantage_open: "Open Account",
   indicators_vantage_free: "Get Free Access",
   indicators_footnote:
     "Prices are in USD and are confirmed inside the enrollment bot before payment. Trading carries risk of loss.",
-  macro_meta_title: "Macro & Crypto Desk — EzyMap Algo",
+  macro_meta_title: "Macro & Crypto Desk: EzyMap Algo",
   macro_meta_desc:
-    "MacroTrader desk: economic calendar, central bank policy divergence, recession odds, Fed tone, news sentiment and crypto add-ons — times in your own timezone.",
+    "MacroTrader desk: economic calendar, central bank policy divergence, recession odds, Fed tone, news sentiment and crypto add-ons: times in your own timezone.",
   macro_og_desc:
     "Economic calendar, central bank divergence, recession odds and crypto desk add-ons from the MacroTrader Telegram desk.",
   macro_twitter_desc: "Macro heatmaps, economic calendar and crypto add-ons, in your own timezone.",
   macro_per_month: "/month",
-  fc_meta_title: "Join the Free Telegram Channel — EzyMap",
+  fc_meta_title: "Join the Free Telegram Channel: EzyMap",
   fc_meta_desc: "Get free forex, gold and crypto trading signals delivered live on Telegram.",
   fc_back_home: "Back home",
   fc_title: "Join the free Telegram channel",
@@ -598,7 +598,7 @@ const en = {
   fc_benefit_members_desc: "Active trader community",
   legal_updated: "Last updated: 2026",
   legal_back_home: "← Back to home",
-  privacy_meta_title: "Privacy Policy — EzyMap ALGO",
+  privacy_meta_title: "Privacy Policy: EzyMap ALGO",
   privacy_meta_desc:
     "How EzyMap ALGO collects, uses and protects the limited information gathered from visitors and Telegram subscribers.",
   privacy_og_desc: "How EzyMap ALGO handles your data.",
@@ -616,7 +616,7 @@ const en = {
     "Joining our channels is governed by Telegram's own privacy policy. We only see the public profile information Telegram exposes to channel admins.",
   privacy_contact_title: "Contact",
   privacy_contact_body: "Questions? Message us on Telegram at",
-  terms_meta_title: "Terms of Service — EzyMap ALGO",
+  terms_meta_title: "Terms of Service: EzyMap ALGO",
   terms_meta_desc:
     "Terms governing the use of EzyMap ALGO trading signals, education content and package access.",
   terms_og_desc: "Terms for using EzyMap ALGO signals and subscriptions.",
@@ -634,14 +634,14 @@ const en = {
   terms_access_body:
     "Sharing private channel content or credentials results in immediate removal without refund.",
   ebook_meta_suffix: "Free Trading PDF | EzyMap ALGO",
-  ebook_not_found_meta: "Ebook not found — EzyMap ALGO",
+  ebook_not_found_meta: "Ebook not found: EzyMap ALGO",
   ebook_not_found_title: "Ebook not found",
   ebook_not_found_body: "That guide does not exist. Browse the available ones below.",
   ebook_back_home: "Back to home",
   ebook_free_pdf: "Free PDF",
   ebook_pages_pdf: "{n} pages · PDF",
   ebook_gate_vantage: "Free with sign-in + a Vantage account confirmation",
-  ebook_gate_signin: "Free with a quick sign-in — instant download",
+  ebook_gate_signin: "Free with a quick sign-in: instant download",
   ebook_for_you_if: "This is for you if",
   ebook_outcomes_title: "What you will be able to do",
   ebook_chapters_title: "Inside the guide",
@@ -663,7 +663,7 @@ const en = {
   dash_tg_link: "Telegram delivery",
   dash_tg_linked: "Delivering to {handle}",
   dash_tg_link_hint:
-    "Link your Telegram and everything you buy goes to that exact account — no handle to mistype.",
+    "Link your Telegram and everything you buy goes to that exact account: no handle to mistype.",
   dash_tg_claimed: "Delivered {count} purchase(s) to your Telegram.",
   auth_email_label: "Email",
   auth_send_link: "Email me a sign-in link",
@@ -679,7 +679,7 @@ const en = {
   dash_browse_packages: "Browse packages",
   dash_delivered_to: "delivered to",
   dash_pro_code: "PRO code",
-  dash_pro_code_redeemed: "Redeemed — PRO is active in @ezytradeai_bot.",
+  dash_pro_code_redeemed: "Redeemed. PRO is active in @ezytradeai_bot.",
   dash_pro_code_hint: "Open @ezytradeai_bot and send /redeem {code} to activate PRO.",
   dash_ebooks: "Free ebooks",
   dash_ebook_download: "Download",
@@ -715,15 +715,15 @@ const en = {
 
   // Page metadata for the translated twins. Head-only: never rendered in
   // the body, but it is the copy a crawler and a shared link show.
-  home_meta_title: "EzyMap ALGO — Professional Trading Signals on Telegram",
+  home_meta_title: "EzyMap ALGO: Professional Trading Signals on Telegram",
   home_meta_desc:
     "Join 640+ traders receiving live trading signals and education on Telegram. Real-time forex, crypto and commodity alerts powered by TradingView indicators.",
-  faq_meta_title: "FAQ — EzyMap ALGO Trading Signals",
+  faq_meta_title: "FAQ: EzyMap ALGO Trading Signals",
   faq_meta_desc:
     "Answers about EzyMap ALGO trading routines, pricing tiers, the 30-day Vantage trial, enrollment, your account, and support.",
-  ezyai_meta_title: "EzyAI — AI Trading Signals on Telegram | EzyMap Algo",
+  ezyai_meta_title: "EzyAI: AI Trading Signals on Telegram | EzyMap Algo",
   ezyai_meta_desc:
-    "EzyAI turns free market data into trading confluence on Telegram — technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
+    "EzyAI turns free market data into trading confluence on Telegram: technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
 } as const;
 
 export default en;

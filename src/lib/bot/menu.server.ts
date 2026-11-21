@@ -42,10 +42,10 @@ export async function sendMainMenu(chatId: number, firstName?: string | null) {
     {
       text:
         t.id === "vantage"
-          ? `🎁 ${t.name} — free via Vantage`
+          ? `🎁 ${t.name}: free via Vantage`
           : t.amountCents === 0
             ? `🆓 ${t.name}`
-            : `${t.name} — ${formatPrice(t.amountCents)}`,
+            : `${t.name}: ${formatPrice(t.amountCents)}`,
       callback_data: `tier:${t.id}`,
     },
   ]);
@@ -55,7 +55,7 @@ export async function sendMainMenu(chatId: number, firstName?: string | null) {
 
   await sendMessage(
     chatId,
-    `👋 <b>EzyMap ALGO${firstName ? ` — hi ${escapeHtml(firstName)}` : ""}.</b>\n\nPick a package below and I'll set your account up right here. Paid packages activate automatically the moment payment clears — tap <b>My status</b> any time to check.`,
+    `👋 <b>EzyMap ALGO${firstName ? `, hi ${escapeHtml(firstName)}` : ""}.</b>\n\nPick a package below and I'll set your account up right here. Paid packages activate automatically the moment payment clears, tap <b>My status</b> any time to check.`,
     keyboard,
   );
 }
@@ -64,7 +64,7 @@ export async function sendMainMenu(chatId: number, firstName?: string | null) {
 export async function sendPackages(chatId: number) {
   const lines = TIER_CATALOG.map((t) => {
     const price = t.id === "vantage" ? "free via Vantage" : formatPrice(t.amountCents);
-    return `<b>${t.name}</b> — ${price}\n<i>${t.blurb}</i>`;
+    return `<b>${t.name}</b>: ${price}\n<i>${t.blurb}</i>`;
   });
   const keyboard: InlineButton[][] = TIER_CATALOG.map((t) => [
     { text: `Choose ${t.name}`, callback_data: `tier:${t.id}` },
@@ -89,13 +89,13 @@ function statusLine(row: EnrollmentRow): string {
   const price = row.amount_cents > 0 ? ` · ${formatPrice(row.amount_cents, row.currency)}` : "";
 
   let detail = "";
-  if (row.status === "pending") detail = " — awaiting payment";
+  if (row.status === "pending") detail = ": awaiting payment";
   else if (row.status === "active" && row.expires_at) {
-    detail = ` — until ${new Date(row.expires_at).toLocaleDateString("en-US", {
+    detail = `. Until ${new Date(row.expires_at).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     })}`;
-  } else if (row.status === "active") detail = " — live";
+  } else if (row.status === "active") detail = ": live";
 
   return `${icon} <b>${name}</b>${price}${detail}`;
 }
@@ -140,7 +140,7 @@ export async function sendPaymentStatus(chatId: number, telegramId: number) {
 
   const body =
     rows.length === 0
-      ? `🧾 <b>Your status</b>\n\nNo packages yet — pick one below and you'll appear here instantly.`
+      ? `🧾 <b>Your status</b>\n\nNo packages yet. Pick one below and you'll appear here instantly.`
       : `🧾 <b>Your status</b>\n\n${rows.map(statusLine).join("\n")}\n\n<i>🟢 active · 🟡 awaiting payment · 🔴 expired</i>`;
 
   await sendMessage(chatId, body, keyboard);
@@ -151,7 +151,7 @@ export async function sendAccountLink(chatId: number, telegramId: number) {
   const url = await accountLinkFor(telegramId);
   await sendMessage(
     chatId,
-    `🔑 <b>Your trading account</b>\n\nThis link signs you in for 7 days — your signals, your trade log, your stats and your billing history. Send /account any time for a fresh one.`,
+    `🔑 <b>Your trading account</b>\n\nThis link signs you in for 7 days: your signals, your trade log, your stats and your billing history. Send /account any time for a fresh one.`,
     [[{ text: "Open my account", url }], navRow(), [BTN_ASK_SARAH]],
   );
 }
@@ -166,7 +166,7 @@ export async function sendAskSarah(chatId: number) {
 export async function sendFallback(chatId: number) {
   await sendMessage(
     chatId,
-    `Hmm, I don't have a ready answer for that one — I've passed it to Sarah and she'll come back to you personally. Meanwhile, here's what I can show you 👇`,
+    `Hmm, I don't have a ready answer for that one. I've passed it to Sarah and she'll come back to you personally. Meanwhile, here's what I can show you 👇`,
     [
       [
         { text: "🛍 Products", callback_data: "kw:products" },

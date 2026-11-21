@@ -103,8 +103,8 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
                 telegramId,
                 result.ok
                   ? result.alreadyApproved
-                    ? `Already approved — ${result.title ?? "that ebook"}.`
-                    : `✅ Approved — ${result.title ?? "that ebook"} is now unlocked for download.`
+                    ? `Already approved: ${result.title ?? "that ebook"}.`
+                    : `✅ Approved: ${result.title ?? "that ebook"} is now unlocked for download.`
                   : `Couldn't find that claim.`,
               );
             } else if (tierId === "vantage") {
@@ -136,7 +136,7 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
             if (await autoRegisterSarah(telegramId, message?.from?.username)) {
               await sendMessageHelpText(
                 telegramId,
-                `✅ Hi Sarah — this chat is now the support inbox. Member and website messages arrive here; reply to any of them (Telegram "reply") and it goes straight back to that person.`,
+                `✅ Hi Sarah. This chat is now the support inbox. Member and website messages arrive here; reply to any of them (Telegram "reply") and it goes straight back to that person.`,
               );
               return Response.json({ ok: true });
             }
@@ -238,8 +238,8 @@ export const Route = createFileRoute("/api/public/telegram/webhook")({
               await sendMessageHelpText(
                 telegramId,
                 relayed
-                  ? `✅ Sent to Sarah — her reply will land right here.`
-                  : `Couldn't reach Sarah just now — try again in a moment.`,
+                  ? `✅ Sent to Sarah. Her reply will land right here.`
+                  : `Couldn't reach Sarah just now: try again in a moment.`,
               );
             } else {
               // Sarah's keyword reply book answers first; anything she has no
@@ -296,6 +296,6 @@ async function sendMessageHelp(chatId: number) {
   const { SUPPORT } = await import("@/lib/bot/menu.server");
   await sendMessage(
     chatId,
-    `<b>What I can do</b>\n\n/packages — browse packages and prices\n/status — check your payment & access\n/account — open your trading account\n/ask — message Sarah (human support)\n\nAnything else, reach us directly: ${SUPPORT}`,
+    `<b>What I can do</b>\n\n/packages, browse packages and prices\n/status, check your payment & access\n/account, open your trading account\n/ask, message Sarah (human support)\n\nAnything else, reach us directly: ${SUPPORT}`,
   );
 }

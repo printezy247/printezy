@@ -82,7 +82,7 @@ export const createCheckout = createServerFn({ method: "POST" })
         windowMs: 60 * 60 * 1000,
       });
       if (!allowed) {
-        return { error: "Too many checkout attempts — please try again in a bit." };
+        return { error: "Too many checkout attempts: please try again in a bit." };
       }
 
       // The browser's Stripe key decides which environment its embedded
@@ -90,7 +90,7 @@ export const createCheckout = createServerFn({ method: "POST" })
       // mismatch means a stale/test client talking to the live site.
       const environment = detectStripeEnv();
       if (data.environment !== environment) {
-        return { error: "Payment system mismatch — reload the page and try again." };
+        return { error: "Payment system mismatch: reload the page and try again." };
       }
       const stripe = createStripeClient(environment);
 

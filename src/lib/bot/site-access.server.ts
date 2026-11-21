@@ -76,7 +76,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
 
   await sendMessage(
     telegramId,
-    `🎉 <b>Purchase confirmed — ${item?.name ?? purchase.sku} is live.</b>\n\nYour access has been approved automatically. Open your account page for your links and status.`,
+    `🎉 <b>Purchase confirmed: ${item?.name ?? purchase.sku} is live.</b>\n\nYour access has been approved automatically. Open your account page for your links and status.`,
     [
       [{ text: "My account", url: await accountLinkFor(telegramId) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
@@ -88,7 +88,7 @@ async function grantPurchase(telegramId: number, purchase: PurchaseRow): Promise
   if (sarah) {
     await sendMessage(
       sarah,
-      `💳 <b>Website purchase approved</b>\n${item?.name ?? purchase.sku}\nBuyer: @${purchase.telegram_username ?? "unknown"} (id ${telegramId})\nAccess granted automatically — send any manual files if this product needs them.`,
+      `💳 <b>Website purchase approved</b>\n${item?.name ?? purchase.sku}\nBuyer: @${purchase.telegram_username ?? "unknown"} (id ${telegramId})\nAccess granted automatically. Send any manual files if this product needs them.`,
     );
   }
 }
@@ -127,8 +127,8 @@ async function grantMt5Purchase(purchase: PurchaseRow, telegramId: number | null
 
   if (telegramId) {
     const message = granted
-      ? `🎉 <b>Purchase confirmed — ${item?.name ?? purchase.sku} is live.</b>\n\nYour MT5 license is active right now on account <code>${account}</code> — attach the indicator and it'll unlock automatically.`
-      : `✅ <b>Payment received for ${item?.name ?? purchase.sku}.</b>\n\nWe're finishing setup on your MT5 license — Jack will confirm shortly.`;
+      ? `🎉 <b>Purchase confirmed, ${item?.name ?? purchase.sku} is live.</b>\n\nYour MT5 license is active right now on account <code>${account}</code>, attach the indicator and it'll unlock automatically.`
+      : `✅ <b>Payment received for ${item?.name ?? purchase.sku}.</b>\n\nWe're finishing setup on your MT5 license: Jack will confirm shortly.`;
     await sendMessage(telegramId, message, [
       [{ text: "Join the channel", url: FREE_CHANNEL }],
       [{ text: "Need help?", url: SUPPORT }],
@@ -140,8 +140,8 @@ async function grantMt5Purchase(purchase: PurchaseRow, telegramId: number | null
     const statusLine = granted
       ? `✅ MT5 license auto-granted (account ${account}).`
       : account
-        ? `⚠️ Auto-grant failed — grant manually on the license server for account ${account}.`
-        : `⚠️ No MT5 account number on file — cannot auto-grant, follow up with the buyer.`;
+        ? `⚠️ Auto-grant failed. Grant manually on the license server for account ${account}.`
+        : `⚠️ No MT5 account number on file: cannot auto-grant, follow up with the buyer.`;
     await sendMessage(
       sarah,
       `💳 <b>Website MT5 purchase</b>\n${item?.name ?? purchase.sku}\nBuyer: @${purchase.telegram_username ?? "unknown"}${telegramId ? ` (id ${telegramId})` : ""}\n${statusLine}`,

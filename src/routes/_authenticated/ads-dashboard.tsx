@@ -36,7 +36,7 @@ const money = (cents: number, currency: string) =>
     currency: (currency || "usd").toUpperCase(),
   }).format(cents / 100);
 
-const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString() : "—");
+const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString() : "N/A");
 
 function AdsDashboardPage() {
   const load = useServerFn(getAdDashboard);
@@ -149,13 +149,13 @@ function AdsDashboardPage() {
                       <tr key={r.sessionId + r.createdAt} className="border-t border-border">
                         <td className="whitespace-nowrap px-4 py-3">{when(r.createdAt)}</td>
                         <td className="max-w-[180px] truncate px-4 py-3 font-mono text-xs">
-                          {r.fbclid ?? "—"}
+                          {r.fbclid ?? "N/A"}
                         </td>
-                        <td className="px-4 py-3">{r.utmCampaign ?? "—"}</td>
-                        <td className="px-4 py-3">{r.utmMedium ?? "—"}</td>
-                        <td className="px-4 py-3">{r.landingPath ?? "—"}</td>
-                        <td className="px-4 py-3">{r.tier ?? "—"}</td>
-                        <td className="px-4 py-3">{r.status ?? "—"}</td>
+                        <td className="px-4 py-3">{r.utmCampaign ?? "N/A"}</td>
+                        <td className="px-4 py-3">{r.utmMedium ?? "N/A"}</td>
+                        <td className="px-4 py-3">{r.landingPath ?? "N/A"}</td>
+                        <td className="px-4 py-3">{r.tier ?? "N/A"}</td>
+                        <td className="px-4 py-3">{r.status ?? "N/A"}</td>
                         <td className="whitespace-nowrap px-4 py-3">{when(r.enrolledAt)}</td>
                       </tr>
                     ))}

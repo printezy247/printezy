@@ -56,7 +56,7 @@ function SupportInboxCard() {
   if (health.ok) {
     return (
       <p className="text-sm text-muted-foreground">
-        Support inbox reachable — Telegram chat <span className="font-mono">{health.chatId}</span>.
+        Support inbox reachable: Telegram chat <span className="font-mono">{health.chatId}</span>.
       </p>
     );
   }
@@ -209,7 +209,7 @@ function SiteAnalyticsPage() {
                 {ENGAGEMENT_EVENTS.map((name) => (
                   <div key={name} className="rounded-xl border border-border bg-card p-5">
                     <div className="text-xs uppercase tracking-wide text-muted-foreground">
-                      {name === "engaged_15s" ? "Engaged — stayed 15s+" : "Engaged — scrolled 50%+"}
+                      {name === "engaged_15s" ? "Engaged, stayed 15s+" : "Engaged, scrolled 50%+"}
                     </div>
                     <div className="mt-2 text-2xl font-semibold">{totalFor(rows, name)}</div>
                   </div>
@@ -220,8 +220,8 @@ function SiteAnalyticsPage() {
             <section className="space-y-3">
               <h2 className="text-xl ">By campaign</h2>
               <p className="text-sm text-muted-foreground">
-                Only sessions tagged with a UTM/fbclid ad click — organic visits aren't attributed
-                to a campaign.
+                Only sessions tagged with a UTM/fbclid ad click. Organic visits aren't attributed to
+                a campaign.
               </p>
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-sm">

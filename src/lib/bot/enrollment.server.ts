@@ -114,10 +114,10 @@ export async function offerVantageTrial(telegramId: number) {
 
   await sendMessage(
     telegramId,
-    `<b>Free ${VANTAGE_TRIAL_DAYS}-day Pro access — no card needed.</b>\n\nOpen a live account with our broker partner, Vantage Markets, using the link below. Come back and tap <i>I've activated</i> and I'll unlock Pro-level signals, your trade log and stats for ${VANTAGE_TRIAL_DAYS} days so you can test everything before paying.`,
+    `<b>Free ${VANTAGE_TRIAL_DAYS}-day Pro access. No card needed.</b>\n\nOpen a live account with our broker partner, Vantage Markets, using the link below. Come back and tap <i>I've activated</i> and I'll unlock Pro-level signals, your trade log and stats for ${VANTAGE_TRIAL_DAYS} days so you can test everything before paying.`,
     [
       [{ text: "Open my Vantage account", url: VANTAGE_LINK }],
-      [{ text: "I've activated — unlock my trial", callback_data: "vantage:confirm" }],
+      [{ text: "I've activated: unlock my trial", callback_data: "vantage:confirm" }],
       [{ text: "Talk to a human", url: SUPPORT }],
     ],
   );
@@ -178,7 +178,7 @@ export async function activateVantageTrial(telegramId: number) {
 
   await sendMessage(
     telegramId,
-    `✅ <b>Trial unlocked.</b>\n\nPro-level access is live for ${VANTAGE_TRIAL_DAYS} days. Open your account for signals, your trade log and stats — upgrade any time and your trial simply rolls into the paid package.`,
+    `✅ <b>Trial unlocked.</b>\n\nPro-level access is live for ${VANTAGE_TRIAL_DAYS} days. Open your account for signals, your trade log and stats. Upgrade any time and your trial simply rolls into the paid package.`,
     [
       [{ text: "My account", url: await accountLinkFor(telegramId) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],
@@ -230,7 +230,7 @@ export async function startPaidEnrollment(telegramId: number, tierId: string) {
 
   await sendMessage(
     telegramId,
-    `<b>${tier.name}</b> — ${formatPrice(tier.amountCents)}\n${tier.blurb}\n\n${tier.perks
+    `<b>${tier.name}</b>: ${formatPrice(tier.amountCents)}\n${tier.blurb}\n\n${tier.perks
       .map((p) => `• ${p}`)
       .join(
         "\n",
@@ -280,7 +280,7 @@ export async function activatePaidEnrollment(stripeSessionId: string): Promise<b
   const tier = getTier(row.tier);
   await sendMessage(
     row.telegram_id,
-    `🎉 <b>Payment confirmed — ${tier?.name ?? row.tier} is live.</b>\n\nYour access is active. Open your account page for your status and access links.`,
+    `🎉 <b>Payment confirmed: ${tier?.name ?? row.tier} is live.</b>\n\nYour access is active. Open your account page for your status and access links.`,
     [
       [{ text: "My account", url: await accountLinkFor(row.telegram_id) }],
       [{ text: "Join the channel", url: FREE_CHANNEL }],

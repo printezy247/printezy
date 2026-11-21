@@ -135,7 +135,7 @@ function formatValue(value: unknown, unit: string, scale: string): string {
       : typeof value === "string" && value.trim() !== ""
         ? Number(value)
         : Number.NaN;
-  if (!Number.isFinite(n)) return "—";
+  if (!Number.isFinite(n)) return "N/A";
 
   let scaled = n;
   let magnitude = "";
@@ -244,8 +244,9 @@ function normalizeTradingView(payload: unknown): DayRow[] {
       day: at.day,
       nyTime: at.time,
       currency:
-        ((raw.currency ?? "").trim() || COUNTRY_CURRENCY[country] || country).toUpperCase() || "—",
-      event: (raw.title ?? raw.indicator ?? "").trim() || "—",
+        ((raw.currency ?? "").trim() || COUNTRY_CURRENCY[country] || country).toUpperCase() ||
+        "N/A",
+      event: (raw.title ?? raw.indicator ?? "").trim() || "N/A",
       impact,
       actual: formatValue(raw.actual, unit, scale),
       forecast: formatValue(raw.forecast, unit, scale),
@@ -284,14 +285,14 @@ function normalizeForexFactory(payload: unknown): DayRow[] {
 
     rows.push({
       day,
-      nyTime: /^\d{2}:\d{2}$/.test(time) ? time : "—",
-      currency: (raw.country ?? "").trim().toUpperCase() || "—",
-      event: (raw.title ?? "").trim() || "—",
+      nyTime: /^\d{2}:\d{2}$/.test(time) ? time : "N/A",
+      currency: (raw.country ?? "").trim().toUpperCase() || "N/A",
+      event: (raw.title ?? "").trim() || "N/A",
       impact,
       // This feed has no actuals at all; the column stays empty on it.
-      actual: "—",
-      forecast: (raw.forecast ?? "").trim() || "—",
-      previous: (raw.previous ?? "").trim() || "—",
+      actual: "N/A",
+      forecast: (raw.forecast ?? "").trim() || "N/A",
+      previous: (raw.previous ?? "").trim() || "N/A",
     });
   }
   return rows;

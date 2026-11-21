@@ -16,10 +16,10 @@ const sw: Record<TranslationKey, string> = {
   chat_you: "Wewe",
   chat_assistant: "Sarah (msaidizi)",
   chat_greeting:
-    "Habari! Mimi ni Sarah. Niulize chochote kuhusu taratibu, vifurushi, malipo au kufungua akaunti yako — najibu papo hapo, na nisichoweza kujibu kinaenda moja kwa moja kwangu Telegram.",
+    "Habari! Mimi ni Sarah. Niulize chochote kuhusu taratibu, vifurushi, malipo au kufungua akaunti yako: najibu papo hapo, na nisichoweza kujibu kinaenda moja kwa moja kwangu Telegram.",
   chat_error: "Haikutumwa. Jaribu tena, au mtumie Sarah ujumbe Telegram: https://t.me/ezysarah",
   chat_notice_relayed:
-    "Imetumwa kwa Sarah — anajibu mwenyewe, kwa kawaida ndani ya saa chache. Acha mazungumzo haya wazi na jibu lake litatokea hapa.",
+    "Imetumwa kwa Sarah: anajibu mwenyewe, kwa kawaida ndani ya saa chache. Acha mazungumzo haya wazi na jibu lake litatokea hapa.",
   chat_notice_unreachable:
     "Sarah hapatikani kwa sasa. Mtumie ujumbe moja kwa moja Telegram: https://t.me/ezysarah",
   chat_link_telegram: "Mtumie Sarah ujumbe Telegram",
@@ -40,7 +40,7 @@ const sw: Record<TranslationKey, string> = {
   show_signals_cta: "Tazama vifurushi",
   show_learn_title: "Jifunze mbinu nyuma ya signal",
   show_learn_body:
-    "Vitabu viwili vya bure kuhusu kuchora muundo na kusoma uchambuzi wa kiufundi — mbinu ile ile deski inayotumia.",
+    "Vitabu viwili vya bure kuhusu kuchora muundo na kusoma uchambuzi wa kiufundi. Mbinu ile ile deski inayotumia.",
   show_learn_cta: "Pata kitabu cha bure",
   show_macro_title: "Deski ya makro inayosoma kalenda",
   show_macro_body:
@@ -49,7 +49,7 @@ const sw: Record<TranslationKey, string> = {
   band_eyebrow: "EzyAI PRO",
   band_title: "Acha boti ifanye uchambuzi",
   band_body:
-    "Trend, viwango, entries na hatari kwa jozi yoyote — kwa ombi kwenye Telegram, jaribu bure.",
+    "Trend, viwango, entries na hatari kwa jozi yoyote: kwa ombi kwenye Telegram, jaribu bure.",
   band_cta: "Fungua EzyAI",
   hero_title: "Signals za kitaalamu za biashara, zinazoletwa moja kwa moja kwenye simu yako.",
   hero_subtitle:
@@ -92,7 +92,7 @@ const sw: Record<TranslationKey, string> = {
   hero_card_atr: "ATR (15m)",
   hero_card_size: "Ukubwa kwa hatari ya 1%",
   hero_card_lots: "loti",
-  hero_card_plan_1: "Ingia ndani ya eneo — usifukuze juu yake kamwe.",
+  hero_card_plan_1: "Ingia ndani ya eneo: usifukuze juu yake kamwe.",
   hero_card_plan_2: "Stop inawekwa pamoja na kuingia na haiendi dhidi yako kamwe.",
   hero_card_plan_3: "Chukua nusu kwenye Target 1, sogeza stop hadi break-even.",
   hero_card_plan_4: "Acha iliyobaki ifike Target 2, ikifuata muundo.",
@@ -104,7 +104,7 @@ const sw: Record<TranslationKey, string> = {
   zoom_badge: "Kila wiki · bure",
   zoom_title: "Somo la Zoom la bure kila wiki kwenye channel",
   zoom_body:
-    "Jack huchambua setups bora za wiki moja kwa moja — entry, targets na risk — kisha hujibu maswali yako. Bure milele, bila kadi.",
+    "Jack huchambua setups bora za wiki moja kwa moja, entry, targets na risk, kisha hujibu maswali yako. Bure milele, bila kadi.",
   zoom_cta: "Jiunge na channel ya bure",
   trust_strip_label: "Majukwaa yanayoaminika tunayofanyia kazi",
   track_record_eyebrow: "Rekodi ya Utendaji",
@@ -134,11 +134,11 @@ const sw: Record<TranslationKey, string> = {
   feature_community_title: "Jumuiya",
   feature_community_body: "Ungana na wafanyabiashara {memberCount} duniani kote ndani ya Telegram.",
   feature_mobile_title: "Simu Kwanza",
-  feature_mobile_body: "Pata arifa popote, wakati wowote — bila kuhitaji terminal.",
+  feature_mobile_body: "Pata arifa popote, wakati wowote: bila kuhitaji terminal.",
   pricing_eyebrow: "Vifurushi",
   pricing_title: "Anza kwa uwazi. Boresha ukiwa tayari.",
   pricing_subtitle:
-    "Viwango vyote hujiandikisha kupitia bot yetu. Unataka ufikiaji wa bure? Amilisha kupitia Vantage Markets — hakuna kadi inayohitajika.",
+    "Viwango vyote hujiandikisha kupitia bot yetu. Unataka ufikiaji wa bure? Amilisha kupitia Vantage Markets: hakuna kadi inayohitajika.",
   pricing_duration_note:
     "Kila kifurushi ni malipo ya mara moja. Hakuna usajili, hakuna kujipya kiotomatiki. Leseni za zana za MT5 na EzyAI PRO ni kwa muda (miezi 1, 6 au 12).",
   pricing_most_popular: "Maarufu zaidi",
@@ -166,7 +166,7 @@ const sw: Record<TranslationKey, string> = {
   products_eyebrow: "Bidhaa",
   products_title: "Vifaa kamili vya EzyMap",
   products_subtitle:
-    "Vitabu pepe, indicators na utafiti wa uchumi mkuu — kila kitu nyuma ya signals.",
+    "Vitabu pepe, indicators na utafiti wa uchumi mkuu: kila kitu nyuma ya signals.",
   products_ebooks_heading: "Vitabu Pepe",
   ebook_get_it_free: "Pata bila malipo",
   ebook_mapping_b1: "Mudu maeneo ya support na upinzani",
@@ -196,11 +196,11 @@ const sw: Record<TranslationKey, string> = {
   how_title: "Hatua tatu hadi signal yako ya kwanza",
   how_step1_title: "Jiunge na t.me/ezymap",
   how_step1_body:
-    "Mguso mmoja. Hakuna malipo, hakuna fomu — unaingia mara moja kwenye kituo cha bure.",
+    "Mguso mmoja. Hakuna malipo, hakuna fomu. Unaingia mara moja kwenye kituo cha bure.",
   how_step2_title: "Pokea arifa za signal mara moja",
   how_step2_body: "Entry, stop loss na targets hufika mara tu mpangilio unapothibitishwa.",
   how_step3_title: "Tekeleza kwenye Vantage Markets",
-  how_step3_body: "Fanya biashara na broker wako mwenyewe — tunapendekeza Vantage Markets.",
+  how_step3_body: "Fanya biashara na broker wako mwenyewe: tunapendekeza Vantage Markets.",
   ambassador_eyebrow: "Balozi",
   ambassador_title: "Mfahamu Jack",
   ambassador_role: "Mwanzilishi, EzyMap ALGO",
@@ -224,7 +224,7 @@ const sw: Record<TranslationKey, string> = {
     "Entries safi, ubatilishaji wazi. Ilifanya uandishi wangu wa kumbukumbu na upimaji wa hatari kuwa rahisi zaidi.",
   testimonial_luqman_role: "Scalper",
   testimonial_luqman_quote:
-    "Kituo cha M5 kinalingana na jinsi ninavyofanya biashara tayari — kinaondoa tu mashaka.",
+    "Kituo cha M5 kinalingana na jinsi ninavyofanya biashara tayari: kinaondoa tu mashaka.",
   testimonial_chen_role: "Mfanyabiashara mpya",
   testimonial_chen_quote:
     "Nilianza kwenye kituo cha bure ili kujifunza. Elimu peke yake ilistahili kujiunga.",
@@ -233,7 +233,7 @@ const sw: Record<TranslationKey, string> = {
   faq_group1_title: "Taratibu na signals",
   faq_g1_q1: "Mnatuma signals mara ngapi?",
   faq_g1_a1:
-    "Mara kadhaa kila siku wakati wa saa za biashara (24/5). Marudio hutegemea hali za soko — tunatoa arifa tu mpangilio unapokidhi vigezo vyetu. Ubora kuliko wingi.",
+    "Mara kadhaa kila siku wakati wa saa za biashara (24/5). Marudio hutegemea hali za soko. Tunatoa arifa tu mpangilio unapokidhi vigezo vyetu. Ubora kuliko wingi.",
   faq_g1_q2: "Mnafanya biashara katika masoko gani?",
   faq_g1_a2:
     "Forex (jozi kuu), sarafu za kidijitali na bidhaa. Lengo letu kuu ni biashara ya intraday, pamoja na mipangilio ya swing kwenye muda mrefu zaidi.",
@@ -249,7 +249,7 @@ const sw: Record<TranslationKey, string> = {
   faq_group2_title: "Viwango vya bei",
   faq_g2_q1: "Je, kuna chaguo la bure?",
   faq_g2_a1:
-    "Jiunge na kituo chetu cha bure cha Telegram kwa signals za mfano na elimu. Unaweza pia kufungua kiwango chochote cha malipo bila malipo kwa kuamilisha akaunti ya Vantage Markets — hakuna kadi inayohitajika. Kiwango cha Beginner kwa $29 ya mara moja ndicho kianzio cha malipo — malipo ya mara moja, hakuna kujipya kiotomatiki.",
+    "Jiunge na kituo chetu cha bure cha Telegram kwa signals za mfano na elimu. Unaweza pia kufungua kiwango chochote cha malipo bila malipo kwa kuamilisha akaunti ya Vantage Markets, hakuna kadi inayohitajika. Kiwango cha Beginner kwa $29 ya mara moja ndicho kianzio cha malipo, malipo ya mara moja, hakuna kujipya kiotomatiki.",
   faq_g2_q2: "Ni nini kimejumuishwa katika Pro, Premium na Elite?",
   faq_g2_a2:
     "Pro ($49) inaongeza mfuatano kamili wa signal na indicators. Premium ($99) inaongeza dawati la uchumi mkuu na misingi pamoja na msaada wa kipaumbele. Elite ($299) inaongeza taratibu binafsi za Jack, uongozaji wa mtu-mmoja na kila kitu kingine.",
@@ -258,14 +258,14 @@ const sw: Record<TranslationKey, string> = {
     "Ndiyo. Fungua bot ya usajili, chagua kifurushi chako kipya, na akaunti yako inasasishwa mara malipo yanapothibitishwa. Kumbukumbu yako ya biashara na historia huendelea.",
   faq_g2_q4: "Je, mnatoa marejesho ya fedha?",
   faq_g2_a4:
-    "Mtumie Sarah ujumbe kupitia bot ukiwa na jina lako la mtumiaji la Telegram na maelezo ya oda — anashughulikia maombi ya marejesho kwa kila hali.",
+    "Mtumie Sarah ujumbe kupitia bot ukiwa na jina lako la mtumiaji la Telegram na maelezo ya oda. Anashughulikia maombi ya marejesho kwa kila hali.",
   faq_group3_title: "Usajili na akaunti yako",
   faq_g3_q1: "Ninajiandikishaje katika kiwango cha malipo?",
   faq_g3_a1:
     "Gusa Enroll Now kwenye kifurushi chochote ili kufungua bot yetu ya usajili kwenye Telegram, chagua kiwango chako, na ulipe kwa usalama kwa kadi kupitia Stripe. Ufikiaji wako unaamilishwa mara malipo yanapothibitishwa.",
   faq_g3_q2: "Ninawezaje kufikia akaunti yangu?",
   faq_g3_a2:
-    "Andika /account kwenye bot kwa kiungo cha kuingia kwa mguso mmoja, au ingia kwenye tovuti kwa kutumia msimbo wa tarakimu 6 ambao bot inatuma kwa Telegram yako — hakuna manenosiri.",
+    "Andika /account kwenye bot kwa kiungo cha kuingia kwa mguso mmoja, au ingia kwenye tovuti kwa kutumia msimbo wa tarakimu 6 ambao bot inatuma kwa Telegram yako: hakuna manenosiri.",
   faq_g3_q3: "Nini kinatokea baada ya kulipa?",
   faq_g3_a3:
     "Bot inathibitisha malipo yako papo hapo na dashibodi yako inafunguka: mfuatano wa signal kulingana na kiwango, kumbukumbu yako binafsi ya biashara, takwimu za utendaji na historia ya malipo.",
@@ -294,11 +294,11 @@ const sw: Record<TranslationKey, string> = {
   tools_eyebrow: "Zana",
   tools_title: "Indicators vya TradingView na MT5",
   tools_subtitle:
-    "Zana zilezile wanachama wetu wanazotumia kufanya biashara — bei za papo hapo, hakuna ukurasa tofauti.",
+    "Zana zilezile wanachama wetu wanazotumia kufanya biashara: bei za papo hapo, hakuna ukurasa tofauti.",
   tools_tv_section_title: "Indicators vya TradingView",
   tools_tv_section_sub: "Leseni ya mara moja, sasisho la maisha yote.",
   tools_mt5_section_title: "Indicators vya MT5",
-  tools_mt5_section_sub: "Chagua muda — kila mwezi, miezi 6 au kila mwaka.",
+  tools_mt5_section_sub: "Chagua muda: kila mwezi, miezi 6 au kila mwaka.",
   tools_buy: "Nunua",
   tools_open_tv_account: "Fungua akaunti ya bure ya TradingView",
   term_1m: "Mwezi 1",
@@ -316,7 +316,7 @@ const sw: Record<TranslationKey, string> = {
   tv_pro_b1: "Signals za entry, SL na TP kutoka M1–H4",
   tv_pro_b2: "Kichujio cha muunganiko wa muda mbalimbali",
   tv_pro_b3: "Sasisho la maisha yote limejumuishwa",
-  mt5_bundle_tagline: "Kila zana ya MT5 hapa chini katika leseni moja — yenye thamani ya $999.",
+  mt5_bundle_tagline: "Kila zana ya MT5 hapa chini katika leseni moja: yenye thamani ya $999.",
   mt5_bundle_b1: "Indicators vyote vya MT5 vimejumuishwa",
   mt5_bundle_b2: "Msaada wa kipaumbele wa usanidi",
   mt5_bundle_b3: "Mipangilio inayofaa kampuni za prop",
@@ -356,12 +356,12 @@ const sw: Record<TranslationKey, string> = {
   macro_filter_sentiment: "Hisia za soko",
   macro_calendar_title: "Kalenda ya Kiuchumi ya Leo",
   macro_calendar_note: "Nyakati zinaonyeshwa kwa {tz}",
-  macro_calendar_next_day: "Hakuna zaidi leo — inaonyesha {day}",
-  macro_calendar_empty: "Hakuna matoleo yaliyopangwa — angalia ForexFactory kwa wiki nzima.",
-  macro_calendar_unavailable: "Kalenda ya moja kwa moja haipatikani sasa — fungua ForexFactory.",
+  macro_calendar_next_day: "Hakuna zaidi leo: inaonyesha {day}",
+  macro_calendar_empty: "Hakuna matoleo yaliyopangwa. Angalia ForexFactory kwa wiki nzima.",
+  macro_calendar_unavailable: "Kalenda ya moja kwa moja haipatikani sasa: fungua ForexFactory.",
   macro_calendar_updated: "{source} · imesasishwa {time}",
   macro_live_note: "Moja kwa moja kutoka boti ya MacroTrader · imesasishwa {time}",
-  macro_sample_note: "Data ya mfano — mlisho wa moja kwa moja haujaunganishwa bado",
+  macro_sample_note: "Data ya mfano. Mlisho wa moja kwa moja haujaunganishwa bado",
   macro_sample_short: "mfano",
   macro_tone_readout: "Mwelekeo wa siku 7: {label}",
   macro_sentiment_readout: "Hisia za siku 7: {label}",
@@ -406,7 +406,7 @@ const sw: Record<TranslationKey, string> = {
   macro_crypto_desk_title: "Dawati la Sarafu za Kidijitali",
   macro_crypto_desk_note: "Nyongeza, hulipiwa tofauti",
   macro_pay_with_card: "Lipa kwa kadi",
-  macro_pay_with_card_price: "Lipa kwa kadi — {price}",
+  macro_pay_with_card_price: "Lipa kwa kadi: {price}",
   macro_subscribe_telegram: "au jiandikishe kupitia Telegram",
   macro_fear_greed_title: "Crypto Fear & Greed",
   macro_gold_fg_title: "Gold Fear & Greed",
@@ -423,11 +423,11 @@ const sw: Record<TranslationKey, string> = {
   macro_next_rate_decisions_title: "Maamuzi Yajayo ya Riba",
   macro_full_desk_label: "Dawati kamili la uchumi mkuu",
   macro_full_desk_desc:
-    "Inafungua ramani zote nne za joto za premium — tofauti za benki kuu, uwezekano wa mdororo, uhusiano wa mali na hatari za kijiografia — hutolewa kila siku saa {time}, saa yako ya muhtasari wa eneo lako.",
+    "Inafungua ramani zote nne za joto za premium, tofauti za benki kuu, uwezekano wa mdororo, uhusiano wa mali na hatari za kijiografia, hutolewa kila siku saa {time}, saa yako ya muhtasari wa eneo lako.",
   macro_subscribe_via_telegram_full: "Jiandikishe kupitia Telegram",
   macro_payment_methods_note: "Kadi, Nyota za Telegram au USDT · ghairi wakati wowote",
   macro_disclaimer_before:
-    "Data ya uchumi mkuu inatolewa kwa madhumuni ya elimu na utafiti tu na si ushauri wa kibinafsi wa uwekezaji. Takwimu zinatoka kwa vyanzo vya wahusika wengine na zinaweza kucheleweshwa au kurekebishwa — linganisha na",
+    "Data ya uchumi mkuu inatolewa kwa madhumuni ya elimu na utafiti tu na si ushauri wa kibinafsi wa uwekezaji. Takwimu zinatoka kwa vyanzo vya wahusika wengine na zinaweza kucheleweshwa au kurekebishwa: linganisha na",
   macro_disclaimer_after: "kabla ya kuchukua hatua. Biashara ina hatari ya hasara.",
   macro_dovish: "Dovish",
   macro_hawkish: "Hawkish",
@@ -446,7 +446,7 @@ const sw: Record<TranslationKey, string> = {
   ezyai_tab_about: "Kuhusu EzyAI",
   ezyai_sig_title: "Moja kwa moja kutoka kwa bot",
   ezyai_sig_desc:
-    "Kila ishara ambayo bot hufungua kwenye akaunti yake — autopilot na arifa za watch zote — inapotokea. Kadi hubaki hadi biashara ifungwe kwa TP, break-even au SL — hakuna kinachoondolewa kimyakimya.",
+    "Kila ishara ambayo bot hufungua kwenye akaunti yake, autopilot na arifa za watch zote, inapotokea. Kadi hubaki hadi biashara ifungwe kwa TP, break-even au SL, hakuna kinachoondolewa kimyakimya.",
   ezyai_sig_empty: "Hakuna ishara wazi sasa. Bot itaweka kadi hapa mara tu ishara inapowaka.",
   ezyai_sig_updated: "Imesasishwa {time}",
   ezyai_load_failed: "Ubao haukuweza kupakiwa. Huenda ni hitilafu ya muda.",
@@ -457,7 +457,7 @@ const sw: Record<TranslationKey, string> = {
   ezyai_sig_copied: "Imenakiliwa",
   ezyai_sig_awaiting_levels: "inasubiri viwango",
   ezyai_see_live_board: "Ona bora ya moja kwa moja",
-  ezyai_sig_exclusive: "Bure kwenye ukurasa huu — arifa za moja kwa moja hufika kwenye bot na PRO.",
+  ezyai_sig_exclusive: "Bure kwenye ukurasa huu. Arifa za moja kwa moja hufika kwenye bot na PRO.",
   ezyai_sig_status_pending: "Inasubiri",
   ezyai_sig_status_running: "Inaendelea",
   ezyai_sig_status_tp: "Lengo",
@@ -483,21 +483,21 @@ const sw: Record<TranslationKey, string> = {
   ezyai_sig_streak_losses: "kushindwa",
   ezyai_sig_best_worst: "Bora {best} · mbaya {worst}",
   ezyai_sig_drawdown: "Drawdown kubwa {value}",
-  ezyai_sig_since: "Huhesabiwa tangu {date} — ishara halisi za boti pekee.",
-  ezyai_sig_building: "Rekodi inaundwa — ishara {closed} zimefungwa hadi sasa.",
+  ezyai_sig_since: "Huhesabiwa tangu {date}: ishara halisi za boti pekee.",
+  ezyai_sig_building: "Rekodi inaundwa: ishara {closed} zimefungwa hadi sasa.",
   ezyai_sig_curve: "R iliyokusanywa",
   ezyai_sig_curve_note: "Kila biashara iliyofungwa, ya zamani kwanza. Break-even hubaki sawa.",
   ezyai_sig_by_pair: "Kwa jozi",
   ezyai_sig_results: "Matokeo",
   ezyai_page_title: "Ishara za Biashara za AI",
   ezyai_page_desc:
-    "Bot ya Telegram inayogeuza data ya soko ya bure kuwa muunganiko wa biashara — uchambuzi wa kiufundi wenye viwango vya entry/kutoka, arifa za moja kwa moja kwa kila jozi, misingi yenye vyanzo, na signals za kiotomatiki za nasibu, zote zikiongozwa na mtindo wako na hali yako ya hatari.",
+    "Bot ya Telegram inayogeuza data ya soko ya bure kuwa muunganiko wa biashara. Uchambuzi wa kiufundi wenye viwango vya entry/kutoka, arifa za moja kwa moja kwa kila jozi, misingi yenye vyanzo, na signals za kiotomatiki za nasibu, zote zikiongozwa na mtindo wako na hali yako ya hatari.",
   ezyai_feature_analyze_title: "Analyze",
   ezyai_feature_analyze_desc:
     "Uchambuzi wa soko kwa ombi: trend, support/upinzani, eneo la entry, stop loss, TP1/TP2, uwiano wa hatari-kwa-faida na alama ya uhakika.",
   ezyai_feature_watch_title: "Watch",
   ezyai_feature_watch_desc:
-    "Arifa za biashara za moja kwa moja kwa jozi maalum — mtindo wako huweka muda, hali yako ya hatari huweka targets na vikomo vya kila siku.",
+    "Arifa za biashara za moja kwa moja kwa jozi maalum: mtindo wako huweka muda, hali yako ya hatari huweka targets na vikomo vya kila siku.",
   ezyai_feature_fundamentals_title: "Fundamentals",
   ezyai_feature_fundamentals_desc:
     "Misingi na viungo vya vyanzo kwa jozi yoyote, pamoja na habari za hivi karibuni.",
@@ -506,61 +506,61 @@ const sw: Record<TranslationKey, string> = {
     "Bot inachagua jozi kutoka kwa mfumo na kutoa signals kiotomatiki, ikiwa na kikomo cha kila siku kulingana na hali yako ya hatari.",
   ezyai_feature_dashboard_title: "Dashboard",
   ezyai_feature_dashboard_desc:
-    "Muhtasari mmoja wa hali kwa kila watch, autopilot na mfuatano — vitendo vyote viko kwenye menyu ya vitufe.",
+    "Muhtasari mmoja wa hali kwa kila watch, autopilot na mfuatano. Vitendo vyote viko kwenye menyu ya vitufe.",
   ezyai_free_pro_title: "Bure dhidi ya PRO",
   ezyai_free_label: "Bure",
   ezyai_pro_label: "PRO",
-  ezyai_free_desc: "Analyze, Quote na muhtasari wa Dashboard — hakuna kadi inayohitajika.",
+  ezyai_free_desc: "Analyze, Quote na muhtasari wa Dashboard: hakuna kadi inayohitajika.",
   ezyai_pro_desc:
-    "Arifa za Watch za moja kwa moja, signals za Autopilot, na Fundamentals za kina — alama, thamani halisi, uwekaji nafasi na hukumu ya uchumi mkuu.",
+    "Arifa za Watch za moja kwa moja, signals za Autopilot, na Fundamentals za kina: alama, thamani halisi, uwekaji nafasi na hukumu ya uchumi mkuu.",
   ezyai_pricing_eyebrow: "Mipango",
   ezyai_pricing_title: "Ufikiaji rahisi wa PRO wa kila mwezi",
   ezyai_pricing_subtitle:
-    "Lipa kwa kadi papa hapa — PRO huwashwa kwenye akaunti yako ya Telegram ndani ya dakika moja. Unapendelea Nyota za Telegram au USDT? Boresha ndani ya boti. Jaribio la bure la siku 3, mara moja kwa kila akaunti.",
+    "Lipa kwa kadi papa hapa. PRO huwashwa kwenye akaunti yako ya Telegram ndani ya dakika moja. Unapendelea Nyota za Telegram au USDT? Boresha ndani ya boti. Jaribio la bure la siku 3, mara moja kwa kila akaunti.",
   ezyai_tier_1m_label: "Mwezi 1",
   ezyai_tier_6m_label: "Miezi 6",
   ezyai_tier_12m_label: "Miezi 12",
-  ezyai_tier_6m_badge: "Maarufu zaidi — okoa 50%",
+  ezyai_tier_6m_badge: "Maarufu zaidi: okoa 50%",
   ezyai_tier_12m_badge: "Okoa 44%",
   ezyai_start_trial: "Anza jaribio la bure",
   ezyai_upgrade_pro: "au lipa kwa Nyota / USDT ndani ya Telegram",
   ezyai_buy_pro: "Nunua PRO",
   ezyai_markets_title: "Masoko yanayoshughulikiwa",
   ezyai_markets_desc:
-    "Sarafu za kidijitali, forex, hisa/ETF, madini, nishati na fahirisi — zinazoendeshwa na mifumo ya data ya umma ya bure, hakuna funguo za API zinazohitajika.",
+    "Sarafu za kidijitali, forex, hisa/ETF, madini, nishati na fahirisi. Zinazoendeshwa na mifumo ya data ya umma ya bure, hakuna funguo za API zinazohitajika.",
   ezyai_disclaimer:
-    "Signals ni muunganiko unaotegemea kanuni — dhahiri na unaoweza kuelezewa. Kwa madhumuni ya kielimu tu, si ushauri wa kifedha wa kibinafsi. Thibitisha bei na broker wako kabla ya kuchukua hatua.",
+    "Signals ni muunganiko unaotegemea kanuni. Dhahiri na unaoweza kuelezewa. Kwa madhumuni ya kielimu tu, si ushauri wa kifedha wa kibinafsi. Thibitisha bei na broker wako kabla ya kuchukua hatua.",
   ezyai_final_title: "Anza na uchambuzi wa bure leo",
   ezyai_final_body:
     "Hakuna malipo, hakuna ahadi. Jaribu kiwango cha bure kwenye Telegram, kisha boresha hadi PRO utakapotaka arifa za moja kwa moja na autopilot.",
   ezyai_cta_open_bot: "Fungua EzyAI kwenye Telegram",
-  indicators_meta_title: "Indicators na Bei — EzyMap Algo",
+  indicators_meta_title: "Indicators na Bei: EzyMap Algo",
   indicators_meta_desc:
     "Indicators vya EzyMap vya TradingView na MT5 kwa bei halisi: EzyMap Lite $49, EzyMap Pro $249, kifurushi cha MT5 kuanzia $99/mwezi na zana moja kuanzia $9/mwezi.",
   indicators_og_desc:
-    "Indicators vya TradingView na MT5 kutoka EzyMap Algo — Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias na zaidi, kwa bei za moja kwa moja.",
+    "Indicators vya TradingView na MT5 kutoka EzyMap Algo: Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias na zaidi, kwa bei za moja kwa moja.",
   indicators_desk_label: "Dawati la indicator la EzyMap",
   indicators_title: "Indicators",
   indicators_subtitle:
-    "Zana zile zile za TradingView na MT5 ambazo wanachama wetu hutumia kufanya biashara — kuchora ramani, kudhibiti hatari na mwelekeo wa muda mbalimbali.",
+    "Zana zile zile za TradingView na MT5 ambazo wanachama wetu hutumia kufanya biashara: kuchora ramani, kudhibiti hatari na mwelekeo wa muda mbalimbali.",
   indicators_cta_get: "Pata indicator Chako",
   indicators_cta_ask: "Muulize Sarah",
   indicators_vantage_title: "Ufikiaji wa bure kwa kuwezesha akaunti ya Vantage",
   indicators_vantage_body:
-    "Fungua akaunti chini ya IB 26468008 na indicators vilivyo kwenye kifurushi chako hufunguliwa bila gharama ya ziada — Lite kwa Beginner, Currency Strength kwa Pro, Auto TPSL na MTF Bias kwa Premium, seti kamili ya MT5 kwa Elite.",
+    "Fungua akaunti chini ya IB 26468008 na indicators vilivyo kwenye kifurushi chako hufunguliwa bila gharama ya ziada: Lite kwa Beginner, Currency Strength kwa Pro, Auto TPSL na MTF Bias kwa Premium, seti kamili ya MT5 kwa Elite.",
   indicators_vantage_open: "Fungua Akaunti",
   indicators_vantage_free: "Pata Ufikiaji wa Bure",
   indicators_footnote:
     "Bei ziko katika USD na huthibitishwa ndani ya boti ya usajili kabla ya malipo. Biashara ina hatari ya hasara.",
-  macro_meta_title: "Dawati la Uchumi Mkuu na Sarafu za Kidijitali — EzyMap Algo",
+  macro_meta_title: "Dawati la Uchumi Mkuu na Sarafu za Kidijitali: EzyMap Algo",
   macro_meta_desc:
-    "Dawati la MacroTrader: kalenda ya kiuchumi, tofauti za sera za benki kuu, uwezekano wa mdororo, msimamo wa Fed, hisia za habari na nyongeza za sarafu za kidijitali — kwa saa za eneo lako.",
+    "Dawati la MacroTrader: kalenda ya kiuchumi, tofauti za sera za benki kuu, uwezekano wa mdororo, msimamo wa Fed, hisia za habari na nyongeza za sarafu za kidijitali: kwa saa za eneo lako.",
   macro_og_desc:
     "Kalenda ya kiuchumi, tofauti za benki kuu, uwezekano wa mdororo na nyongeza za dawati la sarafu za kidijitali kutoka dawati la Telegram la MacroTrader.",
   macro_twitter_desc:
     "Ramani za joto za uchumi mkuu, kalenda ya kiuchumi na nyongeza za sarafu za kidijitali, kwa saa za eneo lako.",
   macro_per_month: "/mwezi",
-  fc_meta_title: "Jiunge na Kituo cha Telegram cha Bure — EzyMap",
+  fc_meta_title: "Jiunge na Kituo cha Telegram cha Bure: EzyMap",
   fc_meta_desc:
     "Pata signals za bure za biashara ya forex, dhahabu na sarafu za kidijitali zikiwasilishwa moja kwa moja kwenye Telegram.",
   fc_back_home: "Rudi nyumbani",
@@ -589,7 +589,7 @@ const sw: Record<TranslationKey, string> = {
   fc_benefit_members_desc: "Jumuiya hai ya wafanyabiashara",
   legal_updated: "Ilisasishwa mwisho: 2026",
   legal_back_home: "← Rudi nyumbani",
-  privacy_meta_title: "Sera ya Faragha — EzyMap ALGO",
+  privacy_meta_title: "Sera ya Faragha: EzyMap ALGO",
   privacy_meta_desc:
     "Jinsi EzyMap ALGO inavyokusanya, kutumia na kulinda taarifa chache zinazopatikana kutoka kwa wageni na wanaofuatilia Telegram.",
   privacy_og_desc: "Jinsi EzyMap ALGO inavyoshughulikia data yako.",
@@ -607,7 +607,7 @@ const sw: Record<TranslationKey, string> = {
     "Kujiunga na vituo vyetu kunatawaliwa na sera ya faragha ya Telegram yenyewe. Tunaona tu taarifa za wasifu wa umma ambazo Telegram huwaonyesha wasimamizi wa kituo.",
   privacy_contact_title: "Mawasiliano",
   privacy_contact_body: "Una maswali? Tutumie ujumbe kwenye Telegram kupitia",
-  terms_meta_title: "Masharti ya Huduma — EzyMap ALGO",
+  terms_meta_title: "Masharti ya Huduma: EzyMap ALGO",
   terms_meta_desc:
     "Masharti yanayosimamia matumizi ya signals za biashara za EzyMap ALGO, maudhui ya elimu na ufikiaji wa vifurushi.",
   terms_og_desc: "Masharti ya kutumia signals na usajili wa EzyMap ALGO.",
@@ -625,14 +625,14 @@ const sw: Record<TranslationKey, string> = {
   terms_access_body:
     "Kushiriki maudhui ya kituo cha faragha au vitambulisho vya kuingia husababisha kuondolewa mara moja bila kurejeshewa pesa.",
   ebook_meta_suffix: "PDF ya Bure ya Biashara | EzyMap ALGO",
-  ebook_not_found_meta: "Kitabu cha kielektroniki hakikupatikana — EzyMap ALGO",
+  ebook_not_found_meta: "Kitabu cha kielektroniki hakikupatikana: EzyMap ALGO",
   ebook_not_found_title: "Kitabu cha kielektroniki hakikupatikana",
   ebook_not_found_body: "Mwongozo huo haupo. Vinjari vilivyopo hapa chini.",
   ebook_back_home: "Rudi nyumbani",
   ebook_free_pdf: "PDF ya Bure",
   ebook_pages_pdf: "Kurasa {n} · PDF",
   ebook_gate_vantage: "Bure kwa kuingia + uthibitisho wa akaunti ya Vantage",
-  ebook_gate_signin: "Bure kwa kuingia haraka — upakuaji wa papo hapo",
+  ebook_gate_signin: "Bure kwa kuingia haraka: upakuaji wa papo hapo",
   ebook_for_you_if: "Hii ni kwa ajili yako ikiwa",
   ebook_outcomes_title: "Utakachoweza kufanya",
   ebook_chapters_title: "Ndani ya mwongozo",
@@ -655,7 +655,7 @@ const sw: Record<TranslationKey, string> = {
   dash_tg_link: "Uwasilishaji wa Telegram",
   dash_tg_linked: "Inawasilishwa kwa {handle}",
   dash_tg_link_hint:
-    "Unganisha Telegram yako na kila ununuzi utaenda kwa akaunti hiyo — bila kuandika jina.",
+    "Unganisha Telegram yako na kila ununuzi utaenda kwa akaunti hiyo: bila kuandika jina.",
   dash_tg_claimed: "Manunuzi {count} yamewasilishwa kwa Telegram yako.",
   auth_email_label: "Barua pepe",
   auth_send_link: "Nitumie kiungo cha kuingia kwa barua pepe",
@@ -672,7 +672,7 @@ const sw: Record<TranslationKey, string> = {
   dash_browse_packages: "Vinjari vifurushi",
   dash_delivered_to: "imewasilishwa kwa",
   dash_pro_code: "Msimbo wa PRO",
-  dash_pro_code_redeemed: "Umetumika — PRO inatumika kwenye @ezytradeai_bot.",
+  dash_pro_code_redeemed: "Umetumika. PRO inatumika kwenye @ezytradeai_bot.",
   dash_pro_code_hint: "Fungua @ezytradeai_bot na utume /redeem {code} kuwezesha PRO.",
   dash_ebooks: "Vitabu vya kielektroniki vya bure",
   dash_ebook_download: "Pakua",
@@ -705,15 +705,15 @@ const sw: Record<TranslationKey, string> = {
   prelanding_trust_note: "Biashara ina hatari. Haya ni maelezo ya jumla, si ushauri wa kifedha.",
   prelanding_close: "Funga dirisha la kukaribisha",
 
-  home_meta_title: "EzyMap ALGO — Ishara za Biashara za Kitaalamu kwenye Telegram",
+  home_meta_title: "EzyMap ALGO: Ishara za Biashara za Kitaalamu kwenye Telegram",
   home_meta_desc:
     "Jiunge na wafanyabiashara 640+ wanaopokea ishara za biashara za moja kwa moja na mafunzo kwenye Telegram. Tahadhari za wakati halisi za forex, crypto na bidhaa zinazoendeshwa na viashiria vya TradingView.",
-  faq_meta_title: "Maswali Yanayoulizwa Mara kwa Mara — Ishara za EzyMap ALGO",
+  faq_meta_title: "Maswali Yanayoulizwa Mara kwa Mara: Ishara za EzyMap ALGO",
   faq_meta_desc:
     "Majibu kuhusu taratibu za biashara za EzyMap ALGO, viwango vya bei, jaribio la siku 30 la Vantage, usajili, akaunti yako, na msaada.",
-  ezyai_meta_title: "EzyAI — Ishara za Biashara za AI kwenye Telegram | EzyMap Algo",
+  ezyai_meta_title: "EzyAI: Ishara za Biashara za AI kwenye Telegram | EzyMap Algo",
   ezyai_meta_desc:
-    "EzyAI hubadilisha data ya soko ya bure kuwa muunganiko wa biashara kwenye Telegram — uchambuzi wa kiufundi, tahadhari za ufuatiliaji wa moja kwa moja, misingi na ishara za autopilot, bure kuanza.",
+    "EzyAI hubadilisha data ya soko ya bure kuwa muunganiko wa biashara kwenye Telegram: uchambuzi wa kiufundi, tahadhari za ufuatiliaji wa moja kwa moja, misingi na ishara za autopilot, bure kuanza.",
 };
 
 export default sw;

@@ -226,7 +226,7 @@ async function notifyReferralConversion(buyerUserId: string, sku: string) {
   await sendMessage(
     sarah,
     [
-      `🎁 <b>Referral conversion — reward the referrer</b>`,
+      `🎁 <b>Referral conversion: reward the referrer</b>`,
       `Referrer: ${escapeHtml(referrer?.full_name ?? "unknown")} (@${escapeHtml(referrer?.telegram_username ?? "unknown")})`,
       `Bought by: ${escapeHtml(buyer?.full_name ?? "unknown")} (@${escapeHtml(buyer?.telegram_username ?? "unknown")})`,
       `Product: ${escapeHtml(item?.name ?? sku)}`,
@@ -252,8 +252,8 @@ async function notifySarah(meta: Record<string, string>, amountCents: number, cu
   }).format(amountCents / 100);
 
   const lines = [
-    `💳 <b>Website purchase — needs manual fulfillment</b>`,
-    `${escapeHtml(item?.name ?? meta.sku ?? "Unknown product")} — ${amount}`,
+    `💳 <b>Website purchase: needs manual fulfillment</b>`,
+    `${escapeHtml(item?.name ?? meta.sku ?? "Unknown product")}: ${amount}`,
     `Telegram: @${escapeHtml(meta.telegram_username ?? "unknown")}`,
     meta.full_name ? `Name: ${escapeHtml(meta.full_name)}` : null,
     meta.experience_level

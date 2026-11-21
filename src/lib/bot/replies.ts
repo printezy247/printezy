@@ -448,10 +448,10 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: [
-        "Yes! The Free tier and the 30-day Vantage Trial cost nothing — the trial just needs an account under Jack's IB with Vantage Markets. The paid packages (Pro $49, Premium $99, Elite $299) and the EzyMap indicators are the only things you pay for.",
+        "Yes! The Free tier and the 30-day Vantage Trial cost nothing. The trial just needs an account under Jack's IB with Vantage Markets. The paid packages (Pro $49, Premium $99, Elite $299) and the EzyMap indicators are the only things you pay for.",
       ],
       ms: [
-        "Ya! Tier Free dan Vantage Trial 30 hari percuma sepenuhnya — trial cuma perlukan akaun di bawah IB Jack bersama Vantage Markets. Pakej berbayar (Pro $49, Premium $99, Elite $299) dan indicator EzyMap sahaja yang berbayar.",
+        "Ya! Tier Free dan Vantage Trial 30 hari percuma sepenuhnya. Trial cuma perlukan akaun di bawah IB Jack bersama Vantage Markets. Pakej berbayar (Pro $49, Premium $99, Elite $299) dan indicator EzyMap sahaja yang berbayar.",
       ],
     },
     buttons: {
@@ -489,10 +489,10 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: [
-        "For the Vantage Trial you just need a live account opened under Jack's IB — any deposit amount starts it. Paid packages don't require a broker deposit at all.",
+        "For the Vantage Trial you just need a live account opened under Jack's IB. Any deposit amount starts it. Paid packages don't require a broker deposit at all.",
       ],
       ms: [
-        "Untuk Vantage Trial anda cuma perlukan akaun live di bawah IB Jack — sebarang jumlah deposit boleh mula. Pakej berbayar tak perlukan deposit broker langsung.",
+        "Untuk Vantage Trial anda cuma perlukan akaun live di bawah IB Jack. Sebarang jumlah deposit boleh mula. Pakej berbayar tak perlukan deposit broker langsung.",
       ],
     },
     buttons: {
@@ -555,10 +555,10 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: [
-        "Paid packages unlock automatically the moment payment clears — check with /status. The Vantage Trial unlocks as soon as you confirm your account is open under Jack's IB.",
+        "Paid packages unlock automatically the moment payment clears. Check with /status. The Vantage Trial unlocks as soon as you confirm your account is open under Jack's IB.",
       ],
       ms: [
-        "Pakej berbayar dibuka automatik sebaik pembayaran selesai — semak dengan /status. Vantage Trial dibuka sebaik anda sahkan akaun anda dibuka di bawah IB Jack.",
+        "Pakej berbayar dibuka automatik sebaik pembayaran selesai. Semak dengan /status. Vantage Trial dibuka sebaik anda sahkan akaun anda dibuka di bawah IB Jack.",
       ],
     },
     buttons: {
@@ -574,10 +574,10 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: [
-        "Packages are paid by card through a secure checkout link the bot sends you — access unlocks by itself once it clears. For the EzyMap indicators, tell me which one and Sarah will send you the payment details here.",
+        "Packages are paid by card through a secure checkout link the bot sends you. Access unlocks by itself once it clears. For the EzyMap indicators, tell me which one and Sarah will send you the payment details here.",
       ],
       ms: [
-        "Pakej dibayar dengan kad melalui link checkout selamat yang bot hantar — akses dibuka sendiri sebaik selesai. Untuk indicator EzyMap, bagitahu saya yang mana satu dan Sarah akan hantar butiran pembayaran di sini.",
+        "Pakej dibayar dengan kad melalui link checkout selamat yang bot hantar. Akses dibuka sendiri sebaik selesai. Untuk indicator EzyMap, bagitahu saya yang mana satu dan Sarah akan hantar butiran pembayaran di sini.",
       ],
     },
     buttons: {
@@ -688,10 +688,10 @@ export const ENTRIES: Entry[] = [
     },
     replies: {
       en: [
-        "The bot's here 24/7, and Sarah answers personally through the day — just message anytime and she'll get back to you as soon as she can.",
+        "The bot's here 24/7, and Sarah answers personally through the day. Just message anytime and she'll get back to you as soon as she can.",
       ],
       ms: [
-        "Bot ni ada 24/7, dan Sarah reply sendiri sepanjang hari — message je bila-bila, dia akan balas secepat mungkin.",
+        "Bot ni ada 24/7, dan Sarah reply sendiri sepanjang hari: message je bila-bila, dia akan balas secepat mungkin.",
       ],
     },
   },
@@ -702,8 +702,8 @@ export const ENTRIES: Entry[] = [
       ms: ["hubungi", "nombor telefon", "whatsapp", "emel"],
     },
     replies: {
-      en: ["Easiest is right here, hun — tap Ask Sarah and she'll pick it up personally."],
-      ms: ["Paling senang di sini je, sayang — tekan Tanya Sarah dan dia akan reply sendiri."],
+      en: ["Easiest is right here, hun. Tap Ask Sarah and she'll pick it up personally."],
+      ms: ["Paling senang di sini je, sayang. Tekan Tanya Sarah dan dia akan reply sendiri."],
     },
     buttons: {
       en: [[{ text: "💬 Ask Sarah", sarah: true }]],

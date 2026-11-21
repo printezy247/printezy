@@ -27,7 +27,7 @@ export const getMyPurchases = createServerFn({ method: "POST" })
       .order("created_at", { ascending: false });
     if (error) {
       console.error("[purchases] list failed", error);
-      throw new Error("Could not load your purchases — please try again.");
+      throw new Error("Could not load your purchases: please try again.");
     }
     const rows = data ?? [];
 

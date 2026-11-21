@@ -52,7 +52,7 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
       windowMs: 10 * 60 * 1000,
     });
     if (!allowed) {
-      throw new Error("You're sending messages a bit fast — please wait a moment and try again.");
+      throw new Error("You're sending messages a bit fast. Please wait a moment and try again.");
     }
 
     const visitor = (data.name ?? "").trim().slice(0, 60) || "Website visitor";
@@ -85,7 +85,7 @@ export const sendSupportMessage = createServerFn({ method: "POST" })
 
     const relayed = await relayWebToSarah(data.sessionId, visitor, text);
     const notice = relayed
-      ? "Sent to Sarah — she answers personally, usually within a few hours. Keep this chat open and her reply lands right here."
+      ? "Sent to Sarah: she answers personally, usually within a few hours. Keep this chat open and her reply lands right here."
       : "Sarah isn't reachable this second. Message her directly on Telegram and she'll pick it up: https://t.me/ezysarah";
 
     await supabaseAdmin.from("support_messages").insert({

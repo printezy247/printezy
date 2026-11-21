@@ -28,7 +28,7 @@ export async function notifyVantageClaim(notice: ClaimNotice): Promise<boolean> 
 
   const book = getEbook(notice.slug);
   const lines = [
-    `📘 <b>Ebook claim — needs approval</b>`,
+    `📘 <b>Ebook claim: needs approval</b>`,
     escapeHtml(book ? book.title : notice.slug),
     `Name: ${escapeHtml(notice.fullName)}`,
     `Telegram: @${escapeHtml(notice.telegramUsername)}`,

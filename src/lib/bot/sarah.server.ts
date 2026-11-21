@@ -145,7 +145,7 @@ export async function openSarahChat(chatId: number) {
     // Relay not registered yet — fall back to the direct profile link.
     await sendMessage(
       chatId,
-      `💬 <b>Ask Sarah</b>\n\nQuestions about packages, payment or access? Sarah answers personally — usually within a few hours.`,
+      `💬 <b>Ask Sarah</b>\n\nQuestions about packages, payment or access? Sarah answers personally: usually within a few hours.`,
       [[{ text: "Message Sarah now", url: SUPPORT_LINK }], END_CHAT_ROW],
     );
     return;
@@ -153,7 +153,7 @@ export async function openSarahChat(chatId: number) {
   await setChatMode(chatId, true);
   await sendMessage(
     chatId,
-    `💬 <b>Chat with Sarah</b>\n\nYou're connected. Just type your question here and it goes straight to Sarah — her reply lands back in this chat. Tap <b>End chat</b> when you're done.`,
+    `💬 <b>Chat with Sarah</b>\n\nYou're connected. Just type your question here and it goes straight to Sarah. Her reply lands back in this chat. Tap <b>End chat</b> when you're done.`,
     [END_CHAT_ROW],
   );
 }
@@ -161,7 +161,7 @@ export async function openSarahChat(chatId: number) {
 /** Leave chat mode (button, /end, or after falling back). */
 export async function closeSarahChat(chatId: number) {
   await setChatMode(chatId, false);
-  await sendMessage(chatId, `Chat ended. Anything else, I'm here — tap a button below.`, [
+  await sendMessage(chatId, `Chat ended. Anything else, I'm here: tap a button below.`, [
     [
       { text: "📦 Packages", callback_data: "menu:packages" },
       { text: "🧾 My status", callback_data: "menu:status" },
@@ -309,10 +309,10 @@ export async function requestTrial(
   member: { telegramId: number; username?: string | null; firstName?: string | null },
   product: string,
 ): Promise<void> {
-  await relayToSarah(member, `🎁 <b>3-day trial request</b> — <code>${escapeHtml(product)}</code>`);
+  await relayToSarah(member, `🎁 <b>3-day trial request</b>: <code>${escapeHtml(product)}</code>`);
   await sendMessage(
     member.telegramId,
-    `🎁 Trial requested for <b>${escapeHtml(product.replace(/^mt5_/, "").replace(/_/g, " "))}</b>. Sarah builds the time-limited file by hand and sends it here — usually the same day.`,
+    `🎁 Trial requested for <b>${escapeHtml(product.replace(/^mt5_/, "").replace(/_/g, " "))}</b>. Sarah builds the time-limited file by hand and sends it here: usually the same day.`,
     [[{ text: "💬 Ask Sarah", callback_data: "sarah:start" }]],
   );
 }
@@ -325,11 +325,11 @@ export async function requestPurchase(
 ): Promise<void> {
   await relayToSarah(
     member,
-    `🛒 <b>Purchase request</b> — <code>${escapeHtml(product)}</code> · ${escapeHtml(plan)}`,
+    `🛒 <b>Purchase request</b>: <code>${escapeHtml(product)}</code> · ${escapeHtml(plan)}`,
   );
   await sendMessage(
     member.telegramId,
-    `🛒 Noted: <b>${escapeHtml(product.replace(/_/g, " "))}</b> (${escapeHtml(plan)}). Sarah will send you the payment details right here — tap below if you'd like to add anything.`,
+    `🛒 Noted: <b>${escapeHtml(product.replace(/_/g, " "))}</b> (${escapeHtml(plan)}). Sarah will send you the payment details right here. Tap below if you'd like to add anything.`,
     [
       [{ text: "💬 Ask Sarah", callback_data: "sarah:start" }],
       [{ text: "📦 Packages", callback_data: "menu:packages" }],

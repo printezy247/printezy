@@ -188,16 +188,16 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         setNotified(reached);
         setGate("pending_review");
         if (reached) {
-          toast.success("Submitted — Sarah will review and approve it shortly.");
+          toast.success("Submitted. Sarah will review and approve it shortly.");
           goTrack(`ebook_claim_pending_${slug}`);
         } else {
-          toast.success("Submitted — message Sarah on Telegram to speed it up.");
+          toast.success("Submitted. Message Sarah on Telegram to speed it up.");
           goTrack(`ebook_claim_pending_unnotified_${slug}`);
         }
         return;
       }
       await unlock();
-      toast.success(`${book?.title ?? "Ebook"} unlocked — download below.`);
+      toast.success(`${book?.title ?? "Ebook"} unlocked: download below.`);
       goTrack(`ebook_claim_${slug}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not claim this ebook.");
@@ -328,14 +328,14 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                 <div className="mt-4 border-t border-border pt-4">
                   {leadSaved ? (
                     <p className="text-sm text-body">
-                      Thanks — we'll keep you posted on free resources. Sign in any time to claim
+                      Thanks. We'll keep you posted on free resources. Sign in any time to claim
                       this one.
                     </p>
                   ) : (
                     <form onSubmit={submitLead}>
                       <p className="text-xs text-muted-foreground">
                         Not ready to sign in? Leave your email and we'll keep you posted on free
-                        resources — no promises on this ebook specifically, sign-in is still the
+                        resources. No promises on this ebook specifically, sign-in is still the
                         fastest way to get it.
                       </p>
                       <div className="mt-2 flex gap-2">
@@ -429,8 +429,8 @@ export function EbookClaimModal({ slug, onClose }: Props) {
               <div className="flex flex-col items-center gap-2 py-4 text-center">
                 <Clock className="h-6 w-6 text-accent" />
                 <p className="text-sm text-body">
-                  Submitted — Sarah checks your Vantage account and approves it, usually within a
-                  few hours. Come back to this page once approved and the download will be here.
+                  Submitted. Sarah checks your Vantage account and approves it, usually within a few
+                  hours. Come back to this page once approved and the download will be here.
                 </p>
               </div>
             ) : null}

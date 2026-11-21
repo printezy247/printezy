@@ -94,7 +94,7 @@ export function Ticker() {
   const quotes = data?.quotes ?? [];
   const rows = quotes.length
     ? quotes
-    : TICKER_SYMBOLS.map((symbol) => ({ symbol, price: "—", change: "", up: true }));
+    : TICKER_SYMBOLS.map((symbol) => ({ symbol, price: "N/A", change: "", up: true }));
   // Doubled so the marquee can loop without a visible seam. The second copy
   // exists only for the animation, so it is hidden from assistive tech —
   // otherwise the strip is announced twice on every page.

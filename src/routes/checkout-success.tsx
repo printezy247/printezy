@@ -31,13 +31,13 @@ const CROSS_SELL: Record<CatalogGroup, string[]> = {
 export const Route = createFileRoute("/checkout-success")({
   head: () => ({
     meta: [
-      { title: "Payment complete — activate in Telegram | EzyMap ALGO" },
+      { title: "Payment complete: activate in Telegram | EzyMap ALGO" },
       {
         name: "description",
         content:
           "Your EzyMap ALGO purchase is confirmed. Open the EzyRegister bot in Telegram to receive your indicators, signals and ebooks.",
       },
-      { property: "og:title", content: "Payment complete — activate in Telegram" },
+      { property: "og:title", content: "Payment complete: activate in Telegram" },
       {
         property: "og:description",
         content: "Your EzyMap ALGO purchase is confirmed. Access is delivered in Telegram.",
@@ -97,13 +97,13 @@ function SuccessPage() {
         setClaim("done");
         toast.success(
           res.claimed
-            ? "Delivered — check your Telegram."
+            ? "Delivered: check your Telegram."
             : "Telegram confirmed. Open the bot to pick it up.",
         );
       })
       .catch(() => {
         setClaim("failed");
-        toast.error("Could not deliver it just now — try again.");
+        toast.error("Could not deliver it just now: try again.");
       });
   }
 
@@ -191,7 +191,7 @@ function SuccessPage() {
       options: { emailRedirectTo: window.location.href },
     });
     setSignInState(error ? "idle" : "sent");
-    if (error) toast.error("Could not send the sign-in link — try again.");
+    if (error) toast.error("Could not send the sign-in link: try again.");
   }
 
   const referralLink =
@@ -218,7 +218,7 @@ function SuccessPage() {
           <div className="text-center">
             <CheckCircle2 className="mx-auto h-12 w-12 text-primary" />
             <h1 className="mt-4 text-2xl text-foreground sm:text-3xl">
-              {state === "paid" ? "Payment confirmed" : "Thanks — we're confirming your payment"}
+              {state === "paid" ? "Payment confirmed" : "Thanks: we're confirming your payment"}
             </h1>
 
             {item ? (
@@ -262,7 +262,7 @@ function SuccessPage() {
                 </div>
                 <p className="mt-3 text-sm text-body">
                   Open <span className="text-foreground">{EZYAI_BOT}</span> and send{" "}
-                  <code className="font-mono text-foreground">/redeem {redeemCode}</code>. Keep it —
+                  <code className="font-mono text-foreground">/redeem {redeemCode}</code>. Keep it:
                   it also appears on your Stripe receipt and under My account on this site.
                 </p>
               </div>
@@ -271,7 +271,7 @@ function SuccessPage() {
             <p className="mt-6 text-body">
               Access is delivered inside Telegram. Open the{" "}
               <span className="text-foreground">{deliveryBot}</span> bot and press{" "}
-              <span className="text-foreground">Start</span> —{" "}
+              <span className="text-foreground">Start</span>.{" "}
               {ezyai
                 ? "PRO switches on for your Telegram account within a minute, or instantly with the code above."
                 : "your channels, indicators and ebooks are unlocked there within a minute."}
@@ -280,7 +280,7 @@ function SuccessPage() {
             {state === "pending" ? (
               <div className="mx-auto mt-6 max-w-md rounded-xl border border-border bg-surface-elevated p-4 text-left text-sm text-body">
                 <p>
-                  We're still confirming with Stripe — this page rechecks itself every few seconds.
+                  We're still confirming with Stripe. This page rechecks itself every few seconds.
                   You can safely close it: the payment is recorded, and access still arrives in
                   Telegram once confirmation lands.
                 </p>
@@ -299,7 +299,7 @@ function SuccessPage() {
                 {claim === "done" ? (
                   <p className="text-sm text-body">
                     <span className="font-semibold text-foreground">Telegram confirmed.</span> Your
-                    access is attached to that account — open the bot and it is there.
+                    access is attached to that account: open the bot and it is there.
                   </p>
                 ) : (
                   <>
@@ -307,7 +307,7 @@ function SuccessPage() {
                       Deliver it to the right account
                     </p>
                     <p className="mt-1 text-sm text-body">
-                      Sign in with Telegram and we attach this purchase to your real account — no
+                      Sign in with Telegram and we attach this purchase to your real account: no
                       handle to mistype
                       {handle ? (
                         <>

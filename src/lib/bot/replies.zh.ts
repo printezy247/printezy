@@ -183,7 +183,7 @@ export const ZH: Translation = {
   faq_free: {
     match: ["加入免费吗", "免费的吗", "真的免费吗", "免费加入", "是免费的吗", "要收费吗"],
     replies: [
-      "是的！Free 等级和 30 天 Vantage 试用完全免费 —— 试用只需要在 Jack 的 IB 下开一个 Vantage Markets 账户。只有付费套餐（Pro $49、Premium $99、Elite $299）和 EzyMap indicator 才需要付费。",
+      "是的！Free 等级和 30 天 Vantage 试用完全免费, 试用只需要在 Jack 的 IB 下开一个 Vantage Markets 账户。只有付费套餐（Pro $49、Premium $99、Elite $299）和 EzyMap indicator 才需要付费。",
     ],
     buttons: [["🎁 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -204,7 +204,7 @@ export const ZH: Translation = {
   faq_deposit: {
     match: ["入金多少", "最低入金", "要入金多少", "最少存多少", "存款多少", "入金要求"],
     replies: [
-      "Vantage 试用只需要在 Jack 的 IB 下开一个真实账户 —— 任意金额入金即可开始。付费套餐完全不需要经纪商入金。",
+      "Vantage 试用只需要在 Jack 的 IB 下开一个真实账户, 任意金额入金即可开始。付费套餐完全不需要经纪商入金。",
     ],
     buttons: [["🎁 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -242,14 +242,14 @@ export const ZH: Translation = {
   faq_unlock_time: {
     match: ["多久解锁", "什么时候解锁", "多久能解锁", "多久开通", "什么时候开通", "解锁时间"],
     replies: [
-      "付费套餐在付款到账的那一刻自动解锁 —— 可以用 /status 查看。Vantage 试用在你确认账户已在 Jack 的 IB 下开通后立即解锁。",
+      "付费套餐在付款到账的那一刻自动解锁, 可以用 /status 查看。Vantage 试用在你确认账户已在 Jack 的 IB 下开通后立即解锁。",
     ],
     buttons: [["⬅ 返回常见问题"]],
   },
   faq_how_to_pay: {
     match: ["怎么付款", "如何付款", "怎么支付", "支付方式", "付款方式", "指标怎么付款", "怎么买"],
     replies: [
-      "套餐通过机器人发给你的安全结账链接用银行卡支付 —— 付款到账后权限会自动开通。EzyMap indicator 的话，告诉我你要哪一款，Sarah 会在这里把付款信息发给你。",
+      "套餐通过机器人发给你的安全结账链接用银行卡支付, 付款到账后权限会自动开通。EzyMap indicator 的话，告诉我你要哪一款，Sarah 会在这里把付款信息发给你。",
     ],
     buttons: [["🎯 查看套餐"], ["⬅ 返回常见问题"]],
   },
@@ -295,11 +295,11 @@ export const ZH: Translation = {
   },
   hours: {
     match: ["营业时间", "工作时间", "几点上班", "什么时候在线", "在线时间", "服务时间", "几点开门"],
-    replies: ["机器人 24/7 全天候在线，Sarah 白天会亲自回复 —— 随时留言，她会尽快回复你。"],
+    replies: ["机器人 24/7 全天候在线，Sarah 白天会亲自回复, 随时留言，她会尽快回复你。"],
   },
   contact: {
     match: ["联系", "联系方式", "电话", "电话号码", "打电话", "whatsapp", "微信", "邮箱", "email"],
-    replies: ["最方便的就是在这里啦亲 —— 点一下「咨询 Sarah」，她会亲自接待你。"],
+    replies: ["最方便的就是在这里啦亲, 点一下「咨询 Sarah」，她会亲自接待你。"],
     buttons: [["💬 咨询 Sarah"]],
   },
   thanks: {

@@ -15,14 +15,14 @@ import { checkAuthAttempt } from "@/lib/auth-rate-limit.functions";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — EzyMap ALGO" },
+      { title: "Sign in: EzyMap ALGO" },
       {
         name: "description",
         content:
           "Sign in to your EzyMap ALGO account to see your purchases, ebooks and referral link.",
       },
       { name: "robots", content: "noindex, nofollow" },
-      { property: "og:title", content: "Sign in — EzyMap ALGO" },
+      { property: "og:title", content: "Sign in: EzyMap ALGO" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

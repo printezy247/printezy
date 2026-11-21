@@ -143,7 +143,7 @@ export const EBOOK_PAGES: Ebook[] = [
     slug: "technical-analysis",
     title: "Technical Analysis Ebook",
     tagline:
-      "Support & resistance, trendlines, chart patterns and candlesticks — the core toolkit, no fluff.",
+      "Support & resistance, trendlines, chart patterns and candlesticks: the core toolkit, no fluff.",
     description:
       "The four building blocks every trader uses to read a chart before taking a trade: where price is likely to react, how to draw the lines that matter, the patterns that repeat, and what a single candle is telling you.",
     author: "EzyMap ALGO",
@@ -190,7 +190,7 @@ export const EBOOK_PAGES: Ebook[] = [
     ms: {
       title: "E-buku Analisis Teknikal",
       tagline:
-        "Sokongan & rintangan, garis aliran, corak carta dan lilin — kit alat teras, tanpa bunga-bunga.",
+        "Sokongan & rintangan, garis aliran, corak carta dan lilin: kit alat teras, tanpa bunga-bunga.",
       description:
         "Empat blok binaan yang setiap pedagang guna untuk membaca carta sebelum berdagang: di mana harga berkemungkinan bertindak balas, cara melukis garis yang penting, corak yang berulang, dan apa yang satu lilin sedang beritahu anda.",
       readTime: "Bacaan 10 minit",

@@ -25,7 +25,7 @@ const STATUS_KEY: Record<SignalStatus, TranslationKey> = {
 
 /** Prices span gold at four figures and FX at five decimals — fit both. */
 function price(value: number | null): string {
-  if (value == null) return "—";
+  if (value == null) return "N/A";
   const decimals = Math.abs(value) >= 100 ? 2 : Math.abs(value) >= 1 ? 4 : 5;
   return value.toLocaleString("en-US", {
     minimumFractionDigits: decimals,
@@ -34,7 +34,7 @@ function price(value: number | null): string {
 }
 
 function signedR(value: number | null): string {
-  if (value == null) return "—";
+  if (value == null) return "N/A";
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}R`;
 }
 
@@ -94,7 +94,7 @@ function Rail({ signal, index = 0 }: { signal: EzyAiSignal; index?: number }) {
           </>
         )}
       </div>
-      {/* A pending card with no stop/target yet is not "empty" — it has not
+      {/* A pending card with no stop/target yet is not "empty": it has not
           been levelled. Say so on the rail instead of showing a bare stripe. */}
       {travelled == null && signal.status === "pending" ? (
         <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
@@ -197,7 +197,7 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
             <span className={`text-xs font-bold uppercase ${dirColour}`}>{signal.direction}</span>
           </p>
           <p className="mt-0.5 truncate text-xs text-muted-foreground">
-            {[signal.timeframe, signal.setup].filter(Boolean).join(" · ") || "—"}
+            {[signal.timeframe, signal.setup].filter(Boolean).join(" · ") || "N/A"}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -251,7 +251,7 @@ export function SignalCard({ signal, index = 0 }: { signal: EzyAiSignal; index?:
         <div className="col-span-2 min-w-0">
           <Stat label={t("ezyai_sig_entry")}>{zone}</Stat>
         </div>
-        <Stat label={t("ezyai_sig_rr")}>{signal.rr != null ? `1 : ${signal.rr}` : "—"}</Stat>
+        <Stat label={t("ezyai_sig_rr")}>{signal.rr != null ? `1 : ${signal.rr}` : "N/A"}</Stat>
         <Stat label={t("ezyai_sig_tp2")}>{price(signal.tp2)}</Stat>
       </div>
 

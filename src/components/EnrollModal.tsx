@@ -250,11 +250,11 @@ export function EnrollModal({ sku, onClose, inline = false }: Props) {
             className={inputClass}
           />
           <p id="enroll-telegram-hint" className="-mt-1 text-xs text-muted-foreground">
-            5–32 characters, letters, numbers or underscores — without the @
+            5–32 characters, letters, numbers or underscores: without the @
           </p>
           {showHandleError ? (
             <p id="enroll-telegram-error" role="alert" className="-mt-1 text-xs text-destructive">
-              Enter your Telegram username without the @ — 5 to 32 letters, numbers or underscores.
+              Enter your Telegram username without the @: 5 to 32 letters, numbers or underscores.
             </p>
           ) : null}
 

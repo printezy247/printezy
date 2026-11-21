@@ -17,7 +17,7 @@ export function Faq() {
   const faqJsonLd = useMemo(() => buildFaqJsonLd(locale), [locale]);
   return (
     <Section id="faq">
-      {/* faqJsonLd is JSON.stringify output from buildFaqJsonLd — no user HTML */}
+      {/* faqJsonLd is JSON.stringify output from buildFaqJsonLd: no user HTML */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
       <SectionHeading eyebrow={t("faq_eyebrow")} title={t("faq_title")} />
       <div className="mx-auto max-w-3xl space-y-10">
