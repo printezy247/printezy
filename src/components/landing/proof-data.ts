@@ -33,7 +33,7 @@ export type TiktokProof = {
 
 export type Proof = TelegramProof | TiktokProof;
 
-export const PROOFS: Proof[] = [
+export const PROOFS: TelegramProof[] = [
   {
     kind: "telegram",
     name: "EzyMap | Boy",
@@ -65,15 +65,5 @@ export const PROOFS: Proof[] = [
       },
     ],
     source: "Member's own Telegram message to EzyMap, 27 Oct.",
-  },
-  {
-    kind: "tiktok",
-    host: "EzyMap | Jack",
-    comments: [
-      { name: "EzyMap | Ghost", text: "thank you", en: "Thank you.", rank: 1 },
-      { name: "EzyMap | Miloo", text: "ss chart", en: "Screenshot the chart, please.", rank: 3 },
-      { name: "EzyMap | WMRZ", text: "slmat malam", en: "Good evening.", rank: 3 },
-    ],
-    source: "Live comments from one of Jack's TikTok lives, as they appeared.",
   },
 ];

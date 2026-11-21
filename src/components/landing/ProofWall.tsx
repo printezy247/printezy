@@ -1,11 +1,11 @@
-import { BadgeCheck, Radio, Send, ShieldCheck } from "lucide-react";
+import { BadgeCheck, Send, ShieldCheck } from "lucide-react";
 import historyImg from "@/assets/proof-mt5-history.webp";
 import positionsImg from "@/assets/proof-mt5-positions.webp";
-import { PROOFS, type ProofImage, type TelegramProof, type TiktokProof } from "./proof-data";
+import { PROOFS, type ProofImage, type TelegramProof } from "./proof-data";
 
 /**
  * "Straight from the chats": real member messages drawn as futuristic
- * Telegram and TikTok-live cards. Copy lives in proof-data.ts; this file only
+ * Telegram chat cards. Copy lives in proof-data.ts; this file only
  * draws it. Motion is CSS-only and switched off by prefers-reduced-motion.
  */
 
@@ -123,62 +123,6 @@ function TelegramCard({ proof }: { proof: TelegramProof }) {
   );
 }
 
-function TiktokCard({ proof }: { proof: TiktokProof }) {
-  return (
-    <Shell label={`TikTok live comments on ${proof.host}`}>
-      <div className="flex items-center gap-3 border-b border-white/10 bg-black/30 px-4 py-3">
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-[#fe2c55] px-2 py-1 text-[11px] font-extrabold uppercase tracking-wide text-white">
-          <Radio className="h-3.5 w-3.5 motion-safe:animate-pulse" aria-hidden="true" />
-          Live
-        </span>
-        <div className="min-w-0">
-          <p className="truncate text-[15px] font-bold text-white">{proof.host}</p>
-          <p className="text-xs text-[#25f4ee]">TikTok</p>
-        </div>
-        <span
-          className="ml-auto h-5 w-5 rounded-full border-2 border-[#25f4ee] shadow-[2px_2px_0_0_#fe2c55]"
-          aria-hidden="true"
-        />
-      </div>
-
-      <ul className="flex flex-1 flex-col justify-center gap-3 p-4">
-        {proof.comments.map((c, i) => (
-          <li
-            key={c.name}
-            className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/35 p-3 motion-safe:animate-[fadeUp_0.5s_ease-out_both]"
-            style={{ animationDelay: `${i * 120}ms` }}
-          >
-            <span
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#25f4ee] to-[#fe2c55] text-sm font-extrabold text-neutral-950"
-              aria-hidden="true"
-            >
-              {initial(shortName(c.name))}
-            </span>
-            <div className="min-w-0">
-              <p className="flex flex-wrap items-center gap-2 text-[13px] font-bold text-neutral-300">
-                {shortName(c.name)}
-                {c.rank ? (
-                  <span className="rounded-full bg-[#fe2c55] px-2 py-px font-mono text-[10px] font-bold text-white">
-                    No. {c.rank}
-                  </span>
-                ) : null}
-              </p>
-              <p className="text-[15px] text-white">{c.text}</p>
-              <p className="font-mono text-[11px] text-[#25f4ee]/90">EN: {c.en}</p>
-            </div>
-          </li>
-        ))}
-        <li
-          className="mt-1 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs text-neutral-400"
-          aria-hidden="true"
-        >
-          Add comment…
-        </li>
-      </ul>
-    </Shell>
-  );
-}
-
 export function ProofWall() {
   return (
     <section
@@ -201,16 +145,15 @@ export function ProofWall() {
             Straight from the chats.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-neutral-300">
-            What members wrote to us on Telegram and in our TikTok lives. Only the display names are
-            changed.
+            What members wrote to us on Telegram. Only the display names are changed.
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <div className="mx-auto mt-10 grid max-w-4xl gap-6 md:grid-cols-2">
           {PROOFS.map((p) => (
             <figure key={p.source} className="flex flex-col gap-3">
               <div className="flex-1">
-                {p.kind === "telegram" ? <TelegramCard proof={p} /> : <TiktokCard proof={p} />}
+                <TelegramCard proof={p} />
               </div>
               <figcaption className="text-center text-xs text-neutral-400">{p.source}</figcaption>
             </figure>
