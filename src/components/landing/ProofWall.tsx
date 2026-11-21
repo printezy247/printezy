@@ -30,6 +30,17 @@ const initial = (name: string) =>
     .charAt(0)
     .toUpperCase();
 
+/** Members are shown by first name initials only: "EzyMap | Boy" reads
+    "EzyMap | Bo". The wall proves the words, not the person. */
+const shortName = (name: string) => {
+  const bar = name.indexOf("|");
+  if (bar === -1) return name.slice(0, 2);
+  return `${name.slice(0, bar + 1)} ${name
+    .slice(bar + 1)
+    .trim()
+    .slice(0, 2)}`;
+};
+
 /** Glass shell shared by every card: neon edge, soft glow, faint scan lines. */
 function Shell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -53,17 +64,18 @@ function Shell({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function TelegramCard({ proof }: { proof: TelegramProof }) {
+  const name = shortName(proof.name);
   return (
-    <Shell label={`Telegram chat with ${proof.name}`}>
+    <Shell label={`Telegram chat with ${name}`}>
       <div className="flex items-center gap-3 border-b border-white/10 bg-black/30 px-4 py-3">
         <span
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#3ddc84] to-[#12803f] text-base font-extrabold text-neutral-950"
           aria-hidden="true"
         >
-          {initial(proof.name)}
+          {initial(name)}
         </span>
         <div className="min-w-0">
-          <p className="truncate text-[15px] font-bold text-white">{proof.name}</p>
+          <p className="truncate text-[15px] font-bold text-white">{name}</p>
           <p className="flex items-center gap-1.5 text-xs text-[#3ddc84]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#3ddc84] motion-safe:animate-pulse" />
             Telegram
@@ -140,11 +152,11 @@ function TiktokCard({ proof }: { proof: TiktokProof }) {
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#25f4ee] to-[#fe2c55] text-sm font-extrabold text-neutral-950"
               aria-hidden="true"
             >
-              {initial(c.name)}
+              {initial(shortName(c.name))}
             </span>
             <div className="min-w-0">
               <p className="flex flex-wrap items-center gap-2 text-[13px] font-bold text-neutral-300">
-                {c.name}
+                {shortName(c.name)}
                 {c.rank ? (
                   <span className="rounded-full bg-[#fe2c55] px-2 py-px font-mono text-[10px] font-bold text-white">
                     No. {c.rank}

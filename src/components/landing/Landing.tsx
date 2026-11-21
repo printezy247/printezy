@@ -36,10 +36,7 @@ import {
   Smartphone,
   Send,
   Check,
-  Star,
   ArrowRight,
-  Clock,
-  Activity,
   BookOpen,
   Lock,
   CalendarDays,
@@ -1465,105 +1462,6 @@ function Ambassador() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Social proof                                                        */
-/* ------------------------------------------------------------------ */
-
-type Testimonial = {
-  name: string;
-  locale: "ms" | "en";
-  roleKey: TranslationKey;
-  quoteKey: TranslationKey;
-};
-
-const TESTIMONIALS: Testimonial[] = [
-  {
-    name: "Budi D.",
-    locale: "ms",
-    roleKey: "testimonial_budi_role",
-    quoteKey: "testimonial_budi_quote",
-  },
-  {
-    name: "Priya R.",
-    locale: "en",
-    roleKey: "testimonial_priya_role",
-    quoteKey: "testimonial_priya_quote",
-  },
-  {
-    name: "Luqman R.",
-    locale: "ms",
-    roleKey: "testimonial_luqman_role",
-    quoteKey: "testimonial_luqman_quote",
-  },
-  {
-    name: "Chen W.",
-    locale: "en",
-    roleKey: "testimonial_chen_role",
-    quoteKey: "testimonial_chen_quote",
-  },
-];
-
-function SocialProof() {
-  const { formatted: memberCount } = useMemberCount();
-  const { t, locale } = useTranslation();
-  // Testimonials exist in en/ms only; other locales fall back to English
-  // rather than rendering an empty section.
-  const inLocale = TESTIMONIALS.filter((item) => item.locale === locale);
-  const testimonials =
-    inLocale.length > 0 ? inLocale : TESTIMONIALS.filter((i) => i.locale === "en");
-  return (
-    <Section id="testimonials" className="bg-surface/40">
-      <SectionHeading
-        eyebrow={t("social_eyebrow")}
-        title={t("social_title").replace("{memberCount}", memberCount)}
-        subtitle={t("social_subtitle")}
-      />
-      <div className="mb-10 grid gap-4">
-        {[[Clock, "24/5", t("social_market_coverage")]].map(([Icon, v, l], i) => {
-          const I = Icon as typeof Activity;
-          return (
-            <Reveal key={l as string} delay={i * 0.04}>
-              <div className="glass-card mx-auto flex h-full max-w-xs items-center gap-4 rounded-xl p-5">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent/12 text-accent">
-                  <I className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="font-mono text-xl font-bold tabular-nums">{v as string}</p>
-                  <p className="text-xs text-muted-foreground">{l as string}</p>
-                </div>
-              </div>
-            </Reveal>
-          );
-        })}
-      </div>{" "}
-      <div className="flex flex-wrap justify-center gap-5">
-        {testimonials.map((item, i) => (
-          <Reveal
-            key={item.name}
-            delay={i * 0.04}
-            className="h-full w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] lg:max-w-xs"
-          >
-            <figure className="glass-card flex h-full flex-col rounded-xl p-6">
-              <div className="flex gap-0.5 text-accent">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-current" />
-                ))}
-              </div>
-              <blockquote className="mt-3 flex-1 text-sm text-body">
-                "{t(item.quoteKey)}"
-              </blockquote>
-              <figcaption className="mt-4 text-sm">
-                <span className="font-semibold">{item.name}</span>
-                <span className="block text-xs text-muted-foreground">{t(item.roleKey)}</span>
-              </figcaption>
-            </figure>
-          </Reveal>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* FAQ                                                                 */
 /* ------------------------------------------------------------------ */
 
@@ -1700,7 +1598,6 @@ export function Landing() {
           <Features />
           <Pricing />
           <TrackRecord />
-          <SocialProof />
           <ProofWall />
           <Products />
           <Tools />
