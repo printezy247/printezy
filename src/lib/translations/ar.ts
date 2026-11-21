@@ -27,6 +27,7 @@ const ar: Record<TranslationKey, string> = {
   nav_toggle_menu: "تبديل القائمة",
   nav_site_menu: "قائمة الموقع",
   hero_badge: "أعضاء نشطون · تأسست 2021",
+  announce_pill: "فصل زووم مجاني كل أسبوع",
   stats_members: "أعضاء نشطون",
   stats_coverage: "تغطية الأسواق",
   stats_languages: "لغات",

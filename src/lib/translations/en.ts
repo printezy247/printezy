@@ -27,6 +27,7 @@ const en = {
   nav_site_menu: "Site menu",
 
   hero_badge: "Active Members · Est. 2021",
+  announce_pill: "Free Zoom class every week",
   stats_members: "active members",
   stats_coverage: "market coverage",
   stats_languages: "languages",

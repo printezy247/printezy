@@ -13,9 +13,9 @@ import { translations } from "../translations";
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-describe("the board is visible", () => {
-  it("runs on one flag, and that flag is on", () => {
-    expect(EZYAI_BOARD_VISIBLE).toBe(true);
+describe("the board visibility switch", () => {
+  it("runs on one flag, currently off while signal quality improves", () => {
+    expect(EZYAI_BOARD_VISIBLE).toBe(false);
   });
 
   it("lists /ezyai in the sitemap, gated on the same flag", () => {

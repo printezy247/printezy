@@ -29,6 +29,7 @@ const zh: Record<TranslationKey, string> = {
   nav_site_menu: "网站菜单",
 
   hero_badge: "活跃会员 · 成立于 2021",
+  announce_pill: "每周免费 Zoom 课程",
   stats_members: "活跃会员",
   stats_coverage: "市场覆盖",
   stats_languages: "种语言",

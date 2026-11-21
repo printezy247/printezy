@@ -5,7 +5,6 @@ import mt5LogoAsset from "@/assets/mt5-logo.png";
 import markImg from "@/assets/ezymap-mark.webp";
 import heroMonitor from "@/assets/ezymap-hero-monitor.jpg";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
-import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
 import { Link } from "@tanstack/react-router";
@@ -347,63 +346,37 @@ function Hero() {
   const { formatted: memberCount } = useMemberCount();
   const { t, locale } = useTranslation();
   const reducedMotion = usePrefersReducedMotion();
-  // One walk, two readers: the chart and the card's rail.
-  const live = useDemoPrice();
   return (
     <section id="hero" className="relative overflow-hidden border-b border-border bg-hero">
-      {/* Brand backdrop: the EzyMap desk render, kept quiet behind the copy. */}
-      <img
-        src={heroMonitor}
-        alt=""
-        aria-hidden="true"
-        decoding="async"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 [mask-image:linear-gradient(to_bottom,transparent,#000_30%,#000_75%,transparent)]"
-      />
-      {/* Cinematic desk loop rendered through the video-system HyperFrames
-          pipeline. Decorative only: muted, looping, and unmounted entirely
-          under prefers-reduced-motion, where the still above carries the frame. */}
-      {!reducedMotion ? (
-        <video
-          className="hero-video-drift pointer-events-none absolute inset-0 h-full w-full object-cover opacity-55 [mask-image:linear-gradient(to_bottom,transparent,#000_22%,#000_78%,transparent)]"
-          src="/ezymap-hero-loop.mp4"
-          poster={heroMonitor}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-hidden="true"
-        />
-      ) : null}
-      {/* Legibility scrim: the video stays ambient, the copy stays first-read. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/80 via-background/35 to-background/85"
-      />
+      {/* Ambient glows only — the product loop below carries the visual weight. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[-20%] h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]"
+        className="pointer-events-none absolute left-1/2 top-[-24%] h-[600px] w-[1000px] -translate-x-1/2 rounded-full bg-primary/15 blur-[130px]"
       />
-      <PointerGlyphs />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-30%] right-[-10%] h-[480px] w-[720px] rounded-full bg-accent/10 blur-[130px]"
+      />
 
       {/* Headline block. Centred like a product launch page. */}
-      <div className="relative mx-auto max-w-6xl px-4 pb-8 pt-12 text-center sm:px-6 sm:pb-10 lg:px-8 lg:pt-16">
-        <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
-          <Users className="h-3.5 w-3.5 text-primary" />
-          <span className="font-mono font-extrabold tabular-nums text-primary">
-            {memberCount}
-          </span>{" "}
-          {t("hero_badge")}
-        </span>
-        <h1 className="text-glow mx-auto mt-5 max-w-4xl text-[36px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[42px] sm:text-[48px] xl:text-[64px]">
+      <div className="relative mx-auto max-w-6xl px-4 pb-12 pt-12 text-center sm:px-6 lg:px-8 lg:pt-16">
+        <Link
+          to="/free-channel"
+          onClick={() => goTrack("hero_announce_zoom")}
+          className="hero-pill inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold uppercase tracking-wide text-body transition-colors hover:border-primary/60"
+        >
+          <CalendarDays className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+          {t("announce_pill")}
+        </Link>
+        <h1 className="text-gradient-brand mx-auto mt-6 max-w-5xl text-[42px] font-bold uppercase leading-[0.96] tracking-tight min-[400px]:text-[48px] sm:text-[60px] xl:text-[76px]">
           {t("hero_title")}
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-body sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-body sm:text-lg">
           {t("hero_subtitle")}
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/free-channel"
             onClick={() => goTrack("hero_join_free")}
@@ -448,51 +421,112 @@ function Hero() {
             </div>
           ))}
         </dl>
-      </div>
 
-      {/* Product stage: the desk itself, in a window frame. */}
-      <div className="relative mx-auto max-w-4xl px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="card-lift relative overflow-hidden rounded-[1.75rem] border border-border bg-card/80 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
-          <div className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-3">
-            <img
-              src={markImg}
-              alt=""
-              width={28}
-              height={28}
-              decoding="async"
-              className="h-7 w-7 rounded-lg"
-            />
-            <span className="text-sm font-bold text-foreground">EzyMap ALGO</span>
-            <span className="hidden text-xs text-muted-foreground sm:inline">
-              {t("hero_sample_badge")}
-            </span>
-            <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
-              Live format
-            </span>
+        {/* Cinematic product loop — the video-system desk render, framed like
+            a product film rather than a background. */}
+        <Reveal className="mx-auto mt-12 max-w-5xl">
+          <div className="overflow-hidden rounded-2xl border border-border bg-card/80 shadow-[0_50px_140px_-40px_rgba(0,0,0,0.9)]">
+            <div className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-2.5">
+              <span className="flex gap-1.5" aria-hidden="true">
+                <i className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                <i className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                <i className="h-2.5 w-2.5 rounded-full bg-white/15" />
+              </span>
+              <span className="text-xs text-muted-foreground">ezymap.money · live desk</span>
+              <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
+                Live format
+              </span>
+            </div>
+            <div className="aspect-video w-full overflow-hidden bg-black">
+              {reducedMotion ? (
+                <img
+                  src={heroMonitor}
+                  alt=""
+                  aria-hidden="true"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <video
+                  className="hero-video-drift h-full w-full object-cover"
+                  src="/ezymap-hero-loop.mp4"
+                  poster={heroMonitor}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-hidden="true"
+                />
+              )}
+            </div>
           </div>
-          <div className="bg-hero p-3 sm:p-6">
-            <div className="relative">
-              <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
-              {/* This card is a demo walk, not the desk. When the real board
-                  is open, point at it so nobody mistakes the sample for live
-                  data. And so a buyer can jump straight to the real thing. */}
-              {EZYAI_BOARD_VISIBLE ? (
-                <p className="mt-3 text-center text-xs text-muted-foreground">
-                  <a
-                    href={localizePath("/ezyai", locale)}
-                    className="underline underline-offset-2 transition-colors hover:text-foreground"
-                    onClick={() => goTrack("hero_see_live_board")}
-                  >
-                    {t("ezyai_see_live_board")} →
-                  </a>
-                </p>
-              ) : null}
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Product stage — the live-format signal desk, Framer-style feature visual */
+/* ------------------------------------------------------------------ */
+
+function ProductStage() {
+  const { t, locale } = useTranslation();
+  // One walk, two readers: the chart and the card's rail.
+  const live = useDemoPrice();
+  return (
+    <Section className="bg-surface/40">
+      <SectionHeading
+        eyebrow={t("hero_sample_badge")}
+        title={t("show_signals_title")}
+        subtitle={t("show_signals_body")}
+      />
+      <Reveal>
+        <div className="mx-auto max-w-4xl">
+          <div className="card-lift relative overflow-hidden rounded-[1.75rem] border border-border bg-card/80 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
+            <div className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-3">
+              <img
+                src={markImg}
+                alt=""
+                width={28}
+                height={28}
+                decoding="async"
+                className="h-7 w-7 rounded-lg"
+              />
+              <span className="text-sm font-bold text-foreground">EzyMap ALGO</span>
+              <span className="hidden text-xs text-muted-foreground sm:inline">
+                {t("hero_sample_badge")}
+              </span>
+              <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
+                Live format
+              </span>
+            </div>
+            <div className="bg-hero p-3 sm:p-6">
+              <div className="relative">
+                <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
+                {/* This card is a demo walk, not the desk. When the real board
+                    is open, point at it so nobody mistakes the sample for live
+                    data. And so a buyer can jump straight to the real thing. */}
+                {EZYAI_BOARD_VISIBLE ? (
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    <a
+                      href={localizePath("/ezyai", locale)}
+                      className="underline underline-offset-2 transition-colors hover:text-foreground"
+                      onClick={() => goTrack("hero_see_live_board")}
+                    >
+                      {t("ezyai_see_live_board")} →
+                    </a>
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Reveal>
+    </Section>
   );
 }
 
@@ -1660,6 +1694,7 @@ export function Landing() {
           <Hero />
           <TrustStrip />
           <StatsStrip />
+          <ProductStage />
           <NextStepAdvisor />
           <ZoomClassBand />
           <Features />
@@ -1670,7 +1705,7 @@ export function Landing() {
           <Products />
           <Tools />
           <Showcase />
-          <CtaBand />
+          {EZYAI_BOARD_VISIBLE ? <CtaBand /> : null}
           <HowItWorks />
           <Ambassador />
           <Faq />
