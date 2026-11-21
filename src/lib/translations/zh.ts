@@ -99,6 +99,10 @@ const zh: Record<TranslationKey, string> = {
   hero_disclaimer:
     "Signal 格式示例说明。交易存在亏损风险。signal 仅供教育用途,不构成个性化的财务建议。",
 
+  zoom_badge: "每周 · 免费",
+  zoom_title: "频道每周免费 Zoom 课程",
+  zoom_body: "Jack 直播拆解本周最佳交易 setups——进场、目标与风险,并现场答疑。永久免费,无需信用卡。",
+  zoom_cta: "加入免费频道",
   trust_strip_label: "我们使用的可信平台",
 
   track_record_eyebrow: "历史记录",

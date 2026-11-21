@@ -102,6 +102,11 @@ const hi: Record<TranslationKey, string> = {
   hero_card_profile: "इंट्राडे · सामान्य जोखिम",
   hero_disclaimer:
     "Signal फॉर्मेट का उदाहरणात्मक चित्रण। ट्रेडिंग में नुकसान का जोखिम है। signal केवल शैक्षिक उद्देश्य के लिए हैं और व्यक्तिगत वित्तीय सलाह नहीं हैं।",
+  zoom_badge: "हर हफ़्ते · मुफ़्त",
+  zoom_title: "चैनल पर हर हफ़्ते मुफ़्त Zoom क्लास",
+  zoom_body:
+    "Jack हर हफ़्ते के सर्वश्रेष्ठ setups को लाइव समझाते हैं — entry, targets और risk — फिर आपके सवालों के जवाब देते हैं। हमेशा मुफ़्त, कोई कार्ड नहीं।",
+  zoom_cta: "मुफ़्त चैनल से जुड़ें",
   trust_strip_label: "भरोसेमंद प्लेटफ़ॉर्म जिन पर हम काम करते हैं",
   track_record_eyebrow: "ट्रैक रिकॉर्ड",
   track_record_title: "इतिहास खुद जांचें",

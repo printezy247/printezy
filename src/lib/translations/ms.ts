@@ -103,6 +103,11 @@ const ms: Record<TranslationKey, string> = {
   hero_disclaimer:
     "Contoh ilustrasi format signal. Dagangan membawa risiko kerugian. signal adalah untuk tujuan pendidikan sahaja dan bukan nasihat kewangan peribadi.",
 
+  zoom_badge: "Setiap minggu · Percuma",
+  zoom_title: "Kelas Zoom percuma setiap minggu dalam channel",
+  zoom_body:
+    "Jack membedah setup terbaik minggu itu secara langsung — entry, target dan risiko — kemudian menjawab soalan anda. Percuma selamanya, tanpa kad.",
+  zoom_cta: "Sertai channel percuma",
   trust_strip_label: "Platform dipercayai yang kami gunakan",
 
   track_record_eyebrow: "Rekod prestasi",

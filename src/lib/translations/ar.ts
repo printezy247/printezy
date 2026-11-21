@@ -99,6 +99,11 @@ const ar: Record<TranslationKey, string> = {
   hero_card_profile: "خلال اليوم · مخاطرة عادية",
   hero_disclaimer:
     "مثال توضيحي لتنسيق الـ signal. التداول ينطوي على خطر الخسارة. الـ signal لأغراض تعليمية فقط وليست نصيحة مالية شخصية.",
+  zoom_badge: "كل أسبوع · مجانًا",
+  zoom_title: "فصل Zoom مجاني أسبوعي في القناة",
+  zoom_body:
+    "يحلل Jack أفضل الصفقات كل أسبوع مباشرة — نقاط الدخول والأهداف والمخاطر — ثم يجيب على أسئلتك. مجاني للأبد، بدون بطاقة.",
+  zoom_cta: "انضم إلى القناة المجانية",
   trust_strip_label: "منصات موثوقة نعمل عليها",
   track_record_eyebrow: "السجل الحافل",
   track_record_title: "تحقق من السجل بنفسك",

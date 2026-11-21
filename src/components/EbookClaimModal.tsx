@@ -239,7 +239,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
         initial={reducedMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1, transition: { duration: reducedMotion ? 0 : 0.2 } }}
         exit={{ opacity: 0, transition: { duration: reducedMotion ? 0 : 0.15 } }}
-        className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
@@ -264,9 +264,16 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             transition: { duration: reducedMotion ? 0 : 0.15, ease: "easeIn" },
           }}
           onClick={(e) => e.stopPropagation()}
-          className="relative my-8 w-full max-w-sm overflow-hidden rounded-xl border border-accent/25 bg-background p-6 shadow-gold"
+          className="relative my-8 w-full max-w-md overflow-hidden rounded-2xl border border-accent/30 bg-card p-6 shadow-gold"
         >
-          <div className="bg-gold absolute inset-x-0 top-0 h-[3px]" aria-hidden="true" />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 left-1/2 h-48 w-72 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl"
+          />
+          <div
+            className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-accent to-transparent"
+            aria-hidden="true"
+          />
           <button
             ref={closeBtnRef}
             type="button"
@@ -277,19 +284,28 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             <X className="h-5 w-5" />
           </button>
 
-          <div className="flex items-start gap-3 pr-8">
-            <img
-              {...imgProps(book.image)}
-              alt={`${book.title} cover`}
-              className="h-20 w-14 shrink-0 rounded-md border border-border object-cover"
-            />
-            <div className="min-w-0">
-              <h2 className="text-lg text-foreground">{book.title}</h2>
+          <div className="relative flex items-start gap-4 pr-8">
+            <div className="relative shrink-0">
+              <div
+                aria-hidden="true"
+                className="absolute -inset-1 rounded-lg bg-accent/30 blur-md"
+              />
+              <img
+                {...imgProps(book.image)}
+                alt={`${book.title} cover`}
+                className="relative h-24 w-[4.5rem] rounded-lg border border-accent/30 object-cover shadow-lg"
+              />
+            </div>
+            <div className="min-w-0 pt-0.5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-accent">
+                Free ebook
+              </p>
+              <h2 className="mt-1 text-lg font-bold text-foreground">{book.title}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{book.tagline}</p>
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className="relative mt-5">
             {gate === "loading" ? (
               <div className="flex justify-center py-4">
                 <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />

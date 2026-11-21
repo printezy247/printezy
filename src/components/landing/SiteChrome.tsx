@@ -385,7 +385,7 @@ export function Nav() {
       >
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <a href={localizePath("/", locale)} aria-label="EzyMap Algo home">
+            <a href={localizePath("/home#hero", locale)} aria-label="EzyMap Algo home">
               <Logo />
             </a>
 

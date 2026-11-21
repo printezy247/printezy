@@ -2,6 +2,8 @@ import { imgProps } from "@/lib/responsive-images";
 import { NextStepAdvisor } from "./NextStepAdvisor";
 import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import mt5LogoAsset from "@/assets/mt5-logo.png";
+import markImg from "@/assets/ezymap-mark.webp";
+import heroMonitor from "@/assets/ezymap-hero-monitor.jpg";
 import { EzyAiLogo } from "@/components/brand/EzyAiLogo";
 import { PointerGlyphs } from "./PointerGlyphs";
 import { DEMO, useDemoPrice, type DemoPrice } from "@/lib/use-demo-price";
@@ -22,6 +24,7 @@ import { Tools } from "@/components/landing/Tools";
 import { Faq } from "./FaqSection";
 import { Reveal, Section, SectionHeading } from "./primitives";
 import { Footer, Nav, useBotLink } from "./SiteChrome";
+import { ProofWall } from "./ProofWall";
 
 const EbookDetailsModal = lazy(() =>
   import("@/components/EbookDetailsModal").then((m) => ({ default: m.EbookDetailsModal })),
@@ -39,6 +42,7 @@ import {
   Activity,
   BookOpen,
   Lock,
+  CalendarDays,
 } from "lucide-react";
 import {
   trackPageLoad,
@@ -344,81 +348,104 @@ function Hero() {
   // One walk, two readers: the chart and the card's rail.
   const live = useDemoPrice();
   return (
-    <>
-      <section className="bg-hero relative overflow-hidden border-b border-border">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-[-10%] top-1/2 hidden h-[620px] w-[620px] -translate-y-1/2 rounded-full bg-primary/15 blur-[120px] lg:block"
-        />
-        <PointerGlyphs />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 text-center sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[1fr_1fr] lg:gap-8 lg:px-8 lg:py-10 xl:py-20 xl:grid-cols-[1.05fr_1fr] xl:gap-14 [@media(max-height:500px)]:py-8 lg:text-left">
-          <div className="mx-auto max-w-xl lg:mx-0">
-            <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
-              <Users className="h-3.5 w-3.5 text-primary" />
-              <span className="font-mono font-extrabold tabular-nums text-primary">
-                {memberCount}
-              </span>{" "}
-              {t("hero_badge")}
-            </span>
-            <h1 className="text-glow mt-5 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-[34px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[38px] sm:text-[42px] lg:text-[44px] xl:text-[60px] [@media(max-height:500px)]:text-[32px]">
-              {t("hero_title")}
-            </h1>
-            <p className="mt-5 text-base leading-relaxed text-body sm:text-lg [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 [@media(min-width:640px)_and_(max-width:1279px)]:text-base">
-              {t("hero_subtitle")}
-            </p>
+    <section id="hero" className="relative overflow-hidden border-b border-border bg-hero">
+      {/* Brand backdrop: the EzyMap desk render, kept quiet behind the copy. */}
+      <img
+        src={heroMonitor}
+        alt=""
+        aria-hidden="true"
+        decoding="async"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-25 [mask-image:linear-gradient(to_bottom,transparent,#000_30%,#000_75%,transparent)]"
+      />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-glow" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[-20%] h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]"
+      />
+      <PointerGlyphs />
 
-            <div className="mt-8 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-              <Link
-                to="/free-channel"
-                onClick={() => goTrack("hero_join_free")}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground hover:bg-primary-glow"
-              >
-                <Send className="h-4 w-4" /> {t("hero_cta_join")}
-              </Link>
-              <a
-                href={`${localizePath("/home", locale)}#packages`}
-                onClick={() => goTrack("hero_see_packages")}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
-              >
-                {t("hero_cta_packages")}
-              </a>
+      {/* Headline block — centred like a product launch page. */}
+      <div className="relative mx-auto max-w-6xl px-4 pb-8 pt-12 text-center sm:px-6 sm:pb-10 lg:px-8 lg:pt-16">
+        <span className="hero-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-semibold uppercase tracking-wide text-body">
+          <Users className="h-3.5 w-3.5 text-primary" />
+          <span className="font-mono font-extrabold tabular-nums text-primary">
+            {memberCount}
+          </span>{" "}
+          {t("hero_badge")}
+        </span>
+        <h1 className="text-glow mx-auto mt-5 max-w-4xl text-[36px] font-bold uppercase leading-[0.98] tracking-tight text-foreground min-[400px]:text-[42px] sm:text-[48px] xl:text-[64px]">
+          {t("hero_title")}
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-body sm:text-lg">
+          {t("hero_subtitle")}
+        </p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            to="/free-channel"
+            onClick={() => goTrack("hero_join_free")}
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground hover:bg-primary-glow"
+          >
+            <Send className="h-4 w-4" /> {t("hero_cta_join")}
+          </Link>
+          <a
+            href={`${localizePath("/home", locale)}#packages`}
+            onClick={() => goTrack("hero_see_packages")}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-foreground transition-colors hover:bg-primary/10"
+          >
+            {t("hero_cta_packages")}
+          </a>
+        </div>
+
+        <p className="mt-4 text-sm text-muted-foreground">
+          <Link
+            to="/ebooks/$slug"
+            params={{ slug: "technical-analysis" }}
+            onClick={() => goTrack("hero_free_ebook")}
+            className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
+          >
+            <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
+          </Link>
+        </p>
+
+        <dl className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-2 sm:gap-3">
+          {[
+            [memberCount, t("hero_stat_members")],
+            ["24/5", t("hero_stat_coverage")],
+            ["3 Styles", t("hero_stat_styles")],
+          ].map(([v, l]) => (
+            <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
+              <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
+              <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {l}
+              </dd>
             </div>
+          ))}
+        </dl>
+      </div>
 
-            <p className="mt-4 [@media(min-width:640px)_and_(max-width:1279px)]:mt-3 text-sm text-muted-foreground">
-              <Link
-                to="/ebooks/$slug"
-                params={{ slug: "technical-analysis" }}
-                onClick={() => goTrack("hero_free_ebook")}
-                className="inline-flex items-center gap-1.5 font-medium text-accent hover:underline"
-              >
-                <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
-              </Link>
-            </p>
-
-            <dl className="mx-auto mt-10 [@media(min-width:640px)_and_(max-width:1279px)]:mt-5 grid max-w-lg grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
-              {[
-                [memberCount, t("hero_stat_members")],
-                ["24/5", t("hero_stat_coverage")],
-                ["3 Styles", t("hero_stat_styles")],
-              ].map(([v, l]) => (
-                <div key={l} className="glow-ring rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur">
-                  <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">
-                    {v}
-                  </dt>
-                  <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {l}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <div className="relative mx-auto w-full max-w-xl text-left">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl"
+      {/* Product stage — the desk itself, in a window frame. */}
+      <div className="relative mx-auto max-w-4xl px-4 pb-14 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-[1.75rem] border border-border bg-card/80 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
+          <div className="flex items-center gap-3 border-b border-border bg-surface/80 px-4 py-3">
+            <img
+              src={markImg}
+              alt=""
+              width={28}
+              height={28}
+              decoding="async"
+              className="h-7 w-7 rounded-lg"
             />
+            <span className="text-sm font-bold text-foreground">EzyMap ALGO</span>
+            <span className="hidden text-xs text-muted-foreground sm:inline">
+              {t("hero_sample_badge")}
+            </span>
+            <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
+              Live format
+            </span>
+          </div>
+          <div className="bg-hero p-3 sm:p-6">
             <div className="relative">
               <LiveSampleSignal chart={<ChartGraphic live={live} />} live={live} />
               {/* This card is a demo walk, not the desk. When the real board
@@ -438,8 +465,8 @@ function Hero() {
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 
@@ -1514,6 +1541,47 @@ function FinalCta() {
 /* ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ */
+/* Weekly Zoom class band — the page's main recurring promotion        */
+/* ------------------------------------------------------------------ */
+
+function ZoomClassBand() {
+  const { t } = useTranslation();
+  return (
+    <Section className="bg-surface/40">
+      <Reveal>
+        <div className="relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-accent/10 via-card to-primary/10 p-6 sm:p-10">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/15 blur-3xl"
+          />
+          <div className="relative flex flex-col items-center gap-6 text-center lg:flex-row lg:gap-8 lg:text-left">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-accent/40 bg-accent/15 text-accent">
+              <CalendarDays className="h-7 w-7" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <span className="inline-flex items-center rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent">
+                {t("zoom_badge")}
+              </span>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                {t("zoom_title")}
+              </h2>
+              <p className="mt-2 max-w-xl text-base leading-relaxed text-body">{t("zoom_body")}</p>
+            </div>
+            <Link
+              to="/free-channel"
+              onClick={() => goTrack("zoom_class_join")}
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary-glow"
+            >
+              <Send className="h-4 w-4" aria-hidden="true" /> {t("zoom_cta")}
+            </Link>
+          </div>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -1567,15 +1635,17 @@ export function Landing() {
           <TrustStrip />
           <StatsStrip />
           <NextStepAdvisor />
+          <ZoomClassBand />
           <Features />
           <Pricing />
-          <Tools />
-          <Showcase />
-          <Products />
-          <CtaBand />
-          <HowItWorks />
           <TrackRecord />
           <SocialProof />
+          <ProofWall />
+          <Products />
+          <Tools />
+          <Showcase />
+          <CtaBand />
+          <HowItWorks />
           <Ambassador />
           <Faq />
           <FinalCta />
