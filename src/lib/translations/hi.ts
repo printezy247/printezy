@@ -29,6 +29,7 @@ const hi: Record<TranslationKey, string> = {
   nav_toggle_menu: "मेनू टॉगल करें",
   nav_site_menu: "साइट मेनू",
   hero_badge: "सक्रिय सदस्य · स्था. 2021",
+  announce_pill: "हर हफ्ते मुफ्त ज़ूम क्लास",
   stats_members: "सक्रिय सदस्य",
   stats_coverage: "मार्केट कवरेज",
   stats_languages: "भाषाएँ",

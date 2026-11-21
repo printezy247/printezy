@@ -102,7 +102,7 @@ export function SectionHeading({
             {eyebrow}
           </p>
         ) : null}
-        <h2 className="text-3xl sm:text-4xl">{title}</h2>
+        <h2 className="text-4xl tracking-tight sm:text-5xl">{title}</h2>
         {subtitle ? <p className="mt-4 text-base text-body">{subtitle}</p> : null}
       </div>
     </Reveal>

@@ -16,4 +16,4 @@
  * every branch that reads it and let the compiler quietly drop the code that
  * has to run on the other side of the flag.
  */
-export const EZYAI_BOARD_VISIBLE: boolean = true;
+export const EZYAI_BOARD_VISIBLE: boolean = false;

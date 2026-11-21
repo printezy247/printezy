@@ -28,6 +28,7 @@ const sw: Record<TranslationKey, string> = {
   nav_toggle_menu: "Fungua/Funga menyu",
   nav_site_menu: "Menyu ya tovuti",
   hero_badge: "Wanachama Hai · Tangu 2021",
+  announce_pill: "Somo la Zoom bure kila wiki",
   stats_members: "wanachama hai",
   stats_coverage: "ufuatiliaji wa soko",
   stats_languages: "lugha",

@@ -29,6 +29,7 @@ const ms: Record<TranslationKey, string> = {
   nav_site_menu: "Menu laman",
 
   hero_badge: "Ahli Aktif · Ditubuhkan 2021",
+  announce_pill: "Kelas Zoom percuma setiap minggu",
   stats_members: "ahli aktif",
   stats_coverage: "liputan pasaran",
   stats_languages: "bahasa",
