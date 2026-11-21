@@ -52,7 +52,7 @@ export function FaqPage() {
           {/* A plain anchor: the localized twins are one `$lang` route, so the
               router cannot type a per-locale literal for them. */}
           <a
-            href={localizePath("/", locale)}
+            href={localizePath("/home", locale)}
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> {t("faq_back_to_home")}

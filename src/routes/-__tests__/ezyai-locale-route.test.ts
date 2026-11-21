@@ -134,10 +134,10 @@ describe("hidden board redirects stay in the visitor's language", () => {
     },
   );
 
-  it("sends /ezyai to /", async () => {
+  it("sends /ezyai to the main site hero, not the link hub", async () => {
     const { english } = await loadRoutes(false);
     expect(() => runBeforeLoad(english)).toThrowError(
-      expect.objectContaining({ options: expect.objectContaining({ to: "/" }) }),
+      expect.objectContaining({ options: expect.objectContaining({ to: "/home" }) }),
     );
   });
 });

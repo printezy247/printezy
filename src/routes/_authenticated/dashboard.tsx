@@ -70,7 +70,7 @@ function DashboardPage() {
   async function signOut() {
     const supabase = await getSupabase();
     await supabase.auth.signOut();
-    void navigate({ to: "/", replace: true });
+    void navigate({ to: "/home", replace: true });
   }
 
   return (

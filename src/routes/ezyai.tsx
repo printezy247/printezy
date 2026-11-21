@@ -43,7 +43,7 @@ export const Route = createFileRoute("/ezyai")({
   // Hidden while the bot is being updated. This runs before the loader, so the
   // board's data never starts: the page is closed rather than merely unlinked.
   beforeLoad: () => {
-    if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/" });
+    if (!EZYAI_BOARD_VISIBLE) throw redirect({ to: "/home" });
   },
   // Deep-linkable tabs, so the hero card (and anything else) can point
   // straight at the live board rather than at the page and a hope. Neither
