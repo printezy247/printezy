@@ -118,7 +118,7 @@ export function EbookNotFound() {
 
 export function EbookPage({ book: source }: { book: Ebook }) {
   const { t, locale } = useTranslation();
-  const localeHome = localizePath("/", locale);
+  const localeHome = localizePath("/home", locale);
   const book = localizeEbook(source, locale);
   const others = EBOOK_PAGES.filter((b) => b.slug !== book.slug).map((b) =>
     localizeEbook(b, locale),

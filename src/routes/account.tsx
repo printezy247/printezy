@@ -197,7 +197,7 @@ function Shell({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen bg-background px-4 py-16">
       <div className="mx-auto w-full max-w-4xl">
         <Link
-          to="/"
+          to="/home"
           className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
         >
           ← EzyMap ALGO

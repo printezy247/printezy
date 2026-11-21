@@ -56,7 +56,7 @@ export function PrivacyPage() {
           </div>
         </div>
         <a
-          href={localizePath("/", locale)}
+          href={localizePath("/home", locale)}
           className="mt-10 inline-block text-sm text-primary hover:underline"
         >
           {t("legal_back_home")}

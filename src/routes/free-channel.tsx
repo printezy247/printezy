@@ -37,7 +37,7 @@ const benefits: { icon: typeof Zap; label: TranslationKey; desc: TranslationKey 
 
 export function FreeChannelPage() {
   const { t, locale } = useTranslation();
-  const home = localizePath("/", locale);
+  const home = localizePath("/home", locale);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [telegram, setTelegram] = useState("");

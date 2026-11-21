@@ -24,7 +24,7 @@ export const Route = createFileRoute("/$lang/ezyai")({
     // twin too, but the visitor is sent to their own language's home page
     // rather than switched to English by the redirect.
     if (!locale) throw notFound();
-    if (!EZYAI_BOARD_VISIBLE) throw redirect({ href: localizePath("/", locale) });
+    if (!EZYAI_BOARD_VISIBLE) throw redirect({ href: localizePath("/home", locale) });
   },
   head: ({ params }) => ezyaiHead(pageLocaleParam(params.lang) ?? "en"),
   component: EzyAiPage,
