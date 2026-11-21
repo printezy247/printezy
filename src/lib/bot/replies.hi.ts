@@ -294,7 +294,7 @@ export const HI: Translation = {
       "पैसे लगेंगे क्या",
     ],
     replies: [
-      "हाँ! Free tier और 30-दिन का Vantage Trial बिल्कुल फ्री हैं — trial के लिए बस Vantage Markets में Jack के IB के तहत एक अकाउंट चाहिए। सिर्फ paid पैकेज (Pro $49, Premium $99, Elite $299) और EzyMap indicators के लिए ही पेमेंट करना होता है।",
+      "हाँ! Free tier और 30-दिन का Vantage Trial बिल्कुल फ्री हैं. Trial के लिए बस Vantage Markets में Jack के IB के तहत एक अकाउंट चाहिए। सिर्फ paid पैकेज (Pro $49, Premium $99, Elite $299) और EzyMap indicators के लिए ही पेमेंट करना होता है।",
     ],
     buttons: [["🎁 पैकेज देखें"], ["⬅ FAQ पर वापस"]],
   },
@@ -326,7 +326,7 @@ export const HI: Translation = {
       "कितने पैसे डालने",
     ],
     replies: [
-      "Vantage Trial के लिए बस Jack के IB के तहत एक live अकाउंट खुला होना चाहिए — किसी भी राशि का deposit इसे शुरू कर देता है। Paid पैकेज के लिए broker deposit की बिल्कुल ज़रूरत नहीं है।",
+      "Vantage Trial के लिए बस Jack के IB के तहत एक live अकाउंट खुला होना चाहिए. किसी भी राशि का Deposit इसे शुरू कर देता है। Paid पैकेज के लिए broker deposit की बिल्कुल ज़रूरत नहीं है।",
     ],
     buttons: [["🎁 पैकेज देखें"], ["⬅ FAQ पर वापस"]],
   },
@@ -373,7 +373,7 @@ export const HI: Translation = {
       "कितना समय लगेगा",
     ],
     replies: [
-      "Paid पैकेज पेमेंट clear होते ही अपने आप unlock हो जाते हैं — /status से चेक करें। Vantage Trial तब unlock होता है जब आप कन्फर्म करते हैं कि आपका अकाउंट Jack के IB के तहत खुला है।",
+      "Paid पैकेज पेमेंट clear होते ही अपने आप unlock हो जाते हैं. /Status से चेक करें। Vantage Trial तब unlock होता है जब आप कन्फर्म करते हैं कि आपका अकाउंट Jack के IB के तहत खुला है।",
     ],
     buttons: [["⬅ FAQ पर वापस"]],
   },
@@ -391,7 +391,7 @@ export const HI: Translation = {
       "भुगतान कैसे",
     ],
     replies: [
-      "पैकेज का पेमेंट कार्ड से होता है, एक secure checkout link के ज़रिए जो bot आपको भेजता है — पेमेंट clear होते ही access अपने आप unlock हो जाता है। EzyMap indicators के लिए मुझे बताइए कौन सा चाहिए और Sarah आपको यहीं पेमेंट details भेज देगी।",
+      "पैकेज का पेमेंट कार्ड से होता है, एक secure checkout link के ज़रिए जो bot आपको भेजता है. पेमेंट Clear होते ही access अपने आप unlock हो जाता है। EzyMap indicators के लिए मुझे बताइए कौन सा चाहिए और Sarah आपको यहीं पेमेंट details भेज देगी।",
     ],
     buttons: [["🎯 पैकेज देखें"], ["⬅ FAQ पर वापस"]],
   },
@@ -474,7 +474,7 @@ export const HI: Translation = {
       "कितने बजे",
     ],
     replies: [
-      "Bot यहाँ 24/7 है, और Sarah दिन भर खुद जवाब देती हैं — कभी भी मैसेज कीजिए, वो जितनी जल्दी हो सके आपको जवाब देंगी।",
+      "Bot यहाँ 24/7 है, और Sarah दिन भर खुद जवाब देती हैं: कभी भी मैसेज कीजिए, वो जितनी जल्दी हो सके आपको जवाब देंगी।",
     ],
   },
   contact: {
@@ -490,7 +490,7 @@ export const HI: Translation = {
       "फ़ोन नंबर",
       "व्हाट्सएप",
     ],
-    replies: ["सबसे आसान यहीं है, हनी — Sarah से पूछें पर टैप कीजिए और वो खुद बात करेंगी।"],
+    replies: ["सबसे आसान यहीं है, हनी. Sarah से पूछें पर टैप कीजिए और वो खुद बात करेंगी।"],
     buttons: [["💬 Sarah से पूछें"]],
   },
   thanks: {

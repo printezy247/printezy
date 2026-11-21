@@ -93,7 +93,7 @@ export const claimEbook = createServerFn({ method: "POST" })
           .single();
         if (error) {
           console.error("[db] write failed", error);
-          throw new Error("Could not save your changes — please try again.");
+          throw new Error("Could not save your changes: please try again.");
         }
 
         // Awaited on purpose: the worker is torn down as soon as the response
@@ -127,7 +127,7 @@ export const claimEbook = createServerFn({ method: "POST" })
       );
       if (error) {
         console.error("[db] write failed", error);
-        throw new Error("Could not save your changes — please try again.");
+        throw new Error("Could not save your changes: please try again.");
       }
 
       return { ok: true, status: "approved" };
@@ -170,7 +170,7 @@ export const getEbookDownloadUrl = createServerFn({ method: "POST" })
     if (download.error || read.error || !download.data || !read.data) {
       console.error("[ebooks] signed url failed", download.error ?? read.error);
       throw new Error(
-        "The download is temporarily unavailable — please try again in a few minutes.",
+        "The download is temporarily unavailable. Please try again in a few minutes.",
       );
     }
     return { downloadUrl: download.data.signedUrl, readUrl: read.data.signedUrl };

@@ -8,7 +8,7 @@ import { EBOOK_PAGES } from "@/lib/ebooks";
  */
 export function buildLlmsTxt(): string {
   const ebooks = EBOOK_PAGES.map(
-    (b) => `- ${SITE_URL}/ebooks/${b.slug} — ${b.title}: ${b.tagline}`,
+    (b) => `- ${SITE_URL}/ebooks/${b.slug}: ${b.title}: ${b.tagline}`,
   ).join("\n");
   return `# EzyMap ALGO
 
@@ -24,12 +24,12 @@ export function buildLlmsTxt(): string {
 - EzyAI: an AI analyst inside Telegram.
 
 ## Key URLs
-- ${SITE_URL}/ — free Telegram signals landing page (English)
-- ${SITE_URL}/home — full site (English)
-- ${SITE_URL}/ms — full site (Bahasa Melayu)
-- ${SITE_URL}/indicators — TradingView and MT5 indicators
-- ${SITE_URL}/macro — macro desk
-- ${SITE_URL}/faq — frequently asked questions
+- ${SITE_URL}/. Free Telegram signals landing page (English)
+- ${SITE_URL}/home: full site (English)
+- ${SITE_URL}/ms: full site (Bahasa Melayu)
+- ${SITE_URL}/indicators: TradingView and MT5 indicators
+- ${SITE_URL}/macro: macro desk
+- ${SITE_URL}/faq: frequently asked questions
 ${ebooks}
 
 This file is generated from the same data the site renders and is never hand-edited.

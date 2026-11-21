@@ -38,7 +38,7 @@ describe("normalise()", () => {
     expect(normalise("\"'abc'\"")).toBe("abc");
   });
 
-  it("leaves unmatched quotes alone — they are not a matched pair", () => {
+  it("leaves unmatched quotes alone: they are not a matched pair", () => {
     expect(normalise('"abc')).toBe('"abc');
     expect(normalise("abc'")).toBe("abc'");
   });

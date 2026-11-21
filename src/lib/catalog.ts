@@ -39,7 +39,7 @@ export const CATALOG: CatalogItem[] = [
     amountCents: 4900,
     term: "One-time",
     bullets: [
-      "EzyScalper — M1 & M5 private signals",
+      "EzyScalper: M1 & M5 private signals",
       "MT5 Currency Strength Meter",
       "Everything in Beginner",
     ],
@@ -52,9 +52,9 @@ export const CATALOG: CatalogItem[] = [
     amountCents: 9900,
     term: "One-time",
     bullets: [
-      "EzyMap Pro indicator (TradingView) — M1–H4 signals",
+      "EzyMap Pro indicator (TradingView): M1–H4 signals",
       "MT5 Auto TPSL & MTF Bias",
-      "EzyIntraday — M15 & M30 private signals",
+      "EzyIntraday: M15 & M30 private signals",
       "Everything in Pro",
     ],
     badge: "Most popular",
@@ -68,8 +68,8 @@ export const CATALOG: CatalogItem[] = [
     term: "One-time",
     bullets: [
       "Full MT5 indicator set incl. Drawdown Guardian & Bulk Close",
-      "EzySwing — H1 & H4 private signals",
-      "Ezy Elite Circle — 1-on-1 support",
+      "EzySwing: H1 & H4 private signals",
+      "Ezy Elite Circle: 1-on-1 support",
       "Everything in Premium",
     ],
   },
@@ -78,7 +78,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "tv_lite",
     group: "tradingview",
-    name: "TradingView — EzyMap Lite",
+    name: "TradingView: EzyMap Lite",
     description: "Entry-level mapping overlay for TradingView charts.",
     amountCents: 4900,
     term: "One-time",
@@ -87,7 +87,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "tv_pro",
     group: "tradingview",
-    name: "TradingView — EzyMap Pro",
+    name: "TradingView: EzyMap Pro",
     description: "The full M1–H4 signal engine used in the Premium package.",
     amountCents: 24900,
     term: "One-time",
@@ -103,7 +103,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bundle_1m",
     group: "mt5",
-    name: "MT5 Indicator Bundle — 1 Month",
+    name: "MT5 Indicator Bundle: 1 Month",
     description: "Every MT5 tool in one licence (worth $999).",
     amountCents: 9900,
     term: "1 Month",
@@ -112,7 +112,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bundle_6m",
     group: "mt5",
-    name: "MT5 Indicator Bundle — 6 Months",
+    name: "MT5 Indicator Bundle: 6 Months",
     description: "Every MT5 tool in one licence (worth $999).",
     amountCents: 49900,
     term: "6 Months",
@@ -122,7 +122,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bundle_1y",
     group: "mt5",
-    name: "MT5 Indicator Bundle — 1 Year",
+    name: "MT5 Indicator Bundle: 1 Year",
     description: "Every MT5 tool in one licence (worth $999).",
     amountCents: 99900,
     term: "1 Year",
@@ -131,7 +131,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bulk_close_1m",
     group: "mt5",
-    name: "Bulk Close — BONUS Layer Close (1 Month)",
+    name: "Bulk Close: BONUS Layer Close (1 Month)",
     description: "Close baskets or single layers of positions in one click.",
     amountCents: 1900,
     term: "1 Month",
@@ -141,7 +141,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bulk_close_6m",
     group: "mt5",
-    name: "Bulk Close — BONUS Layer Close (6 Months)",
+    name: "Bulk Close: BONUS Layer Close (6 Months)",
     description: "Close baskets or single layers of positions in one click.",
     amountCents: 10900,
     term: "6 Months",
@@ -150,7 +150,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "mt5_bulk_close_1y",
     group: "mt5",
-    name: "Bulk Close — BONUS Layer Close (1 Year)",
+    name: "Bulk Close: BONUS Layer Close (1 Year)",
     description: "Close baskets or single layers of positions in one click.",
     amountCents: 19900,
     term: "1 Year",
@@ -311,7 +311,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "ezyai_pro_1m",
     group: "ezyai",
-    name: "EzyAI PRO — 1 Month",
+    name: "EzyAI PRO: 1 Month",
     description: "Live Watch alerts, Autopilot signals and deep Fundamentals in @ezytradeai_bot.",
     amountCents: 1499,
     term: "1 Month",
@@ -324,8 +324,8 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "ezyai_pro_6m",
     group: "ezyai",
-    name: "EzyAI PRO — 6 Months",
-    description: "Six months of EzyAI PRO — the most popular plan, save 50%.",
+    name: "EzyAI PRO: 6 Months",
+    description: "Six months of EzyAI PRO: the most popular plan, save 50%.",
     amountCents: 4499,
     term: "6 Months",
     bullets: ["Everything in PRO", "Save 50% vs monthly", "Stacks on top of any active PRO time"],
@@ -334,7 +334,7 @@ export const CATALOG: CatalogItem[] = [
   {
     sku: "ezyai_pro_1y",
     group: "ezyai",
-    name: "EzyAI PRO — 12 Months",
+    name: "EzyAI PRO: 12 Months",
     description: "A full year of EzyAI PRO, save 44%.",
     amountCents: 9999,
     term: "12 Months",

@@ -70,7 +70,7 @@ export function NextStepAdvisor() {
           Not sure where to start?
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Share your experience and goals — we'll suggest the best free next step for you.
+          Share your experience and goals. We'll suggest the best free next step for you.
         </p>
 
         <form

@@ -240,7 +240,7 @@ export function LinkHub({ initialMembers }: { initialMembers?: number }) {
           <h1 className="mt-4 text-2xl font-bold tracking-tight">EzyMap ALGO</h1>
           <p className="mt-1 text-sm text-muted-foreground">@ezymap</p>
           <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-body">
-            Free trading signals, daily education and AI tools — straight to your phone.
+            Free trading signals, daily education and AI tools: straight to your phone.
           </p>
           <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-body">
             <span

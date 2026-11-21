@@ -736,7 +736,7 @@ export function MacroPage() {
       ),
     [cal, impactFilter, currencyFilter],
   );
-  const calHasActual = useMemo(() => calRows.some((r) => r.actual !== "—"), [calRows]);
+  const calHasActual = useMemo(() => calRows.some((r) => r.actual !== "N/A"), [calRows]);
 
   const toggleImpact = (impact: Impact) =>
     setImpactFilter((prev) => {
@@ -922,8 +922,8 @@ export function MacroPage() {
                           {r.event}
                         </span>
                         {/* Three number columns on a wide card. Below sm they
-                            wrap to their own line under the event — six
-                            columns will not fit a phone — and `sm:contents`
+                            wrap to their own line under the event: six
+                            columns will not fit a phone: and `sm:contents`
                             dissolves this wrapper so the cells become row
                             children again at the breakpoint. */}
                         <span className="flex w-full flex-wrap items-baseline justify-end gap-x-4 gap-y-1 sm:contents">
@@ -1171,7 +1171,7 @@ export function MacroPage() {
               }
             >
               <p className="text-4xl font-black" aria-live="polite" aria-atomic="true">
-                {fng?.value ?? "—"}
+                {fng?.value ?? "N/A"}
                 <span className="text-base font-semibold text-muted-foreground">/100</span>
               </p>
               <p

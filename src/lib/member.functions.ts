@@ -75,7 +75,7 @@ export const requestLoginCode = createServerFn({ method: "POST" })
       windowMs: 10 * 60 * 1000,
     });
     if (!allowed) {
-      return { sent: false, message: "Too many code requests — wait a few minutes and try again." };
+      return { sent: false, message: "Too many code requests. Wait a few minutes and try again." };
     }
     const member = await findMemberByHandle(data.handle);
     // Same reply whether or not the handle exists, so this endpoint can't be
@@ -84,7 +84,7 @@ export const requestLoginCode = createServerFn({ method: "POST" })
     return {
       sent: true,
       message:
-        "If that handle belongs to a member, a code is on its way — check your Telegram chat with the bot. New here? Open the bot and send /start first.",
+        "If that handle belongs to a member, a code is on its way. Check your Telegram chat with the bot. New here? Open the bot and send /start first.",
     };
   });
 

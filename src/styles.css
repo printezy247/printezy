@@ -1354,3 +1354,38 @@ button.bg-primary:hover,
     transition: none;
   }
 }
+
+/* ---- Hero video drift + ambient float ----------------------------------
+   The hero background video is a rendered loop; a barely-there scale drift
+   keeps it feeling alive between loops. The float is for decorative blurred
+   orbs. Both are decoration only and fully stop under reduced motion. */
+@keyframes hero-video-drift {
+  from {
+    transform: scale(1.02) translateY(0);
+  }
+  to {
+    transform: scale(1.09) translateY(-1.2%);
+  }
+}
+.hero-video-drift {
+  animation: hero-video-drift 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+.animate-float-slow {
+  animation: float-y 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video-drift,
+  .animate-float-slow {
+    animation: none;
+  }
+}

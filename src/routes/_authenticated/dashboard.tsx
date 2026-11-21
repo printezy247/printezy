@@ -30,7 +30,7 @@ import { TelegramLoginButton, type TelegramAuthPayload } from "@/components/Tele
 export const Route = createFileRoute("/_authenticated/dashboard")({
   ssr: false,
   head: () => ({
-    meta: [{ title: "My account — EzyMap ALGO" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [{ title: "My account: EzyMap ALGO" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: DashboardPage,
 });

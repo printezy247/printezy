@@ -108,7 +108,7 @@ export const signInWithTelegram = createServerFn({ method: "POST" })
 
       const { createMemberSession } = await import("@/lib/bot/member.server");
       const token = await createMemberSession(user.id);
-      if (!token) return { ok: false, message: "Could not start your session — please try again." };
+      if (!token) return { ok: false, message: "Could not start your session: please try again." };
 
       // Signing in is also the moment to deliver: anything paid for under
       // this handle and still ungranted goes out now.
@@ -178,7 +178,7 @@ export const linkTelegramAccount = createServerFn({ method: "POST" })
       );
       if (error) {
         console.error("[telegram-login] profile link failed", error);
-        return { ok: false, message: "Could not save the link — please try again." };
+        return { ok: false, message: "Could not save the link: please try again." };
       }
 
       const { claimPurchasesForUser, claimSitePurchases } =
@@ -261,7 +261,7 @@ export const signInWithTelegramToWebsite = createServerFn({ method: "POST" })
 
       const { createMemberSession } = await import("@/lib/bot/member.server");
       const token = await createMemberSession(user.id);
-      if (!token) return { ok: false, message: "Could not start your session — please try again." };
+      if (!token) return { ok: false, message: "Could not start your session: please try again." };
 
       const { claimSitePurchases } = await import("@/lib/bot/site-access.server");
       let claimed = 0;
@@ -304,6 +304,6 @@ export const claimCheckoutWithTelegram = createServerFn({ method: "POST" })
       return { ok: true, claimed };
     } catch (error) {
       console.error("[telegram-login] claim by session failed", error);
-      return { ok: false, message: "Could not deliver it just now — please try again." };
+      return { ok: false, message: "Could not deliver it just now: please try again." };
     }
   });

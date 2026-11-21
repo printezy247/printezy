@@ -15,7 +15,7 @@ export const Route = createFileRoute("/signal/$externalId")({
     ...localizedHead({
       path: "/ezyai",
       locale: "en",
-      title: "Signal detail — EzyAI",
+      title: "Signal detail: EzyAI",
       description: "One autopilot signal: entry, stop, targets and live R.",
       image: "default",
       crumbName: "Signal",
@@ -53,7 +53,7 @@ function EzyAiSignalDetail() {
     : null;
   const pageUrl = `${SITE_URL}/signal/${encodeURIComponent(externalId)}`;
   const shareText = signal
-    ? `${signal.symbol} ${signal.direction.toUpperCase()} — EzyAI signal`
+    ? `${signal.symbol} ${signal.direction.toUpperCase()}: EzyAI signal`
     : "EzyAI signal";
   const telegramShare = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
 
@@ -96,7 +96,7 @@ function EzyAiSignalDetail() {
           <div className="mt-4 rounded-xl border border-border bg-card p-5 text-sm">
             <p className="font-semibold">Couldn’t load this signal.</p>
             <p className="mt-1 text-muted-foreground">
-              Check your connection, then try again — or return to the live board.
+              Check your connection, then try again: or return to the live board.
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               <button
@@ -141,25 +141,27 @@ function EzyAiSignalDetail() {
               </div>
               <div>
                 <dt className="text-muted-foreground">Entry</dt>
-                <dd className="font-mono">{entry ?? "—"}</dd>
+                <dd className="font-mono">{entry ?? "N/A"}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Stop</dt>
-                <dd className="font-mono">{signal.stopPrice ?? "—"}</dd>
+                <dd className="font-mono">{signal.stopPrice ?? "N/A"}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">TP1 / TP2</dt>
                 <dd className="font-mono">
-                  {signal.tp1 ?? "—"} / {signal.tp2 ?? "—"}
+                  {signal.tp1 ?? "N/A"} / {signal.tp2 ?? "N/A"}
                 </dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Live R</dt>
-                <dd className="font-mono">{r != null ? r.toFixed(2) : "—"}</dd>
+                <dd className="font-mono">{r != null ? r.toFixed(2) : "N/A"}</dd>
               </div>
               <div>
                 <dt className="text-muted-foreground">Progress</dt>
-                <dd className="font-mono">{progress != null ? `${progress.toFixed(0)}%` : "—"}</dd>
+                <dd className="font-mono">
+                  {progress != null ? `${progress.toFixed(0)}%` : "N/A"}
+                </dd>
               </div>
             </dl>
             <div className="mt-6">
@@ -176,8 +178,8 @@ function EzyAiSignalDetail() {
                 ) : null}
               </div>
               <div className="mt-1 flex justify-between text-[11px] text-muted-foreground">
-                <span>Stop {signal.stopPrice ?? "—"}</span>
-                <span>Target {target ?? "—"}</span>
+                <span>Stop {signal.stopPrice ?? "N/A"}</span>
+                <span>Target {target ?? "N/A"}</span>
               </div>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -187,7 +189,7 @@ function EzyAiSignalDetail() {
                 aria-live="polite"
                 className="rounded-md border border-border px-3 py-2 text-sm"
               >
-                {copyFailed ? "Copy failed — use Telegram share" : copied ? "Copied!" : "Copy link"}
+                {copyFailed ? "Copy failed: use Telegram share" : copied ? "Copied!" : "Copy link"}
               </button>
               <a
                 href={telegramShare}

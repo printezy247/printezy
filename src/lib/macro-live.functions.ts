@@ -96,7 +96,7 @@ export const getMacroLive = createServerFn({ method: "GET" }).handler(
     // Fear & Greed card all disappeared — while a perfectly good payload sat
     // in the cache. Serve that instead; the card carries its own timestamp.
     if (!base || !key) {
-      if (cached) console.error("[macro] MACRO_BOT_URL/MACRO_BOT_KEY unset — serving cached desk");
+      if (cached) console.error("[macro] MACRO_BOT_URL/MACRO_BOT_KEY unset: serving cached desk");
       return asCached();
     }
 

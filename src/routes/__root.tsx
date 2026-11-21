@@ -43,7 +43,7 @@ export function NotFoundComponent() {
   // Belt and braces for the notFound() path, where no route head applies.
   // The next successful route sets its own title.
   useEffect(() => {
-    document.title = "Page not found — EzyMap ALGO";
+    document.title = "Page not found: EzyMap ALGO";
   }, []);
 
   return (
@@ -150,7 +150,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { httpEquiv: "Content-Security-Policy", content: CSP },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "EzyMap ALGO — Professional Trading Signals on Telegram" },
+      { title: "EzyMap ALGO: Professional Trading Signals on Telegram" },
       // Any route may override the title with its own head; a 404 has no head
       // of its own (see src/routes/$.tsx) and is titled by NotFoundComponent
       // on mount instead.
@@ -160,7 +160,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "EzyMap ALGO delivers real-time trading signals and daily education to 640+ traders on Telegram. Forex, crypto and commodities, 24/5.",
       },
       { name: "author", content: "EzyMap ALGO" },
-      { property: "og:title", content: "EzyMap ALGO — Professional Trading Signals on Telegram" },
+      { property: "og:title", content: "EzyMap ALGO: Professional Trading Signals on Telegram" },
       {
         property: "og:description",
         content: "Live signals and education for 640+ traders. Start free on Telegram.",
@@ -175,7 +175,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "EzyMap ALGO logo" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "EzyMap ALGO — Professional Trading Signals" },
+      { name: "twitter:title", content: "EzyMap ALGO: Professional Trading Signals" },
       {
         name: "twitter:description",
         content: "Live signals and education for 640+ traders on Telegram.",

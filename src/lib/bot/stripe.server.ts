@@ -37,7 +37,7 @@ export async function createCheckoutSession(args: {
         price_data: {
           currency: "usd",
           unit_amount: args.amountCents,
-          product_data: { name: `EzyMap ALGO — ${args.tierName}` },
+          product_data: { name: `EzyMap ALGO: ${args.tierName}` },
         },
       },
     ],
@@ -50,7 +50,7 @@ export async function createCheckoutSession(args: {
       session_id: args.sessionId ?? "",
     },
     client_reference_id: args.portalToken,
-    payment_intent_data: { description: `EzyMap ALGO — ${args.tierName}` },
+    payment_intent_data: { description: `EzyMap ALGO: ${args.tierName}` },
   });
 
   return {

@@ -5,9 +5,9 @@ import { localizedHead } from "@/lib/seo";
 import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { loadMemberCount } from "@/lib/member-count-loader";
 
-const TITLE = "EzyMap ALGO — Free Trading Signals, Links & Tools";
+const TITLE = "EzyMap ALGO: Free Trading Signals, Links & Tools";
 const DESC =
-  "Free trading signals on Telegram, the EzyMap ALGO site, a free trading platform and our broker partner — everything in one place.";
+  "Free trading signals on Telegram, the EzyMap ALGO site, a free trading platform and our broker partner: everything in one place.";
 
 /**
  * FAQPage markup comes from the same FAQ the page renders, so it cannot drift

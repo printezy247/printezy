@@ -15,7 +15,7 @@ export const getNextStepRecommendation = createServerFn({ method: "POST" })
       max: 8,
       windowMs: 60 * 60 * 1000,
     });
-    if (!allowed) throw new Error("Too many requests — please try again in a bit.");
+    if (!allowed) throw new Error("Too many requests: please try again in a bit.");
     const { recommendNextStep } = await import("@/lib/advisor.server");
     try {
       return await recommendNextStep({ experience: data.experience, goals: data.goals });
@@ -23,7 +23,7 @@ export const getNextStepRecommendation = createServerFn({ method: "POST" })
       console.error("[advisor] failed", e);
       const status = (e as { statusCode?: number }).statusCode;
       if (status === 402) throw new Error("Recommendations are temporarily unavailable.");
-      if (status === 429) throw new Error("Busy right now — please try again in a minute.");
-      throw new Error("Could not get a recommendation — please try again.");
+      if (status === 429) throw new Error("Busy right now: please try again in a minute.");
+      throw new Error("Could not get a recommendation: please try again.");
     }
   });

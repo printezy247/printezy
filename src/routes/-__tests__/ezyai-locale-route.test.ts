@@ -58,7 +58,7 @@ describe("English EzyAI route (/ezyai)", () => {
     const { english } = await loadRoutes(true);
     const head = runHead(english);
 
-    expect(titleOf(head)).toBe("EzyAI — AI Trading Signals on Telegram | EzyMap Algo");
+    expect(titleOf(head)).toBe("EzyAI: AI Trading Signals on Telegram | EzyMap Algo");
     expect(link(head, "canonical")).toBe(`${SITE_URL}/ezyai`);
     for (const locale of ["ms", "zh", "hi", "ar", "sw"]) {
       expect(link(head, "alternate", locale)).toBe(`${SITE_URL}/${locale}/ezyai`);
@@ -67,10 +67,10 @@ describe("English EzyAI route (/ezyai)", () => {
   });
 
   it.each([
-    ["zh", "EzyAI — Telegram 上的 AI 交易信号 | EzyMap Algo", "zh_CN"],
-    ["hi", "EzyAI — Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo", "hi_IN"],
-    ["ar", "EzyAI — إشارات تداول بالذكاء الاصطناعي على تيليجرام | EzyMap Algo", "ar_SA"],
-    ["sw", "EzyAI — Ishara za Biashara za AI kwenye Telegram | EzyMap Algo", "sw_KE"],
+    ["zh", "EzyAI: Telegram 上的 AI 交易信号 | EzyMap Algo", "zh_CN"],
+    ["hi", "EzyAI: Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo", "hi_IN"],
+    ["ar", "EzyAI: إشارات تداول بالذكاء الاصطناعي على تيليجرام | EzyMap Algo", "ar_SA"],
+    ["sw", "EzyAI: Ishara za Biashara za AI kwenye Telegram | EzyMap Algo", "sw_KE"],
   ])("serves the %s head with its own canonical", async (lang, title, tag) => {
     const { localized } = await loadRoutes(true);
     const head = runHead(localized, { lang });
@@ -87,7 +87,7 @@ describe("localized EzyAI route (/ms/ezyai)", () => {
     const { localized } = await loadRoutes(true);
     const head = runHead(localized, { lang: "ms" });
 
-    expect(titleOf(head)).toBe("EzyAI — Isyarat Dagangan AI di Telegram | EzyMap Algo");
+    expect(titleOf(head)).toBe("EzyAI: Isyarat Dagangan AI di Telegram | EzyMap Algo");
     expect(metaContent(head, "og:locale")).toBe("ms_MY");
     expect(link(head, "canonical")).toBe(`${SITE_URL}/ms/ezyai`);
     expect(link(head, "alternate", "en")).toBe(`${SITE_URL}/ezyai`);

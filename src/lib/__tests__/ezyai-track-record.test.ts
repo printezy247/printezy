@@ -63,7 +63,7 @@ describe("panel honours the guard", () => {
     expect(emptyBranch).toContain("EraNote");
   });
 
-  it("shows risk next to return — the curve carries a max-drawdown figure", () => {
+  it("shows risk next to return. The curve carries a max-drawdown figure", () => {
     expect(panel).toContain("maxDrawdown");
     expect(panel).toContain("ezyai_sig_drawdown");
   });

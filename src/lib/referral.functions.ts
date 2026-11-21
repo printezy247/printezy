@@ -36,7 +36,7 @@ export const getOrCreateReferralCode = createServerFn({ method: "POST" })
       if (!error) return { code };
       if (!error.message.includes("duplicate")) {
         console.error("[referral] code insert failed", error);
-        throw new Error("Could not create your referral code — please try again.");
+        throw new Error("Could not create your referral code: please try again.");
       }
     }
     throw new Error("Could not generate a referral code.");

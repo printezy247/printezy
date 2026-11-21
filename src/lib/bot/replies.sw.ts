@@ -287,7 +287,7 @@ export const SW: Translation = {
       "inalipiwa",
     ],
     replies: [
-      "Ndiyo! Tier ya Free na Vantage Trial ya siku 30 hazigharimu chochote — trial inahitaji tu akaunti chini ya IB ya Jack kwenye Vantage Markets. Vifurushi vya kulipia (Pro $49, Premium $99, Elite $299) na indicators vya EzyMap ndivyo pekee unavyolipia.",
+      "Ndiyo! Tier ya Free na Vantage Trial ya siku 30 hazigharimu chochote. Trial inahitaji tu akaunti chini ya IB ya Jack kwenye Vantage Markets. Vifurushi vya kulipia (Pro $49, Premium $99, Elite $299) na indicators vya EzyMap ndivyo pekee unavyolipia.",
     ],
     buttons: [["🎁 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -315,7 +315,7 @@ export const SW: Translation = {
       "amana ya chini",
     ],
     replies: [
-      "Kwa Vantage Trial unahitaji tu akaunti live iliyofunguliwa chini ya IB ya Jack — deposit ya kiasi chochote inaianzisha. Vifurushi vya kulipia havihitaji deposit ya broker kabisa.",
+      "Kwa Vantage Trial unahitaji tu akaunti live iliyofunguliwa chini ya IB ya Jack. Deposit ya kiasi chochote inaianzisha. Vifurushi vya kulipia havihitaji deposit ya broker kabisa.",
     ],
     buttons: [["🎁 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -359,7 +359,7 @@ export const SW: Translation = {
       "muda wa kufungua",
     ],
     replies: [
-      "Vifurushi vya kulipia hufunguliwa moja kwa moja mara tu malipo yanapokamilika — angalia kwa /status. Vantage Trial hufunguliwa mara tu unapothibitisha kuwa akaunti yako imefunguliwa chini ya IB ya Jack.",
+      "Vifurushi vya kulipia hufunguliwa moja kwa moja mara tu malipo yanapokamilika. Angalia kwa /status. Vantage Trial hufunguliwa mara tu unapothibitisha kuwa akaunti yako imefunguliwa chini ya IB ya Jack.",
     ],
     buttons: [["⬅ Rudi kwa Maswali"]],
   },
@@ -375,7 +375,7 @@ export const SW: Translation = {
       "malipo",
     ],
     replies: [
-      "Vifurushi hulipiwa kwa kadi kupitia link salama ya checkout ambayo bot itakutumia — ufikiaji hufunguliwa wenyewe mara malipo yanapokamilika. Kwa indicators vya EzyMap, niambie unataka kipi na Sarah atakutumia maelezo ya malipo hapa hapa.",
+      "Vifurushi hulipiwa kwa kadi kupitia link salama ya checkout ambayo bot itakutumia. Ufikiaji hufunguliwa wenyewe mara malipo yanapokamilika. Kwa indicators vya EzyMap, niambie unataka kipi na Sarah atakutumia maelezo ya malipo hapa hapa.",
     ],
     buttons: [["🎯 Angalia Vifurushi"], ["⬅ Rudi kwa Maswali"]],
   },
@@ -449,7 +449,7 @@ export const SW: Translation = {
       "mnafanya kazi lini",
     ],
     replies: [
-      "Bot iko hapa 24/7, na Sarah anajibu mwenyewe mchana kutwa — tuma ujumbe wakati wowote naye atakujibu haraka iwezekanavyo.",
+      "Bot iko hapa 24/7, na Sarah anajibu mwenyewe mchana kutwa. Tuma ujumbe wakati wowote naye atakujibu haraka iwezekanavyo.",
     ],
   },
   contact: {
@@ -464,7 +464,7 @@ export const SW: Translation = {
       "namba yenu",
     ],
     replies: [
-      "Njia rahisi zaidi ni hapa hapa, rafiki — bonyeza Muulize Sarah naye atakuhudumia mwenyewe.",
+      "Njia rahisi zaidi ni hapa hapa, rafiki. Bonyeza Muulize Sarah naye atakuhudumia mwenyewe.",
     ],
     buttons: [["💬 Muulize Sarah"]],
   },

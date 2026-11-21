@@ -36,7 +36,7 @@ export const TIER_CATALOG: TierConfig[] = [
     perks: [
       "Pro signal feed for 30 days",
       "Trade log, stats and history",
-      "No card required — activate with a Vantage account",
+      "No card required. Activate with a Vantage account",
     ],
   },
   {

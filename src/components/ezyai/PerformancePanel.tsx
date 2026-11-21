@@ -6,7 +6,7 @@ import { buildingTrackRecord, EZYAI_TRACK_RECORD_SINCE, STATUS_COLOR } from "@/l
 import type { EzyAiPerformance, EzyAiSignal } from "@/lib/ezyai/signals";
 
 function signedR(value: number | null): string {
-  if (value == null) return "—";
+  if (value == null) return "N/A";
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}R`;
 }
 
@@ -152,7 +152,7 @@ export function PerformancePanel({
 
   const streak =
     performance.streak.kind === null
-      ? "—"
+      ? "N/A"
       : `${performance.streak.count} ${t(
           performance.streak.kind === "win" ? "ezyai_sig_streak_wins" : "ezyai_sig_streak_losses",
         )}`;

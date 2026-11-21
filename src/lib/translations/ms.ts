@@ -16,10 +16,10 @@ const ms: Record<TranslationKey, string> = {
   chat_you: "Anda",
   chat_assistant: "Sarah (pembantu)",
   chat_greeting:
-    "Hai! Saya Sarah. Tanya apa saja tentang rutin, pakej, pembayaran atau membuka akaun anda — saya jawab serta-merta, dan apa yang saya tak boleh jawab terus sampai ke saya di Telegram.",
+    "Hai! Saya Sarah. Tanya apa saja tentang rutin, pakej, pembayaran atau membuka akaun anda: saya jawab serta-merta, dan apa yang saya tak boleh jawab terus sampai ke saya di Telegram.",
   chat_error: "Mesej tak terhantar. Cuba lagi, atau mesej Sarah di Telegram: https://t.me/ezysarah",
   chat_notice_relayed:
-    "Dihantar kepada Sarah — dia menjawab sendiri, biasanya dalam beberapa jam. Biarkan sembang ini terbuka dan jawapannya akan muncul di sini.",
+    "Dihantar kepada Sarah: dia menjawab sendiri, biasanya dalam beberapa jam. Biarkan sembang ini terbuka dan jawapannya akan muncul di sini.",
   chat_notice_unreachable:
     "Sarah tidak dapat dihubungi buat masa ini. Mesej dia terus di Telegram: https://t.me/ezysarah",
   chat_link_telegram: "Mesej Sarah di Telegram",
@@ -41,7 +41,7 @@ const ms: Record<TranslationKey, string> = {
   show_signals_cta: "Lihat pakej",
   show_learn_title: "Pelajari kaedah di sebalik signal",
   show_learn_body:
-    "Dua ebook percuma tentang pemetaan struktur dan bacaan teknikal — playbook yang sama digunakan desk.",
+    "Dua ebook percuma tentang pemetaan struktur dan bacaan teknikal. Playbook yang sama digunakan desk.",
   show_learn_cta: "Dapatkan ebook percuma",
   show_macro_title: "Desk macro yang membaca kalendar",
   show_macro_body:
@@ -50,7 +50,7 @@ const ms: Record<TranslationKey, string> = {
   band_eyebrow: "EzyAI PRO",
   band_title: "Biar bot buat analisis",
   band_body:
-    "Trend, paras, entry dan risiko untuk mana-mana pair — atas permintaan di Telegram, percuma untuk dicuba.",
+    "Trend, paras, entry dan risiko untuk mana-mana pair: atas permintaan di Telegram, percuma untuk dicuba.",
   band_cta: "Buka EzyAI",
   hero_title: "Signals dagangan profesional, dihantar terus ke telefon anda.",
   hero_subtitle:
@@ -93,7 +93,7 @@ const ms: Record<TranslationKey, string> = {
   hero_card_atr: "ATR (15m)",
   hero_card_size: "Saiz pada risiko 1%",
   hero_card_lots: "lot",
-  hero_card_plan_1: "Masuk dalam zon — jangan sekali-kali kejar di atasnya.",
+  hero_card_plan_1: "Masuk dalam zon. Jangan sekali-kali kejar di atasnya.",
   hero_card_plan_2: "Stop dipasang serentak dengan entri dan tidak pernah beralih menentang anda.",
   hero_card_plan_3: "Ambil separuh di Target 1, alih stop ke break-even.",
   hero_card_plan_4: "Biar bakinya berjalan ke Target 2, trailing di belakang struktur.",
@@ -106,7 +106,7 @@ const ms: Record<TranslationKey, string> = {
   zoom_badge: "Setiap minggu · Percuma",
   zoom_title: "Kelas Zoom percuma setiap minggu dalam channel",
   zoom_body:
-    "Jack membedah setup terbaik minggu itu secara langsung — entry, target dan risiko — kemudian menjawab soalan anda. Percuma selamanya, tanpa kad.",
+    "Jack membedah setup terbaik minggu itu secara langsung, entry, target dan risiko, kemudian menjawab soalan anda. Percuma selamanya, tanpa kad.",
   zoom_cta: "Sertai channel percuma",
   trust_strip_label: "Platform dipercayai yang kami gunakan",
 
@@ -139,12 +139,12 @@ const ms: Record<TranslationKey, string> = {
   feature_community_body:
     "Berhubung dengan {memberCount} peniaga di seluruh dunia di dalam Telegram.",
   feature_mobile_title: "Mesra Mudah Alih",
-  feature_mobile_body: "Dapatkan amaran di mana-mana, bila-bila masa — tanpa terminal.",
+  feature_mobile_body: "Dapatkan amaran di mana-mana, bila-bila masa: tanpa terminal.",
 
   pricing_eyebrow: "Pakej",
   pricing_title: "Mula dengan kejelasan. Naik taraf bila anda bersedia.",
   pricing_subtitle:
-    "Semua peringkat mendaftar melalui bot kami. Mahu akses percuma? Aktifkan melalui Vantage Markets — tiada kad diperlukan.",
+    "Semua peringkat mendaftar melalui bot kami. Mahu akses percuma? Aktifkan melalui Vantage Markets: tiada kad diperlukan.",
   pricing_duration_note:
     "Setiap pakej ialah satu bayaran. Tiada langganan, tiada renewal automatik. Lesen alat MT5 dan EzyAI PRO adalah mengikut tempoh (1, 6 atau 12 bulan).",
   pricing_most_popular: "Paling popular",
@@ -174,8 +174,7 @@ const ms: Record<TranslationKey, string> = {
 
   products_eyebrow: "Produk",
   products_title: "Kit alat EzyMap yang lengkap",
-  products_subtitle:
-    "Ebook, indicators dan penyelidikan macro — segala-galanya di sebalik signals.",
+  products_subtitle: "Ebook, indicators dan penyelidikan macro. Segala-galanya di sebalik signals.",
   products_ebooks_heading: "Ebook",
   ebook_get_it_free: "Dapatkan percuma",
   ebook_mapping_b1: "Kuasai zon support & resistance",
@@ -206,11 +205,11 @@ const ms: Record<TranslationKey, string> = {
   how_title: "Tiga langkah ke signal pertama anda",
   how_step1_title: "Sertai t.me/ezymap",
   how_step1_body:
-    "Satu ketukan. Tiada bayaran, tiada borang — anda terus berada dalam saluran percuma.",
+    "Satu ketukan. Tiada bayaran, tiada borang. Anda terus berada dalam saluran percuma.",
   how_step2_title: "Terima amaran signal segera",
   how_step2_body: "Entri, stop loss dan targets tiba sebaik sahaja persediaan disahkan.",
   how_step3_title: "Laksanakan di Vantage Markets",
-  how_step3_body: "Buat dagangan dengan broker anda sendiri — kami mengesyorkan Vantage Markets.",
+  how_step3_body: "Buat dagangan dengan broker anda sendiri. Kami mengesyorkan Vantage Markets.",
 
   ambassador_eyebrow: "Duta",
   ambassador_title: "Kenali Jack",
@@ -236,7 +235,7 @@ const ms: Record<TranslationKey, string> = {
     "Entri bersih, pembatalan jelas. Ia memudahkan penjurnalan dan penentuan saiz risiko saya.",
   testimonial_luqman_role: "Scalper",
   testimonial_luqman_quote:
-    "Saluran M5 sepadan dengan cara saya berdagang — ia hanya menghapuskan keraguan.",
+    "Saluran M5 sepadan dengan cara saya berdagang. Ia hanya menghapuskan keraguan.",
   testimonial_chen_role: "Peniaga baharu",
   testimonial_chen_quote:
     "Bermula di saluran percuma untuk belajar. Pendidikan sahaja sudah berbaloi untuk disertai.",
@@ -246,7 +245,7 @@ const ms: Record<TranslationKey, string> = {
   faq_group1_title: "Rutin & signals",
   faq_g1_q1: "Berapa kerap anda menghantar signals?",
   faq_g1_a1:
-    "Beberapa kali sehari semasa waktu dagangan (24/5). Kekerapan bergantung pada keadaan pasaran — kami hanya memberi amaran apabila persediaan memenuhi kriteria kami. Kualiti mengatasi kuantiti.",
+    "Beberapa kali sehari semasa waktu dagangan (24/5). Kekerapan bergantung pada keadaan pasaran. Kami hanya memberi amaran apabila persediaan memenuhi kriteria kami. Kualiti mengatasi kuantiti.",
   faq_g1_q2: "Pasaran apa yang anda dagangkan?",
   faq_g1_a2:
     "Forex (pairs utama), kripto dan komoditi. Fokus utama kami ialah dagangan intraday, dengan persediaan swing pada rangka masa lebih tinggi.",
@@ -262,7 +261,7 @@ const ms: Record<TranslationKey, string> = {
   faq_group2_title: "Peringkat harga",
   faq_g2_q1: "Adakah terdapat pilihan percuma?",
   faq_g2_a1:
-    "Sertai saluran Telegram percuma kami untuk contoh signals dan pendidikan. Anda juga boleh membuka mana-mana peringkat berbayar secara percuma dengan mengaktifkan akaun Vantage Markets — tiada kad diperlukan. Peringkat Beginner pada $29 sekali bayar ialah titik masuk berbayar — bayar sekali, tiada renewal automatik.",
+    "Sertai saluran Telegram percuma kami untuk contoh signals dan pendidikan. Anda juga boleh membuka mana-mana peringkat berbayar secara percuma dengan mengaktifkan akaun Vantage Markets, tiada kad diperlukan. Peringkat Beginner pada $29 sekali bayar ialah titik masuk berbayar, bayar sekali, tiada renewal automatik.",
   faq_g2_q2: "Apa yang termasuk dalam Pro, Premium dan Elite?",
   faq_g2_a2:
     "Pro ($49) menambah suapan signal penuh dan indicators. Premium ($99) menambah meja macro & asas serta sokongan keutamaan. Elite ($299) menambah rutin peribadi Jack, onboarding 1-lawan-1 dan semua yang lain.",
@@ -271,14 +270,14 @@ const ms: Record<TranslationKey, string> = {
     "Ya. Buka bot pendaftaran, pilih pakej baharu anda, dan akaun anda dikemas kini sebaik pembayaran disahkan. Log dagangan dan sejarah anda kekal.",
   faq_g2_q4: "Adakah anda menawarkan bayaran balik?",
   faq_g2_a4:
-    "Hantar mesej kepada Sarah melalui bot dengan username Telegram dan butiran pesanan anda — dia mengendalikan permintaan bayaran balik mengikut kes.",
+    "Hantar mesej kepada Sarah melalui bot dengan username Telegram dan butiran pesanan anda. Dia mengendalikan permintaan bayaran balik mengikut kes.",
   faq_group3_title: "Pendaftaran & akaun anda",
   faq_g3_q1: "Bagaimana saya mendaftar dalam peringkat berbayar?",
   faq_g3_a1:
     "Ketik Enroll Now pada mana-mana pakej untuk membuka bot pendaftaran kami di Telegram, pilih peringkat anda, dan bayar dengan selamat melalui kad melalui Stripe. Akses anda aktif sebaik pembayaran disahkan.",
   faq_g3_q2: "Bagaimana saya mengakses akaun saya?",
   faq_g3_a2:
-    "Taip /account dalam bot untuk pautan log masuk satu ketukan, atau log masuk di laman dengan kod 6 digit yang dihantar bot ke Telegram anda — tiada kata laluan.",
+    "Taip /account dalam bot untuk pautan log masuk satu ketukan, atau log masuk di laman dengan kod 6 digit yang dihantar bot ke Telegram anda: tiada kata laluan.",
   faq_g3_q3: "Apa yang berlaku selepas saya membayar?",
   faq_g3_a3:
     "Bot mengesahkan pembayaran anda serta-merta dan papan pemuka anda dibuka: suapan signal mengikut peringkat, log dagangan peribadi, statistik prestasi dan sejarah bil anda.",
@@ -310,11 +309,11 @@ const ms: Record<TranslationKey, string> = {
 
   tools_eyebrow: "Alat",
   tools_title: "Indicators TradingView dan MT5",
-  tools_subtitle: "Alat yang sama digunakan ahli kami — harga langsung, tiada halaman berasingan.",
+  tools_subtitle: "Alat yang sama digunakan ahli kami: harga langsung, tiada halaman berasingan.",
   tools_tv_section_title: "Indicators TradingView",
   tools_tv_section_sub: "Lesen sekali sahaja, kemas kini seumur hidup.",
   tools_mt5_section_title: "Indicators MT5",
-  tools_mt5_section_sub: "Pilih tempoh — bulanan, 6 bulan atau tahunan.",
+  tools_mt5_section_sub: "Pilih tempoh: bulanan, 6 bulan atau tahunan.",
   tools_buy: "Beli",
   tools_open_tv_account: "Buka akaun TradingView percuma",
   term_1m: "1 Bulan",
@@ -332,7 +331,7 @@ const ms: Record<TranslationKey, string> = {
   tv_pro_b1: "Signals entri, SL dan TP M1–H4",
   tv_pro_b2: "Penapis gabungan pelbagai rangka masa",
   tv_pro_b3: "Kemas kini seumur hidup disertakan",
-  mt5_bundle_tagline: "Semua alat MT5 di bawah dalam satu lesen — bernilai $999.",
+  mt5_bundle_tagline: "Semua alat MT5 di bawah dalam satu lesen: bernilai $999.",
   mt5_bundle_b1: "Semua indicators MT5 termasuk",
   mt5_bundle_b2: "Bantuan persediaan keutamaan",
   mt5_bundle_b3: "Tetapan mesra firma prop",
@@ -373,12 +372,12 @@ const ms: Record<TranslationKey, string> = {
   macro_filter_sentiment: "Sentimen",
   macro_calendar_title: "Kalendar Ekonomi Hari Ini",
   macro_calendar_note: "Masa ditunjukkan dalam {tz}",
-  macro_calendar_next_day: "Tiada lagi hari ini — memaparkan {day}",
-  macro_calendar_empty: "Tiada keluaran dijadualkan — semak ForexFactory untuk minggu penuh.",
-  macro_calendar_unavailable: "Kalendar langsung tidak tersedia buat masa ini — buka ForexFactory.",
+  macro_calendar_next_day: "Tiada lagi hari ini: memaparkan {day}",
+  macro_calendar_empty: "Tiada keluaran dijadualkan. Semak ForexFactory untuk minggu penuh.",
+  macro_calendar_unavailable: "Kalendar langsung tidak tersedia buat masa ini: buka ForexFactory.",
   macro_calendar_updated: "{source} · dikemas kini {time}",
   macro_live_note: "Langsung dari bot MacroTrader · dikemas kini {time}",
-  macro_sample_note: "Data contoh — suapan langsung belum disambungkan",
+  macro_sample_note: "Data contoh. Suapan langsung belum disambungkan",
   macro_sample_short: "contoh",
   macro_tone_readout: "Nada 7 hari: {label}",
   macro_sentiment_readout: "Sentimen 7 hari: {label}",
@@ -423,7 +422,7 @@ const ms: Record<TranslationKey, string> = {
   macro_crypto_desk_title: "Meja Kripto",
   macro_crypto_desk_note: "Add-on, dibil berasingan",
   macro_pay_with_card: "Bayar dengan kad",
-  macro_pay_with_card_price: "Bayar dengan kad — {price}",
+  macro_pay_with_card_price: "Bayar dengan kad: {price}",
   macro_subscribe_telegram: "atau langgan melalui Telegram",
   macro_fear_greed_title: "Crypto Fear & Greed",
   macro_gold_fg_title: "Gold Fear & Greed",
@@ -440,11 +439,11 @@ const ms: Record<TranslationKey, string> = {
   macro_next_rate_decisions_title: "Keputusan Kadar Seterusnya",
   macro_full_desk_label: "Meja macro penuh",
   macro_full_desk_desc:
-    "Membuka kesemua empat peta haba premium — perbezaan bank pusat, kebarangkalian kemelesetan, korelasi aset dan risiko geopolitik — dihantar setiap hari pada {time}, waktu ringkasan tempatan anda.",
+    "Membuka kesemua empat peta haba premium, perbezaan bank pusat, kebarangkalian kemelesetan, korelasi aset dan risiko geopolitik, dihantar setiap hari pada {time}, waktu ringkasan tempatan anda.",
   macro_subscribe_via_telegram_full: "Langgan melalui Telegram",
   macro_payment_methods_note: "Kad, Telegram Stars atau USDT · boleh batal bila-bila masa",
   macro_disclaimer_before:
-    "Data macro disediakan untuk pendidikan dan penyelidikan sahaja dan bukan nasihat pelaburan peribadi. Angka datang daripada sumber pihak ketiga dan mungkin lewat atau disemak semula — semak silang dengan",
+    "Data macro disediakan untuk pendidikan dan penyelidikan sahaja dan bukan nasihat pelaburan peribadi. Angka datang daripada sumber pihak ketiga dan mungkin lewat atau disemak semula: semak silang dengan",
   macro_disclaimer_after: "sebelum bertindak. Dagangan membawa risiko kerugian.",
   macro_dovish: "Dovish",
   macro_hawkish: "Hawkish",
@@ -464,7 +463,7 @@ const ms: Record<TranslationKey, string> = {
   ezyai_tab_about: "Tentang EzyAI",
   ezyai_sig_title: "Langsung dari bot",
   ezyai_sig_desc:
-    "Setiap isyarat yang diambil bot pada akaunnya sendiri — autopilot dan amaran watch sekali pun — sebaik ia berlaku. Kad kekal sehingga dagangan ditutup pada TP, break-even atau SL — tiada yang dibuang senyap-senyap.",
+    "Setiap isyarat yang diambil bot pada akaunnya sendiri, autopilot dan amaran watch sekali pun, sebaik ia berlaku. Kad kekal sehingga dagangan ditutup pada TP, break-even atau SL, tiada yang dibuang senyap-senyap.",
   ezyai_sig_empty:
     "Tiada isyarat terbuka sekarang. Bot akan memaparkan kad di sini sebaik isyarat dimulakan.",
   ezyai_sig_updated: "Dikemas kini {time}",
@@ -476,7 +475,7 @@ const ms: Record<TranslationKey, string> = {
   ezyai_sig_copied: "Disalin",
   ezyai_sig_awaiting_levels: "menunggu paras",
   ezyai_see_live_board: "Lihat papan langsung",
-  ezyai_sig_exclusive: "Percuma di halaman ini — amaran langsung sampai dalam bot dengan PRO.",
+  ezyai_sig_exclusive: "Percuma di halaman ini. Amaran langsung sampai dalam bot dengan PRO.",
   ezyai_sig_status_pending: "Menunggu",
   ezyai_sig_status_running: "Berjalan",
   ezyai_sig_status_tp: "TP",
@@ -502,21 +501,21 @@ const ms: Record<TranslationKey, string> = {
   ezyai_sig_streak_losses: "kalah",
   ezyai_sig_best_worst: "Terbaik {best} · terburuk {worst}",
   ezyai_sig_drawdown: "Drawdown maksimum {value}",
-  ezyai_sig_since: "Dikira sejak {date} — isyarat bot sebenar sahaja.",
-  ezyai_sig_building: "Rekod sedang dibina — {closed} isyarat tutup setakat ini.",
+  ezyai_sig_since: "Dikira sejak {date}: isyarat bot sebenar sahaja.",
+  ezyai_sig_building: "Rekod sedang dibina: {closed} isyarat tutup setakat ini.",
   ezyai_sig_curve: "R terkumpul",
   ezyai_sig_curve_note: "Setiap dagangan ditutup, terlama dahulu. Break-even kekal rata.",
   ezyai_sig_by_pair: "Mengikut pasangan",
   ezyai_sig_results: "Keputusan",
   ezyai_page_title: "Isyarat Dagangan AI",
   ezyai_page_desc:
-    "Bot Telegram yang mengubah data pasaran percuma menjadi gabungan dagangan — analisis teknikal dengan aras masuk/keluar, amaran langsung setiap pair, asas fundamental berserta sumber, dan signals automatik rawak, semuanya dikawal oleh gaya dan mod risiko anda.",
+    "Bot Telegram yang mengubah data pasaran percuma menjadi gabungan dagangan. Analisis teknikal dengan aras masuk/keluar, amaran langsung setiap pair, asas fundamental berserta sumber, dan signals automatik rawak, semuanya dikawal oleh gaya dan mod risiko anda.",
   ezyai_feature_analyze_title: "Analyze",
   ezyai_feature_analyze_desc:
     "Analisis pasaran mengikut permintaan: trend, support/resistance, zon masuk, stop loss, TP1/TP2, risiko-ganjaran dan skor keyakinan.",
   ezyai_feature_watch_title: "Watch",
   ezyai_feature_watch_desc:
-    "Amaran dagangan langsung untuk pair tertentu — gaya anda menetapkan rangka masa, mod risiko anda menetapkan targets dan had harian.",
+    "Amaran dagangan langsung untuk pair tertentu. Gaya anda menetapkan rangka masa, mod risiko anda menetapkan targets dan had harian.",
   ezyai_feature_fundamentals_title: "Fundamentals",
   ezyai_feature_fundamentals_desc:
     "Asas fundamental dan pautan sumber untuk mana-mana pair, berserta berita terkini.",
@@ -525,61 +524,61 @@ const ms: Record<TranslationKey, string> = {
     "Bot memilih pairs daripada universe dan mengeluarkan signals secara automatik, dihadkan oleh had harian mod risiko anda.",
   ezyai_feature_dashboard_title: "Dashboard",
   ezyai_feature_dashboard_desc:
-    "Satu gambaran status untuk setiap watch, autopilot dan feed — semua tindakan wujud dalam menu butang.",
+    "Satu gambaran status untuk setiap watch, autopilot dan feed. Semua tindakan wujud dalam menu butang.",
   ezyai_free_pro_title: "Percuma lawan PRO",
   ezyai_free_label: "Percuma",
   ezyai_pro_label: "PRO",
-  ezyai_free_desc: "Analyze, Quote dan pratonton Dashboard — tiada kad diperlukan.",
+  ezyai_free_desc: "Analyze, Quote dan pratonton Dashboard: tiada kad diperlukan.",
   ezyai_pro_desc:
-    "Amaran Watch langsung, signals Autopilot, dan Fundamentals mendalam — skor, nilai saksama, kedudukan dan verdik macro.",
+    "Amaran Watch langsung, signals Autopilot, dan Fundamentals mendalam: skor, nilai saksama, kedudukan dan verdik macro.",
   ezyai_pricing_eyebrow: "Pelan",
   ezyai_pricing_title: "Akses PRO bulanan yang mudah",
   ezyai_pricing_subtitle:
-    "Bayar dengan kad di sini — PRO diaktifkan pada akaun Telegram anda dalam seminit. Lebih suka Telegram Stars atau USDT? Naik taraf di dalam bot. Percubaan percuma 3 hari, sekali sahaja setiap akaun.",
+    "Bayar dengan kad di sini. PRO diaktifkan pada akaun Telegram anda dalam seminit. Lebih suka Telegram Stars atau USDT? Naik taraf di dalam bot. Percubaan percuma 3 hari, sekali sahaja setiap akaun.",
   ezyai_tier_1m_label: "1 Bulan",
   ezyai_tier_6m_label: "6 Bulan",
   ezyai_tier_12m_label: "12 Bulan",
-  ezyai_tier_6m_badge: "Paling popular — jimat 50%",
+  ezyai_tier_6m_badge: "Paling popular: jimat 50%",
   ezyai_tier_12m_badge: "Jimat 44%",
   ezyai_start_trial: "Mula percubaan percuma",
   ezyai_upgrade_pro: "atau bayar dengan Stars / USDT di dalam Telegram",
   ezyai_buy_pro: "Beli PRO",
   ezyai_markets_title: "Pasaran diliputi",
   ezyai_markets_desc:
-    "Kripto, forex, saham/ETF, logam, tenaga dan indeks — dikuasakan oleh sumber data awam percuma, tiada kunci API diperlukan.",
+    "Kripto, forex, saham/ETF, logam, tenaga dan indeks. Dikuasakan oleh sumber data awam percuma, tiada kunci API diperlukan.",
   ezyai_disclaimer:
-    "Signals adalah gabungan berasaskan peraturan — deterministik dan boleh dijelaskan. Untuk pendidikan sahaja, bukan nasihat kewangan peribadi. Sahkan harga dengan broker anda sebelum bertindak.",
+    "Signals adalah gabungan berasaskan peraturan. Deterministik dan boleh dijelaskan. Untuk pendidikan sahaja, bukan nasihat kewangan peribadi. Sahkan harga dengan broker anda sebelum bertindak.",
   ezyai_final_title: "Mula dengan analisis percuma hari ini",
   ezyai_final_body:
     "Tiada bayaran, tiada komitmen. Cuba peringkat percuma di Telegram, kemudian naik taraf ke PRO apabila anda mahukan amaran langsung dan autopilot.",
   ezyai_cta_open_bot: "Buka EzyAI di Telegram",
-  indicators_meta_title: "Indicators & Harga — EzyMap Algo",
+  indicators_meta_title: "Indicators & Harga: EzyMap Algo",
   indicators_meta_desc:
     "Indicators TradingView dan MT5 EzyMap dengan harga sebenar: EzyMap Lite $49, EzyMap Pro $249, bundel MT5 dari $99/bulan dan alat tunggal dari $9/bulan.",
   indicators_og_desc:
-    "Indicators TradingView dan MT5 daripada EzyMap Algo — Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias dan banyak lagi, dengan harga terkini.",
+    "Indicators TradingView dan MT5 daripada EzyMap Algo: Drawdown Guardian, Bulk Close, Auto TPSL, MTF Bias dan banyak lagi, dengan harga terkini.",
   indicators_desk_label: "Meja indicator EzyMap",
   indicators_title: "Indicators",
   indicators_subtitle:
-    "Alat TradingView dan MT5 yang sama digunakan ahli kami untuk berdagang — pemetaan, kawalan risiko dan bias pelbagai rangka masa.",
+    "Alat TradingView dan MT5 yang sama digunakan ahli kami untuk berdagang: pemetaan, kawalan risiko dan bias pelbagai rangka masa.",
   indicators_cta_get: "Dapatkan indicator Anda",
   indicators_cta_ask: "Tanya Sarah",
   indicators_vantage_title: "Akses percuma dengan pengaktifan Vantage",
   indicators_vantage_body:
-    "Buka akaun di bawah IB 26468008 dan indicators yang disertakan dengan pakej anda dibuka tanpa kos tambahan — Lite untuk Beginner, Currency Strength untuk Pro, Auto TPSL dan MTF Bias untuk Premium, set MT5 penuh untuk Elite.",
+    "Buka akaun di bawah IB 26468008 dan indicators yang disertakan dengan pakej anda dibuka tanpa kos tambahan: Lite untuk Beginner, Currency Strength untuk Pro, Auto TPSL dan MTF Bias untuk Premium, set MT5 penuh untuk Elite.",
   indicators_vantage_open: "Buka Akaun",
   indicators_vantage_free: "Dapatkan Akses Percuma",
   indicators_footnote:
     "Harga dalam USD dan disahkan di dalam bot pendaftaran sebelum pembayaran. Dagangan membawa risiko kerugian.",
-  macro_meta_title: "Meja macro & Kripto — EzyMap Algo",
+  macro_meta_title: "Meja macro & Kripto: EzyMap Algo",
   macro_meta_desc:
-    "Meja MacroTrader: kalendar ekonomi, perbezaan dasar bank pusat, kebarangkalian kemelesetan, nada Fed, sentimen berita dan tambahan kripto — waktu dalam zon waktu anda sendiri.",
+    "Meja MacroTrader: kalendar ekonomi, perbezaan dasar bank pusat, kebarangkalian kemelesetan, nada Fed, sentimen berita dan tambahan kripto. Waktu dalam zon waktu anda sendiri.",
   macro_og_desc:
     "Kalendar ekonomi, perbezaan bank pusat, kebarangkalian kemelesetan dan tambahan meja kripto daripada meja Telegram MacroTrader.",
   macro_twitter_desc:
     "Peta haba macro, kalendar ekonomi dan tambahan kripto, dalam zon waktu anda sendiri.",
   macro_per_month: "/bulan",
-  fc_meta_title: "Sertai Saluran Telegram Percuma — EzyMap",
+  fc_meta_title: "Sertai Saluran Telegram Percuma: EzyMap",
   fc_meta_desc:
     "Dapatkan signals dagangan forex, emas dan kripto percuma secara langsung di Telegram.",
   fc_back_home: "Kembali ke laman utama",
@@ -608,7 +607,7 @@ const ms: Record<TranslationKey, string> = {
   fc_benefit_members_desc: "Komuniti pedagang aktif",
   legal_updated: "Kemas kini terakhir: 2026",
   legal_back_home: "← Kembali ke laman utama",
-  privacy_meta_title: "Dasar Privasi — EzyMap ALGO",
+  privacy_meta_title: "Dasar Privasi: EzyMap ALGO",
   privacy_meta_desc:
     "Cara EzyMap ALGO mengumpul, menggunakan dan melindungi maklumat terhad yang dikumpul daripada pelawat dan pelanggan Telegram.",
   privacy_og_desc: "Cara EzyMap ALGO mengendalikan data anda.",
@@ -626,7 +625,7 @@ const ms: Record<TranslationKey, string> = {
     "Penyertaan dalam saluran kami tertakluk kepada dasar privasi Telegram sendiri. Kami hanya melihat maklumat profil awam yang Telegram dedahkan kepada pentadbir saluran.",
   privacy_contact_title: "Hubungi",
   privacy_contact_body: "Ada soalan? Hantar mesej kepada kami di Telegram di",
-  terms_meta_title: "Terma Perkhidmatan — EzyMap ALGO",
+  terms_meta_title: "Terma Perkhidmatan: EzyMap ALGO",
   terms_meta_desc:
     "Terma yang mengawal penggunaan signals dagangan, kandungan pendidikan dan akses pakej EzyMap ALGO.",
   terms_og_desc: "Terma penggunaan signals dan langganan EzyMap ALGO.",
@@ -644,14 +643,14 @@ const ms: Record<TranslationKey, string> = {
   terms_access_body:
     "Berkongsi kandungan saluran peribadi atau kelayakan log masuk akan menyebabkan penyingkiran serta-merta tanpa bayaran balik.",
   ebook_meta_suffix: "PDF Dagangan Percuma | EzyMap ALGO",
-  ebook_not_found_meta: "E-buku tidak dijumpai — EzyMap ALGO",
+  ebook_not_found_meta: "E-buku tidak dijumpai: EzyMap ALGO",
   ebook_not_found_title: "E-buku tidak dijumpai",
   ebook_not_found_body: "Panduan itu tidak wujud. Lihat panduan yang tersedia di bawah.",
   ebook_back_home: "Kembali ke laman utama",
   ebook_free_pdf: "PDF Percuma",
   ebook_pages_pdf: "{n} muka surat · PDF",
   ebook_gate_vantage: "Percuma dengan log masuk + pengesahan akaun Vantage",
-  ebook_gate_signin: "Percuma dengan log masuk ringkas — muat turun serta-merta",
+  ebook_gate_signin: "Percuma dengan log masuk ringkas: muat turun serta-merta",
   ebook_for_you_if: "Ini untuk anda jika",
   ebook_outcomes_title: "Apa yang anda akan mampu lakukan",
   ebook_chapters_title: "Isi panduan",
@@ -673,7 +672,7 @@ const ms: Record<TranslationKey, string> = {
   dash_tg_link: "Penghantaran Telegram",
   dash_tg_linked: "Menghantar ke {handle}",
   dash_tg_link_hint:
-    "Pautkan Telegram anda dan setiap pembelian pergi ke akaun itu — tiada handle untuk tersalah taip.",
+    "Pautkan Telegram anda dan setiap pembelian pergi ke akaun itu. Tiada handle untuk tersalah taip.",
   dash_tg_claimed: "{count} pembelian dihantar ke Telegram anda.",
   auth_email_label: "E-mel",
   auth_send_link: "E-mel pautan log masuk kepada saya",
@@ -690,7 +689,7 @@ const ms: Record<TranslationKey, string> = {
   dash_browse_packages: "Lihat pakej",
   dash_delivered_to: "dihantar kepada",
   dash_pro_code: "Kod PRO",
-  dash_pro_code_redeemed: "Sudah ditebus — PRO aktif di @ezytradeai_bot.",
+  dash_pro_code_redeemed: "Sudah ditebus: PRO aktif di @ezytradeai_bot.",
   dash_pro_code_hint: "Buka @ezytradeai_bot dan hantar /redeem {code} untuk mengaktifkan PRO.",
   dash_ebooks: "E-buku percuma",
   dash_ebook_download: "Muat turun",
@@ -722,15 +721,15 @@ const ms: Record<TranslationKey, string> = {
   prelanding_trust_note: "Dagangan melibatkan risiko. Ini maklumat umum, bukan nasihat kewangan.",
   prelanding_close: "Tutup dialog alu-aluan",
 
-  home_meta_title: "EzyMap ALGO — Isyarat Dagangan Profesional di Telegram",
+  home_meta_title: "EzyMap ALGO: Isyarat Dagangan Profesional di Telegram",
   home_meta_desc:
     "Sertai 640+ peniaga menerima isyarat dagangan langsung dan pendidikan di Telegram. Amaran forex, kripto dan komoditi masa nyata dikuasakan oleh penunjuk TradingView.",
-  faq_meta_title: "Soalan Lazim — Isyarat Dagangan EzyMap ALGO",
+  faq_meta_title: "Soalan Lazim: Isyarat Dagangan EzyMap ALGO",
   faq_meta_desc:
     "Jawapan tentang rutin dagangan EzyMap ALGO, peringkat harga, percubaan Vantage 30 hari, pendaftaran, akaun anda, dan sokongan.",
-  ezyai_meta_title: "EzyAI — Isyarat Dagangan AI di Telegram | EzyMap Algo",
+  ezyai_meta_title: "EzyAI: Isyarat Dagangan AI di Telegram | EzyMap Algo",
   ezyai_meta_desc:
-    "EzyAI menukar data pasaran percuma menjadi keyakinan dagangan di Telegram — analisis teknikal, amaran tontonan langsung, asas dan isyarat autopilot, percuma untuk mula.",
+    "EzyAI menukar data pasaran percuma menjadi keyakinan dagangan di Telegram: analisis teknikal, amaran tontonan langsung, asas dan isyarat autopilot, percuma untuk mula.",
 };
 
 export default ms;

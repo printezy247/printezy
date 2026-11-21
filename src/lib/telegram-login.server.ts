@@ -62,7 +62,7 @@ export async function verifyTelegramLogin(
 ): Promise<TelegramLoginUser | null> {
   const token = (process.env.TELEGRAM_LOGIN_BOT_TOKEN ?? "").trim();
   if (!token) {
-    console.error("[telegram-login] TELEGRAM_LOGIN_BOT_TOKEN is not set — cannot verify sign-ins");
+    console.error("[telegram-login] TELEGRAM_LOGIN_BOT_TOKEN is not set: cannot verify sign-ins");
     return null;
   }
 

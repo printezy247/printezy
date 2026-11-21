@@ -157,7 +157,7 @@ describe("POST", () => {
     stop();
   });
 
-  it("207 on a mixed batch — one bad row must not lose the rest", async () => {
+  it("207 on a mixed batch. One bad row must not lose the rest", async () => {
     pushSignal
       .mockResolvedValueOnce({ ok: true })
       .mockResolvedValueOnce({ ok: false, error: "missing symbol" });

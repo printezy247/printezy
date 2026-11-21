@@ -36,7 +36,7 @@ export async function fulfillSession(
   }
   if (!meta || !meta.source) {
     console.error(
-      "[fulfillment] session with no metadata source — attempting legacy enrollment activation",
+      "[fulfillment] session with no metadata source. Attempting legacy enrollment activation",
       {
         sessionId,
         env,

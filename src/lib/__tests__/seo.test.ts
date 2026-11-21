@@ -6,7 +6,7 @@ describe("localizedHead()", () => {
   const base = {
     path: "/privacy",
     locale: "en" as const,
-    title: "Privacy Policy — EzyMap ALGO",
+    title: "Privacy Policy: EzyMap ALGO",
     description: "Read how EzyMap ALGO handles your data.",
   };
 
@@ -115,7 +115,7 @@ describe("buildBreadcrumbJsonLd()", () => {
       buildBreadcrumbJsonLd({
         path: "/privacy",
         locale: "en",
-        title: "Privacy Policy — EzyMap ALGO",
+        title: "Privacy Policy: EzyMap ALGO",
         description: "d",
         crumbName: "Privacy",
       }),
