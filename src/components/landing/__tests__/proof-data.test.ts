@@ -1,16 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { PROOFS } from "../proof-data";
 
-const names = PROOFS.flatMap((p) =>
-  p.kind === "tiktok" ? p.comments.map((c) => c.name) : [p.name],
-);
+const names = PROOFS.map((p) => p.name);
 
 describe("proof wall data", () => {
-  it("has two Telegram chats and one TikTok live with three comments", () => {
-    expect(PROOFS.filter((p) => p.kind === "telegram")).toHaveLength(2);
-    const tiktok = PROOFS.filter((p) => p.kind === "tiktok");
-    expect(tiktok).toHaveLength(1);
-    expect(tiktok[0].kind === "tiktok" && tiktok[0].comments).toHaveLength(3);
+  it("has two Telegram chats", () => {
+    expect(PROOFS).toHaveLength(2);
+    for (const p of PROOFS) expect(p.kind).toBe("telegram");
   });
 
   it("shows every member as 'EzyMap | <name>', never a real full name", () => {
@@ -18,10 +14,9 @@ describe("proof wall data", () => {
     expect(names.join(" ")).not.toMatch(/broski/i);
   });
 
-  it("gives every message and comment an English translation", () => {
+  it("gives every message an English translation", () => {
     for (const p of PROOFS) {
-      const texts = p.kind === "tiktok" ? p.comments : p.messages;
-      for (const t of texts) expect(t.en.length).toBeGreaterThan(0);
+      for (const t of p.messages) expect(t.en.length).toBeGreaterThan(0);
     }
   });
 
