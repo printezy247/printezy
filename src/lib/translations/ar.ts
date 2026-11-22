@@ -31,7 +31,7 @@ const ar: Record<TranslationKey, string> = {
   stats_members: "أعضاء نشطون",
   stats_coverage: "تغطية الأسواق",
   stats_languages: "لغات",
-  stats_since: "نتداول منذ",
+  stats_since: "تأسست",
   show_eyebrow: "داخل المكتب",
   show_title: "كل شيء يصل في قناة Telegram واحدة",
   show_signals_title: "Signals بخطة كاملة",

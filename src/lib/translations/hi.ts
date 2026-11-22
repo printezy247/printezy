@@ -33,7 +33,7 @@ const hi: Record<TranslationKey, string> = {
   stats_members: "सक्रिय सदस्य",
   stats_coverage: "मार्केट कवरेज",
   stats_languages: "भाषाएँ",
-  stats_since: "ट्रेडिंग शुरू",
+  stats_since: "स्थापित",
   show_eyebrow: "डेस्क के अंदर",
   show_title: "सब कुछ एक ही Telegram फ़ीड में",
   show_signals_title: "पूरे प्लान के साथ signals",

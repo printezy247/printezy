@@ -279,7 +279,7 @@ export function EbookClaimModal({ slug, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-3 top-3 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
+            className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-muted-foreground hover:bg-surface-elevated hover:text-foreground"
           >
             <X className="h-5 w-5" />
           </button>
@@ -339,7 +339,11 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                         fastest way to get it.
                       </p>
                       <div className="mt-2 flex gap-2">
+                        <label htmlFor="ebook-lead-email" className="sr-only">
+                          Email address
+                        </label>
                         <input
+                          id="ebook-lead-email"
                           type="email"
                           required
                           value={leadEmail}
@@ -382,8 +386,11 @@ export function EbookClaimModal({ slug, onClose }: Props) {
 
                 <div className="mt-4 flex flex-col gap-3">
                   <div>
-                    <label className="text-sm text-muted-foreground">Full name</label>
+                    <label htmlFor="ebook-full-name" className="text-sm text-muted-foreground">
+                      Full name
+                    </label>
                     <input
+                      id="ebook-full-name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Your name"
@@ -391,8 +398,11 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Telegram username</label>
+                    <label htmlFor="ebook-telegram" className="text-sm text-muted-foreground">
+                      Telegram username
+                    </label>
                     <input
+                      id="ebook-telegram"
                       value={telegramUsername}
                       onChange={(e) => setTelegramUsername(e.target.value)}
                       placeholder="your_telegram"
@@ -402,8 +412,14 @@ export function EbookClaimModal({ slug, onClose }: Props) {
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Vantage account number</label>
+                    <label
+                      htmlFor="ebook-vantage-account"
+                      className="text-sm text-muted-foreground"
+                    >
+                      Vantage account number
+                    </label>
                     <input
+                      id="ebook-vantage-account"
                       value={vantageAccount}
                       onChange={(e) => setVantageAccount(e.target.value.replace(/\D/g, ""))}
                       placeholder="12345678"

@@ -32,7 +32,7 @@ const sw: Record<TranslationKey, string> = {
   stats_members: "wanachama hai",
   stats_coverage: "ufuatiliaji wa soko",
   stats_languages: "lugha",
-  stats_since: "tunafanya biashara tangu",
+  stats_since: "ilianzishwa",
   show_eyebrow: "Ndani ya deski",
   show_title: "Kila kitu kinafika kwenye mlisho mmoja wa Telegram",
   show_signals_title: "Signals zenye mpango kamili",

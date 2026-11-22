@@ -366,7 +366,7 @@ function Hero() {
           <CalendarDays className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
           {t("announce_pill")}
         </Link>
-        <h1 className="text-gradient-brand mx-auto mt-6 max-w-5xl text-[42px] font-bold uppercase leading-[0.96] tracking-tight min-[400px]:text-[48px] sm:text-[60px] xl:text-[76px]">
+        <h1 className="text-gradient-brand mx-auto mt-6 max-w-5xl text-[36px] font-bold leading-[1.08] tracking-tight min-[400px]:text-[42px] sm:text-[50px] xl:text-[60px]">
           {t("hero_title")}
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-body sm:text-lg">

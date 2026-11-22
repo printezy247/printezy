@@ -33,7 +33,7 @@ const ms: Record<TranslationKey, string> = {
   stats_members: "ahli aktif",
   stats_coverage: "liputan pasaran",
   stats_languages: "bahasa",
-  stats_since: "berdagang sejak",
+  stats_since: "diasaskan",
   show_eyebrow: "Di dalam desk",
   show_title: "Semuanya tiba dalam satu suapan Telegram",
   show_signals_title: "Signals dengan pelan penuh",

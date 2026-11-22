@@ -33,7 +33,7 @@ const zh: Record<TranslationKey, string> = {
   stats_members: "活跃会员",
   stats_coverage: "市场覆盖",
   stats_languages: "种语言",
-  stats_since: "交易始于",
+  stats_since: "创立于",
   show_eyebrow: "Desk 内部",
   show_title: "一切汇聚在一个 Telegram 频道",
   show_signals_title: "带完整计划的 signals",

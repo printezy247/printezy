@@ -31,7 +31,7 @@ const en = {
   stats_members: "active members",
   stats_coverage: "market coverage",
   stats_languages: "languages",
-  stats_since: "trading since",
+  stats_since: "founded",
   show_eyebrow: "Inside the desk",
   show_title: "Everything lands in one Telegram feed",
   show_signals_title: "Signals with the full plan",
