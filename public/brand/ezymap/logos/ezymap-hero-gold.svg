@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="EzyMap gold hero mark"><title>EzyMap</title><defs>
+<linearGradient id="ghl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a0"/><stop offset=".45" stop-color="#e0bc63"/><stop offset="1" stop-color="#b38e2f"/></linearGradient>
+<linearGradient id="ghd" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8c877"/><stop offset=".55" stop-color="#c9a13a"/><stop offset="1" stop-color="#6b531a"/></linearGradient>
+<linearGradient id="gho" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a0"/><stop offset=".4" stop-color="#e0bc63"/><stop offset="1" stop-color="#b38e2f"/></linearGradient>
+<linearGradient id="ghm" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a13a"/><stop offset=".6" stop-color="#8f7024"/><stop offset="1" stop-color="#5a4615"/></linearGradient>
+<linearGradient id="ghe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4dc93"/><stop offset=".35" stop-color="#e0bc63"/><stop offset=".7" stop-color="#c9a13a"/><stop offset="1" stop-color="#a3802a"/></linearGradient>
+<radialGradient id="ghs" cx=".35" cy=".25" r=".6"><stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<radialGradient id="ghh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e0bc63" stop-opacity=".32"/><stop offset="1" stop-color="#e0bc63" stop-opacity="0"/></radialGradient>
+</defs><style>
+.gh-halo{animation:ghHalo 4s ease-in-out infinite;transform-box:view-box;transform-origin:256px 256px}
+.gh-float{animation:ghFloat 6s ease-in-out infinite}
+.gh-turn{animation:ghTurn 9s ease-in-out infinite;transform-box:view-box;transform-origin:256px 256px}
+.gh-shine{animation:ghShine 3.2s ease-in-out infinite}
+@keyframes ghHalo{0%,100%{transform:scale(.92);opacity:.6}50%{transform:scale(1.06);opacity:1}}
+@keyframes ghFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes ghTurn{0%,100%{transform:scaleX(1)}25%{transform:scaleX(.42)}50%{transform:scaleX(1)}75%{transform:scaleX(.42)}}
+@keyframes ghShine{0%,100%{opacity:.2}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.gh-halo,.gh-float,.gh-turn,.gh-shine{animation:none}}
+</style>
+<circle class="gh-halo" cx="256" cy="256" r="240" fill="url(#ghh)"/>
+<path d="M50 262 A206 58 0 0 1 462 262" fill="none" stroke="url(#ghe)" stroke-width="4" opacity=".45"/>
+<g class="gh-float"><g class="gh-turn">
+<polygon points="256,44 92,250 256,316" fill="url(#ghl)"/>
+<polygon points="256,44 256,316 420,250" fill="url(#ghd)"/>
+<polygon points="92,250 256,470 256,316" fill="url(#gho)"/>
+<polygon points="256,316 256,470 420,250" fill="url(#ghm)"/>
+<polygon points="256,44 174,147 256,180" fill="url(#ghs)"/>
+<polygon points="92,250 174,360 256,316" fill="#fff6d6" opacity=".18"/>
+<polyline points="140,242 184,220 216,234 256,182 292,202 326,164" fill="none" stroke="#3a2a06" stroke-width="16" stroke-linejoin="round" stroke-linecap="round" opacity=".35"/>
+<polyline points="140,236 184,214 216,228 256,176 292,196 326,158" fill="none" stroke="url(#ghe)" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="326" cy="158" r="13" fill="#3a2a06" stroke="url(#ghe)" stroke-width="6"/>
+<circle cx="140" cy="236" r="7" fill="url(#ghe)"/>
+<polygon points="256,44 420,250 256,470 92,250" fill="none" stroke="url(#ghe)" stroke-width="8" stroke-linejoin="round"/>
+<polyline points="92,250 256,316 420,250" fill="none" stroke="url(#ghe)" stroke-width="6" stroke-linejoin="round"/>
+<line x1="256" y1="316" x2="256" y2="470" stroke="#fff3c4" stroke-width="2" opacity=".5"/>
+<line x1="256" y1="44" x2="256" y2="316" stroke="#fff3c4" stroke-width="2" opacity=".45"/>
+</g></g>
+<path d="M50 262 A206 58 0 0 0 462 262" fill="none" stroke="url(#ghe)" stroke-width="7"/>
+<circle cx="420" cy="296" r="9" fill="#f4dc93"/>
+<circle cx="420" cy="296" r="18" fill="#f4dc93" opacity=".2"/>
+<circle r="9" fill="#f4dc93"><animateMotion dur="4s" repeatCount="indefinite" path="M50 262 A206 58 0 0 1 462 262 A206 58 0 0 1 50 262"/></circle>
+<circle class="gh-shine" cx="430" cy="110" r="5" fill="#f7e3a0"/>
+<circle class="gh-shine" cx="80" cy="390" r="4" fill="#f7e3a0" style="animation-delay:1.4s"/>
+</svg>

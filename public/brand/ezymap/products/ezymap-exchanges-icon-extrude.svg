@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><title>EzyMap Exchanges extruded 3D</title><defs>
+<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#171a19"/><stop offset="1" stop-color="#0c0f0e"/></linearGradient>
+<linearGradient id="pe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5be39a"/><stop offset="1" stop-color="#2fbf71"/></linearGradient>
+</defs><g transform="translate(2 2.5)" opacity=".5" style="filter:brightness(.14)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 25h30"/>
+<path d="M37 18l8 7-8 7"/>
+<path d="M49 39H19"/>
+<path d="M27 32l-8 7 8 7" stroke="#e0bc63"/>
+<circle cx="32" cy="32" r="2" fill="url(#pe)" stroke="none"/>
+</g></g>
+<g transform="translate(1 1.25)" opacity=".75" style="filter:brightness(.32)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 25h30"/>
+<path d="M37 18l8 7-8 7"/>
+<path d="M49 39H19"/>
+<path d="M27 32l-8 7 8 7" stroke="#e0bc63"/>
+<circle cx="32" cy="32" r="2" fill="url(#pe)" stroke="none"/>
+</g></g>
+<rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M15 25h30"/>
+<path d="M37 18l8 7-8 7"/>
+<path d="M49 39H19"/>
+<path d="M27 32l-8 7 8 7" stroke="#e0bc63"/>
+<circle cx="32" cy="32" r="2" fill="url(#pe)" stroke="none"/>
+</g></svg>

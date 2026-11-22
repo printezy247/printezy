@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ChevronDown, LogIn, Menu, Send, UserRound, X } from "lucide-react";
+import { Check, ChevronDown, LogIn, Menu, Pause, Play, Send, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { imgProps } from "@/lib/responsive-images";
 import { getTicker } from "@/lib/ticker.functions";
@@ -36,16 +36,13 @@ export function useBotLink() {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2">
-      <img
-        {...imgProps(brandLogo)}
-        alt="EzyMap Algo logo"
-        className="h-8 w-8 rounded-md object-contain"
-      />
-      <span className="font-display text-[17px] font-bold tracking-tight text-foreground">
-        EzyMap<span className="text-accent">Algo</span>
-      </span>
-    </span>
+    <img
+      src="/brand/ezymap/logos/ezymap-3d-horizontal-on-dark.svg"
+      alt="EzyMap"
+      width={160}
+      height={48}
+      className="h-9 w-[136px] object-contain"
+    />
   );
 }
 
@@ -82,6 +79,7 @@ const TICKER_SYMBOLS = [
 
 export function Ticker() {
   const loadTicker = useServerFn(getTicker);
+  const [paused, setPaused] = useState(false);
   // Fetched after mount, never during render: this bar sits on every page, and
   // a header that waits on a market feed is a site that waits on a market feed.
   const { data } = useQuery({
@@ -106,26 +104,46 @@ export function Ticker() {
       aria-label="Market prices"
       className="w-full border-b border-border bg-surface-elevated text-foreground"
     >
-      <div className="ticker-wrap mx-auto max-w-6xl px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
-        <div className="ticker-track animate-ticker gap-8">
-          {items.map((t, i) => (
-            <span
-              key={`${t.symbol}-${i}`}
-              aria-hidden={i >= rows.length ? true : undefined}
-              className="flex shrink-0 items-baseline gap-1.5"
-            >
-              <span className="font-semibold text-body">{t.symbol}</span>
-              <span className="font-mono tabular-nums text-foreground">{t.price}</span>
-              {t.change ? (
-                <span
-                  className="font-mono tabular-nums font-semibold"
-                  style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
-                >
-                  {t.change}
-                </span>
-              ) : null}
-            </span>
-          ))}
+      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-1.5 text-[12.5px] sm:px-6 lg:px-8">
+        <div className="flex shrink-0 items-center gap-1.5 border-r border-border pr-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
+            {quotes.length ? "Live" : "Unavailable"}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPaused((v) => !v)}
+            aria-pressed={paused}
+            aria-label={paused ? "Play market ticker" : "Pause market ticker"}
+            className="flex h-6 w-6 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+          >
+            {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+          </button>
+        </div>
+        <div className="ticker-wrap flex-1 overflow-hidden">
+          <div
+            className="ticker-track animate-ticker gap-8"
+            style={paused ? { animationPlayState: "paused" } : undefined}
+          >
+            {items.map((t, i) => (
+              <span
+                key={`${t.symbol}-${i}`}
+                aria-hidden={i >= rows.length ? true : undefined}
+                className="flex shrink-0 items-baseline gap-1.5"
+              >
+                <span className="font-semibold text-body">{t.symbol}</span>
+                <span className="font-mono tabular-nums text-foreground">{t.price}</span>
+                {t.change ? (
+                  <span
+                    className="font-mono tabular-nums font-semibold"
+                    style={{ color: t.up ? "var(--market-up)" : "var(--market-down)" }}
+                  >
+                    {t.change}
+                  </span>
+                ) : null}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+> Website rebuild: [implementation plan and release checklist](docs/main-site-rebuild-plan-2026-11-22.md).
+
 <div align="center">
 
 <img src="./docs/assets/console.svg" alt="EzyMap ALGO — counted-from-code telemetry, an isometric order book stepping up into gold, and a cumulative-R curve drawing itself" width="100%">
