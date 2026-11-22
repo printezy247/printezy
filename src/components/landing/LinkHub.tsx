@@ -1,3 +1,4 @@
+import { MotionControl } from "@/components/brand/MotionControl";
 import { useEffect, useState, type ComponentType } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -18,7 +19,7 @@ import { getActiveMemberCount } from "@/lib/member-count.functions";
 import { useCountUp } from "@/lib/use-count-up";
 import { goTrack, trackEngagement, trackPageLoad, trackWebVitals } from "@/lib/analytics";
 import { LOCALES, LOCALE_LABELS, localizePath, type Locale } from "@/lib/i18n";
-import markImg from "@/assets/ezymap-mark.webp";
+import { EzyMapAsset, type EzyMapProduct } from "@/components/brand/EzyMapAsset";
 import { LINKS, PROMO, SOCIALS } from "@/lib/links";
 import { FAQ } from "./welcome-data";
 
@@ -40,6 +41,7 @@ type HubLink = {
   event: string;
   icon: typeof Send;
   primary?: boolean;
+  product?: EzyMapProduct;
 };
 
 const MAIN_LINKS: HubLink[] = [
@@ -48,6 +50,7 @@ const MAIN_LINKS: HubLink[] = [
     note: "Free trading signals on Telegram",
     href: LINKS.freeChannel,
     event: "hub_join_channel",
+    product: "channel",
     icon: Send,
     primary: true,
   },
@@ -57,6 +60,7 @@ const MAIN_LINKS: HubLink[] = [
     href: "/home",
     to: "/home",
     event: "hub_website",
+    product: "miniapp",
     icon: Globe,
   },
   {
@@ -64,6 +68,7 @@ const MAIN_LINKS: HubLink[] = [
     note: "TradingView, free plan via our link",
     href: LINKS.tradingView,
     event: "hub_tradingview",
+    product: "pro",
     icon: LineChart,
   },
   {
@@ -71,6 +76,7 @@ const MAIN_LINKS: HubLink[] = [
     note: "VersusTrade partner account",
     href: LINKS.broker,
     event: "hub_broker",
+    product: "exchanges",
     icon: Briefcase,
   },
 ];
@@ -81,6 +87,7 @@ const MORE_LINKS: HubLink[] = [
     note: "Ask about any market, inside Telegram",
     href: LINKS.ezyai,
     event: "hub_ezyai",
+    product: "bot",
     icon: BrainCircuit,
   },
   {
@@ -88,6 +95,7 @@ const MORE_LINKS: HubLink[] = [
     note: "Economic calendar bot on Telegram",
     href: LINKS.macro,
     event: "hub_macro",
+    product: "macro-bot",
     icon: Globe,
   },
   {
@@ -95,6 +103,7 @@ const MORE_LINKS: HubLink[] = [
     note: "Technical Analysis guide, no card",
     href: LINKS.ebook,
     event: "hub_ebook",
+    product: "ebooks",
     icon: BookOpen,
   },
   {
@@ -103,6 +112,7 @@ const MORE_LINKS: HubLink[] = [
     href: "/pricing",
     to: "/pricing",
     event: "hub_pricing",
+    product: "pro",
     icon: Wallet,
   },
   {
@@ -110,6 +120,7 @@ const MORE_LINKS: HubLink[] = [
     note: "Live offer, updated often",
     href: PROMO.href,
     event: "hub_promo",
+    product: "ticker",
     icon: BadgePercent,
   },
 ];
@@ -129,8 +140,17 @@ const SOCIAL_ICONS: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 function HubButton({ link }: { link: HubLink }) {
+  const [active, setActive] = useState(false);
+  const interactions = {
+    onPointerEnter: (event: React.PointerEvent) => {
+      if (event.pointerType === "mouse") setActive(true);
+    },
+    onPointerLeave: () => setActive(false),
+    onFocus: () => setActive(true),
+    onBlur: () => setActive(false),
+  };
   const external = !link.to;
-  const className = `group flex min-h-[4.5rem] items-center gap-3 rounded-2xl border px-4 py-3.5 transition-[border-color,background-color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary [touch-action:manipulation] ${
+  const className = `hub-destination group flex min-h-[4.5rem] items-center gap-3 rounded-2xl border px-4 py-3.5 transition-[border-color,background-color] duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary [touch-action:manipulation] ${
     link.primary
       ? "border-primary/50 bg-primary/10 hover:border-primary hover:bg-primary/15"
       : "border-border bg-card hover:border-primary/50 hover:bg-surface-elevated"
@@ -142,11 +162,15 @@ function HubButton({ link }: { link: HubLink }) {
           link.primary ? "bg-primary text-primary-foreground" : "bg-primary/12 text-primary"
         }`}
       >
-        <link.icon className="h-5 w-5" aria-hidden="true" />
+        {link.product ? (
+          <EzyMapAsset product={link.product} className="hub-product-icon" loading="lazy" />
+        ) : (
+          <link.icon className="h-5 w-5" aria-hidden="true" />
+        )}
       </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block truncate font-semibold text-foreground">{link.label}</span>
-        <span className="block truncate text-xs text-muted-foreground">{link.note}</span>
+        <span className="block font-semibold text-foreground">{link.label}</span>
+        <span className="block text-xs text-muted-foreground">{link.note}</span>
       </span>
       <ArrowUpRight
         className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -157,6 +181,7 @@ function HubButton({ link }: { link: HubLink }) {
   return external ? (
     <a
       href={link.href}
+      {...interactions}
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => goTrack(link.event)}
@@ -165,7 +190,12 @@ function HubButton({ link }: { link: HubLink }) {
       {inner}
     </a>
   ) : (
-    <Link to={link.to ?? "/"} onClick={() => goTrack(link.event)} className={className}>
+    <Link
+      {...interactions}
+      to={link.to ?? "/"}
+      onClick={() => goTrack(link.event)}
+      className={className}
+    >
       {inner}
     </Link>
   );
@@ -201,6 +231,7 @@ function LanguagePicker() {
 }
 
 export function LinkHub({ initialMembers }: { initialMembers?: number }) {
+  const [playing, setPlaying] = useState(true);
   const [members, setMembers] = useState(initialMembers ?? FALLBACK_MEMBERS);
   const count = useCountUp(members);
   const getMembers = useServerFn(getActiveMemberCount);
@@ -221,22 +252,23 @@ export function LinkHub({ initialMembers }: { initialMembers?: number }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="ezm-hub min-h-screen bg-background text-foreground">
       {/* Soft brand glow behind the profile, like a lit trading desk. */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-x-0 top-0 h-[480px] bg-[radial-gradient(ellipse_at_top,rgba(47,191,113,0.14),transparent_65%)]"
       />
-      <main className="relative mx-auto w-full max-w-md px-4 pb-16 pt-10 sm:pt-14">
-        <header className="text-center">
-          <img
-            src={markImg}
-            width={88}
-            height={88}
-            alt="EzyMap ALGO gem mark"
-            decoding="async"
-            className="mx-auto h-[88px] w-[88px] rounded-3xl object-contain"
-          />
+      <main id="main-content" className="hub-layout">
+        <header className="hub-profile">
+          <div className="hub-gem-stage" aria-hidden="true">
+            <div className="hub-gem-orbit" />
+            <EzyMapAsset
+              logo={playing ? "hero" : "mark"}
+              className="hub-gem"
+              fetchPriority="high"
+            />
+          </div>
+          <MotionControl playing={playing} onToggle={() => setPlaying(!playing)} />
           <h1 className="mt-4 text-2xl font-bold tracking-tight">EzyMap ALGO</h1>
           <p className="mt-1 text-sm text-muted-foreground">@ezymap</p>
           <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-body">
@@ -252,67 +284,65 @@ export function LinkHub({ initialMembers }: { initialMembers?: number }) {
           </p>
         </header>
 
-        <nav aria-label="EzyMap links" className="mt-8 space-y-3">
-          {MAIN_LINKS.map((link) => (
-            <HubButton key={link.event} link={link} />
-          ))}
-        </nav>
-
-        <section aria-labelledby="hub-more" className="mt-10">
-          <h2
-            id="hub-more"
-            className="text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground"
-          >
-            More from EzyMap
-          </h2>
-          <nav aria-label="More EzyMap links" className="mt-4 space-y-3">
-            {MORE_LINKS.map((link) => (
+        <div className="hub-content">
+          <nav aria-label="EzyMap links" className="hub-main-links space-y-3">
+            {MAIN_LINKS.map((link) => (
               <HubButton key={link.event} link={link} />
             ))}
           </nav>
-        </section>
 
-        <ul aria-label="Social profiles" className="mt-8 flex justify-center gap-3">
-          {SOCIALS.map(({ label, href }) => {
-            const Icon = SOCIAL_ICONS[label];
-            return (
-              <li key={label}>
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  onClick={() => goTrack(`hub_social_${label.toLowerCase()}`)}
-                  className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary [touch-action:manipulation]"
-                >
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+          <section aria-labelledby="hub-more" className="mt-10">
+            <h2 id="hub-more" className="text-sm font-semibold text-muted-foreground">
+              More from EzyMap
+            </h2>
+            <nav aria-label="More EzyMap links" className="mt-4 space-y-3">
+              {MORE_LINKS.map((link) => (
+                <HubButton key={link.event} link={link} />
+              ))}
+            </nav>
+          </section>
 
-        <section aria-labelledby="hub-faq" className="mt-12">
-          <h2 id="hub-faq" className="text-center text-lg font-bold tracking-tight">
-            Questions
-          </h2>
-          <div className="mt-4 divide-y divide-border rounded-2xl border border-border bg-card px-4">
-            {FAQ.map((f) => (
-              <details key={f.q} className="group py-1">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 text-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-primary [&::-webkit-details-marker]:hidden">
-                  {f.q}
-                  <ChevronDown
-                    className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
-                    aria-hidden="true"
-                  />
-                </summary>
-                <p className="pb-3 text-sm leading-relaxed text-body">{f.a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
+          <ul aria-label="Social profiles" className="mt-8 flex justify-center gap-3">
+            {SOCIALS.map(({ label, href }) => {
+              const Icon = SOCIAL_ICONS[label];
+              return (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    onClick={() => goTrack(`hub_social_${label.toLowerCase()}`)}
+                    className="grid h-11 w-11 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:border-primary/60 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary [touch-action:manipulation]"
+                  >
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
 
-        <footer className="mt-10 text-center">
+          <section aria-labelledby="hub-faq" className="mt-12">
+            <h2 id="hub-faq" className="text-center text-lg font-bold tracking-tight">
+              Questions
+            </h2>
+            <div className="mt-4 divide-y divide-border rounded-2xl border border-border bg-card px-4">
+              {FAQ.map((f) => (
+                <details key={f.q} className="group py-1">
+                  <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 text-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-primary [&::-webkit-details-marker]:hidden">
+                    {f.q}
+                    <ChevronDown
+                      className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+                      aria-hidden="true"
+                    />
+                  </summary>
+                  <p className="pb-3 text-sm leading-relaxed text-body">{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        </div>
+        <footer className="hub-footer mt-10 text-center">
           <nav
             aria-label="Footer"
             className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground"

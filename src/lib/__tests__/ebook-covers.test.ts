@@ -59,7 +59,10 @@ describe("ebook covers", () => {
   });
 
   it("keeps the A4 cover ratio in every box that renders a cover", () => {
-    for (const file of ["src/components/landing/Landing.tsx", "src/routes/ebooks.$slug.tsx"]) {
+    for (const file of [
+      "src/components/landing/LandingSections.tsx",
+      "src/routes/ebooks.$slug.tsx",
+    ]) {
       const text = readFileSync(file, "utf8");
       expect(text).toContain("aspect-[1240/1754]");
       expect(text).not.toContain("aspect-[2/3]");

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="EzyMap fintech hero mark"><title>EzyMap</title><defs>
+<linearGradient id="fhl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5be39a"/><stop offset=".45" stop-color="#2fbf71"/><stop offset="1" stop-color="#13804d"/></linearGradient>
+<linearGradient id="fhd" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14935a"/><stop offset=".55" stop-color="#0f7a4a"/><stop offset="1" stop-color="#073d25"/></linearGradient>
+<linearGradient id="fho" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a0"/><stop offset=".4" stop-color="#e0bc63"/><stop offset="1" stop-color="#b38e2f"/></linearGradient>
+<linearGradient id="fhm" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a13a"/><stop offset=".6" stop-color="#8f7024"/><stop offset="1" stop-color="#5a4615"/></linearGradient>
+<linearGradient id="fhe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4dc93"/><stop offset=".35" stop-color="#e0bc63"/><stop offset=".7" stop-color="#c9a13a"/><stop offset="1" stop-color="#a3802a"/></linearGradient>
+<radialGradient id="fhs" cx=".35" cy=".25" r=".6"><stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+<radialGradient id="fhh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#2fbf71" stop-opacity=".28"/><stop offset="1" stop-color="#2fbf71" stop-opacity="0"/></radialGradient>
+</defs><style>
+.fh-halo{animation:fhHalo 4s ease-in-out infinite;transform-box:view-box;transform-origin:256px 256px}
+.fh-float{animation:fhFloat 6s ease-in-out infinite}
+.fh-bar{animation:fhGrow 2.4s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}
+.fh-bar2{animation-delay:.5s}
+.fh-bar3{animation-delay:1s}
+.fh-route{stroke-dasharray:1;stroke-dashoffset:1;animation:fhDraw 3.6s ease-in-out infinite}
+.fh-tick{animation:fhPulse 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes fhHalo{0%,100%{transform:scale(.94);opacity:.6}50%{transform:scale(1.05);opacity:1}}
+@keyframes fhFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fhGrow{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes fhDraw{0%{stroke-dashoffset:1}60%,100%{stroke-dashoffset:0}}
+@keyframes fhPulse{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fh-halo,.fh-float,.fh-bar,.fh-route,.fh-tick{animation:none}.fh-route{stroke-dashoffset:0}}
+</style>
+<circle class="fh-halo" cx="256" cy="200" r="190" fill="url(#fhh)"/>
+<g class="fh-float"><g transform="translate(96 18) scale(.62)"><path d="M50 262 A206 58 0 0 1 462 262" fill="none" stroke="url(#fhe)" stroke-width="5" opacity=".55"/><polygon points="256,44 92,250 256,316" fill="url(#fhl)"/>
+<polygon points="256,44 256,316 420,250" fill="url(#fhd)"/>
+<polygon points="92,250 256,470 256,316" fill="url(#fho)"/>
+<polygon points="256,316 256,470 420,250" fill="url(#fhm)"/>
+<polygon points="256,44 174,147 256,180" fill="url(#fhs)"/>
+<polygon points="92,250 174,360 256,316" fill="#fff6d6" opacity=".18"/>
+<polyline points="140,242 184,220 216,234 256,182 292,202 326,164" fill="none" stroke="#0a2a18" stroke-width="16" stroke-linejoin="round" stroke-linecap="round" opacity=".35"/>
+<polyline points="140,236 184,214 216,228 256,176 292,196 326,158" fill="none" stroke="url(#fhe)" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="326" cy="158" r="13" fill="#0a2a18" stroke="url(#fhe)" stroke-width="6"/>
+<circle cx="140" cy="236" r="7" fill="url(#fhe)"/>
+<polygon points="256,44 420,250 256,470 92,250" fill="none" stroke="url(#fhe)" stroke-width="8" stroke-linejoin="round"/>
+<polyline points="92,250 256,316 420,250" fill="none" stroke="url(#fhe)" stroke-width="6" stroke-linejoin="round"/>
+<line x1="256" y1="316" x2="256" y2="470" stroke="#fff3c4" stroke-width="2" opacity=".5"/>
+<line x1="256" y1="44" x2="256" y2="316" stroke="#9af0c0" stroke-width="2" opacity=".45"/><path d="M50 262 A206 58 0 0 0 462 262" fill="none" stroke="url(#fhe)" stroke-width="7"/><circle cx="420" cy="296" r="9" fill="#f4dc93"/><circle cx="420" cy="296" r="18" fill="#f4dc93" opacity=".2"/></g></g>
+<line x1="120" y1="404" x2="392" y2="404" stroke="url(#fhe)" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+<rect class="fh-bar" x="162" y="368" width="36" height="28" rx="6" fill="url(#fhl)"/>
+<rect class="fh-bar fh-bar2" x="238" y="348" width="36" height="44" rx="6" fill="url(#fho)"/>
+<rect class="fh-bar fh-bar3" x="314" y="326" width="36" height="66" rx="6" fill="url(#fhd)"/>
+<polyline class="fh-route" pathLength="1" points="140,392 220,372 290,344 370,318" fill="none" stroke="url(#fhe)" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+<circle class="fh-tick" cx="370" cy="312" r="10" fill="#f4dc93"/>
+</svg>

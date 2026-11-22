@@ -59,8 +59,8 @@ export function Reveal({
       ref={ref}
       className={`transition-[opacity,transform] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${className}`}
       style={{
-        opacity: shown ? 1 : 0,
-        transform: shown ? "none" : `translateY(${y}px) scale(0.985)`,
+        opacity: 1,
+        transform: shown ? "none" : `translateY(${Math.min(y, 12)}px)`,
         transitionDelay: shown && delay ? `${delay}s` : undefined,
       }}
     >

@@ -110,12 +110,12 @@ const SUPABASE_ORIGIN = import.meta.env.VITE_SUPABASE_URL ?? "";
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://js.stripe.com https://telegram.org",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
   // Allowlist, not https:: the only third-party images the site draws are the
   // TradingView logo and Supabase-hosted files; anything else would now fail
   // loudly in dev instead of silently allowing any host.
   "img-src 'self' data: blob: https://s3.tradingview.com https://*.supabase.co",
-  "font-src 'self' data: https://fonts.gstatic.com",
+  "font-src 'self' data: https://fonts.gstatic.com https://cdn.fontshare.com",
   `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace(/^https/, "wss")} https://api.stripe.com https://*.stripe.com https://www.facebook.com https://connect.facebook.net`,
   "frame-src https://js.stripe.com https://*.stripe.com https://checkout.stripe.com https://oauth.telegram.org https://www.facebook.com",
 ].join("; ");
@@ -188,16 +188,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://api.fontshare.com" },
+      { rel: "preconnect", href: "https://cdn.fontshare.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://api.fontshare.com/v2/css?f[]=clash-display@500,600&f[]=general-sans@400,500,600&display=swap",
+      },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "preconnect", href: "https://s3.tradingview.com" },
       {
         rel: "preload",
         as: "style",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=JetBrains+Mono:wght@400;500&display=swap",
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400&family=JetBrains+Mono:wght@400;500&display=swap",
       },
     ],
     scripts: [

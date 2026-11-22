@@ -36,16 +36,13 @@ export function useBotLink() {
 
 function Logo() {
   return (
-    <span className="inline-flex items-center gap-2">
-      <img
-        {...imgProps(brandLogo)}
-        alt="EzyMap Algo logo"
-        className="h-8 w-8 rounded-md object-contain"
-      />
-      <span className="font-display text-[17px] font-bold tracking-tight text-foreground">
-        EzyMap<span className="text-accent">Algo</span>
-      </span>
-    </span>
+    <img
+      src="/brand/ezymap/logos/ezymap-3d-horizontal-on-dark.svg"
+      alt="EzyMap"
+      width={160}
+      height={48}
+      className="h-9 w-[136px] object-contain"
+    />
   );
 }
 
@@ -111,13 +108,13 @@ export function Ticker() {
         <div className="flex shrink-0 items-center gap-1.5 border-r border-border pr-3">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
-            Live
+            {quotes.length ? "Live" : "Unavailable"}
           </span>
           <button
             type="button"
             onClick={() => setPaused((v) => !v)}
             aria-pressed={paused}
-            aria-label="Pause market ticker"
+            aria-label={paused ? "Play market ticker" : "Pause market ticker"}
             className="flex h-6 w-6 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
           >
             {paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}

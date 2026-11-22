@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><title>EzyMap Pro extruded 3D</title><defs>
+<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#171a19"/><stop offset="1" stop-color="#0c0f0e"/></linearGradient>
+<linearGradient id="pe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5be39a"/><stop offset="1" stop-color="#2fbf71"/></linearGradient>
+</defs><g transform="translate(2 2.5)" opacity=".5" style="filter:brightness(.14)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<line x1="20" y1="12" x2="20" y2="50"/>
+<rect x="16.5" y="22" width="7" height="16" rx="1.5"/>
+<line x1="33" y1="18" x2="33" y2="46"/>
+<rect x="29.5" y="26" width="7" height="12" rx="1.5" fill="#e0bc63" stroke="none" opacity=".85"/>
+<line x1="46" y1="15" x2="46" y2="44"/>
+<rect x="42.5" y="24" width="7" height="12" rx="1.5"/>
+<path d="M13 54h38" stroke="#e0bc63" stroke-dasharray="3 4"/>
+</g></g>
+<g transform="translate(1 1.25)" opacity=".75" style="filter:brightness(.32)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<line x1="20" y1="12" x2="20" y2="50"/>
+<rect x="16.5" y="22" width="7" height="16" rx="1.5"/>
+<line x1="33" y1="18" x2="33" y2="46"/>
+<rect x="29.5" y="26" width="7" height="12" rx="1.5" fill="#e0bc63" stroke="none" opacity=".85"/>
+<line x1="46" y1="15" x2="46" y2="44"/>
+<rect x="42.5" y="24" width="7" height="12" rx="1.5"/>
+<path d="M13 54h38" stroke="#e0bc63" stroke-dasharray="3 4"/>
+</g></g>
+<rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<line x1="20" y1="12" x2="20" y2="50"/>
+<rect x="16.5" y="22" width="7" height="16" rx="1.5"/>
+<line x1="33" y1="18" x2="33" y2="46"/>
+<rect x="29.5" y="26" width="7" height="12" rx="1.5" fill="#e0bc63" stroke="none" opacity=".85"/>
+<line x1="46" y1="15" x2="46" y2="44"/>
+<rect x="42.5" y="24" width="7" height="12" rx="1.5"/>
+<path d="M13 54h38" stroke="#e0bc63" stroke-dasharray="3 4"/>
+</g></svg>

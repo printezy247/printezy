@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img"><title>EzyMap Ticker extruded 3D</title><defs>
+<linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#171a19"/><stop offset="1" stop-color="#0c0f0e"/></linearGradient>
+<linearGradient id="pe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5be39a"/><stop offset="1" stop-color="#2fbf71"/></linearGradient>
+</defs><g transform="translate(2 2.5)" opacity=".5" style="filter:brightness(.14)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M11 35h7l4-11 6 20 5-14 4 5h10"/>
+<line x1="11" y1="46" x2="53" y2="46" stroke="#e0bc63" stroke-dasharray="3 4"/>
+<circle cx="49" cy="24" r="3" fill="#e0bc63" stroke="none"/>
+</g></g>
+<g transform="translate(1 1.25)" opacity=".75" style="filter:brightness(.32)"><rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M11 35h7l4-11 6 20 5-14 4 5h10"/>
+<line x1="11" y1="46" x2="53" y2="46" stroke="#e0bc63" stroke-dasharray="3 4"/>
+<circle cx="49" cy="24" r="3" fill="#e0bc63" stroke="none"/>
+</g></g>
+<rect width="64" height="64" rx="16" fill="url(#pg)" stroke="#2fbf71" stroke-opacity=".35"/>
+<g fill="none" stroke="url(#pe)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M11 35h7l4-11 6 20 5-14 4 5h10"/>
+<line x1="11" y1="46" x2="53" y2="46" stroke="#e0bc63" stroke-dasharray="3 4"/>
+<circle cx="49" cy="24" r="3" fill="#e0bc63" stroke="none"/>
+</g></svg>

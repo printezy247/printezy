@@ -1,0 +1,31 @@
+{
+  "repository": "https://github.com/printezy247/ezymap-design-system",
+  "revision": "80a753f808ed4a46e68906fc07fa9e1949502e1a",
+  "version": "2.4.0",
+  "sourcePrefix": "assets/",
+  "files": [
+    "logos/ezymap-mark-hero.svg",
+    "logos/ezymap-hero-fintech.svg",
+    "logos/ezymap-hero-gold.svg",
+    "logos/ezymap-3d-mark.svg",
+    "logos/ezymap-3d-horizontal-on-dark.svg",
+    "products/ezymap-channel-icon-animated.svg",
+    "products/ezymap-channel-icon-extrude.svg",
+    "products/ezymap-miniapp-icon-animated.svg",
+    "products/ezymap-miniapp-icon-extrude.svg",
+    "products/ezymap-bot-icon-animated.svg",
+    "products/ezymap-bot-icon-extrude.svg",
+    "products/ezymap-ticker-icon-animated.svg",
+    "products/ezymap-ticker-icon-extrude.svg",
+    "products/ezymap-calculators-icon-animated.svg",
+    "products/ezymap-calculators-icon-extrude.svg",
+    "products/ezymap-exchanges-icon-animated.svg",
+    "products/ezymap-exchanges-icon-extrude.svg",
+    "products/ezymap-pro-icon-animated.svg",
+    "products/ezymap-pro-icon-extrude.svg",
+    "products/ezymap-ebooks-icon-animated.svg",
+    "products/ezymap-ebooks-icon-extrude.svg",
+    "products/ezymap-macro-bot-icon-animated.svg",
+    "products/ezymap-macro-bot-icon-extrude.svg"
+  ]
+}
