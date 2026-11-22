@@ -30,10 +30,6 @@ const zh: Record<TranslationKey, string> = {
 
   hero_badge: "活跃会员 · 成立于 2021",
   announce_pill: "每周免费 Zoom 课程",
-  stats_members: "活跃会员",
-  stats_coverage: "市场覆盖",
-  stats_languages: "种语言",
-  stats_since: "创立于",
   show_eyebrow: "Desk 内部",
   show_title: "一切汇聚在一个 Telegram 频道",
   show_signals_title: "带完整计划的 signals",
@@ -45,10 +41,6 @@ const zh: Record<TranslationKey, string> = {
   show_macro_title: "会读日历的 macro desk",
   show_macro_body: "央行立场、衰退概率与当日数据发布，由 MacroTrader 机器人实时提供。",
   show_macro_cta: "打开 macro desk",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "让机器人来做分析",
-  band_body: "任意 pair 的 trend、关键位、entries 与风险: 在 Telegram 中按需获取，可免费试用。",
-  band_cta: "打开 EzyAI",
   hero_title: "专业交易 signals,实时发送到您的手机。",
   hero_subtitle:
     "由拥有10年经验的资深交易员提供 forex、大宗商品和 crypto 分析,通过 Telegram 发送,完整披露 entry、stop 和 target 点位。",
@@ -104,7 +96,6 @@ const zh: Record<TranslationKey, string> = {
   zoom_title: "频道每周免费 Zoom 课程",
   zoom_body: "Jack 直播拆解本周最佳交易 setups, 进场、目标与风险,并现场答疑。永久免费,无需信用卡。",
   zoom_cta: "加入免费频道",
-  trust_strip_label: "我们使用的可信平台",
 
   track_record_eyebrow: "历史记录",
   track_record_title: "自行查证历史记录",
@@ -676,17 +667,6 @@ const zh: Record<TranslationKey, string> = {
   dash_save: "保存",
   dash_saved: "资料已保存",
   dash_save_failed: "无法保存你的资料。",
-  prelanding_badge: "欢迎",
-  prelanding_title: "选择你的起点",
-  prelanding_subtitle: "浏览完整网站、加入免费的 Telegram 频道，或向 Sarah 提问。",
-  prelanding_view_now: "加入免费频道",
-  prelanding_view_now_desc: "访问 EzyMap 的公开 Telegram 频道。",
-  prelanding_chat_now: "联系 Sarah",
-  prelanding_chat_now_desc: "通过 Telegram 联系 Sarah 获取帮助。",
-  prelanding_find_out_more: "探索 EzyMap",
-  prelanding_find_out_more_desc: "浏览信号、工具、套餐和学习资源。",
-  prelanding_trust_note: "交易有风险。这是一般信息，不构成财务建议。",
-  prelanding_close: "关闭欢迎对话框",
 
   home_meta_title: "EzyMap ALGO: Telegram 上的专业交易信号",
   home_meta_desc:

@@ -30,10 +30,6 @@ const hi: Record<TranslationKey, string> = {
   nav_site_menu: "साइट मेनू",
   hero_badge: "सक्रिय सदस्य · स्था. 2021",
   announce_pill: "हर हफ्ते मुफ्त ज़ूम क्लास",
-  stats_members: "सक्रिय सदस्य",
-  stats_coverage: "मार्केट कवरेज",
-  stats_languages: "भाषाएँ",
-  stats_since: "स्थापित",
   show_eyebrow: "डेस्क के अंदर",
   show_title: "सब कुछ एक ही Telegram फ़ीड में",
   show_signals_title: "पूरे प्लान के साथ signals",
@@ -48,11 +44,6 @@ const hi: Record<TranslationKey, string> = {
   show_macro_body:
     "केंद्रीय बैंकों का रुख, मंदी की संभावना और आज के रिलीज़: MacroTrader बॉट से लाइव।",
   show_macro_cta: "Macro डेस्क खोलें",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "विश्लेषण बॉट को करने दें",
-  band_body:
-    "किसी भी pair के लिए trend, levels, entries और रिस्क: Telegram में ऑन-डिमांड, मुफ़्त ट्रायल।",
-  band_cta: "EzyAI खोलें",
   hero_title: "पेशेवर ट्रेडिंग signals, सीधे आपके फोन पर।",
   hero_subtitle:
     "10 साल के अनुभवी ट्रेडर से forex, कमोडिटी और crypto विश्लेषण, टेलीग्राम पर पूरी entry, stop और target पारदर्शिता के साथ दिया जाता है।",
@@ -108,7 +99,6 @@ const hi: Record<TranslationKey, string> = {
   zoom_body:
     "Jack हर हफ़्ते के सर्वश्रेष्ठ setups को लाइव समझाते हैं, entry, targets और risk, फिर आपके सवालों के जवाब देते हैं। हमेशा मुफ़्त, कोई कार्ड नहीं।",
   zoom_cta: "मुफ़्त चैनल से जुड़ें",
-  trust_strip_label: "भरोसेमंद प्लेटफ़ॉर्म जिन पर हम काम करते हैं",
   track_record_eyebrow: "ट्रैक रिकॉर्ड",
   track_record_title: "इतिहास खुद जांचें",
   track_record_subtitle:
@@ -688,17 +678,6 @@ const hi: Record<TranslationKey, string> = {
   dash_save: "सहेजें",
   dash_saved: "प्रोफ़ाइल सहेजी गई",
   dash_save_failed: "आपकी प्रोफ़ाइल सहेजी नहीं जा सकी।",
-  prelanding_badge: "स्वागत है",
-  prelanding_title: "शुरुआत के लिए जगह चुनें",
-  prelanding_subtitle: "पूरी साइट देखें, मुफ़्त Telegram चैनल से जुड़ें या Sarah से सवाल पूछें।",
-  prelanding_view_now: "मुफ़्त चैनल से जुड़ें",
-  prelanding_view_now_desc: "EzyMap के सार्वजनिक Telegram चैनल पर जाएँ।",
-  prelanding_chat_now: "Sarah से पूछें",
-  prelanding_chat_now_desc: "मदद के लिए Telegram पर Sarah से संपर्क करें।",
-  prelanding_find_out_more: "EzyMap देखें",
-  prelanding_find_out_more_desc: "सिग्नल, टूल, पैकेज और सीखने के संसाधन देखें।",
-  prelanding_trust_note: "ट्रेडिंग में जोखिम है। यह सामान्य जानकारी है, वित्तीय सलाह नहीं।",
-  prelanding_close: "स्वागत संवाद बंद करें",
 
   home_meta_title: "EzyMap ALGO: Telegram पर पेशेवर ट्रेडिंग सिग्नल",
   home_meta_desc:

@@ -28,10 +28,6 @@ const en = {
 
   hero_badge: "Active Members · Est. 2021",
   announce_pill: "Free Zoom class every week",
-  stats_members: "active members",
-  stats_coverage: "market coverage",
-  stats_languages: "languages",
-  stats_since: "founded",
   show_eyebrow: "Inside the desk",
   show_title: "Everything lands in one Telegram feed",
   show_signals_title: "Signals with the full plan",
@@ -46,10 +42,6 @@ const en = {
   show_macro_body:
     "Central bank stance, recession odds and the day's releases, live from the MacroTrader bot.",
   show_macro_cta: "Open the Macro desk",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "Let the bot do the analysis",
-  band_body: "Trend, levels, entries and risk for any pair: on demand in Telegram, free to try.",
-  band_cta: "Open EzyAI",
   hero_title: "Professional trading signals, delivered live to your phone.",
   hero_subtitle:
     "Forex, commodities and crypto analysis from a 10-year veteran trader, delivered on Telegram with full entry, stop and target transparency.",
@@ -106,7 +98,6 @@ const en = {
   zoom_body:
     "Jack breaks down the week's best setups live, entries, targets and risk, then answers your questions. Free forever, no card.",
   zoom_cta: "Join the free channel",
-  trust_strip_label: "Trusted platforms we operate on",
 
   track_record_eyebrow: "Track record",
   track_record_title: "Check the history yourself",
@@ -700,19 +691,6 @@ const en = {
   dash_save: "Save",
   dash_saved: "Profile saved",
   dash_save_failed: "Could not save your profile.",
-  prelanding_badge: "Welcome",
-  prelanding_title: "Choose where to start",
-  prelanding_subtitle:
-    "Explore the full site, join the free Telegram channel, or ask Sarah a question.",
-  prelanding_view_now: "Join the free channel",
-  prelanding_view_now_desc: "Visit the public EzyMap Telegram channel.",
-  prelanding_chat_now: "Ask Sarah",
-  prelanding_chat_now_desc: "Contact Sarah on Telegram for help.",
-  prelanding_find_out_more: "Explore EzyMap",
-  prelanding_find_out_more_desc: "Browse signals, tools, packages, and learning resources.",
-  prelanding_trust_note:
-    "Trading involves risk. This is general information, not financial advice.",
-  prelanding_close: "Close welcome dialog",
 
   // Page metadata for the translated twins. Head-only: never rendered in
   // the body, but it is the copy a crawler and a shared link show.

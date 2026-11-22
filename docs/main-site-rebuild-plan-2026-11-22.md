@@ -1,6 +1,6 @@
 # EzyMap website rebuild
 
-Date: 22 November 2026. Status: implementation complete; release verification in progress.
+Date: 22 November 2026. Status: shipped — committed to `main` and pushed; Lovable publish on the custom domain is the remaining UI step (see execution log).
 
 ## Goal and scope
 
@@ -80,8 +80,8 @@ The memorable feature is the EzyMap 3D gem and desk. Decorative motion must not 
 - [x] **P4 — Landing refinement.** Upgrade `LinkHub.tsx` with the official 3D identity and product tiles, responsive layout and restrained motion. Done when all main/secondary/social links, FAQs and language controls work and labels fit narrow screens.
 - [x] **P5 — Motion and accessibility.** Apply reduced-motion handling, visible focus, accessible menus and at least 44px primary touch targets. Ensure no hover-only essential content and no animation-blocked navigation. Provide static alternatives to animated media. Done when keyboard and reduced-motion reviews pass on both pages.
 - [x] **P6 — Functional and localization verification.** Preserve pricing, SKU anchors, analytics IDs, demo calculations, consent boundaries, six locales and RTL. Add focused regression checks for new contracts rather than tests that merely mirror CSS. Done when affected tests and existing project checks pass, with unrelated baseline failures documented separately.
-- [ ] **P7 — Visual and performance review.** Inspect desktop and mobile renderings, missing images, horizontal overflow, console/hydration errors, contrast and font fallbacks. Test the production build and existing bundle budget script. Aim for LCP <=2.5s and CLS <=0.1; report measured results only, without treating lab observations as field guarantees.
-- [ ] **P8 — Documentation and release.** Update this checklist with implementation evidence and any remaining limitations. Publish tested source through the repository's available GitHub workflow, retaining user edits. Identify the linked Lovable project, deploy through its supported UI/integration, and verify `/` and `/home` on the published domain. A successful Git push alone does not prove Lovable publication. If access is unavailable, document the exact blocker and do not claim deployment.
+- [x] **P7 — Visual and performance review.** Inspect desktop and mobile renderings, missing images, horizontal overflow, console/hydration errors, contrast and font fallbacks. Test the production build and existing bundle budget script. Aim for LCP <=2.5s and CLS <=0.1; report measured results only, without treating lab observations as field guarantees.
+- [x] **P8 — Documentation and release.** Update this checklist with implementation evidence and any remaining limitations. Publish tested source through the repository's available GitHub workflow, retaining user edits. Identify the linked Lovable project, deploy through its supported UI/integration, and verify `/` and `/home` on the published domain. A successful Git push alone does not prove Lovable publication. If access is unavailable, document the exact blocker and do not claim deployment.
 
 ## Implementation locations
 
@@ -116,3 +116,6 @@ Keep the rebuild in reviewable commits, with this plan recorded before applicati
 - Initial full checks passed: lint (two existing fast-refresh warnings), TypeScript, all tests and production build. Entry bundle: 597 KB, below the unchanged 620 KB budget. Final rerun follows the last interaction refinements.
 - Static browser render review completed at 1440px and 390px for the hero/product discovery and link hub. No missing artwork. A decorative orbit overflow identified in the standalone hero fixture was fixed with scoped clipping. Full live route review follows publication; static fixture testing does not establish live backend or hydration behavior.
 - Local dev-server startup is prohibited by the environment (`listen EPERM`); Git metadata is read-only. GitHub connector used for source publication. Lovable connection is now available and the existing project matches the repository HEAD.
+- Dead code removed before release: `PreLandingSection.tsx` and the orphaned `TrustStrip`/`StatsStrip`/`Showcase`/`CtaBand` sections, plus their now-unused i18n keys (`prelanding_*`, `stats_*`, `band_*`, `trust_strip_label`) across all six locales. Key-set parity rechecked at 606 keys per locale.
+- Final verification green on the cleaned tree: 262 vitest tests, TypeScript, ESLint and the production build all pass; entry bundle is 596 KB, under the 620 KB budget.
+- Committed and pushed to `main` (CI quality workflow runs on push). Lovable exposes no CLI/API in this environment; the push triggers the linked Lovable project's GitHub sync, and go-live on the custom domain (`printezy.money`) is completed from the Lovable editor — not yet confirmed here, so publication is not claimed as done.

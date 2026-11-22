@@ -30,10 +30,6 @@ const ms: Record<TranslationKey, string> = {
 
   hero_badge: "Ahli Aktif · Ditubuhkan 2021",
   announce_pill: "Kelas Zoom percuma setiap minggu",
-  stats_members: "ahli aktif",
-  stats_coverage: "liputan pasaran",
-  stats_languages: "bahasa",
-  stats_since: "diasaskan",
   show_eyebrow: "Di dalam desk",
   show_title: "Semuanya tiba dalam satu suapan Telegram",
   show_signals_title: "Signals dengan pelan penuh",
@@ -48,11 +44,6 @@ const ms: Record<TranslationKey, string> = {
   show_macro_body:
     "Pendirian bank pusat, kebarangkalian kemelesetan dan keluaran hari ini, langsung dari bot MacroTrader.",
   show_macro_cta: "Buka desk macro",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "Biar bot buat analisis",
-  band_body:
-    "Trend, paras, entry dan risiko untuk mana-mana pair: atas permintaan di Telegram, percuma untuk dicuba.",
-  band_cta: "Buka EzyAI",
   hero_title: "Signals dagangan profesional, dihantar terus ke telefon anda.",
   hero_subtitle:
     "Analisis forex, komoditi dan kripto daripada peniaga veteran 10 tahun, dihantar melalui Telegram dengan ketelusan penuh entri, stop dan target.",
@@ -109,7 +100,6 @@ const ms: Record<TranslationKey, string> = {
   zoom_body:
     "Jack membedah setup terbaik minggu itu secara langsung, entry, target dan risiko, kemudian menjawab soalan anda. Percuma selamanya, tanpa kad.",
   zoom_cta: "Sertai channel percuma",
-  trust_strip_label: "Platform dipercayai yang kami gunakan",
 
   track_record_eyebrow: "Rekod prestasi",
   track_record_title: "Semak sendiri sejarahnya",
@@ -710,17 +700,6 @@ const ms: Record<TranslationKey, string> = {
   dash_save: "Simpan",
   dash_saved: "Profil disimpan",
   dash_save_failed: "Tidak dapat menyimpan profil anda.",
-  prelanding_badge: "Selamat datang",
-  prelanding_title: "Pilih tempat untuk bermula",
-  prelanding_subtitle: "Terokai laman penuh, sertai saluran Telegram percuma atau tanya Sarah.",
-  prelanding_view_now: "Sertai saluran percuma",
-  prelanding_view_now_desc: "Lawati saluran Telegram awam EzyMap.",
-  prelanding_chat_now: "Tanya Sarah",
-  prelanding_chat_now_desc: "Hubungi Sarah di Telegram untuk mendapatkan bantuan.",
-  prelanding_find_out_more: "Terokai EzyMap",
-  prelanding_find_out_more_desc: "Lihat signal, alat, pakej dan sumber pembelajaran.",
-  prelanding_trust_note: "Dagangan melibatkan risiko. Ini maklumat umum, bukan nasihat kewangan.",
-  prelanding_close: "Tutup dialog alu-aluan",
 
   home_meta_title: "EzyMap ALGO: Isyarat Dagangan Profesional di Telegram",
   home_meta_desc:

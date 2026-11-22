@@ -29,10 +29,6 @@ const sw: Record<TranslationKey, string> = {
   nav_site_menu: "Menyu ya tovuti",
   hero_badge: "Wanachama Hai · Tangu 2021",
   announce_pill: "Somo la Zoom bure kila wiki",
-  stats_members: "wanachama hai",
-  stats_coverage: "ufuatiliaji wa soko",
-  stats_languages: "lugha",
-  stats_since: "ilianzishwa",
   show_eyebrow: "Ndani ya deski",
   show_title: "Kila kitu kinafika kwenye mlisho mmoja wa Telegram",
   show_signals_title: "Signals zenye mpango kamili",
@@ -47,11 +43,6 @@ const sw: Record<TranslationKey, string> = {
   show_macro_body:
     "Msimamo wa benki kuu, uwezekano wa mdororo na matoleo ya leo, moja kwa moja kutoka boti ya MacroTrader.",
   show_macro_cta: "Fungua deski ya Makro",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "Acha boti ifanye uchambuzi",
-  band_body:
-    "Trend, viwango, entries na hatari kwa jozi yoyote: kwa ombi kwenye Telegram, jaribu bure.",
-  band_cta: "Fungua EzyAI",
   hero_title: "Signals za kitaalamu za biashara, zinazoletwa moja kwa moja kwenye simu yako.",
   hero_subtitle:
     "Uchambuzi wa forex, bidhaa na sarafu za kidijitali kutoka kwa mfanyabiashara mwenye uzoefu wa miaka 10, unaotolewa kupitia Telegram kwa uwazi kamili wa entry, stop na target.",
@@ -107,7 +98,6 @@ const sw: Record<TranslationKey, string> = {
   zoom_body:
     "Jack huchambua setups bora za wiki moja kwa moja, entry, targets na risk, kisha hujibu maswali yako. Bure milele, bila kadi.",
   zoom_cta: "Jiunge na channel ya bure",
-  trust_strip_label: "Majukwaa yanayoaminika tunayofanyia kazi",
   track_record_eyebrow: "Rekodi ya Utendaji",
   track_record_title: "Chunguza historia mwenyewe",
   track_record_subtitle:
@@ -693,18 +683,6 @@ const sw: Record<TranslationKey, string> = {
   dash_save: "Hifadhi",
   dash_saved: "Wasifu umehifadhiwa",
   dash_save_failed: "Imeshindwa kuhifadhi wasifu wako.",
-  prelanding_badge: "Karibu",
-  prelanding_title: "Chagua pa kuanzia",
-  prelanding_subtitle:
-    "Tembelea tovuti nzima, jiunge na chaneli ya Telegram bila malipo, au muulize Sarah.",
-  prelanding_view_now: "Jiunge na chaneli ya bure",
-  prelanding_view_now_desc: "Tembelea chaneli ya umma ya EzyMap kwenye Telegram.",
-  prelanding_chat_now: "Muulize Sarah",
-  prelanding_chat_now_desc: "Wasiliana na Sarah kwenye Telegram upate msaada.",
-  prelanding_find_out_more: "Gundua EzyMap",
-  prelanding_find_out_more_desc: "Vinjari ishara, zana, vifurushi na nyenzo za kujifunza.",
-  prelanding_trust_note: "Biashara ina hatari. Haya ni maelezo ya jumla, si ushauri wa kifedha.",
-  prelanding_close: "Funga dirisha la kukaribisha",
 
   home_meta_title: "EzyMap ALGO: Ishara za Biashara za Kitaalamu kwenye Telegram",
   home_meta_desc:

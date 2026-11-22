@@ -25,6 +25,10 @@ yarn.lock
 .wrangler/
 .dev.vars
 
+# Local agent tooling
+.openchamber/
+.serena/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -28,10 +28,6 @@ const ar: Record<TranslationKey, string> = {
   nav_site_menu: "قائمة الموقع",
   hero_badge: "أعضاء نشطون · تأسست 2021",
   announce_pill: "فصل زووم مجاني كل أسبوع",
-  stats_members: "أعضاء نشطون",
-  stats_coverage: "تغطية الأسواق",
-  stats_languages: "لغات",
-  stats_since: "تأسست",
   show_eyebrow: "داخل المكتب",
   show_title: "كل شيء يصل في قناة Telegram واحدة",
   show_signals_title: "Signals بخطة كاملة",
@@ -46,10 +42,6 @@ const ar: Record<TranslationKey, string> = {
   show_macro_body:
     "موقف البنوك المركزية واحتمالات الركود وإصدارات اليوم، مباشرة من بوت MacroTrader.",
   show_macro_cta: "افتح مكتب الماكرو",
-  band_eyebrow: "EzyAI PRO",
-  band_title: "دع البوت يقوم بالتحليل",
-  band_body: "Trend والـ levels و entries والمخاطر لأي pair. عند الطلب في Telegram، جرّبه مجاناً.",
-  band_cta: "افتح EzyAI",
   hero_title: "Signals تداول احترافية، تصل مباشرة إلى هاتفك.",
   hero_subtitle:
     "تحليل الـ forex والسلع والعملات الرقمية من متداول محترف بخبرة 10 سنوات، يُقدَّم عبر تيليجرام بشفافية كاملة للـ entry و stop والـ target.",
@@ -105,7 +97,6 @@ const ar: Record<TranslationKey, string> = {
   zoom_body:
     "يحلل Jack أفضل الصفقات كل أسبوع مباشرة, نقاط الدخول والأهداف والمخاطر, ثم يجيب على أسئلتك. مجاني للأبد، بدون بطاقة.",
   zoom_cta: "انضم إلى القناة المجانية",
-  trust_strip_label: "منصات موثوقة نعمل عليها",
   track_record_eyebrow: "السجل الحافل",
   track_record_title: "تحقق من السجل بنفسك",
   track_record_subtitle:
@@ -680,17 +671,6 @@ const ar: Record<TranslationKey, string> = {
   dash_save: "حفظ",
   dash_saved: "تم حفظ الملف الشخصي",
   dash_save_failed: "تعذّر حفظ ملفك الشخصي.",
-  prelanding_badge: "مرحبًا",
-  prelanding_title: "اختر نقطة البداية",
-  prelanding_subtitle: "استكشف الموقع الكامل، أو انضم إلى قناة تيليجرام المجانية، أو اسأل سارة.",
-  prelanding_view_now: "انضم إلى القناة المجانية",
-  prelanding_view_now_desc: "زر قناة EzyMap العامة على تيليجرام.",
-  prelanding_chat_now: "اسأل سارة",
-  prelanding_chat_now_desc: "تواصل مع سارة عبر تيليجرام للحصول على المساعدة.",
-  prelanding_find_out_more: "استكشف EzyMap",
-  prelanding_find_out_more_desc: "تصفح الإشارات والأدوات والباقات وموارد التعلّم.",
-  prelanding_trust_note: "التداول ينطوي على مخاطر. هذه معلومات عامة وليست نصيحة مالية.",
-  prelanding_close: "إغلاق نافذة الترحيب",
 
   home_meta_title: "EzyMap ALGO: إشارات تداول احترافية على تيليجرام",
   home_meta_desc:
