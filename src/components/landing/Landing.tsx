@@ -340,7 +340,6 @@ function ChartGraphic({ live }: { live: DemoPrice }) {
 }
 
 function Hero() {
-  const { formatted: memberCount } = useMemberCount();
   const { t, locale } = useTranslation();
   const reducedMotion = usePrefersReducedMotion();
   return (
@@ -400,24 +399,6 @@ function Hero() {
             <BookOpen className="h-3.5 w-3.5" /> {t("hero_cta_ebook")}
           </Link>
         </p>
-
-        <dl className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-2 sm:gap-3">
-          {[
-            [memberCount, t("hero_stat_members")],
-            ["24/5", t("hero_stat_coverage")],
-            ["3 Styles", t("hero_stat_styles")],
-          ].map(([v, l]) => (
-            <div
-              key={l}
-              className="glow-ring card-lift rounded-2xl bg-card/70 px-4 py-3.5 backdrop-blur"
-            >
-              <dt className="font-mono text-xl font-extrabold tabular-nums text-foreground">{v}</dt>
-              <dd className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {l}
-              </dd>
-            </div>
-          ))}
-        </dl>
 
         {/* Cinematic product loop — the video-system desk render, framed like
             a product film rather than a background. */}
@@ -1593,15 +1574,15 @@ export function Landing() {
           <TrustStrip />
           <StatsStrip />
           <ProductStage />
+          <Showcase />
           <NextStepAdvisor />
           <ZoomClassBand />
           <Features />
-          <Pricing />
           <TrackRecord />
           <ProofWall />
+          <Pricing />
           <Products />
           <Tools />
-          <Showcase />
           {EZYAI_BOARD_VISIBLE ? <CtaBand /> : null}
           <HowItWorks />
           <Ambassador />
