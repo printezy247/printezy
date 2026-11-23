@@ -1,26 +1,24 @@
 import { Nav, Footer } from "./SiteChrome";
 import { LaunchHero } from "./LaunchHero";
-import { ProductDiscovery } from "./ProductDiscovery";
 import {
   MarketingProvider,
   ProductStage,
-  TrackRecord,
-  Features,
-  Pricing,
-  Products,
-  HowItWorks,
   Ambassador,
   FinalCta,
   ZoomClassBand,
 } from "./LandingSections";
 import { NextStepAdvisor } from "./NextStepAdvisor";
 import { ProofWall } from "./ProofWall";
-import { Tools } from "./Tools";
-import { Faq } from "./FaqSection";
+import { ProblemSolver } from "./ProblemSolver";
 import { StickyBuyBar } from "@/components/StickyBuyBar";
 export { LINKS } from "@/lib/links";
 
-/** Product storytelling is separate from the existing purchase/data contracts. */
+/**
+ * Main landing page flow:
+ * Hero → Free class → Needs advisor → Problem/Solution features → Proof → CTA
+ *
+ * Pricing, products, tools, ambassador, FAQ moved to dedicated routes/tabs.
+ */
 export function Landing() {
   return (
     <MarketingProvider>
@@ -28,25 +26,12 @@ export function Landing() {
         <Nav />
         <main id="main-content">
           <LaunchHero />
-          <ProductDiscovery />
+          <ZoomClassBand />
+          <NextStepAdvisor />
           <ProductStage />
-          <div className="launch-chapter launch-chapter--quiet">
-            <Features />
-            <NextStepAdvisor />
-          </div>
-          <div className="launch-chapter launch-chapter--proof">
-            <TrackRecord />
-            <ProofWall />
-          </div>
-          <Pricing />
-          <div className="launch-chapter launch-chapter--learning">
-            <Products />
-            <Tools />
-            <ZoomClassBand />
-          </div>
-          <HowItWorks />
+          <ProblemSolver />
+          <ProofWall />
           <Ambassador />
-          <Faq />
           <FinalCta />
         </main>
         <Footer />

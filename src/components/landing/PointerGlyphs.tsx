@@ -16,10 +16,13 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
  * all.
  */
 
-const GLYPHS = [
+type Glyph = { char: string; x: number; y: number; size: number; drift: number; text?: boolean };
+
+const GLYPHS: Glyph[] = [
   // Placed around the headline column rather than across it — a glyph drifting
   // behind live text reads as a rendering fault, however faint it is. The top
   // strip, the two gutters and the footer band are all clear.
+  // Market symbols
   { char: "₿", x: 5, y: 15, size: 34, drift: 0 },
   { char: "▲", x: 17, y: 7, size: 20, drift: 1 },
   { char: "$", x: 31, y: 14, size: 26, drift: 2 },
@@ -32,6 +35,27 @@ const GLYPHS = [
   { char: "◆", x: 50, y: 96, size: 18, drift: 1 },
   { char: "$", x: 95, y: 21, size: 20, drift: 3 },
   { char: "▼", x: 97, y: 63, size: 16, drift: 0 },
+  // Trader-problem fragments — scattered thoughts that surface on hover,
+  // short enough to read as glyphs rather than copy blocks.
+  { char: "chasing?", x: 8, y: 32, size: 13, drift: 1, text: true },
+  { char: "no plan", x: 92, y: 42, size: 13, drift: 2, text: true },
+  { char: "revenge", x: 12, y: 68, size: 12, drift: 0, text: true },
+  { char: "FOMO", x: 88, y: 78, size: 14, drift: 3, text: true },
+  { char: "tilt", x: 7, y: 88, size: 13, drift: 1, text: true },
+  { char: "overtrade", x: 91, y: 12, size: 11, drift: 2, text: true },
+  { char: "stop hunt", x: 15, y: 52, size: 11, drift: 3, text: true },
+  { char: "margin call", x: 85, y: 55, size: 11, drift: 0, text: true },
+  { char: "blown", x: 25, y: 78, size: 12, drift: 1, text: true },
+  { char: "hopium", x: 75, y: 85, size: 12, drift: 2, text: true },
+  { char: "SL moved", x: 65, y: 8, size: 11, drift: 3, text: true },
+  { char: "avg down?", x: 28, y: 42, size: 11, drift: 0, text: true },
+  { char: "TP hit", x: 60, y: 92, size: 11, drift: 0, text: true },
+  { char: "wick", x: 42, y: 82, size: 12, drift: 1, text: true },
+  { char: "liquidity", x: 55, y: 4, size: 11, drift: 2, text: true },
+  // Emoji accents — small, decorative, between symbol and text weight
+  { char: "🔴", x: 78, y: 35, size: 10, drift: 1 },
+  { char: "📉", x: 22, y: 25, size: 12, drift: 2 },
+  { char: "⚡", x: 72, y: 72, size: 14, drift: 3 },
 ];
 
 /** How near the pointer has to be, in px, before a glyph reacts at all. */
@@ -122,7 +146,7 @@ export function PointerGlyphs() {
       {GLYPHS.map((glyph, i) => (
         <span
           key={i}
-          className={`pointer-glyph pointer-glyph--d${glyph.drift}`}
+          className={`pointer-glyph pointer-glyph--d${glyph.drift} ${glyph.text ? "pointer-glyph--text" : ""}`}
           data-x={glyph.x}
           data-y={glyph.y}
           style={{
