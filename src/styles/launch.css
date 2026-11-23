@@ -640,27 +640,34 @@
   }
 }
 
-/* --- Golden-mascot hero (replaces launch-hero) --- */
+/* --- Full-bleed golden-mascot hero ---
+   The 3D canvas fills the entire section; the copy panel floats over it on
+   the left on desktop, centered on mobile. The mascot sits right-of-centre
+   so it never competes with the headline column. */
 .hero-section {
   overflow: clip;
   position: relative;
   isolation: isolate;
-  padding: 0 16px 48px;
-  text-align: center;
-  background: var(--background);
+  min-height: 100svh;
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--gradient-hero);
 }
 
-/* Canvas fills the hero band; WebGL renders mascot, glow, grid, spotlight. */
+/* Canvas fills the entire section edge-to-edge. */
 .hero__stage {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: 46vh;
-  min-height: 340px;
-  max-height: 640px;
-  margin: 0 auto;
-  border-radius: var(--radius-2xl);
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
   overflow: hidden;
   background: var(--gradient-hero);
+  z-index: 0;
 }
 
 .hero__canvas {
@@ -800,12 +807,25 @@
   opacity: 0;
 }
 
-/* Copy row — CTA + navigation, unchanged behaviour. */
+/* Copy row — floats on the left on desktop, centered on mobile. A glass
+   blur keeps the CTAs legible over the moving 3D mascot. */
 .hero__copy {
   position: relative;
   z-index: 2;
-  max-width: 900px;
-  margin: 32px auto 0;
+  max-width: 520px;
+  margin: 0 0 0 max(24px, 8vw);
+  padding: 28px 30px;
+  border-radius: 24px;
+  background: rgba(10, 12, 11, 0.55);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6);
+  text-align: left;
+}
+
+.hero__copy .hero__actions {
+  justify-content: flex-start;
 }
 
 .hero__announcement {
@@ -882,23 +902,25 @@
   font-size: 12px;
 }
 
-.hero__explore {
-  position: relative;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  margin-top: 24px;
-  color: var(--body-text);
-  font-size: 12px;
+@media (max-width: 900px) {
+  .hero-section {
+    min-height: 100svh;
+    justify-content: center;
+    padding: 96px 20px 40px;
+    align-items: flex-end;
+  }
+  .hero__copy {
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 22px 22px;
+  }
+  .hero__copy .hero__actions {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 640px) {
-  .hero__stage {
-    height: 40vh;
-    min-height: 280px;
-  }
   .hero__chip--low {
     display: none;
   }
@@ -908,9 +930,6 @@
   }
   .hero__problem {
     display: none;
-  }
-  .hero__copy {
-    margin-top: 20px;
   }
 }
 

@@ -34,7 +34,6 @@ describe("rebuilt marketing journeys", () => {
     expect(hrefs).toContain(localizePath("/free-channel", locale));
     expect(hrefs).toContain(localizePath("/ebooks/technical-analysis", locale));
     expect(hrefs).toContain("#packages");
-    expect(hrefs).toContain("#signal-demo");
     // Localized CTA text is present
     const linkTexts = Array.from(doc.querySelectorAll("a")).map((a) => a.textContent?.trim());
     expect(linkTexts).toContain(translations[locale].hero_cta_join);
