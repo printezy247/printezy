@@ -509,7 +509,7 @@ export function LaunchHero() {
       <PointerGlyphs />
 
       <div className="hero__stage">
-        {webglFailed ? (
+        {webglFailed || reducedMotion ? (
           <div className="hero__fallback" aria-label="Golden mascot">
             <img
               src={POSTER_URL}
