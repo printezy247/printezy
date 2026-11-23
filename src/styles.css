@@ -900,6 +900,18 @@
 .pointer-glyph:nth-child(3n + 2) {
   color: var(--accent);
 }
+/* Text-fragment glyphs: trader-problem whispers, not ticker symbols. */
+.pointer-glyph--text {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  opacity: calc(var(--go) * 0.6);
+  color: var(--muted-foreground);
+}
+.pointer-glyph--text:nth-child(3n + 2) {
+  color: var(--body-text);
+}
 .pointer-glyph--d0 {
   animation: glyph-drift 13s ease-in-out infinite;
 }
