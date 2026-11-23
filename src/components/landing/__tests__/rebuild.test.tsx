@@ -45,6 +45,16 @@ describe("rebuilt marketing journeys", () => {
       expect(existsSync(`public${image.getAttribute("src")}`)).toBe(true);
   });
 
+  it("mounts 12 market symbols and 18 trader-problem glyphs", () => {
+    state.locale = "en";
+    const doc = new DOMParser().parseFromString(
+      renderToStaticMarkup(<LaunchHero />),
+      "text/html",
+    );
+    expect(doc.querySelectorAll(".pointer-glyph")).toHaveLength(30);
+    expect(doc.querySelectorAll(".pointer-glyph--text")).toHaveLength(18);
+  });
+
   it("ships upstream artwork with reduced-motion fallbacks", () => {
     const manifest = JSON.parse(readFileSync("public/brand/ezymap/provenance.json", "utf8"));
     for (const path of manifest.files as string[]) {

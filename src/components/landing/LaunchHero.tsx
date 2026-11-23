@@ -60,7 +60,6 @@ export function LaunchHero() {
       ([entry]) => {
         const visible = entry.isIntersecting;
         root.style.setProperty("--hero-inview", visible ? "1" : "0");
-        if (visible) setWebglReady(true);
       },
       { threshold: 0.05 },
     );
@@ -91,14 +90,18 @@ export function LaunchHero() {
     let glow: any;
     let grid: any;
     let spotLight: any;
+    let disposed = false;
 
     async function init() {
       try {
-        const threeUrl = "https://unpkg.com/three@0.160.0/build/three.module.js";
-        const gltfUrl = "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
-        const dynamicImport = new Function("u", "return import(u)") as (u: string) => Promise<any>;
-        three = await dynamicImport(threeUrl);
-        const { GLTFLoader } = await dynamicImport(gltfUrl);
+        three = await import("three");
+        const { GLTFLoader } = await import("three/examples/jsm/loaders/GLTFLoader.js");
+        if (disposed) return;
+
+        renderer = new three.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(width, height, false);
+        renderer.setClearColor(0x0a0c0b, 0);
 
         scene = new three.Scene();
         camera = new three.PerspectiveCamera(45, width / height, 0.1, 100);
@@ -176,6 +179,7 @@ export function LaunchHero() {
         loader.load(
           GLB_URL,
           (gltf: any) => {
+            if (disposed) return;
             mascot = gltf.scene;
             mascot.scale.setScalar(0.9);
             mascot.position.y = -0.12;
@@ -192,11 +196,16 @@ export function LaunchHero() {
           },
           undefined,
           (err: any) => {
+            if (disposed) return;
             console.error("mascot glb load failed", err);
             setWebglFailed(true);
           },
         );
+
+        raf = requestAnimationFrame(loop);
+        window.addEventListener("resize", onResize);
       } catch (err: any) {
+        if (disposed) return;
         console.error("three init failed", err);
         setWebglFailed(true);
       }
@@ -239,11 +248,12 @@ export function LaunchHero() {
       pointer.x = ((event.clientX - box.left) / box.width) * 2 - 1;
       pointer.y = -((event.clientY - box.top) / box.height) * 2 + 1;
     };
-    root.addEventListener("pointermove", handleMove, { passive: true });
-    root.addEventListener("pointerleave", () => {
+    const handleLeave = () => {
       pointer.x = 0;
       pointer.y = 0;
-    });
+    };
+    root.addEventListener("pointermove", handleMove, { passive: true });
+    root.addEventListener("pointerleave", handleLeave, { passive: true });
 
     const loop = () => {
       raf = requestAnimationFrame(loop);
@@ -285,27 +295,23 @@ export function LaunchHero() {
       renderer.render(scene, camera);
     };
 
-    renderer = new three.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(width, height, false);
-    renderer.setClearColor(0x0a0c0b, 0);
-
-    raf = requestAnimationFrame(loop);
-
     const onResize = () => {
+      if (!camera || !renderer) return;
       const w = root.clientWidth || 1;
       const h = root.clientHeight || 1;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
     };
-    window.addEventListener("resize", onResize);
+
+    void init();
 
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
       root.removeEventListener("pointermove", handleMove);
-      root.removeEventListener("pointerleave", handleMove);
+      root.removeEventListener("pointerleave", handleLeave);
       if (renderer) renderer.dispose();
     };
   }, [webglFailed, reducedMotion]);

@@ -305,6 +305,7 @@ export type Database = {
           id: string
           months: number
           redeem_code: string | null
+          redeem_code_hash: string | null
           sku: string
           status: string
           stripe_session_id: string
@@ -320,6 +321,7 @@ export type Database = {
           id?: string
           months: number
           redeem_code?: string | null
+          redeem_code_hash?: string | null
           sku: string
           status?: string
           stripe_session_id: string
@@ -335,6 +337,7 @@ export type Database = {
           id?: string
           months?: number
           redeem_code?: string | null
+          redeem_code_hash?: string | null
           sku?: string
           status?: string
           stripe_session_id?: string
@@ -342,6 +345,35 @@ export type Database = {
           telegram_username?: string
         }
         Relationships: []
+      }
+      ezyai_redeem_audit: {
+        Row: {
+          claimed_at: string
+          entitlement_id: string
+          id: string
+          telegram_id: number
+        }
+        Insert: {
+          claimed_at?: string
+          entitlement_id: string
+          id?: string
+          telegram_id: number
+        }
+        Update: {
+          claimed_at?: string
+          entitlement_id?: string
+          id?: string
+          telegram_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ezyai_redeem_audit_entitlement_id_fkey"
+            columns: ["entitlement_id"]
+            isOneToOne: false
+            referencedRelation: "ezyai_entitlements"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ezyai_signals: {
         Row: {

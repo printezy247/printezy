@@ -52,10 +52,9 @@ const GLYPHS: Glyph[] = [
   { char: "TP hit", x: 60, y: 92, size: 11, drift: 0, text: true },
   { char: "wick", x: 42, y: 82, size: 12, drift: 1, text: true },
   { char: "liquidity", x: 55, y: 4, size: 11, drift: 2, text: true },
-  // Emoji accents — small, decorative, between symbol and text weight
-  { char: "🔴", x: 78, y: 35, size: 10, drift: 1 },
-  { char: "📉", x: 22, y: 25, size: 12, drift: 2 },
-  { char: "⚡", x: 72, y: 72, size: 14, drift: 3 },
+  { char: "panic sell", x: 78, y: 35, size: 11, drift: 1, text: true },
+  { char: "no stop", x: 22, y: 25, size: 11, drift: 2, text: true },
+  { char: "overrisk", x: 72, y: 72, size: 12, drift: 3, text: true },
 ];
 
 /** How near the pointer has to be, in px, before a glyph reacts at all. */
