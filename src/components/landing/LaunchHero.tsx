@@ -436,12 +436,15 @@ export function LaunchHero() {
         smoothScroll += (scrollTarget - smoothScroll) * follow;
 
         object.position.y = baseY - 0.012 * wave(t, 6);
-        object.rotation.y = 0.6 * smoothScroll;
+        // Whole body tilts toward pointer (playful interactivity) + scroll yaw
+        object.rotation.y = 0.6 * smoothScroll + 0.35 * smoothPointer.x;
+        object.rotation.x = 0.18 * smoothPointer.y;
         if (torso) torso.scale.setScalar(1 + 0.015 * wave(t, 4));
 
         sampleGaze(c, gaze);
-        head.rotation.y = gaze.yaw + 0.25 * smoothPointer.x;
-        head.rotation.x = gaze.pitch + 0.15 * smoothPointer.y;
+        // Head adds its own gaze on top of body tilt for layered response
+        head.rotation.y = gaze.yaw + 0.4 * smoothPointer.x;
+        head.rotation.x = gaze.pitch + 0.25 * smoothPointer.y;
 
         const bp = mod(t, 4.3);
         const blink = bp < 0.18 ? Math.sin((Math.PI * bp) / 0.18) : 0;
