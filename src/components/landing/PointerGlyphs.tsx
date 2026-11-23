@@ -19,8 +19,19 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 type Glyph = { char: string; x: number; y: number; size: number; drift: number; text?: boolean };
 
 const GLYPHS: Glyph[] = [
-  // Placed around the headline column rather than across it — a glyph drifting
-  // behind live text reads as a rendering fault, however faint it is. The top
+  // Trader-problem text fragments: hover-sensitive, lean toward cursor,
+  // brighten and push away as pointer nears. These are the real pain points
+  // that EzyMap solves — scattered as ambient context behind the hero copy.
+  // Coordinates are percentages (0-100) matching the render logic below.
+  { char: "FOMO entries", x: 12, y: 18, size: 13, drift: 0, text: true },
+  { char: "Stop hunted", x: 78, y: 22, size: 12, drift: 1, text: true },
+  { char: "Revenge trade", x: 15, y: 72, size: 11, drift: 2, text: true },
+  { char: "No plan", x: 82, y: 68, size: 14, drift: 3, text: true },
+  { char: "Overleveraged", x: 8, y: 45, size: 10, drift: 0, text: true },
+  { char: "Chasing pumps", x: 88, y: 42, size: 11, drift: 1, text: true },
+  { char: "Tilt", x: 22, y: 88, size: 15, drift: 2, text: true },
+  { char: "No stop loss", x: 72, y: 85, size: 12, drift: 3, text: true },
+  // Original symbol glyphs kept for texturedering fault, however faint it is. The top
   // strip, the two gutters and the footer band are all clear.
   // Market symbols
   { char: "₿", x: 5, y: 15, size: 34, drift: 0 },
