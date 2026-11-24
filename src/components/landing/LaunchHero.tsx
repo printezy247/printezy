@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, BookOpen, Send } from "lucide-react";
+import { ArrowUpRight, Send } from "lucide-react";
 import { useTranslation, localizePath } from "@/lib/i18n";
 import { goTrack } from "@/lib/analytics";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
@@ -552,13 +552,23 @@ export function LaunchHero() {
 
       <div className="hero__copy">
         <a
-          className="hero__announcement"
+          className="hero__zoom-cta"
           href={localizePath("/free-channel", locale)}
           onClick={() => goTrack("hero_announce_zoom")}
         >
-          <span className="hero__status" aria-hidden="true" />
-          {t("announce_pill")}
-          <ArrowUpRight size={14} aria-hidden="true" />
+          <img
+            src="/brand/ezymap/products/ezymap-channel-icon-animated.svg"
+            alt=""
+            aria-hidden="true"
+            className="hero__zoom-icon"
+            width={48}
+            height={48}
+          />
+          <span className="hero__zoom-text">
+            <span className="hero__zoom-label">{t("announce_pill")}</span>
+            <span className="hero__zoom-sub">Free weekly live session</span>
+          </span>
+          <ArrowUpRight size={16} aria-hidden="true" />
         </a>
         <div className="hero__actions">
           <a
@@ -578,14 +588,6 @@ export function LaunchHero() {
             <ArrowUpRight size={17} />
           </a>
         </div>
-        <a
-          className="hero__ebook-link"
-          href={localizePath("/ebooks/technical-analysis", locale)}
-          onClick={() => goTrack("hero_free_ebook")}
-        >
-          <BookOpen size={15} />
-          {t("hero_cta_ebook")}
-        </a>
       </div>
     </section>
   );
