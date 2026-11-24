@@ -203,9 +203,11 @@ export function LaunchHero() {
           const isWide = (root.clientWidth || 0) >= 900;
           const isNarrow = (root.clientWidth || 0) < 900;
           const xOffset = isWide ? radius * 0.6 : 0;
-          const zoomOut = isNarrow ? 1.35 : 1;
-          camera.position.set(xOffset, radius * (isNarrow ? 0.42 : 0.35), radius * 2.6 * zoomOut);
-          camera.lookAt(xOffset, isNarrow ? radius * 0.08 : 0, 0);
+          // Pull the camera further back on narrow screens so the halo,
+          // polar grid, road dashes and pair tags all stay in frame.
+          const zoomOut = isNarrow ? 1.65 : 1;
+          camera.position.set(xOffset, radius * (isNarrow ? 0.52 : 0.35), radius * 2.6 * zoomOut);
+          camera.lookAt(xOffset, isNarrow ? radius * 0.12 : 0, 0);
           camera.near = radius / 100;
           camera.far = radius * 100;
           camera.updateProjectionMatrix();
