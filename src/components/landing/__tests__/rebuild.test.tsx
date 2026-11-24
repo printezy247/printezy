@@ -51,7 +51,7 @@ describe("rebuilt marketing journeys", () => {
       "text/html",
     );
     expect(doc.querySelectorAll(".pointer-glyph")).toHaveLength(38);
-    expect(doc.querySelectorAll(".pointer-glyph--text")).toHaveLength(18);
+    expect(doc.querySelectorAll(".pointer-glyph--text")).toHaveLength(26);
   });
 
   it("ships upstream artwork with reduced-motion fallbacks", () => {
