@@ -197,11 +197,15 @@ export function LaunchHero() {
           mascot.position.sub(center);
 
           // Position camera using the same formula as preview.html:
-          // offset from center by radius * factor, looking at center
+          // offset from center by radius * factor, looking at center.
+          // Narrow screens pull the camera further back (and raise it a touch)
+          // so the halo, polar grid, road and pair tags all stay in frame.
           const isWide = (root.clientWidth || 0) >= 900;
+          const isNarrow = (root.clientWidth || 0) < 900;
           const xOffset = isWide ? radius * 0.6 : 0;
-          camera.position.set(xOffset, radius * 0.35, radius * 2.6);
-          camera.lookAt(xOffset, 0, 0);
+          const zoomOut = isNarrow ? 1.35 : 1;
+          camera.position.set(xOffset, radius * (isNarrow ? 0.42 : 0.35), radius * 2.6 * zoomOut);
+          camera.lookAt(xOffset, isNarrow ? radius * 0.08 : 0, 0);
           camera.near = radius / 100;
           camera.far = radius * 100;
           camera.updateProjectionMatrix();

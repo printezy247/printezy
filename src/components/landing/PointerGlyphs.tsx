@@ -113,7 +113,7 @@ export function PointerGlyphs() {
         node.style.setProperty("--gx", `${Math.cos(angle) * push}px`);
         node.style.setProperty("--gy", `${Math.sin(angle) * push}px`);
         node.style.setProperty("--gs", `${1 + eased * 0.55}`);
-        node.style.setProperty("--go", `${0.1 + eased * 0.75}`);
+        node.style.setProperty("--go", `${node.classList.contains("pointer-glyph--text") ? 0.55 + eased * 0.45 : 0.32 + eased * 0.68}`);
       }
 
       // Keep animating while anything is still settling, then stop dead.

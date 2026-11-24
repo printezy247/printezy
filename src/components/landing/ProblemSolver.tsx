@@ -76,26 +76,32 @@ const PROBLEMS: Problem[] = [
 ];
 
 function ProblemCard({ item, index }: { item: Problem; index: number }) {
-  const [hovered, setHovered] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const hovered = hover || pinned;
   const Icon = item.icon;
 
   return (
     <Reveal delay={index * 0.06}>
       <article
+        onClick={() => { setPinned((v) => !v); goTrack(item.event); }}
+        tabIndex={0}
+        role="button"
+        aria-expanded={hovered}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setPinned((v) => !v);
+            goTrack(item.event);
+          }
+        }}
         className={`group relative flex h-full flex-col overflow-hidden rounded-xl border transition-all duration-300 ${
           hovered
             ? "border-primary/50 bg-surface-elevated shadow-[0_0_30px_-8px_rgba(47,191,113,0.3)]"
             : "border-border bg-card hover:border-accent/40"
         }`}
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") {
-            setHovered(true);
-            goTrack(item.event);
-          }
-        }}
-        onPointerLeave={() => setHovered(false)}
-        onFocus={() => setHovered(true)}
-        onBlur={() => setHovered(false)}
+        onPointerEnter={(e) => { if (e.pointerType === "mouse") setHover(true); }}
+        onPointerLeave={(e) => { if (e.pointerType === "mouse") setHover(false); }}
       >
         {/* Top accent bar that transitions from destructive gold to primary green */}
         <div
@@ -152,7 +158,7 @@ function ProblemCard({ item, index }: { item: Problem; index: number }) {
 
           {/* Bottom hint */}
           <p className="mt-4 text-[11px] text-muted-foreground">
-            {hovered ? "✓ Part of every EzyMap signal" : "Hover to see the fix"}
+            {hovered ? "Tap to toggle the fix" : "Tap or hover to see the fix"}
           </p>
         </div>
       </article>
