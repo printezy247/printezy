@@ -50,7 +50,7 @@ describe("rebuilt marketing journeys", () => {
       renderToStaticMarkup(<LaunchHero />),
       "text/html",
     );
-    expect(doc.querySelectorAll(".pointer-glyph")).toHaveLength(30);
+    expect(doc.querySelectorAll(".pointer-glyph")).toHaveLength(38);
     expect(doc.querySelectorAll(".pointer-glyph--text")).toHaveLength(18);
   });
 
