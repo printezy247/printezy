@@ -703,6 +703,55 @@ const en = {
   ezyai_meta_title: "EzyAI: AI Trading Signals on Telegram | EzyMap Algo",
   ezyai_meta_desc:
     "EzyAI turns free market data into trading confluence on Telegram: technical analysis, live watch alerts, fundamentals and autopilot signals, free to start.",
+
+  /* Feature Story (3-section narrative replacing ProductStage) */
+  features_story_eyebrow_pain: "Common mistakes",
+  features_story_title_pain: "Every signal solves a real mistake",
+  features_story_subtitle_pain:
+    "The traps that blow accounts — and exactly how EzyMap prevents them.",
+  features_story_pain_entry: "Chasing entries after the move already happened",
+  features_story_fix_entry: "Entry zones with limit orders placed before the candle forms",
+  features_story_pain_stop: "Stops hunted at the wick before price reverses your way",
+  features_story_fix_stop: "ATR-based stop placement below the liquidity sweep zone",
+  features_story_pain_revenge: "Revenge trading after a loss, doubling down on tilt",
+  features_story_fix_revenge: "Pre-defined risk per trade with automated position sizing",
+  features_story_eyebrow_flow: "Signal anatomy",
+  features_story_title_flow: "From chaos to clarity",
+  features_story_subtitle_flow:
+    "Every signal carries the full plan upfront — no guesswork, no chasing.",
+  features_story_flow_entry: "Entry",
+  features_story_flow_stop: "Stop",
+  features_story_flow_tp1: "TP1",
+  features_story_flow_tp2: "TP2",
+  features_story_flow_trail: "Trail",
+  features_story_cmp_header_aspect: "Aspect",
+  features_story_cmp_header_without: "Without EzyMap",
+  features_story_cmp_header_with: "With EzyMap",
+  features_story_cmp_row_entry: "Entry timing",
+  features_story_cmp_before_entry: "Chasing after the move",
+  features_story_cmp_after_entry: "Limit order in the zone",
+  features_story_cmp_row_risk: "Risk management",
+  features_story_cmp_before_risk: "Guessing stop distance",
+  features_story_cmp_after_risk: "ATR-based, pre-calculated",
+  features_story_cmp_row_exit: "Exit strategy",
+  features_story_cmp_before_exit: "Closing early out of fear",
+  features_story_cmp_after_exit: "Scaled TP1/TP2 + trailing stop",
+  features_story_guardian_title: "Drawdown Guardian",
+  features_story_guardian_body:
+    "Hard-stop protection that blocks entries against the multi-timeframe bias. Keeps prop-firm rules intact and prevents tilt-driven overtrading.",
+  features_story_eyebrow_urgency: "Start now",
+  features_story_title_urgency: "The market doesn't wait",
+  features_story_subtitle_urgency:
+    "Sessions are live right now. Every minute without a plan is a setup you'll chase later.",
+  features_story_sessions_label: "Live sessions",
+  features_story_tier_beginner: "Beginner",
+  features_story_tier_pro: "Pro",
+  features_story_tier_elite: "Elite",
+  features_story_one_time: "One-time payment",
+  features_story_popular: "Most Popular",
+  features_story_enroll: "Enroll Now",
+  features_story_closer_body:
+    "Not ready to pay? Join the free channel first — sample signals, weekly Zoom classes and the full education archive, forever free.",
 } as const;
 
 export default en;

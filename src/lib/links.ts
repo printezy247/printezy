@@ -1,5 +1,7 @@
 export const LINKS = {
   freeChannel: "https://t.me/ezymap",
+  /** Free weekly live Zoom class — pinned message inside the channel. */
+  freeClass: "https://t.me/ezymap/3231",
   support: "https://t.me/ezysarah",
   bot: "https://t.me/ezyregisterbot",
   macro: "https://t.me/xaubtcmacro_bot",

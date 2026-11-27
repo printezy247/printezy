@@ -50,6 +50,7 @@ const STATIC_ROUTES: UrlEntry[] = [
   // page is the twin of `/home`, not of `/`.
   { path: "/", priority: "1.0" },
   ...localized("/home", "0.9"),
+  { path: "/pricing", priority: "0.8" },
   ...localized("/indicators", "0.8"),
   ...localized("/macro", "0.8"),
   ...localized("/free-channel", "0.7"),

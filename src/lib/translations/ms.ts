@@ -710,6 +710,55 @@ const ms: Record<TranslationKey, string> = {
   ezyai_meta_title: "EzyAI: Isyarat Dagangan AI di Telegram | EzyMap Algo",
   ezyai_meta_desc:
     "EzyAI menukar data pasaran percuma menjadi keyakinan dagangan di Telegram: analisis teknikal, amaran tontonan langsung, asas dan isyarat autopilot, percuma untuk mula.",
+
+  /* Feature Story */
+  features_story_eyebrow_pain: "Kesilapan biasa",
+  features_story_title_pain: "Setiap isyarat menyelesaikan kesilapan sebenar",
+  features_story_subtitle_pain:
+    "Perangkap yang menghapuskan akaun — dan bagaimana EzyMap mencegahnya.",
+  features_story_pain_entry: "Mengejar entry selepas pergerakan sudah berlaku",
+  features_story_fix_entry: "Zon entry dengan limit order diletakkan sebelum candle terbentuk",
+  features_story_pain_stop: "Stop loss diburu di wick sebelum harga berpaling",
+  features_story_fix_stop: "Stop loss berasaskan ATR di bawah zon sapuan kecairan",
+  features_story_pain_revenge: "Dagangan balas dendam selepas kerugian, menggandakan risiko",
+  features_story_fix_revenge: "Risiko pra-ditakrifkan setiap dagangan dengan saiz posisi automatik",
+  features_story_eyebrow_flow: "Anatomi isyarat",
+  features_story_title_flow: "Dari huru-hara kepada kejelasan",
+  features_story_subtitle_flow:
+    "Setiap isyarat membawa pelan penuh terlebih dahulu — tiada tekaan, tiada mengejar.",
+  features_story_flow_entry: "Entry",
+  features_story_flow_stop: "Stop",
+  features_story_flow_tp1: "TP1",
+  features_story_flow_tp2: "TP2",
+  features_story_flow_trail: "Trail",
+  features_story_cmp_header_aspect: "Aspek",
+  features_story_cmp_header_without: "Tanpa EzyMap",
+  features_story_cmp_header_with: "Dengan EzyMap",
+  features_story_cmp_row_entry: "Masa entry",
+  features_story_cmp_before_entry: "Mengejar selepas pergerakan",
+  features_story_cmp_after_entry: "Limit order dalam zon",
+  features_story_cmp_row_risk: "Pengurusan risiko",
+  features_story_cmp_before_risk: "Meneka jarak stop",
+  features_story_cmp_after_risk: "Berasaskan ATR, dikira awal",
+  features_story_cmp_row_exit: "Strategi keluar",
+  features_story_cmp_before_exit: "Menutup awal kerana takut",
+  features_story_cmp_after_exit: "TP1/TP2 berperingkat + trailing stop",
+  features_story_guardian_title: "Drawdown Guardian",
+  features_story_guardian_body:
+    "Perlindungan hard-stop yang menyekat entry melawan bias berbilang rangka masa. Mengekalkan peraturan prop firm dan menghalang overtrading akibat emosi.",
+  features_story_eyebrow_urgency: "Mula sekarang",
+  features_story_title_urgency: "Pasaran tidak menunggu",
+  features_story_subtitle_urgency:
+    "Sesi sedang aktif sekarang. Setiap minit tanpa pelan adalah setup yang akan anda kejar kemudian.",
+  features_story_sessions_label: "Sesi aktif",
+  features_story_tier_beginner: "Pemula",
+  features_story_tier_pro: "Pro",
+  features_story_tier_elite: "Elit",
+  features_story_one_time: "Bayaran sekali",
+  features_story_popular: "Paling Popular",
+  features_story_enroll: "Daftar Sekarang",
+  features_story_closer_body:
+    "Belum bersedia membayar? Sertai saluran percuma dahulu — isyarat sampel, kelas Zoom mingguan dan arkib pendidikan penuh, percuma selamanya.",
 };
 
 export default ms;

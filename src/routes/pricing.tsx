@@ -1,24 +1,35 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { MarketingProvider, Pricing, TrackRecord } from "@/components/landing/LandingSections";
+import { Footer, Nav } from "@/components/landing/SiteChrome";
+import { useTranslation } from "@/lib/i18n";
+import { localizedHead } from "@/lib/seo";
+import { translations } from "@/lib/translations";
 
-/**
- * Packages, TradingView and MT5 sections now live on the landing page's
- * single decision spine. This route stays (ads and internal links use
- * /pricing#sku anchors) but only redirects.
- *
- * A server-side redirect to "/" (no fragment in the Location header) still
- * lets the browser re-apply whatever fragment was on the original request
- * URL once it lands — standard browser behavior, since fragments never
- * reach the server in the first place. So this doesn't need to special-case
- * "hash present vs. not": a plain 301 to "/" preserves /pricing#sku as
- * /#sku for real visitors, while giving crawlers a real redirect instead of
- * a blank 200.
- *
- * The query string needs the opposite treatment: it does reach the server and
- * a bare redirect drops it, so a campaign link such as /pricing?plan=pro
- * would land with nothing attached. `search: true` carries it across.
- */
 export const Route = createFileRoute("/pricing")({
-  beforeLoad: () => {
-    throw redirect({ to: "/home", search: true, statusCode: 301 });
-  },
+  head: () =>
+    localizedHead({
+      path: "/pricing",
+      locale: "en",
+      title: "Trading Signal Packages & Pricing | EzyMap ALGO",
+      description: translations.en.pricing_subtitle,
+      twinPath: null,
+    }),
+  component: PricingPage,
 });
+
+function PricingPage() {
+  const { t } = useTranslation();
+  return (
+    <MarketingProvider>
+      <div className="ezm-site min-h-screen bg-background text-foreground">
+        <Nav />
+        <main id="main-content">
+          <h1 className="sr-only">{t("nav_packages")}</h1>
+          <Pricing />
+          <TrackRecord />
+        </main>
+        <Footer />
+      </div>
+    </MarketingProvider>
+  );
+}

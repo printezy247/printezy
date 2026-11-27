@@ -253,6 +253,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isLinkHub = useLocation({ select: (location) => location.pathname === "/" });
 
   useEffect(() => {
     captureReferralCode();
@@ -266,15 +267,19 @@ function RootComponent() {
         <div id="main" tabIndex={-1} className="outline-none">
           <Outlet />
         </div>
-        <Suspense fallback={null}>
-          <SupportChat />
-        </Suspense>
+        {!isLinkHub && (
+          <Suspense fallback={null}>
+            <SupportChat />
+          </Suspense>
+        )}
         <Suspense fallback={null}>
           <ConsentBanner />
         </Suspense>
-        <Suspense fallback={null}>
-          <EbookAutoPopup />
-        </Suspense>
+        {!isLinkHub && (
+          <Suspense fallback={null}>
+            <EbookAutoPopup />
+          </Suspense>
+        )}
         <Toaster position="bottom-right" />
       </LocaleProvider>
     </QueryClientProvider>

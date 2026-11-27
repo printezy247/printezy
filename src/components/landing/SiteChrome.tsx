@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { imgProps } from "@/lib/responsive-images";
 import { getTicker } from "@/lib/ticker.functions";
 import { EZYAI_BOARD_VISIBLE } from "@/lib/ezyai/visibility";
-import { LOCALES, LOCALE_FLAGS, LOCALE_LABELS, LOCALE_NATIVE_NAMES } from "@/lib/locale-constants";
+import {
+  LOCALES,
+  LOCALE_FLAGS,
+  LOCALE_LABELS,
+  LOCALE_NATIVE_NAMES,
+  type Locale,
+} from "@/lib/locale-constants";
 import { localizePath, useLocale, useTranslation } from "@/lib/i18n";
 import { getSessionId, goTrack } from "@/lib/analytics";
 import { LINKS } from "@/lib/links";
@@ -154,10 +160,14 @@ export function Ticker() {
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
+function navHref(href: string, locale: Locale) {
+  return href.split("#")[0] === "/pricing" ? href : localizePath(href, locale);
+}
+
 const NAV_ITEMS = [
   { key: "nav_signals", href: "/home#features" },
-  { key: "nav_packages", href: "/home#packages" },
-  { key: "nav_tools", href: "/home#tools" },
+  { key: "nav_packages", href: "/pricing" },
+  { key: "nav_tools", href: "/indicators" },
   { key: "nav_macro", href: "/macro" },
   // The board's nav item comes and goes with the board itself, rather than
   // being deleted — see src/lib/ezyai/visibility.ts.
@@ -166,7 +176,7 @@ const NAV_ITEMS = [
 
 /** Not in the header nav — footer-only wayfinding links. */
 const FOOTER_ONLY_ITEMS = [
-  { key: "footer_track_record", href: "/home#track-record" },
+  { key: "footer_track_record", href: "/pricing#track-record" },
   { key: "footer_faq", href: "/faq" },
 ] as const;
 
@@ -411,7 +421,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={localizePath(item.href, locale)}
+                    href={navHref(item.href, locale)}
                     className="flex min-h-11 items-center text-sm font-medium text-body transition-colors hover:text-primary"
                   >
                     {t(item.key)}
@@ -458,7 +468,7 @@ export function Nav() {
               {NAV_ITEMS.map((item) => (
                 <li key={item.href}>
                   <a
-                    href={localizePath(item.href, locale)}
+                    href={navHref(item.href, locale)}
                     onClick={closeMenu}
                     className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-body hover:bg-surface"
                   >
@@ -508,7 +518,7 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {[...NAV_ITEMS, ...FOOTER_ONLY_ITEMS].map((i) => (
                 <li key={i.href}>
-                  <a href={localizePath(i.href, locale)} className="hover:text-foreground">
+                  <a href={navHref(i.href, locale)} className="hover:text-foreground">
                     {t(i.key)}
                   </a>
                 </li>

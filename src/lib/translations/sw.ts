@@ -693,6 +693,55 @@ const sw: Record<TranslationKey, string> = {
   ezyai_meta_title: "EzyAI: Ishara za Biashara za AI kwenye Telegram | EzyMap Algo",
   ezyai_meta_desc:
     "EzyAI hubadilisha data ya soko ya bure kuwa muunganiko wa biashara kwenye Telegram: uchambuzi wa kiufundi, tahadhari za ufuatiliaji wa moja kwa moja, misingi na ishara za autopilot, bure kuanza.",
+
+  /* Feature Story */
+  features_story_eyebrow_pain: "Makosa ya kawaida",
+  features_story_title_pain: "Kila ishara husuluhisha kosa halisi",
+  features_story_subtitle_pain: "Mitego inayoharibu akaunti — na jinsi EzyMap inavyoizuia.",
+  features_story_pain_entry: "Kufuatia entry baada ya harakati kutokea tayari",
+  features_story_fix_entry: "Maeneo ya entry na limit order zilizowekwa kabla ya candle kuundwa",
+  features_story_pain_stop: "Stop loss kukamatwa kwenye wick kabla bei kupinduka",
+  features_story_fix_stop: "Stop loss ya ATR chini ya eneo la ukusanyaji wa liquidity",
+  features_story_pain_revenge: "Biashara ya kisasi baada ya hasara, kuongeza mara mbili kwa hasira",
+  features_story_fix_revenge:
+    "Hatari iliyofafanuliwa mapema kwa kila biashara na ukubwa wa nafasi wa kiotomatiki",
+  features_story_eyebrow_flow: "Muundo wa ishara",
+  features_story_title_flow: "Kutoka machafuko hadi uwazi",
+  features_story_subtitle_flow:
+    "Kila ishara hubeba mpango kamili mapema — hakuna makadirio, hakuna kufuatia.",
+  features_story_flow_entry: "Entry",
+  features_story_flow_stop: "Stop",
+  features_story_flow_tp1: "TP1",
+  features_story_flow_tp2: "TP2",
+  features_story_flow_trail: "Trail",
+  features_story_cmp_header_aspect: "Kipengele",
+  features_story_cmp_header_without: "Bila EzyMap",
+  features_story_cmp_header_with: "Na EzyMap",
+  features_story_cmp_row_entry: "Wakati wa entry",
+  features_story_cmp_before_entry: "Kufuatia baada ya harakati",
+  features_story_cmp_after_entry: "Limit order katika eneo",
+  features_story_cmp_row_risk: "Usimamizi wa hatari",
+  features_story_cmp_before_risk: "Kukadiria umbali wa stop",
+  features_story_cmp_after_risk: "Ya ATR, imekokotolewa mapema",
+  features_story_cmp_row_exit: "Mkakati wa kutoka",
+  features_story_cmp_before_exit: "Kufunga mapema kwa hofu",
+  features_story_cmp_after_exit: "TP1/TP2 ya ngazi + trailing stop",
+  features_story_guardian_title: "Drawdown Guardian",
+  features_story_guardian_body:
+    "Ulinzi wa hard-stop unaozuia entry dhidi ya mwelekeo wa timeframe nyingi. Hudumisha sheria za prop firm na kuzuia overtrading ya hasira.",
+  features_story_eyebrow_urgency: "Anza sasa",
+  features_story_title_urgency: "Soko halisubiri",
+  features_story_subtitle_urgency:
+    "Vipindi vinaendelea sasa. Kila dakika bila mpango ni setup utakaifuatia baadaye.",
+  features_story_sessions_label: "Vipindi vinavyoendelea",
+  features_story_tier_beginner: "Mwanzo",
+  features_story_tier_pro: "Pro",
+  features_story_tier_elite: "Elite",
+  features_story_one_time: "Malipo ya mara moja",
+  features_story_popular: "Maarufu Zaidi",
+  features_story_enroll: "Jiandikishe Sasa",
+  features_story_closer_body:
+    "Hujawa tayari kulipa? Jiunge na channel ya bure kwanza — ishara za mfano, madarasa ya Zoom ya kila wiki na kumbukumbu kamili ya elimu, bure milele.",
 };
 
 export default sw;

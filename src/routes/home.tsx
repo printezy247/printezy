@@ -4,19 +4,17 @@ import { SITE_URL } from "@/lib/bot/tiers";
 import { CATALOG, type CatalogItem } from "@/lib/catalog";
 import { localizedHead, type PageLocale } from "@/lib/seo";
 import { translations } from "@/lib/translations";
-import { buildFaqJsonLd } from "@/lib/faq-schema";
 
 /**
  * Where a sku's purchase anchor actually lives, so Offer.url points at a
- * real element instead of an invented one — mirrors the DOM ids Landing.tsx
- * (package tiers) and Tools.tsx (TradingView/MT5 cards) already render.
+ * real element: Pricing renders package tiers and Tools renders indicator cards.
  * MT5 cards render one anchor per tool family (no term suffix), so strip
  * the trailing _1m/_6m/_1y before linking.
  */
 function offerUrlFor(item: CatalogItem): string {
   switch (item.group) {
     case "package":
-      return `${SITE_URL}/home#${item.sku}`;
+      return `${SITE_URL}/pricing#${item.sku}`;
     case "tradingview":
       return `${SITE_URL}/indicators#${item.sku}`;
     case "mt5":
@@ -74,11 +72,7 @@ export function homeHead(locale: PageLocale) {
         ? [{ name: "facebook-domain-verification", content: "tbn6gbwzvnlav1zi9hbxkcc1jve6bn" }]
         : []),
     ],
-    scripts: [
-      ...HEAD.scripts,
-      { type: "application/ld+json", children: PRODUCTS_JSON_LD },
-      { type: "application/ld+json", children: buildFaqJsonLd(locale) },
-    ],
+    scripts: [...HEAD.scripts, { type: "application/ld+json", children: PRODUCTS_JSON_LD }],
   };
 }
 

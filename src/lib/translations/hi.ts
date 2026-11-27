@@ -688,6 +688,54 @@ const hi: Record<TranslationKey, string> = {
   ezyai_meta_title: "EzyAI: Telegram पर AI ट्रेडिंग सिग्नल | EzyMap Algo",
   ezyai_meta_desc:
     "EzyAI मुफ़्त मार्केट डेटा को Telegram पर ट्रेडिंग कॉन्फ़्लुएंस में बदलता है: तकनीकी विश्लेषण, लाइव वॉच अलर्ट, फंडामेंटल और ऑटोपायलट सिग्नल, शुरुआत मुफ़्त।",
+
+  /* Feature Story */
+  features_story_eyebrow_pain: "आम गलतियाँ",
+  features_story_title_pain: "हर सिग्नल एक असली गलती को सुधारता है",
+  features_story_subtitle_pain: "वे जाल जो अकाउंट खत्म करते हैं — और EzyMap उन्हें कैसे रोकता है।",
+  features_story_pain_entry: "मूवमेंट हो जाने के बाद एंट्री का पीछा करना",
+  features_story_fix_entry: "कैंडल बनने से पहले लिमिट ऑर्डर के साथ एंट्री ज़ोन",
+  features_story_pain_stop: "प्राइस पलटने से पहले विक पर स्टॉप हंट",
+  features_story_fix_stop: "लिक्विडिटी स्वीप ज़ोन के नीचे ATR-आधारित स्टॉप",
+  features_story_pain_revenge: "नुकसान के बाद बदले की ट्रेडिंग, गुस्से में दोगुना करना",
+  features_story_fix_revenge: "ऑटोमैटिक पोज़िशन साइज़िंग के साथ पूर्व-निर्धारित जोखिम",
+  features_story_eyebrow_flow: "सिग्नल संरचना",
+  features_story_title_flow: "अराजकता से स्पष्टता तक",
+  features_story_subtitle_flow:
+    "हर सिग्नल में पूरी योजना पहले से होती है — कोई अनुमान नहीं, कोई पीछा नहीं।",
+  features_story_flow_entry: "एंट्री",
+  features_story_flow_stop: "स्टॉप",
+  features_story_flow_tp1: "TP1",
+  features_story_flow_tp2: "TP2",
+  features_story_flow_trail: "ट्रेल",
+  features_story_cmp_header_aspect: "पहलू",
+  features_story_cmp_header_without: "EzyMap के बिना",
+  features_story_cmp_header_with: "EzyMap के साथ",
+  features_story_cmp_row_entry: "एंट्री टाइमिंग",
+  features_story_cmp_before_entry: "मूवमेंट के बाद पीछा",
+  features_story_cmp_after_entry: "ज़ोन में लिमिट ऑर्डर",
+  features_story_cmp_row_risk: "जोखिम प्रबंधन",
+  features_story_cmp_before_risk: "स्टॉप दूरी का अनुमान",
+  features_story_cmp_after_risk: "ATR-आधारित, पूर्व-गणना",
+  features_story_cmp_row_exit: "निकासी रणनीति",
+  features_story_cmp_before_exit: "डर से जल्दी बंद करना",
+  features_story_cmp_after_exit: "स्केल्ड TP1/TP2 + ट्रेलिंग स्टॉप",
+  features_story_guardian_title: "ड्रॉडाउन गार्डियन",
+  features_story_guardian_body:
+    "हार्ड-स्टॉप सुरक्षा जो मल्टी-टाइमफ्रेम बायस के खिलाफ एंट्री ब्लॉक करती है। प्रॉप फर्म नियम बनाए रखती है और गुस्से में ओवरट्रेडिंग रोकती है।",
+  features_story_eyebrow_urgency: "अभी शुरू करें",
+  features_story_title_urgency: "बाज़ार इंतज़ार नहीं करता",
+  features_story_subtitle_urgency:
+    "सत्र अभी लाइव हैं। बिना योजना के हर मिनट एक सेटअप है जिसे आप बाद में पीछा करेंगे।",
+  features_story_sessions_label: "लाइव सत्र",
+  features_story_tier_beginner: "शुरुआती",
+  features_story_tier_pro: "प्रो",
+  features_story_tier_elite: "एलीट",
+  features_story_one_time: "एक बार भुगतान",
+  features_story_popular: "सबसे लोकप्रिय",
+  features_story_enroll: "अभी नामांकन करें",
+  features_story_closer_body:
+    "भुगतान के लिए तैयार नहीं? पहले मुफ़्त चैनल से जुड़ें — नमूना सिग्नल, साप्ताहिक Zoom क्लासें और पूरा शिक्षा संग्रह, हमेशा मुफ़्त।",
 };
 
 export default hi;

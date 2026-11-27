@@ -12,9 +12,11 @@ export function StickyBuyBar() {
   const item = getCatalogItem(SKU);
 
   useEffect(() => {
-    const hero = document.querySelector("section.bg-hero");
-    if (!hero) return;
-    const observer = new IntersectionObserver(([entry]) => setPastHero(!entry.isIntersecting));
+    const hero = document.getElementById("hero");
+    if (!hero || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setPastHero(entry.boundingClientRect.bottom <= 0),
+    );
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);
