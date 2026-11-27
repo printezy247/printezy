@@ -8,16 +8,16 @@ export { LINKS } from "@/lib/links";
 export function Landing() {
   return (
     <MarketingProvider>
-      <div className="ezm-site min-h-screen bg-background text-foreground">
-        <Nav />
+      <div className="ezm-site ezm-light min-h-screen bg-background text-foreground">
+        <Nav theme="light" />
         <main id="main-content">
           <LaunchHero />
           <FeatureStory />
           <HomeCloser />
         </main>
-        <Footer />
+        <Footer theme="light" />
+        <StickyBuyBar />
       </div>
-      <StickyBuyBar />
     </MarketingProvider>
   );
 }

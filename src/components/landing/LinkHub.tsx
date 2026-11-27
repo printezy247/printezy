@@ -9,7 +9,7 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 const GoldenMascot = lazy(() =>
   import("@/components/brand/GoldenMascot").then((module) => ({ default: module.GoldenMascot })),
 );
-const POSTER = "/assets/3d/mascot-poster.webp";
+const POSTER = "/assets/3d/mascot-poster-light.webp";
 
 const MAIN_LINKS = [
   {
@@ -56,7 +56,7 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
           <div className="hub-mascot-stage" aria-hidden="true">
             <Suspense fallback={<img className="hub-mascot-poster" src={POSTER} alt="" />}>
               {animate ? (
-                <GoldenMascot framing="mark" />
+                <GoldenMascot framing="mark" theme="light" />
               ) : (
                 <img className="hub-mascot-poster" src={POSTER} alt="" fetchPriority="high" />
               )}

@@ -21,7 +21,10 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
  */
 
 const GLB_URL = "/assets/3d/mascot.glb";
-const POSTER_URL = "/assets/3d/mascot-poster.webp";
+const POSTERS = {
+  dark: "/assets/3d/mascot-poster.webp",
+  light: "/assets/3d/mascot-poster-light.webp",
+};
 
 const TAU = Math.PI * 2;
 const GAZE_LOOP = 8;
@@ -95,11 +98,14 @@ export function GoldenMascot({
   className = "",
   label = "Golden mascot",
   framing = "hero",
+  theme = "dark",
 }: {
   className?: string;
   label?: string;
   framing?: "hero" | "mark";
+  theme?: "dark" | "light";
 }) {
+  const poster = POSTERS[theme];
   const reducedMotion = usePrefersReducedMotion();
   const [webglFailed, setWebglFailed] = useState(false);
   const [webglReady, setWebglReady] = useState(false);
@@ -177,7 +183,7 @@ export function GoldenMascot({
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(35, w / h, 0.01, 100);
 
-      scene.add(new THREE.HemisphereLight(0xf4dc93, 0x0a0c0b, 1.1));
+      scene.add(new THREE.HemisphereLight(0xf4dc93, theme === "light" ? 0xb8c3bb : 0x0a0c0b, 1.1));
       const key = new THREE.DirectionalLight(0xffffff, 1.6);
       key.position.set(2, 3, 4);
       scene.add(key);
@@ -188,7 +194,7 @@ export function GoldenMascot({
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(w, h, false);
-      renderer.setClearColor(0x0a0c0b, 1);
+      renderer.setClearColor(theme === "light" ? 0xf5f7f5 : 0x0a0c0b, 1);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
@@ -332,15 +338,29 @@ export function GoldenMascot({
         ctx.arcTo(inset, cv.height - inset, inset, inset, r);
         ctx.arcTo(inset, inset, cv.width - inset, inset, r);
         ctx.closePath();
-        ctx.fillStyle = "rgba(10, 12, 11, 0.84)";
+        ctx.fillStyle = theme === "light" ? "#ffffff" : "rgba(10, 12, 11, 0.84)";
         ctx.fill();
         ctx.lineWidth = 3 * scale;
-        ctx.strokeStyle = highlight ? "#e0bc63" : "#5be39a";
+        ctx.strokeStyle =
+          theme === "light"
+            ? highlight
+              ? "#765919"
+              : "#0f7a4a"
+            : highlight
+              ? "#e0bc63"
+              : "#5be39a";
         ctx.stroke();
         ctx.font = font;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = highlight ? "#e0bc63" : "#f2f4f2";
+        ctx.fillStyle =
+          theme === "light"
+            ? highlight
+              ? "#765919"
+              : "#1d1d1f"
+            : highlight
+              ? "#e0bc63"
+              : "#f2f4f2";
         ctx.fillText(text, cv.width / 2, cv.height / 2 + scale);
         const tex = new THREE.CanvasTexture(cv);
         tex.colorSpace = THREE.SRGBColorSpace;
@@ -507,13 +527,13 @@ export function GoldenMascot({
       }
       if (renderer) renderer.dispose();
     };
-  }, [webglFailed, reducedMotion, framing]);
+  }, [webglFailed, reducedMotion, framing, theme]);
 
   return (
     <div className={`golden-mascot ${className}`} ref={containerRef} role="img" aria-label={label}>
       {webglFailed || reducedMotion ? (
         <img
-          src={POSTER_URL}
+          src={poster}
           alt=""
           decoding="async"
           loading="eager"
@@ -529,7 +549,7 @@ export function GoldenMascot({
           {!webglReady && (
             <div className="golden-mascot__poster-placeholder" aria-hidden="true">
               <img
-                src={POSTER_URL}
+                src={poster}
                 alt=""
                 decoding="async"
                 loading="eager"

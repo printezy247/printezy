@@ -23,21 +23,7 @@ export function LaunchHero() {
   }, [reducedMotion]);
 
   return (
-    <section id="hero" className="home-hero bg-hero" aria-labelledby="home-title">
-      <video
-        className="home-hero__video"
-        ref={videoRef}
-        poster="/ezymap-hero-poster.webp"
-        preload="none"
-        muted
-        loop
-        playsInline
-        aria-hidden="true"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-      >
-        <source src="/ezymap-hero-loop.mp4" type="video/mp4" />
-      </video>
+    <section id="hero" className="home-hero" aria-labelledby="home-title">
       <div className="home-hero__copy">
         <h1 id="home-title">EzyMap ALGO</h1>
         <p className="home-hero__lead">{t("hero_title")}</p>
@@ -58,6 +44,20 @@ export function LaunchHero() {
           </Button>
         </div>
       </div>
+      <video
+        className="home-hero__video"
+        ref={videoRef}
+        poster="/ezymap-signal-stack-light.webp"
+        preload="none"
+        muted
+        loop
+        playsInline
+        aria-hidden="true"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+      >
+        <source src="/ezymap-signal-stack-light.mp4" type="video/mp4" />
+      </video>
       <div className="home-hero__motion">
         <MotionControl
           locale={locale}

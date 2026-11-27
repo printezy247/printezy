@@ -32,6 +32,10 @@ describe("rebuilt marketing journeys", () => {
     expect(doc.querySelector("h1")?.textContent).toBe("EzyMap ALGO");
     const video = doc.querySelector("video");
     expect(video?.hasAttribute("muted")).toBe(true);
+    expect(video?.getAttribute("poster")).toBe("/ezymap-signal-stack-light.webp");
+    expect(video?.querySelector("source")?.getAttribute("src")).toBe(
+      "/ezymap-signal-stack-light.mp4",
+    );
     expect(existsSync(`public${video?.querySelector("source")?.getAttribute("src")}`)).toBe(true);
     expect(existsSync(`public${video?.getAttribute("poster")}`)).toBe(true);
     const hrefs = Array.from(doc.querySelectorAll("a")).map((a) => a.getAttribute("href"));
@@ -70,6 +74,9 @@ describe("rebuilt marketing journeys", () => {
     expect(
       Array.from(doc.querySelectorAll(".hub-content a"), (a) => a.getAttribute("href")),
     ).toEqual([LINKS.freeClass, LINKS.freeChannel, LINKS.tradingView]);
+    const poster = doc.querySelector(".hub-mascot-poster")?.getAttribute("src");
+    expect(poster).toBe("/assets/3d/mascot-poster-light.webp");
+    expect(existsSync(`public${poster}`)).toBe(true);
     const teaser = doc.querySelector(".hub-coming-soon");
     expect(teaser?.textContent).toContain("Coming soon");
     expect(teaser?.matches("a, button, [tabindex]")).toBe(false);

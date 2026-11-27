@@ -40,10 +40,10 @@ export function useBotLink() {
   return href;
 }
 
-function Logo() {
+function Logo({ theme = "dark" }: { theme?: "light" | "dark" }) {
   return (
     <img
-      src="/brand/ezymap/logos/ezymap-3d-horizontal-on-dark.svg"
+      src={`/brand/ezymap/logos/ezymap-3d-horizontal-on-${theme}.svg`}
       alt="EzyMap"
       width={160}
       height={48}
@@ -317,7 +317,7 @@ function AuthMenu({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate
   );
 }
 
-export function Nav() {
+export function Nav({ theme = "dark" }: { theme?: "light" | "dark" } = {}) {
   const { t, locale } = useTranslation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -414,7 +414,7 @@ export function Nav() {
         <nav className="border-b border-border">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href={localizePath("/home#hero", locale)} aria-label="EzyMap Algo home">
-              <Logo />
+              <Logo theme={theme} />
             </a>
 
             <ul className="hidden items-center gap-6 lg:flex">
@@ -494,7 +494,7 @@ export function Nav() {
   );
 }
 
-export function Footer() {
+export function Footer({ theme = "dark" }: { theme?: "light" | "dark" } = {}) {
   const botHref = useBotLink();
   const { t, locale } = useTranslation();
   return (
@@ -502,7 +502,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Logo />
+            <Logo theme={theme} />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">{t("footer_tagline")}</p>
             <a
               href={LINKS.freeChannel}

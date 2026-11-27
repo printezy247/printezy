@@ -1,4 +1,50 @@
 /* EzyMap v2.4.0. Scoped presentation; purchasing and account styles stay independent. */
+.ezm-light,
+.ezm-hub {
+  /* Light theme from the EzyMap design system, scoped to marketing routes. */
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --body-text: #3b4540;
+  --muted-foreground: #59645e;
+  --surface: #ffffff;
+  --surface-elevated: #ebefeb;
+  --card: #ffffff;
+  --card-foreground: #0a0c0b;
+  --popover: #ffffff;
+  --popover-foreground: #0a0c0b;
+  --primary: #0f7a4a;
+  --primary-foreground: #ffffff;
+  --primary-glow: #0a5c38;
+  --primary-tint: rgba(15, 122, 74, 0.1);
+  --accent: #765919;
+  --accent-foreground: #ffffff;
+  --accent-glow: #6e5a1e;
+  --accent-tint: rgba(143, 112, 36, 0.12);
+  --secondary: #edf0ec;
+  --secondary-foreground: #0a0c0b;
+  --muted: #edf0ec;
+  --destructive: #a52828;
+  --destructive-foreground: #ffffff;
+  --border: rgba(10, 12, 11, 0.12);
+  --border-hover: rgba(10, 12, 11, 0.22);
+  --input: #748178;
+  --ring: #0f7a4a;
+  --market-up: #0f7a4a;
+  --market-down: #765919;
+  --surface-quiet: #f5f7f5;
+  --shadow-gold: 0 1px 2px rgba(48, 38, 13, 0.14);
+  --shadow-green: 0 1px 2px rgba(20, 49, 34, 0.14);
+  --shadow-elevated: 0 2px 6px rgba(20, 49, 34, 0.08), 0 16px 44px rgba(20, 49, 34, 0.14);
+  --shadow-button-primary: 0 1px 2px rgba(10, 92, 56, 0.15);
+  --gradient-hero: linear-gradient(180deg, #ffffff 0%, #f5f7f5 100%);
+  --gradient-metal: linear-gradient(155deg, #ffffff 12%, #f5f7f5 62%, #e9eeea 100%);
+  --gradient-gold: linear-gradient(135deg, #765919 0%, #a47a24 100%);
+  --gradient-green: linear-gradient(135deg, #0a5c38 0%, #0f7a4a 100%);
+  --gradient-card: var(--gradient-metal);
+  --glow-green-soft: var(--shadow-green);
+  --gradient-glow: none;
+  color-scheme: light;
+}
 .ezm-site,
 .ezm-hub {
   --launch-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -24,7 +70,7 @@
 }
 .ezm-site :is(a, button, summary):focus-visible,
 .ezm-hub :is(a, button, summary):focus-visible {
-  outline: 2px solid #c9a13a;
+  outline: 2px solid var(--ring);
   outline-offset: 5px;
 }
 .ezm-site main {
@@ -306,7 +352,7 @@
   background: radial-gradient(ellipse at center, #15322055, transparent 65%), #0d100e;
   border-block: 1px solid #ffffff0a;
 }
-.ezm-site main > section:not(.launch-hero):not(.launch-products) {
+.ezm-site main > section:not(.launch-hero, .launch-products, .home-hero) {
   padding-block: 100px;
 }
 .ezm-site main :is(h2) {
@@ -334,16 +380,21 @@
 .ezm-site #packages {
   background: #111612;
 }
+.ezm-light #packages {
+  background: var(--surface-quiet);
+}
 .ezm-site #packages h3 {
   font-size: 25px;
 }
 .ezm-site #get-started {
   background: radial-gradient(ellipse at bottom, #153b2455, transparent 70%);
 }
+.ezm-light #get-started {
+  background: var(--gradient-hero);
+}
 .ezm-hub {
   position: relative;
   overflow: clip;
-  background-image: radial-gradient(ellipse at 15% 10%, #173e263d, transparent 50%);
 }
 .hub-layout {
   position: relative;
@@ -395,7 +446,7 @@
   padding-top: 20px;
 }
 .hub-destination {
-  background: linear-gradient(120deg, #1e2821aa, #141817);
+  background: var(--card);
   min-height: 88px;
   border-radius: 18px;
   padding: 13px 16px;
@@ -422,7 +473,7 @@
   grid-column: 1/-1;
   max-width: 650px;
   margin-inline: auto;
-  border-top: 1px solid #ffffff12;
+  border-top: 1px solid var(--border);
   padding-top: 32px;
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -549,7 +600,7 @@
     grid-column: 1/-1;
     padding-top: 15px;
   }
-  .ezm-site main > section:not(.launch-hero):not(.launch-products) {
+  .ezm-site main > section:not(.launch-hero, .launch-products, .home-hero) {
     padding-block: 64px;
   }
   .hub-layout {
@@ -617,17 +668,17 @@
   place-items: center;
   width: 44px;
   height: 44px;
-  border: 1px solid #ffffff20;
+  border: 1px solid var(--border-hover);
   border-radius: 50%;
-  color: #a8b0ab;
-  background: #141817;
+  color: var(--body-text);
+  background: var(--card);
   cursor: pointer;
   vertical-align: middle;
   margin: 0 8px;
 }
 .ezm-motion-control:hover {
-  color: #f2f4f2;
-  border-color: #c9a13a;
+  color: var(--foreground);
+  border-color: var(--accent);
 }
 .hub-profile .ezm-motion-control {
   position: absolute;
@@ -647,29 +698,23 @@
   isolation: isolate;
   align-items: start;
   justify-items: center;
-  min-height: clamp(36rem, 65vw, 53rem);
   overflow: hidden;
-  padding: clamp(3.5rem, 7vw, 6.5rem) 1rem 19rem;
+  padding: clamp(3.5rem, 7vw, 6.5rem) 1rem 1rem;
+  gap: 1.5rem;
+  grid-template-rows: auto auto;
   text-align: center;
-  background: #0a0c0b;
+  background: var(--surface-quiet);
 }
 .home-hero__video {
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-.home-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(#0a0c0b 5%, #0a0c0be8 33%, transparent 75%, #0a0c0b);
+  grid-row: 2;
+  width: min(100%, 64rem);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  align-self: center;
 }
 .home-hero__copy {
+  grid-row: 1;
   max-width: 45rem;
 }
 .ezm-site .home-hero h1,
@@ -706,7 +751,7 @@
   overflow: hidden;
   border-radius: 1.5rem;
   border: 1px solid var(--border);
-  background: radial-gradient(ellipse, #204932, #131d17 53%, #0e1210 83%);
+  background: var(--gradient-metal);
 }
 .home-orbit__track {
   position: absolute;
@@ -731,7 +776,7 @@
   left: calc(50% + var(--orbit-x));
   top: calc(50% + var(--orbit-y));
   translate: -50% -50%;
-  filter: drop-shadow(0 8px 18px #040705aa);
+  filter: drop-shadow(0 8px 18px #26382f22);
 }
 .home-orbit__item:nth-of-type(2) {
   --orbit-x: -34%;
@@ -774,7 +819,7 @@
   padding-top: 1rem;
 }
 .home-demo {
-  background: var(--surface);
+  background: var(--surface-quiet);
 }
 .home-diagram {
   display: grid;
@@ -842,7 +887,7 @@
   padding: 1rem;
   border: 1px solid #46956780;
   border-radius: 0.85rem;
-  background: #14241a;
+  background: var(--surface-quiet);
 }
 .home-diagram__gain {
   display: block;
@@ -862,7 +907,7 @@
   padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--border);
   border-radius: 1.25rem;
-  background: radial-gradient(ellipse at top right, #2248317a, transparent 65%), var(--card);
+  background: var(--card);
 }
 .home-product:nth-child(-n + 2) {
   grid-column: span 3;
@@ -889,7 +934,7 @@
   overflow: hidden;
   border-radius: 1.5rem;
   border: 1px solid var(--border);
-  background: #0a0c0b;
+  background: var(--surface-quiet);
 }
 .golden-mascot,
 .golden-mascot__canvas,
@@ -912,11 +957,8 @@
   height: 100%;
   object-fit: contain;
 }
-.hub-destination.hub-destination--primary {
-  background: linear-gradient(120deg, #214631, #15251b);
-}
 .hub-destination.hub-coming-soon {
-  background: linear-gradient(120deg, #252217, #141817);
+  background: var(--surface-quiet);
 }
 
 @media (max-width: 720px) {
@@ -979,4 +1021,21 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Marketing controls use the light design-system treatment, not legacy neon. */
+.ezm-light .btn-primary-glass,
+.ezm-light .btn-primary-glass:hover {
+  background: var(--primary);
+  box-shadow: var(--shadow-button-primary);
+}
+.ezm-light .btn-outline-glass {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border-hover);
+  box-shadow: none;
+}
+.ezm-light .btn-outline-glass:hover {
+  background: var(--surface-quiet);
+  border-color: var(--primary);
 }
