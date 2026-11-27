@@ -12,6 +12,7 @@ import { LINKS } from "@/lib/links";
 
 const state = vi.hoisted(() => ({ locale: "en" as import("@/lib/locale-constants").Locale }));
 vi.mock("@/lib/analytics", () => ({ goTrack: vi.fn() }));
+vi.mock("@/lib/use-xauusd-price", () => ({ useXauUsdPrice: () => null }));
 vi.mock("@/lib/i18n", async () => {
   const copy = await import("@/lib/translations");
   const routing = await import("@/lib/locale-routing");

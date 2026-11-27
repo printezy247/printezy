@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { goTrack } from "@/lib/analytics";
 import { localizePath, useTranslation } from "@/lib/i18n";
 import { LINKS } from "@/lib/links";
+import { DEMO } from "@/lib/use-demo-price";
+import { useXauUsdPrice } from "@/lib/use-xauusd-price";
 import { Section, SectionHeading } from "./primitives";
 
 const BENEFITS = [
@@ -110,13 +112,24 @@ const PRODUCTS = [
   },
 ] as const;
 
+/** The price the SETUPS levels below were written around. */
+const SETUP_BASE = 2410;
+
 export function FeatureStory() {
   const { t, locale } = useTranslation();
+  const livePrice = useXauUsdPrice();
   const [sampleIndex, setSampleIndex] = useState(0);
   const [orbitPlaying, setOrbitPlaying] = useState(true);
   const [flowPlaying, setFlowPlaying] = useState(true);
   const [activeProduct, setActiveProduct] = useState(0);
   const sample = SETUPS[sampleIndex];
+  // Re-anchor each setup's levels on the live XAU/USD price from the price strip.
+  const anchor = livePrice ?? DEMO.entry;
+  const levels = {
+    entry: anchor + (sample.entry - SETUP_BASE),
+    stop: anchor + (sample.stop - SETUP_BASE),
+    target: anchor + (sample.target - SETUP_BASE),
+  };
   return (
     <>
       <Section id="features">
@@ -200,15 +213,15 @@ export function FeatureStory() {
             <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
               {(
                 [
-                  ["features_story_flow_entry", sample.entry],
-                  ["features_story_flow_stop", sample.stop],
-                  ["features_story_flow_tp1", sample.target],
+                  ["features_story_flow_entry", levels.entry],
+                  ["features_story_flow_stop", levels.stop],
+                  ["features_story_flow_tp1", levels.target],
                 ] as const
               ).map(([key, value]) => (
                 <div key={key} className="min-w-0 rounded-md bg-background p-2">
                   <dt className="text-xs text-muted-foreground">{t(key)}</dt>
                   <dd className="mt-1 font-mono font-bold" dir="ltr">
-                    {value}
+                    {value.toFixed(2)}
                   </dd>
                 </div>
               ))}
@@ -234,7 +247,7 @@ export function FeatureStory() {
             >
               <span className="home-diagram__label">{t("hero_sample_badge")} · TP1</span>
               <strong key={sampleIndex} className="home-diagram__gain" dir="ltr">
-                +{(sample.target - sample.entry).toFixed(2)} USD / oz
+                +{(levels.target - levels.entry).toFixed(2)} USD / oz
               </strong>
             </div>
           </div>
