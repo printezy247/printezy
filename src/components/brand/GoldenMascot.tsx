@@ -8,23 +8,15 @@ import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
  * Reusable 3D golden mascot — the design-system `preview.html` animator,
  * rendered as a self-contained WebGL canvas that fills its parent.
  *
- * Same GAZE_KEYS / ROAD_START / LENGTH / timing constants as the hero so the
- * gaze loop, blink, lock-on ring, bezier dots, halo, polar grid and road
- * dashes stay bit-for-bit identical to the upstream reference. WebGL failure
- * or `prefers-reduced-motion` degrades to the static poster. Rendering
- * pauses when the element is off-screen or the tab is hidden. `?t=<seconds>`
+ * Preserves the preview's gaze loop, blink, lock-on ring, route dots, halo,
+ * polar grid and moving road dashes, with a light palette for the link hub.
+ * WebGL failure or `prefers-reduced-motion` uses a static poster of the scene.
+ * Rendering pauses off-screen or when the tab is hidden. `?t=<seconds>`
  * freezes a single pose for screenshots.
- *
- * `framing="mark"` frames the mascot tightly (for a header tile); the default
- * `framing="hero"` keeps the wide/narrow hero camera that also shows the
- * halo, grid and pair tags.
  */
 
 const GLB_URL = "/assets/3d/mascot.glb";
-const POSTERS = {
-  dark: "/assets/3d/mascot-poster.webp",
-  light: "/assets/3d/mascot-poster-light.webp",
-};
+const POSTER = "/assets/3d/mascot-poster-light.webp";
 
 const TAU = Math.PI * 2;
 const GAZE_LOOP = 8;
@@ -98,14 +90,11 @@ export function GoldenMascot({
   className = "",
   label = "Golden mascot",
   framing = "hero",
-  theme = "dark",
 }: {
   className?: string;
   label?: string;
   framing?: "hero" | "mark" | "hub";
-  theme?: "dark" | "light";
 }) {
-  const poster = POSTERS[theme];
   const reducedMotion = usePrefersReducedMotion();
   const [webglFailed, setWebglFailed] = useState(false);
   const [webglReady, setWebglReady] = useState(false);
@@ -153,6 +142,9 @@ export function GoldenMascot({
     let renderer: THREE.WebGLRenderer;
     let scene: THREE.Scene;
     let camera: THREE.PerspectiveCamera;
+    let redraw: (() => void) | undefined;
+    const onContextLost = () => setWebglFailed(true);
+    canvas.addEventListener("webglcontextlost", onContextLost);
 
     const onMove = (e: PointerEvent) => {
       const b = root.getBoundingClientRect();
@@ -165,6 +157,7 @@ export function GoldenMascot({
     };
     root.addEventListener("pointermove", onMove, { passive: true });
     root.addEventListener("pointerleave", onLeave);
+    root.addEventListener("pointercancel", onLeave);
 
     const onResize = () => {
       if (!renderer || !camera) return;
@@ -173,6 +166,7 @@ export function GoldenMascot({
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h, false);
+      redraw?.();
     };
     window.addEventListener("resize", onResize);
 
@@ -183,7 +177,7 @@ export function GoldenMascot({
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(35, w / h, 0.01, 100);
 
-      scene.add(new THREE.HemisphereLight(0xf4dc93, theme === "light" ? 0xb8c3bb : 0x0a0c0b, 1.1));
+      scene.add(new THREE.HemisphereLight(0xfff1d3, 0xb8c3bb, 1.1));
       const key = new THREE.DirectionalLight(0xffffff, 1.6);
       key.position.set(2, 3, 4);
       scene.add(key);
@@ -191,10 +185,10 @@ export function GoldenMascot({
       fill.position.set(-3, 1, -2);
       scene.add(fill);
 
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(w, h, false);
-      renderer.setClearColor(theme === "light" ? 0xf5f7f5 : 0x0a0c0b, 1);
+      renderer.setClearColor(0xffffff, 0);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
@@ -206,23 +200,35 @@ export function GoldenMascot({
             return;
           }
           const mascot = gltf.scene;
+          // Keep the original model and animation geometry, but replace dark surfaces.
+          mascot.traverse((node) => {
+            if (!(node instanceof THREE.Mesh)) return;
+            for (const material of Array.isArray(node.material) ? node.material : [node.material]) {
+              if (!(material instanceof THREE.MeshStandardMaterial)) continue;
+              if (material.name === "graphite") material.color.setHex(0xd6ded7);
+              if (material.name === "lens_black") material.color.setHex(0xe5eee7);
+            }
+          });
 
           const box = new THREE.Box3().setFromObject(mascot);
           const size = box.getSize(new THREE.Vector3());
           const center = box.getCenter(new THREE.Vector3());
           const radius = Math.max(size.x, size.y, size.z) / 2 || 1;
 
-          mascot.position.sub(center);
+          // Keep animator coordinates in the original model space, including road wrapping.
+          const modelRoot = new THREE.Group();
+          modelRoot.position.copy(center).negate();
+          modelRoot.add(mascot);
 
           if (framing === "mark") {
             // Tight, centered framing for a header tile.
             camera.position.set(0, radius * 0.52, radius * 3.6);
             camera.lookAt(0, 0, 0);
           } else if (framing === "hub") {
-            // Centered, close framing for the link hub. The camera looks below the
-            // mascot so it sits above the copy card at the bottom of the stage.
-            camera.position.set(0, radius * 0.25, radius * 3.1);
-            camera.lookAt(0, -radius * 0.3, 0);
+            // Leave room for the polar grid and the road in the foreground.
+            const distance = (radius * 4.2) / Math.min(camera.aspect, 1);
+            camera.position.set(distance * 0.18, distance * 0.36, distance);
+            camera.lookAt(0, radius * 0.05, 0);
           } else {
             const isWide = (root.clientWidth || 0) >= 900;
             const isNarrow = (root.clientWidth || 0) < 900;
@@ -235,11 +241,12 @@ export function GoldenMascot({
           camera.far = radius * 100;
           camera.updateProjectionMatrix();
 
-          scene.add(mascot);
+          scene.add(modelRoot);
 
           const animator = buildAnimator(mascot);
           animator(fixedTimeRef.current ?? CLEAN_POSE_TIME, 0);
-          renderer.render(scene, camera);
+          redraw = () => renderer.render(scene, camera);
+          redraw();
 
           let prev = performance.now();
           const tick = (now: number) => {
@@ -343,34 +350,25 @@ export function GoldenMascot({
         ctx.arcTo(inset, cv.height - inset, inset, inset, r);
         ctx.arcTo(inset, inset, cv.width - inset, inset, r);
         ctx.closePath();
-        ctx.fillStyle = theme === "light" ? "#ffffff" : "rgba(10, 12, 11, 0.84)";
+        ctx.fillStyle = "#ffffff";
         ctx.fill();
         ctx.lineWidth = 3 * scale;
-        ctx.strokeStyle =
-          theme === "light"
-            ? highlight
-              ? "#765919"
-              : "#0f7a4a"
-            : highlight
-              ? "#e0bc63"
-              : "#5be39a";
+        ctx.strokeStyle = highlight ? "#765919" : "#0f7a4a";
         ctx.stroke();
         ctx.font = font;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle =
-          theme === "light"
-            ? highlight
-              ? "#765919"
-              : "#1d1d1f"
-            : highlight
-              ? "#e0bc63"
-              : "#f2f4f2";
+        ctx.fillStyle = highlight ? "#765919" : "#0f7a4a";
         ctx.fillText(text, cv.width / 2, cv.height / 2 + scale);
         const tex = new THREE.CanvasTexture(cv);
         tex.colorSpace = THREE.SRGBColorSpace;
         const sp = new THREE.Sprite(
-          new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }),
+          new THREE.SpriteMaterial({
+            map: tex,
+            transparent: true,
+            depthWrite: false,
+            toneMapped: false,
+          }),
         );
         const wh = highlight ? 0.17 : 0.13;
         sp.scale.set((wh * cv.width) / cv.height, wh, 1);
@@ -390,7 +388,7 @@ export function GoldenMascot({
         const b = new THREE.Box3().setFromObject(m);
         moving.push({
           mesh: m,
-          z0: (b.min.z + b.max.z) / 2,
+          z0: object.worldToLocal(b.getCenter(new THREE.Vector3())).z,
           speed: m.name.startsWith("road_traveler") ? 0.3 : 0.25,
         });
       }
@@ -417,7 +415,7 @@ export function GoldenMascot({
       halo.position.set(0, 0.02, -0.5);
       object.add(halo);
 
-      const grid = new THREE.PolarGridHelper(1.7, 16, 6, 64, 0xe0bc63, 0x5be39a);
+      const grid = new THREE.PolarGridHelper(1.7, 16, 6, 64, 0xb08a37, 0x459a70);
       grid.position.y = -0.69;
       const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];
       for (const material of gridMaterials) {
@@ -430,7 +428,7 @@ export function GoldenMascot({
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(0.96, 1, 64),
         new THREE.MeshBasicMaterial({
-          color: 0xe0bc63,
+          color: 0xb08a37,
           transparent: true,
           opacity: 0,
           depthWrite: false,
@@ -451,7 +449,7 @@ export function GoldenMascot({
       const dots = new THREE.InstancedMesh(
         new THREE.SphereGeometry(0.014, 8, 6),
         new THREE.MeshBasicMaterial({
-          color: 0x5be39a,
+          color: 0x0f7a4a,
           transparent: true,
           opacity: 0.9,
           depthWrite: false,
@@ -476,13 +474,12 @@ export function GoldenMascot({
         smoothScroll += (scrollTarget - smoothScroll) * follow;
 
         object.position.y = baseY - 0.012 * wave(t, 6);
-        object.rotation.y = 0.6 * smoothScroll + 0.35 * smoothPointer.x;
-        object.rotation.x = 0.18 * smoothPointer.y;
+        object.rotation.y = 0.6 * smoothScroll;
         if (torso) torso.scale.setScalar(1 + 0.015 * wave(t, 4));
 
         sampleGaze(c, gaze);
-        head.rotation.y = gaze.yaw + 0.4 * smoothPointer.x;
-        head.rotation.x = gaze.pitch + 0.25 * smoothPointer.y;
+        head.rotation.y = gaze.yaw + 0.25 * smoothPointer.x;
+        head.rotation.x = gaze.pitch + 0.15 * smoothPointer.y;
 
         const bp = mod(t, 4.3);
         const blink = bp < 0.18 ? Math.sin((Math.PI * bp) / 0.18) : 0;
@@ -526,19 +523,22 @@ export function GoldenMascot({
       cancelAnimationFrame(raf);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerleave", onLeave);
+      root.removeEventListener("pointercancel", onLeave);
       window.removeEventListener("resize", onResize);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      setWebglReady(false);
       if (scene) {
         disposeScene(scene);
       }
       if (renderer) renderer.dispose();
     };
-  }, [webglFailed, reducedMotion, framing, theme]);
+  }, [webglFailed, reducedMotion, framing]);
 
   return (
     <div className={`golden-mascot ${className}`} ref={containerRef} role="img" aria-label={label}>
       {webglFailed || reducedMotion ? (
         <img
-          src={poster}
+          src={POSTER}
           alt=""
           decoding="async"
           loading="eager"
@@ -554,7 +554,7 @@ export function GoldenMascot({
           {!webglReady && (
             <div className="golden-mascot__poster-placeholder" aria-hidden="true">
               <img
-                src={poster}
+                src={POSTER}
                 alt=""
                 decoding="async"
                 loading="eager"

@@ -1381,34 +1381,13 @@
   }
 }
 
-/* Link hub: the 3D mascot fills the whole profile area, with the copy floating over it. */
-.hub-profile {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  isolation: isolate;
-  min-height: clamp(26rem, 78vh, 44rem);
-  pointer-events: none;
-}
+/* Give the entire preview scene its own frame so the copy never hides the road. */
 .hub-profile .hub-mascot-stage {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: auto;
-  width: auto;
-  height: auto;
+  width: 100%;
   max-width: none;
-  aspect-ratio: auto;
-  margin: 0;
-  border: 0;
+  aspect-ratio: 1;
   border-radius: 0;
-  background: transparent;
-  -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 46%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 72% 72% at 50% 46%, #000 55%, transparent 100%);
-}
-.hub-profile .hub-mascot-stage .golden-mascot__poster {
-  object-fit: contain;
-  object-position: center 40%;
+  background: radial-gradient(ellipse at 50% 52%, var(--surface-quiet), transparent 72%);
 }
 .hub-profile__copy {
   position: relative;
@@ -1422,18 +1401,11 @@
   box-shadow:
     0 0 2.5rem 0.75rem color-mix(in srgb, var(--background) 60%, transparent),
     0 0 4rem color-mix(in srgb, var(--primary) 14%, transparent);
-  pointer-events: none;
 }
 .hub-profile__copy .hub-handle {
   margin-top: 0;
 }
 @media (max-width: 720px) {
-  .hub-profile {
-    min-height: clamp(24rem, 62vh, 32rem);
-  }
-  .hub-profile .hub-mascot-stage {
-    max-width: none;
-  }
   .hub-profile__copy {
     padding: 0.9rem 1rem 1rem;
   }

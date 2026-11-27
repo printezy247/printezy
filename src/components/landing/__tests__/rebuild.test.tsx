@@ -80,8 +80,10 @@ describe("rebuilt marketing journeys", () => {
     ).toEqual(["/home", LINKS.freeClass, LINKS.freeChannel, LINKS.tradingView]);
     expect(doc.querySelector(".hub-mascot-stage video")).toBeNull();
     expect(doc.querySelector('.hub-mascot-stage .golden-mascot[role="img"]')).not.toBeNull();
-    const poster = doc.querySelector(".hub-mascot-stage .golden-mascot__poster")?.getAttribute("src");
-    expect(poster).toMatch(/^\/assets\/3d\/mascot-poster(-light)?\.webp$/);
+    const poster = doc
+      .querySelector(".hub-mascot-stage .golden-mascot__poster")
+      ?.getAttribute("src");
+    expect(poster).toBe("/assets/3d/mascot-poster-light.webp");
     expect(existsSync(`public${poster}`)).toBe(true);
     const teaser = doc.querySelector(".hub-coming-soon");
     expect(teaser?.textContent).toContain("Coming soon");

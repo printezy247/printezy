@@ -102,7 +102,8 @@ def main(source):
         return render(stack, stack_size, 540, 26 + 13 * math.sin(phase), 34,
                       (0, 0.11), fan=0.22 * (1 - math.cos(phase)) / 2)
 
-    mascot_frame(0).save(PUBLIC / "assets/3d/mascot-poster-light.webp", quality=88)
+    # The live WebGL scene owns mascot-poster-light.webp; do not overwrite it
+    # with this legacy turntable's static render.
     stack_frame(0).save(PUBLIC / "ezymap-signal-stack-light.webp", quality=88)
     encode(PUBLIC / "assets/3d/mascot-light.mp4", mascot_size, 120, mascot_frame)
     encode(PUBLIC / "ezymap-signal-stack-light.mp4", stack_size, 120, stack_frame)
