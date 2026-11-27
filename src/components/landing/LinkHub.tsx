@@ -42,8 +42,8 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
         <header className="hub-profile">
           <MarketingLoop
             className="hub-mascot-stage"
-            src="/assets/3d/mascot-light.mp4"
-            poster="/assets/3d/mascot-poster-light.webp"
+            src="/assets/3d/mascot-preview.mp4"
+            poster="/assets/3d/mascot-preview.webp"
           />
           <p className="hub-handle">@ezymap</p>
           <h1>EzyMap ALGO</h1>
@@ -80,12 +80,7 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
             <span className="grid shrink-0 place-items-center text-accent">
               <Lock size={22} aria-hidden="true" />
             </span>
-            <span className="min-w-0 flex-1 select-none blur-[4px]" aria-hidden="true">
-              <span className="block font-semibold">Premium access</span>
-              <span className="block text-xs text-muted-foreground">
-                Something new is on the way
-              </span>
-            </span>
+            <span className="min-w-0 flex-1 font-semibold">Premium access</span>
             <span className="shrink-0 text-xs font-bold text-accent">Coming soon</span>
           </div>
         </div>
