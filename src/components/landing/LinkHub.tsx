@@ -45,12 +45,14 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
             src="/assets/3d/mascot-preview.mp4"
             poster="/assets/3d/mascot-preview.webp"
           />
-          <p className="hub-handle">@ezymap</p>
-          <h1>EzyMap ALGO</h1>
-          <p className="hub-summary">Free trading signals, weekly classes, and charting tools.</p>
-          <p className="hub-member">
-            <strong>{initialMembers.toLocaleString("en")}+</strong> traders in the free channel
-          </p>
+          <div className="hub-profile__copy">
+            <p className="hub-handle">@ezymap</p>
+            <h1>EzyMap ALGO</h1>
+            <p className="hub-summary">Free trading signals, weekly classes, and charting tools.</p>
+            <p className="hub-member">
+              <strong>{initialMembers.toLocaleString("en")}+</strong> traders in the free channel
+            </p>
+          </div>
         </header>
 
         <div className="hub-content">
