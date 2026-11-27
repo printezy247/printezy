@@ -1388,11 +1388,13 @@
   justify-content: flex-end;
   isolation: isolate;
   min-height: clamp(26rem, 78vh, 44rem);
+  pointer-events: none;
 }
 .hub-profile .hub-mascot-stage {
   position: absolute;
   inset: 0;
   z-index: -1;
+  pointer-events: auto;
   width: auto;
   height: auto;
   max-width: none;
@@ -1404,12 +1406,9 @@
   -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 46%, #000 55%, transparent 100%);
   mask-image: radial-gradient(ellipse 72% 72% at 50% 46%, #000 55%, transparent 100%);
 }
-.hub-profile .hub-mascot-stage .marketing-loop__video {
-  object-fit: cover;
+.hub-profile .hub-mascot-stage .golden-mascot__poster {
+  object-fit: contain;
   object-position: center 40%;
-}
-.hub-profile .hub-mascot-stage .marketing-loop__control {
-  z-index: 2;
 }
 .hub-profile__copy {
   position: relative;

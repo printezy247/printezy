@@ -34,7 +34,7 @@ describe("rebuilt marketing journeys", () => {
     const video = doc.querySelector("video");
     expect(video?.hasAttribute("muted")).toBe(true);
     expect(video?.getAttribute("poster")).toBe("/ezymap-chart-desk.webp");
-    expect(video?.querySelector("source")?.getAttribute("src")).toBe("/ezymap-chart-desk.mp4");
+    expect(video?.querySelector("source")?.getAttribute("src")).toBe("/ezymap-hero-revised.mp4");
     expect(doc.querySelector("figcaption")?.textContent).toContain(
       translations[locale].hero_sample_badge,
     );
@@ -78,11 +78,10 @@ describe("rebuilt marketing journeys", () => {
     expect(
       Array.from(doc.querySelectorAll(".hub-content a"), (a) => a.getAttribute("href")),
     ).toEqual(["/home", LINKS.freeClass, LINKS.freeChannel, LINKS.tradingView]);
-    const poster = doc.querySelector(".hub-mascot-stage video")?.getAttribute("poster");
-    expect(poster).toBe("/assets/3d/mascot-preview.webp");
-    expect(doc.querySelector(".hub-mascot-stage source")?.getAttribute("src")).toBe(
-      "/assets/3d/mascot-preview.mp4",
-    );
+    expect(doc.querySelector(".hub-mascot-stage video")).toBeNull();
+    expect(doc.querySelector('.hub-mascot-stage .golden-mascot[role="img"]')).not.toBeNull();
+    const poster = doc.querySelector(".hub-mascot-stage .golden-mascot__poster")?.getAttribute("src");
+    expect(poster).toMatch(/^\/assets\/3d\/mascot-poster(-light)?\.webp$/);
     expect(existsSync(`public${poster}`)).toBe(true);
     const teaser = doc.querySelector(".hub-coming-soon");
     expect(teaser?.textContent).toContain("Coming soon");

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
 import { EzyMapAsset, type EzyMapProduct } from "@/components/brand/EzyMapAsset";
-import { MarketingLoop } from "@/components/brand/MarketingLoop";
+import { GoldenMascot } from "@/components/brand/GoldenMascot";
 import { goTrack, trackEngagement, trackPageLoad, trackWebVitals } from "@/lib/analytics";
 import { LINKS } from "@/lib/links";
 const MAIN_LINKS = [
@@ -40,11 +40,9 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
     <div className="ezm-hub min-h-screen bg-background text-foreground">
       <main id="main-content" className="hub-layout">
         <header className="hub-profile">
-          <MarketingLoop
-            className="hub-mascot-stage"
-            src="/assets/3d/mascot-preview.mp4"
-            poster="/assets/3d/mascot-preview.webp"
-          />
+          <div className="hub-mascot-stage">
+            <GoldenMascot label="EzyMap golden mascot" framing="hub" />
+          </div>
           <div className="hub-profile__copy">
             <p className="hub-handle">@ezymap</p>
             <h1>EzyMap ALGO</h1>

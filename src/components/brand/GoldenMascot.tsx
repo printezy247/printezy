@@ -102,7 +102,7 @@ export function GoldenMascot({
 }: {
   className?: string;
   label?: string;
-  framing?: "hero" | "mark";
+  framing?: "hero" | "mark" | "hub";
   theme?: "dark" | "light";
 }) {
   const poster = POSTERS[theme];
@@ -218,6 +218,11 @@ export function GoldenMascot({
             // Tight, centered framing for a header tile.
             camera.position.set(0, radius * 0.52, radius * 3.6);
             camera.lookAt(0, 0, 0);
+          } else if (framing === "hub") {
+            // Centered, close framing for the link hub. The camera looks below the
+            // mascot so it sits above the copy card at the bottom of the stage.
+            camera.position.set(0, radius * 0.25, radius * 3.1);
+            camera.lookAt(0, -radius * 0.3, 0);
           } else {
             const isWide = (root.clientWidth || 0) >= 900;
             const isNarrow = (root.clientWidth || 0) < 900;
