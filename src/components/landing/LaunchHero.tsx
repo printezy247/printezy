@@ -31,7 +31,7 @@ export function LaunchHero() {
       <figure className="home-hero__desk">
         <MarketingLoop
           className="home-hero__film"
-          src="/ezymap-chart-desk.mp4"
+          src="/ezymap-hero-revised.mp4"
           poster="/ezymap-chart-desk.webp"
           locale={locale}
         />
