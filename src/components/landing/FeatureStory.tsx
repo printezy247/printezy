@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { ArrowRight, BarChart3, Crosshair, Send, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  CandlestickChart,
+  Check,
+  Crosshair,
+  Send,
+  TrendingUp,
+  ChartNoAxesCombined,
+  ChartLine,
+} from "lucide-react";
 import { MotionControl } from "@/components/brand/MotionControl";
 import { EzyMapAsset } from "@/components/brand/EzyMapAsset";
 import { Button } from "@/components/ui/button";
@@ -24,12 +34,28 @@ const SETUPS = [
     target: 2418,
   },
   {
-    label: "MACD",
-    icon: BarChart3,
-    reason: "hero_card_reason_macd",
+    labelKey: "signal_trendlines",
+    icon: ChartLine,
+    reason: "signal_trendlines_reason",
     entry: 2412,
     stop: 2409,
     target: 2418,
+  },
+  {
+    labelKey: "signal_chart_patterns",
+    icon: ChartNoAxesCombined,
+    reason: "signal_chart_patterns_reason",
+    entry: 2409,
+    stop: 2404,
+    target: 2419,
+  },
+  {
+    labelKey: "signal_candlestick_patterns",
+    icon: CandlestickChart,
+    reason: "signal_candlestick_patterns_reason",
+    entry: 2411,
+    stop: 2407,
+    target: 2419,
   },
   {
     label: "Support / Resistance",
@@ -46,6 +72,7 @@ const PRODUCTS = [
     art: "channel",
     title: "nav_packages",
     body: "pricing_subtitle",
+    features: ["tier_premium_f1", "tier_premium_f2", "tier_premium_f3"],
     href: "/pricing",
     cta: "hero_cta_packages",
   },
@@ -53,6 +80,7 @@ const PRODUCTS = [
     art: "pro",
     title: "products_tv_heading",
     body: "tv_pro_tagline",
+    features: ["tv_pro_b1", "tv_pro_b2", "tv_pro_b3"],
     href: "/indicators#tv_pro",
     cta: "nav_tools",
   },
@@ -60,6 +88,7 @@ const PRODUCTS = [
     art: "calculators",
     title: "products_mt5_heading",
     body: "mt5_drawdown_tagline",
+    features: ["mt5_drawdown_b1", "mt5_auto_tpsl_b1", "mt5_bulk_close_b1"],
     href: "/indicators#mt5_drawdown_guardian",
     cta: "nav_tools",
   },
@@ -67,6 +96,7 @@ const PRODUCTS = [
     art: "macro-bot",
     title: "products_macro_heading",
     body: "macro_feature_1",
+    features: ["macro_feature_1", "macro_feature_2", "macro_feature_3"],
     href: "/macro",
     cta: "show_macro_cta",
   },
@@ -74,6 +104,7 @@ const PRODUCTS = [
     art: "ebooks",
     title: "products_ebooks_heading",
     body: "ebook_technical_b1",
+    features: ["ebook_technical_b1", "ebook_technical_b2", "ebook_technical_b3"],
     href: "/ebooks/technical-analysis",
     cta: "hero_cta_ebook",
   },
@@ -83,6 +114,8 @@ export function FeatureStory() {
   const { t, locale } = useTranslation();
   const [sampleIndex, setSampleIndex] = useState(0);
   const [orbitPlaying, setOrbitPlaying] = useState(true);
+  const [flowPlaying, setFlowPlaying] = useState(true);
+  const [activeProduct, setActiveProduct] = useState(0);
   const sample = SETUPS[sampleIndex];
   return (
     <>
@@ -126,28 +159,36 @@ export function FeatureStory() {
           title={t("features_story_title_flow")}
           subtitle={t("features_story_subtitle_flow")}
         />
-        <div className="home-diagram">
+        <div className="home-diagram" data-playing={flowPlaying}>
           <div
             className="home-diagram__column"
             role="group"
             aria-label={t("hero_card_tab_analysis")}
           >
             <p className="home-diagram__label">{t("hero_card_tab_analysis")}</p>
-            {SETUPS.map(({ label, icon: Icon }, index) => (
+            {SETUPS.map(({ icon: Icon, ...setup }, index) => (
               <button
-                key={label}
+                key={setup.reason}
                 type="button"
                 aria-pressed={index === sampleIndex}
                 aria-controls="sample-plan"
                 className="home-diagram__input"
                 onClick={() => setSampleIndex(index)}
               >
-                <Icon size={18} aria-hidden="true" /> {label}
+                <Icon size={18} aria-hidden="true" />{" "}
+                {"labelKey" in setup ? t(setup.labelKey) : setup.label}
               </button>
             ))}
           </div>
-          <span className="home-diagram__connector" aria-hidden="true" />
-          <div className="home-diagram__plan" id="sample-plan" aria-live="polite">
+          <span className="home-diagram__connector" aria-hidden="true">
+            <i />
+          </span>
+          <div
+            className="home-diagram__plan"
+            data-sample={sampleIndex}
+            id="sample-plan"
+            aria-live="polite"
+          >
             <div className="flex items-center gap-2">
               <EzyMapAsset className="size-10" loading="lazy" />
               <div>
@@ -173,7 +214,9 @@ export function FeatureStory() {
               ))}
             </dl>
           </div>
-          <span className="home-diagram__connector" aria-hidden="true" />
+          <span className="home-diagram__connector" aria-hidden="true">
+            <i />
+          </span>
           <div className="home-diagram__column">
             <a
               className="home-diagram__input"
@@ -196,6 +239,13 @@ export function FeatureStory() {
             </div>
           </div>
         </div>
+        <div className="mt-3 flex justify-end">
+          <MotionControl
+            locale={locale}
+            playing={flowPlaying}
+            onToggle={() => setFlowPlaying((p) => !p)}
+          />
+        </div>
         <p
           id="sample-disclaimer"
           className="mx-auto mt-5 max-w-3xl text-center text-sm text-muted-foreground"
@@ -210,20 +260,56 @@ export function FeatureStory() {
           title={t("products_title")}
           subtitle={t("products_subtitle")}
         />
-        <div className="home-products">
-          {PRODUCTS.map(({ art, title, body, href, cta }) => (
-            <article className="home-product" key={art}>
-              <EzyMapAsset product={art} className="home-product__art" loading="lazy" />
-              <h3 className="text-xl font-bold">{t(title)}</h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-body">{t(body)}</p>
-              <Button asChild size="sm" variant="outline" className="mt-5 self-start">
-                <a
-                  href={href === "/pricing" ? href : localizePath(href, locale)}
-                  onClick={() => goTrack(`home_product_${art}`)}
-                >
-                  {t(cta)} <ArrowRight className="rtl:rotate-180" aria-hidden="true" />
-                </a>
-              </Button>
+        <div className="home-products" data-active={activeProduct}>
+          {PRODUCTS.map(({ art, title, body, features, href, cta }, index) => (
+            <article
+              className="home-product"
+              key={art}
+              data-active={activeProduct === index}
+              onPointerEnter={(event) => {
+                if (
+                  event.pointerType === "mouse" &&
+                  !event.currentTarget.parentElement?.querySelector(
+                    ".home-product__details:focus-within",
+                  )
+                )
+                  setActiveProduct(index);
+              }}
+            >
+              <button
+                type="button"
+                className="home-product__select"
+                aria-expanded={activeProduct === index}
+                aria-controls={`product-${art}`}
+                onClick={() => setActiveProduct(index)}
+              >
+                <span className="font-mono text-xs text-muted-foreground">0{index + 1}</span>
+                <EzyMapAsset product={art} className="home-product__art" loading="lazy" />
+                <span className="home-product__title">{t(title)}</span>
+              </button>
+              <div
+                className="home-product__details"
+                id={`product-${art}`}
+                inert={activeProduct !== index}
+              >
+                <p className="text-sm leading-relaxed text-body">{t(body)}</p>
+                <ul className="my-4 space-y-2 text-sm">
+                  {features.map((feature) => (
+                    <li className="flex gap-2" key={feature}>
+                      <Check size={16} className="shrink-0 text-primary" aria-hidden="true" />
+                      {t(feature)}
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild size="sm" variant="outline" className="mt-auto self-start">
+                  <a
+                    href={href === "/pricing" ? href : localizePath(href, locale)}
+                    onClick={() => goTrack(`home_product_${art}`)}
+                  >
+                    {t(cta)} <ArrowRight className="rtl:rotate-180" aria-hidden="true" />
+                  </a>
+                </Button>
+              </div>
             </article>
           ))}
         </div>

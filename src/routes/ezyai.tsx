@@ -127,8 +127,8 @@ export function EzyAiPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
 
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
@@ -204,7 +204,7 @@ export function EzyAiPage() {
           <p>{t("ezyai_disclaimer")}</p>
         </div>
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

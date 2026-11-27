@@ -58,23 +58,25 @@ describe("rebuilt marketing journeys", () => {
     expect(doc.querySelector("#signal-demo")?.textContent).toContain(
       translations.en.hero_disclaimer,
     );
-    expect(doc.querySelectorAll("#signal-demo button[aria-pressed]")).toHaveLength(3);
+    expect(doc.querySelectorAll("#signal-demo button[aria-pressed]")).toHaveLength(5);
     expect(doc.querySelector("#signal-demo [aria-pressed=true]")?.textContent).toContain("EMA");
+    expect(doc.querySelector("#signal-demo")?.textContent).not.toContain("MACD");
+    expect(doc.querySelector("#signal-demo")?.textContent).toContain("Trendlines");
     expect(doc.querySelector('#packages a[href="/pricing"]')).not.toBeNull();
     expect(
       doc.querySelector('#packages a[href="/indicators#mt5_drawdown_guardian"]'),
     ).not.toBeNull();
   });
 
-  it("keeps exactly three hub destinations and a non-interactive premium teaser", () => {
+  it("keeps four hub destinations and a non-interactive premium teaser", () => {
     const doc = new DOMParser().parseFromString(
       renderToStaticMarkup(<LinkHub initialMembers={700} />),
       "text/html",
     );
     expect(
       Array.from(doc.querySelectorAll(".hub-content a"), (a) => a.getAttribute("href")),
-    ).toEqual([LINKS.freeClass, LINKS.freeChannel, LINKS.tradingView]);
-    const poster = doc.querySelector(".hub-mascot-poster")?.getAttribute("src");
+    ).toEqual(["/home", LINKS.freeClass, LINKS.freeChannel, LINKS.tradingView]);
+    const poster = doc.querySelector(".hub-mascot-stage video")?.getAttribute("poster");
     expect(poster).toBe("/assets/3d/mascot-poster-light.webp");
     expect(existsSync(`public${poster}`)).toBe(true);
     const teaser = doc.querySelector(".hub-coming-soon");

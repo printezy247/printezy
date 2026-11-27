@@ -45,8 +45,8 @@ export function FaqPage() {
     return () => stop?.();
   }, []);
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
       <main className="pt-8">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-4">
           {/* A plain anchor: the localized twins are one `$lang` route, so the
@@ -63,7 +63,7 @@ export function FaqPage() {
         </div>
         <Faq />
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

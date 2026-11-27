@@ -94,8 +94,8 @@ function EbookRoutePage() {
 export function EbookNotFound() {
   const { t, locale } = useTranslation();
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
       <main className="mx-auto max-w-3xl px-4 py-24 text-center">
         <h1 className="text-3xl ">{t("ebook_not_found_title")}</h1>
         <p className="mt-3 text-muted-foreground">{t("ebook_not_found_body")}</p>
@@ -111,7 +111,7 @@ export function EbookNotFound() {
           ))}
         </div>
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }
@@ -147,8 +147,8 @@ export function EbookPage({ book: source }: { book: Ebook }) {
     book.slug === "mapping-like-a-pro" ? t("ebook_gate_vantage") : t("ebook_gate_signin");
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
       <main className="pt-8">
         <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6 lg:px-8">
           <a
@@ -329,7 +329,7 @@ export function EbookPage({ book: source }: { book: Ebook }) {
           )}
         </section>
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

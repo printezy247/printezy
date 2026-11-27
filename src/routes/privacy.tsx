@@ -25,8 +25,8 @@ export const Route = createFileRoute("/privacy")({
 export function PrivacyPage() {
   const { t, locale } = useTranslation();
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
       <main className="mx-auto max-w-3xl px-4 pt-10 pb-20 sm:px-6 lg:px-8">
         <h1 className="text-3xl sm:text-4xl">{t("privacy_title")}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t("legal_updated")}</p>
@@ -62,7 +62,7 @@ export function PrivacyPage() {
           {t("legal_back_home")}
         </a>
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

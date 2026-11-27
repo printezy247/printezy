@@ -21,14 +21,14 @@ function PricingPage() {
   const { t } = useTranslation();
   return (
     <MarketingProvider>
-      <div className="ezm-site min-h-screen bg-background text-foreground">
-        <Nav />
+      <div className="ezm-site ezm-light min-h-screen bg-background text-foreground">
+        <Nav theme="light" />
         <main id="main-content">
           <h1 className="sr-only">{t("nav_packages")}</h1>
           <Pricing />
           <TrackRecord />
         </main>
-        <Footer />
+        <Footer theme="light" />
       </div>
     </MarketingProvider>
   );

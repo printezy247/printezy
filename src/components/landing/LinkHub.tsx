@@ -1,16 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from "react";
-import { ArrowUpRight, Lock } from "lucide-react";
+import { useEffect } from "react";
+import { ArrowRight, ArrowUpRight, Lock } from "lucide-react";
 import { EzyMapAsset, type EzyMapProduct } from "@/components/brand/EzyMapAsset";
-import { MotionControl } from "@/components/brand/MotionControl";
+import { MarketingLoop } from "@/components/brand/MarketingLoop";
 import { goTrack, trackEngagement, trackPageLoad, trackWebVitals } from "@/lib/analytics";
 import { LINKS } from "@/lib/links";
-import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
-
-const GoldenMascot = lazy(() =>
-  import("@/components/brand/GoldenMascot").then((module) => ({ default: module.GoldenMascot })),
-);
-const POSTER = "/assets/3d/mascot-poster-light.webp";
-
 const MAIN_LINKS = [
   {
     label: "Free weekly class",
@@ -36,13 +29,7 @@ const MAIN_LINKS = [
 ] satisfies { label: string; note: string; href: string; event: string; product: EzyMapProduct }[];
 
 export function LinkHub({ initialMembers }: { initialMembers: number }) {
-  const [mounted, setMounted] = useState(false);
-  const [playing, setPlaying] = useState(true);
-  const reducedMotion = usePrefersReducedMotion();
-  const animate = mounted && playing && !reducedMotion;
-
   useEffect(() => {
-    setMounted(true);
     trackPageLoad("link_hub");
     void trackWebVitals().catch(() => {});
     const stop = trackEngagement();
@@ -53,33 +40,24 @@ export function LinkHub({ initialMembers }: { initialMembers: number }) {
     <div className="ezm-hub min-h-screen bg-background text-foreground">
       <main id="main-content" className="hub-layout">
         <header className="hub-profile">
-          <div className="hub-mascot-stage" aria-hidden="true">
-            <Suspense fallback={<img className="hub-mascot-poster" src={POSTER} alt="" />}>
-              {animate ? (
-                <GoldenMascot framing="mark" theme="light" />
-              ) : (
-                <img className="hub-mascot-poster" src={POSTER} alt="" fetchPriority="high" />
-              )}
-            </Suspense>
-          </div>
-          {!reducedMotion && (
-            <MotionControl playing={playing} onToggle={() => setPlaying(!playing)} />
-          )}
-          <h1 className="mt-4 text-3xl font-bold">EzyMap ALGO</h1>
-          <p className="mt-2 text-sm text-muted-foreground">@ezymap</p>
-          <p className="mx-auto mt-3 text-sm text-body">
-            Free trading signals, weekly classes, and charting tools.
-          </p>
-          <p className="mt-3 text-xs text-muted-foreground">
-            <span className="font-mono font-semibold tabular-nums text-primary">
-              {initialMembers}+
-            </span>{" "}
-            traders in the free channel
+          <MarketingLoop
+            className="hub-mascot-stage"
+            src="/assets/3d/mascot-light.mp4"
+            poster="/assets/3d/mascot-poster-light.webp"
+          />
+          <p className="hub-handle">@ezymap</p>
+          <h1>EzyMap ALGO</h1>
+          <p className="hub-summary">Free trading signals, weekly classes, and charting tools.</p>
+          <p className="hub-member">
+            <strong>{initialMembers.toLocaleString("en")}+</strong> traders in the free channel
           </p>
         </header>
 
         <div className="hub-content">
           <nav aria-label="EzyMap links" className="hub-main-links space-y-3">
+            <a href="/home" className="hub-site-button" onClick={() => goTrack("hub_main_site")}>
+              Explore the main website <ArrowRight size={18} aria-hidden="true" />
+            </a>
             {MAIN_LINKS.map(({ label, note, href, event, product }, index) => (
               <a
                 key={event}

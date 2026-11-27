@@ -361,7 +361,7 @@ export function Pricing() {
               {t.image ? (
                 <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#0a0c0b]">
                   {t.highlight ? (
-                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4d786] backdrop-blur-md shadow-lg">
                       <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                       {tt("pricing_most_popular")}
                     </span>
@@ -377,7 +377,7 @@ export function Pricing() {
               ) : (
                 <div className="bg-metal relative aspect-[16/9] w-full overflow-hidden border-b border-border">
                   {t.highlight ? (
-                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-accent backdrop-blur-md shadow-lg">
+                    <span className="absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4d786] backdrop-blur-md shadow-lg">
                       <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                       {tt("pricing_most_popular")}
                     </span>
@@ -959,13 +959,13 @@ export function ZoomClassBand() {
               </h2>
               <p className="mt-2 max-w-xl text-base leading-relaxed text-body">{t("zoom_body")}</p>
             </div>
-            <Link
-              to="/free-channel"
+            <a
+              href={LINKS.freeClass}
               onClick={() => goTrack("zoom_class_join")}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary-glow"
             >
               <Send className="h-4 w-4" aria-hidden="true" /> {t("zoom_cta")}
-            </Link>
+            </a>
           </div>
         </div>
       </Reveal>

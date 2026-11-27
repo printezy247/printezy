@@ -66,7 +66,7 @@ export function FreeChannelPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="ezm-light min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 sm:px-6 lg:px-8">
         <header className="flex h-16 items-center justify-between">
           <a href={home} className="text-lg font-black tracking-tight text-foreground">

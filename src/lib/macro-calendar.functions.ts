@@ -71,6 +71,7 @@ export type EconomicCalendar = {
   day: string | null;
   isToday: boolean;
   rows: CalendarRow[];
+  days?: { day: string; rows: CalendarRow[] }[];
   /** Provider the rows came from, for the footer credit; null when none answered. */
   source: string | null;
   /** When the feed was last fetched; null when it has never loaded. */
@@ -81,7 +82,7 @@ const FF_IMPACT: Record<string, Impact> = {
   high: "high",
   medium: "medium",
   low: "low",
-  holiday: "low",
+  holiday: "holiday",
 };
 
 /** TradingView grades importance as 1 / 0 / -1. */
@@ -243,6 +244,7 @@ function normalizeTradingView(payload: unknown): DayRow[] {
     rows.push({
       day: at.day,
       nyTime: at.time,
+      timestamp: raw.date,
       currency:
         ((raw.currency ?? "").trim() || COUNTRY_CURRENCY[country] || country).toUpperCase() ||
         "N/A",
@@ -286,6 +288,7 @@ function normalizeForexFactory(payload: unknown): DayRow[] {
     rows.push({
       day,
       nyTime: /^\d{2}:\d{2}$/.test(time) ? time : "N/A",
+      timestamp: Number.isFinite(Date.parse(date)) ? date : undefined,
       currency: (raw.country ?? "").trim().toUpperCase() || "N/A",
       event: (raw.title ?? "").trim() || "N/A",
       impact,
@@ -347,6 +350,18 @@ export const getEconomicCalendar = createServerFn({ method: "GET" }).handler(
 
     const day = [...byDay.keys()].sort()[0] ?? null;
     const rows = day ? [...byDay.get(day)!].sort((a, b) => a.nyTime.localeCompare(b.nyTime)) : [];
-    return { day, isToday: day === today, rows, source: feed.source, updatedAt: feed.fetchedAt };
+    return {
+      day,
+      isToday: day === today,
+      rows,
+      days: [...byDay.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([day, rows]) => ({
+          day,
+          rows: [...rows].sort((a, b) => a.nyTime.localeCompare(b.nyTime)),
+        })),
+      source: feed.source,
+      updatedAt: feed.fetchedAt,
+    };
   },
 );

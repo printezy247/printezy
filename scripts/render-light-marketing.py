@@ -75,29 +75,37 @@ def render(model, size, scale, angle, pitch, center, fan=0):
     return scene.resize(size, Image.Resampling.LANCZOS)
 
 
+def encode(path, size, frame_count, render_frame):
+    cmd = ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pixel_format", "rgb24",
+           "-video_size", f"{size[0]}x{size[1]}", "-framerate", "30", "-i", "-", "-c:v",
+           "libx264", "-crf", "22", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(path)]
+    with subprocess.Popen(cmd, stdin=subprocess.PIPE) as encoder:
+        for frame in range(frame_count):
+            encoder.stdin.write(render_frame(frame / frame_count * math.tau).tobytes())
+        encoder.stdin.close()
+        if encoder.wait():
+            raise SystemExit(f"FFmpeg could not encode {path}")
+
+
 def main(source):
     source = Path(source) / "assets/3d"
     stack = read_model(source / "ezymap-signal-stack.obj")
     mascot = read_model(source / "ezymap-set-1-golden-mascot.obj")
-    render(mascot, (768, 768), 410, 8, 9, (0, -0.085)).save(
-        PUBLIC / "assets/3d/mascot-poster-light.webp", quality=88
-    )
-    size = (1280, 720)
-    output = PUBLIC / "ezymap-signal-stack-light.mp4"
-    cmd = ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pixel_format", "rgb24",
-           "-video_size", "1280x720", "-framerate", "30", "-i", "-", "-c:v", "libx264",
-           "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(output)]
-    with subprocess.Popen(cmd, stdin=subprocess.PIPE) as encoder:
-        for frame in range(120):
-            phase = frame / 120 * math.tau
-            image = render(stack, size, 490, 29 + 9 * math.sin(phase), 33,
-                           (0, 0.15), fan=0.17 * (1 - math.cos(phase)) / 2)
-            if frame == 0:
-                image.save(PUBLIC / "ezymap-signal-stack-light.webp", quality=88)
-            encoder.stdin.write(image.tobytes())
-        encoder.stdin.close()
-        if encoder.wait():
-            raise SystemExit("FFmpeg could not encode the signal stack")
+    mascot_size = (640, 480)
+    stack_size = (1280, 720)
+
+    def mascot_frame(phase):
+        return render(mascot, mascot_size, 315, 7 * math.sin(phase),
+                      9 + 2 * math.sin(phase * 2), (0, -0.085))
+
+    def stack_frame(phase):
+        return render(stack, stack_size, 540, 26 + 13 * math.sin(phase), 34,
+                      (0, 0.11), fan=0.22 * (1 - math.cos(phase)) / 2)
+
+    mascot_frame(0).save(PUBLIC / "assets/3d/mascot-poster-light.webp", quality=88)
+    stack_frame(0).save(PUBLIC / "ezymap-signal-stack-light.webp", quality=88)
+    encode(PUBLIC / "assets/3d/mascot-light.mp4", mascot_size, 120, mascot_frame)
+    encode(PUBLIC / "ezymap-signal-stack-light.mp4", stack_size, 120, stack_frame)
 
 
 if __name__ == "__main__":

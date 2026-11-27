@@ -39,6 +39,12 @@ import {
 } from "@/lib/macro-desk";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import {
+  CALENDAR_CATEGORIES,
+  CALENDAR_IMPACTS,
+  filterCalendarRows,
+  type CalendarCategory,
+} from "@/lib/calendar-filters";
 import { getEconomicCalendar, type EconomicCalendar } from "@/lib/macro-calendar.functions";
 import { getMacroLive, type MacroLive } from "@/lib/macro-live.functions";
 import { getCryptoFearGreed } from "@/lib/macro-fear-greed.functions";
@@ -252,6 +258,13 @@ function CalendarValue({
  */
 function CalendarFilters({
   currencies,
+  search,
+  onSearch,
+  category,
+  onCategory,
+  day,
+  days,
+  onDay,
   impacts,
   onToggleImpact,
   selected,
@@ -261,6 +274,13 @@ function CalendarFilters({
   total,
 }: {
   currencies: string[];
+  search: string;
+  onSearch: (search: string) => void;
+  category: CalendarCategory | "";
+  onCategory: (category: CalendarCategory | "") => void;
+  day: string;
+  days: string[];
+  onDay: (day: string) => void;
   impacts: Set<Impact>;
   onToggleImpact: (impact: Impact) => void;
   selected: Set<string>;
@@ -271,20 +291,68 @@ function CalendarFilters({
 }) {
   const { t } = useTranslation();
   const chip = (active: boolean) =>
-    `rounded-full border px-2 py-0.5 text-[11px] font-semibold transition-colors ${
+    `min-h-8 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
       active
         ? "border-primary/50 bg-primary/10 text-primary"
         : "border-border text-muted-foreground hover:text-foreground"
     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background`;
-  const filtered = shown !== total;
+  const filtered =
+    shown !== total ||
+    !!search ||
+    !!category ||
+    impacts.size !== CALENDAR_IMPACTS.length ||
+    selected.size !== currencies.length;
 
   return (
-    <div className="mb-3 space-y-2 border-b border-border pb-3">
+    <div className="mb-3 space-y-3 border-b border-border pb-3">
+      <div className="grid gap-2 sm:grid-cols-3">
+        <label className="grid gap-1 text-xs font-medium text-body">
+          {t("calendar_search")}
+          <input
+            className="min-h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+            type="search"
+            value={search}
+            onChange={(e) => onSearch(e.target.value)}
+            placeholder={t("macro_col_event")}
+          />
+        </label>
+        <label className="grid gap-1 text-xs font-medium text-body">
+          {t("calendar_day")}
+          <select
+            className="min-h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+            value={day}
+            disabled={days.length === 0}
+            onChange={(e) => onDay(e.target.value)}
+          >
+            {days.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="grid gap-1 text-xs font-medium text-body">
+          {t("calendar_category")}
+          <select
+            className="min-h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+            value={category}
+            onChange={(e) => onCategory(e.target.value as CalendarCategory | "")}
+          >
+            <option value="">{t("macro_filter_all")}</option>
+            {CALENDAR_CATEGORIES.map(([key]) => (
+              <option key={key} value={key}>
+                {t(key)}
+              </option>
+            ))}
+            <option value="calendar_category_other">{t("calendar_category_other")}</option>
+          </select>
+        </label>
+      </div>
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
           {t("macro_filter_impact")}
         </span>
-        {(["high", "medium", "low"] as const).map((i) => (
+        {CALENDAR_IMPACTS.map((i) => (
           <button
             key={i}
             type="button"
@@ -704,11 +772,10 @@ export function MacroPage() {
   // Calendar filters. Everything is on until the reader narrows it, so the
   // card looks untouched by default.
   const [impactFilter, setImpactFilter] = useState<Set<Impact>>(
-    () => new Set<Impact>(["high", "medium", "low"]),
+    () => new Set<Impact>(CALENDAR_IMPACTS),
   );
-  const [currencyFilter, setCurrencyFilter] = useState<Set<string>>(
-    () => new Set<string>(CALENDAR_CURRENCIES),
-  );
+  const [excludedCurrencies, setExcludedCurrencies] = useState(() => new Set<string>());
+  const [category, setCategory] = useState<CalendarCategory | "">("");
 
   // The full list every day, not just the currencies today happens to hold —
   // a missing chip reads as "not covered" rather than "nothing scheduled".
@@ -716,27 +783,30 @@ export function MacroPage() {
   // dropped, since a currency with no chip could never be switched back on.
   const calCurrencies = useMemo(
     () =>
-      [...new Set([...CALENDAR_CURRENCIES, ...(cal?.rows ?? []).map((r) => r.currency)])].sort(),
+      [
+        ...new Set([
+          ...CALENDAR_CURRENCIES,
+          ...(cal?.days?.flatMap((d) => d.rows) ?? cal?.rows ?? []).map((r) => r.currency),
+        ]),
+      ].sort(),
     [cal],
   );
-  const calCurrencyKey = calCurrencies.join(",");
-
-  // Only when the set itself changes: re-selecting on every load would throw
-  // away the reader's picks each time the card refreshed.
-  useEffect(() => {
-    setCurrencyFilter(new Set(calCurrencyKey.split(",")));
-  }, [calCurrencyKey]);
-
-  const calRows = useMemo(
-    () =>
-      (cal?.rows ?? []).filter(
-        (r) =>
-          impactFilter.has(r.impact) &&
-          (currencyFilter.size === 0 || currencyFilter.has(r.currency)),
-      ),
-    [cal, impactFilter, currencyFilter],
+  const selectedCurrencies = new Set(
+    calCurrencies.filter((currency) => !excludedCurrencies.has(currency)),
   );
-  const calHasActual = useMemo(() => calRows.some((r) => r.actual !== "N/A"), [calRows]);
+
+  const [calendarSearch, setCalendarSearch] = useState("");
+  const [selectedDay, setSelectedDay] = useState("");
+  const calendarDays = cal?.days ?? (cal?.day ? [{ day: cal.day, rows: cal.rows }] : []);
+  const activeDay = calendarDays.find((d) => d.day === selectedDay) ?? calendarDays[0];
+  const dayRows = activeDay?.rows ?? [];
+  const calRows = filterCalendarRows(dayRows, {
+    impacts: impactFilter,
+    excludedCurrencies,
+    search: calendarSearch,
+    category,
+  });
+  const calHasActual = dayRows.some((r) => r.actual !== "N/A");
 
   const toggleImpact = (impact: Impact) =>
     setImpactFilter((prev) => {
@@ -747,7 +817,7 @@ export function MacroPage() {
     });
 
   const toggleCurrency = (currency: string) =>
-    setCurrencyFilter((prev) => {
+    setExcludedCurrencies((prev) => {
       const next = new Set(prev);
       if (next.has(currency)) next.delete(currency);
       else next.add(currency);
@@ -755,25 +825,27 @@ export function MacroPage() {
     });
 
   const resetCalFilters = () => {
-    setImpactFilter(new Set<Impact>(["high", "medium", "low"]));
-    setCurrencyFilter(new Set(calCurrencies));
+    setImpactFilter(new Set<Impact>(CALENDAR_IMPACTS));
+    setExcludedCurrencies(new Set());
+    setCategory("");
+    setCalendarSearch("");
   };
 
   const calDayLabel = useMemo(() => {
-    if (!cal?.day) return "";
-    return new Date(`${cal.day}T12:00:00`).toLocaleDateString(undefined, {
+    if (!activeDay?.day) return "";
+    return new Date(`${activeDay.day}T12:00:00`).toLocaleDateString(undefined, {
       weekday: "short",
       day: "numeric",
       month: "short",
     });
-  }, [cal?.day]);
+  }, [activeDay?.day]);
 
   const digest = useMemo(() => clock.toLocal("08:00"), [clock]);
   const shows = (f: MacroFilter) => filter === "All" || filter === f;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Header */}
@@ -819,6 +891,7 @@ export function MacroPage() {
               key={f}
               type="button"
               onClick={() => setFilter(f)}
+              aria-pressed={filter === f}
               className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 filter === f
                   ? "border-primary bg-primary/15 text-primary"
@@ -830,133 +903,211 @@ export function MacroPage() {
           ))}
         </div>
 
-        <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
-          {/* Main column */}
-          <div className="min-w-0 space-y-7">
-            {shows("Calendar") ? (
-              <Card
-                title={t("macro_calendar_title")}
-                subtitle={
-                  cal && cal.day && !cal.isToday
-                    ? t("macro_calendar_next_day").replace("{day}", calDayLabel)
-                    : undefined
-                }
-                badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
-                note={t("macro_calendar_note").replace("{tz}", clock.ready ? clock.tzLabel : "EST")}
-                footer={
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-[11.5px]">
-                    <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
-                      {(["high", "medium", "low"] as const).map((i) => (
-                        <span key={i} className="inline-flex items-center gap-1.5 capitalize">
-                          <ImpactGem impact={i} />
-                          {t(`macro_impact_${i}` as TranslationKey)} {t("macro_impact_suffix")}
-                        </span>
-                      ))}
-                      {cal?.updatedAt ? (
-                        <span>
-                          {t("macro_calendar_updated")
-                            .replace("{source}", cal.source ?? "ForexFactory")
-                            .replace("{time}", formatLocalTime(new Date(cal.updatedAt)))}
-                        </span>
-                      ) : null}
-                    </div>
-                    <a
-                      href={FOREXFACTORY}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => track("click", "macro_forexfactory")}
-                      className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
-                    >
-                      {t("macro_crosscheck_ff")} <ArrowRight className="h-3 w-3" />
-                    </a>
+        <div className="macro-desk-grid grid gap-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+          {shows("Calendar") ? (
+            <Card
+              className="macro-calendar min-w-0"
+              title={t("macro_calendar_title")}
+              subtitle={
+                activeDay && (activeDay.day !== cal?.day || !cal?.isToday)
+                  ? t("macro_calendar_next_day").replace("{day}", calDayLabel)
+                  : undefined
+              }
+              badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+              note={t("macro_calendar_note").replace("{tz}", clock.ready ? clock.tzLabel : "EST")}
+              footer={
+                <div className="flex flex-wrap items-center justify-between gap-3 text-[11.5px]">
+                  <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
+                    {CALENDAR_IMPACTS.map((i) => (
+                      <span key={i} className="inline-flex items-center gap-1.5 capitalize">
+                        <ImpactGem impact={i} />
+                        {t(`macro_impact_${i}` as TranslationKey)}{" "}
+                        {i !== "holiday" && t("macro_impact_suffix")}
+                      </span>
+                    ))}
+                    {cal?.updatedAt ? (
+                      <span>
+                        {t("macro_calendar_updated")
+                          .replace("{source}", cal.source ?? "ForexFactory")
+                          .replace("{time}", formatLocalTime(new Date(cal.updatedAt)))}
+                      </span>
+                    ) : null}
                   </div>
-                }
-              >
-                <CalendarFilters
-                  currencies={calCurrencies}
-                  impacts={impactFilter}
-                  onToggleImpact={toggleImpact}
-                  selected={currencyFilter}
-                  onToggleCurrency={toggleCurrency}
-                  onReset={resetCalFilters}
-                  shown={calRows.length}
-                  total={cal?.rows.length ?? 0}
-                />
+                  <a
+                    href={FOREXFACTORY}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => track("click", "macro_forexfactory")}
+                    className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                  >
+                    {t("macro_crosscheck_ff")} <ArrowRight className="h-3 w-3" />
+                  </a>
+                </div>
+              }
+            >
+              <CalendarFilters
+                currencies={calCurrencies}
+                search={calendarSearch}
+                onSearch={setCalendarSearch}
+                day={activeDay?.day ?? ""}
+                days={calendarDays.map((d) => d.day)}
+                onDay={setSelectedDay}
+                impacts={impactFilter}
+                onToggleImpact={toggleImpact}
+                selected={selectedCurrencies}
+                category={category}
+                onCategory={setCategory}
+                onToggleCurrency={toggleCurrency}
+                onReset={resetCalFilters}
+                shown={calRows.length}
+                total={dayRows.length}
+              />
 
-                {/* 9px with tight tracking so the longest translated headers
+              {/* 9px with tight tracking so the longest translated headers
                     ("Iliyotangulia", "Sebelumnya") still land inside the fixed
                     number columns instead of running into their neighbour.
                     Below sm the numbers move under the event and carry their
                     own labels, so these three headers step aside there. */}
-                <div className="flex items-end gap-1.5 pb-2 text-[9px] font-bold uppercase leading-tight tracking-[0.05em] text-muted-foreground sm:gap-2">
-                  <span className="w-10 shrink-0">{t("macro_col_time")}</span>
-                  <span className="w-11 shrink-0 break-words">{t("macro_col_ccy")}</span>
-                  <span className="min-w-0 flex-1">{t("macro_col_event")}</span>
-                  {calHasActual ? (
-                    <span className="hidden w-16 shrink-0 break-words text-right sm:block">
-                      {t("macro_col_actual")}
-                    </span>
-                  ) : null}
+              <div className="flex items-end gap-1.5 pb-2 text-[9px] font-bold uppercase leading-tight tracking-[0.05em] text-muted-foreground sm:gap-2">
+                <span className="w-10 shrink-0">{t("macro_col_time")}</span>
+                <span className="w-11 shrink-0 break-words">{t("macro_col_ccy")}</span>
+                <span className="min-w-0 flex-1">{t("macro_col_event")}</span>
+                {calHasActual ? (
                   <span className="hidden w-16 shrink-0 break-words text-right sm:block">
-                    {t("macro_col_forecast")}
+                    {t("macro_col_actual")}
                   </span>
-                  <span className="hidden w-16 shrink-0 break-words text-right sm:block">
-                    {t("macro_col_previous")}
-                  </span>
-                </div>
-                {calRows.length ? (
-                  <CalendarScroller>
-                    {calRows.map((r) => (
-                      <div
-                        key={`${r.nyTime}-${r.currency}-${r.event}`}
-                        className="flex min-h-[3.5rem] flex-wrap items-center gap-1.5 border-t border-border py-2 sm:flex-nowrap sm:gap-2"
-                      >
-                        <span className={`w-10 shrink-0 text-xs ${mono}`}>
-                          {clock.toLocal(r.nyTime)}
-                        </span>
-                        <span className="flex w-11 shrink-0 items-center gap-1">
-                          <ImpactGem impact={r.impact} />
-                          <span className="text-xs font-semibold">{r.currency}</span>
-                        </span>
-                        <span className="min-w-0 flex-1 text-xs leading-snug text-body sm:text-sm">
-                          {r.event}
-                        </span>
-                        {/* Three number columns on a wide card. Below sm they
+                ) : null}
+                <span className="hidden w-16 shrink-0 break-words text-right sm:block">
+                  {t("macro_col_forecast")}
+                </span>
+                <span className="hidden w-16 shrink-0 break-words text-right sm:block">
+                  {t("macro_col_previous")}
+                </span>
+              </div>
+              {calRows.length ? (
+                <CalendarScroller>
+                  {calRows.map((r) => (
+                    <div
+                      key={`${r.nyTime}-${r.currency}-${r.event}`}
+                      className="flex min-h-[3.5rem] flex-wrap items-center gap-1.5 border-t border-border py-2 sm:flex-nowrap sm:gap-2"
+                    >
+                      <span className={`w-10 shrink-0 text-xs ${mono}`}>
+                        {r.impact === "holiday"
+                          ? "—"
+                          : clock.ready && r.timestamp
+                            ? formatLocalTime(new Date(r.timestamp))
+                            : r.nyTime}
+                      </span>
+                      <span className="flex w-11 shrink-0 items-center gap-1">
+                        <ImpactGem impact={r.impact} />
+                        <span className="text-xs font-semibold">{r.currency}</span>
+                      </span>
+                      <span className="min-w-0 flex-1 text-xs leading-snug text-body sm:text-sm">
+                        {r.event}
+                      </span>
+                      {/* Three number columns on a wide card. Below sm they
                             wrap to their own line under the event: six
                             columns will not fit a phone: and `sm:contents`
                             dissolves this wrapper so the cells become row
                             children again at the breakpoint. */}
-                        <span className="flex w-full flex-wrap items-baseline justify-end gap-x-4 gap-y-1 sm:contents">
-                          {calHasActual ? (
-                            <CalendarValue label={t("macro_col_actual")} tone="actual">
-                              {r.actual}
-                            </CalendarValue>
-                          ) : null}
-                          <CalendarValue label={t("macro_col_forecast")} tone="forecast">
-                            {r.forecast}
+                      <span className="flex w-full flex-wrap items-baseline justify-end gap-x-4 gap-y-1 sm:contents">
+                        {calHasActual ? (
+                          <CalendarValue label={t("macro_col_actual")} tone="actual">
+                            {r.actual}
                           </CalendarValue>
-                          <CalendarValue label={t("macro_col_previous")} tone="previous">
-                            {r.previous}
-                          </CalendarValue>
-                        </span>
-                      </div>
-                    ))}
-                  </CalendarScroller>
-                ) : cal?.rows.length ? (
-                  <p className="border-t border-border py-3 text-sm text-muted-foreground">
-                    {t("macro_calendar_filtered_empty")}
+                        ) : null}
+                        <CalendarValue label={t("macro_col_forecast")} tone="forecast">
+                          {r.forecast}
+                        </CalendarValue>
+                        <CalendarValue label={t("macro_col_previous")} tone="previous">
+                          {r.previous}
+                        </CalendarValue>
+                      </span>
+                    </div>
+                  ))}
+                </CalendarScroller>
+              ) : dayRows.length ? (
+                <p className="border-t border-border py-3 text-sm text-muted-foreground">
+                  {t("macro_calendar_filtered_empty")}
+                </p>
+              ) : null}
+              {cal === null ? (
+                <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>
+              ) : dayRows.length === 0 ? (
+                <p className="border-t border-border py-3 text-sm text-muted-foreground">
+                  {t(cal.updatedAt ? "macro_calendar_empty" : "macro_calendar_unavailable")}
+                </p>
+              ) : null}
+            </Card>
+          ) : null}
+
+          <div className="macro-sentiment-indices space-y-7">
+            {gold ? (
+              <Card
+                title={t("macro_gold_fg_title")}
+                badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+                footer={
+                  <p className="text-[11.5px] text-muted-foreground">
+                    {t("macro_updated_daily").replace("{source}", gold.source)}
                   </p>
-                ) : null}
-                {cal === null ? (
-                  <p className="border-t border-border py-3 text-sm text-muted-foreground">…</p>
-                ) : cal.rows.length === 0 ? (
-                  <p className="border-t border-border py-3 text-sm text-muted-foreground">
-                    {t(cal.updatedAt ? "macro_calendar_empty" : "macro_calendar_unavailable")}
-                  </p>
-                ) : null}
+                }
+              >
+                <p className="text-4xl font-black">
+                  {gold.score}
+                  <span className="text-base font-semibold text-muted-foreground">/100</span>
+                </p>
+                <p className="mt-1 text-sm font-bold text-accent">
+                  {t(`macro_fg_${gold.label}` as TranslationKey)}
+                  {typeof gold.previous === "number" ? (
+                    <span className="ml-2 font-medium text-muted-foreground">
+                      {t("macro_gold_fg_delta").replace(
+                        "{delta}",
+                        `${gold.score - gold.previous >= 0 ? "+" : ""}${gold.score - gold.previous}`,
+                      )}
+                    </span>
+                  ) : null}
+                </p>
+                <div className="mt-3">
+                  <FillBar percent={gold.score} color="#c9a13a" height={8} live />
+                  <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    <span>{t("macro_fear_label")}</span>
+                    <span>{t("macro_greed_label")}</span>
+                  </div>
+                </div>
               </Card>
             ) : null}
 
+            <Card
+              title={t("macro_fear_greed_title")}
+              badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
+              footer={
+                <p className="text-[11.5px] text-muted-foreground">
+                  {t("macro_updated_daily").replace("{source}", fng?.source ?? "alternative.me")}
+                </p>
+              }
+            >
+              <p className="text-4xl font-black" aria-live="polite" aria-atomic="true">
+                {fng?.value ?? "N/A"}
+                <span className="text-base font-semibold text-muted-foreground">/100</span>
+              </p>
+              <p
+                className="mt-1 text-sm font-bold text-accent"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {fng?.label ?? t("macro_loading")}
+              </p>
+              <div className="mt-3">
+                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} live />
+                <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  <span>{t("macro_fear_label")}</span>
+                  <span>{t("macro_greed_label")}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className="macro-desk-main min-w-0 space-y-7">
             {shows("Central Banks") ? (
               <Card
                 title={t("macro_central_banks_title")}
@@ -1125,71 +1276,7 @@ export function MacroPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="space-y-7">
-            {gold ? (
-              <Card
-                title={t("macro_gold_fg_title")}
-                badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
-                footer={
-                  <p className="text-[11.5px] text-muted-foreground">
-                    {t("macro_updated_daily").replace("{source}", gold.source)}
-                  </p>
-                }
-              >
-                <p className="text-4xl font-black">
-                  {gold.score}
-                  <span className="text-base font-semibold text-muted-foreground">/100</span>
-                </p>
-                <p className="mt-1 text-sm font-bold text-accent">
-                  {t(`macro_fg_${gold.label}` as TranslationKey)}
-                  {typeof gold.previous === "number" ? (
-                    <span className="ml-2 font-medium text-muted-foreground">
-                      {t("macro_gold_fg_delta").replace(
-                        "{delta}",
-                        `${gold.score - gold.previous >= 0 ? "+" : ""}${gold.score - gold.previous}`,
-                      )}
-                    </span>
-                  ) : null}
-                </p>
-                <div className="mt-3">
-                  <FillBar percent={gold.score} color="#c9a13a" height={8} live />
-                  <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    <span>{t("macro_fear_label")}</span>
-                    <span>{t("macro_greed_label")}</span>
-                  </div>
-                </div>
-              </Card>
-            ) : null}
-
-            <Card
-              title={t("macro_fear_greed_title")}
-              badge={<Badge tone="free">{MACRO_PRICES.calendar}</Badge>}
-              footer={
-                <p className="text-[11.5px] text-muted-foreground">
-                  {t("macro_updated_daily").replace("{source}", fng?.source ?? "alternative.me")}
-                </p>
-              }
-            >
-              <p className="text-4xl font-black" aria-live="polite" aria-atomic="true">
-                {fng?.value ?? "N/A"}
-                <span className="text-base font-semibold text-muted-foreground">/100</span>
-              </p>
-              <p
-                className="mt-1 text-sm font-bold text-accent"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {fng?.label ?? t("macro_loading")}
-              </p>
-              <div className="mt-3">
-                <FillBar percent={fng?.value ?? 0} color="#c9a13a" height={8} live />
-                <div className="mt-1.5 flex justify-between text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  <span>{t("macro_fear_label")}</span>
-                  <span>{t("macro_greed_label")}</span>
-                </div>
-              </div>
-            </Card>
-
+          <aside className="macro-desk-sidebar space-y-7">
             <Card title={t("macro_next_rate_decisions_title")}>
               <ul className="space-y-2.5 text-sm">
                 {view.rateDecisions.map((d) => (
@@ -1253,7 +1340,7 @@ export function MacroPage() {
         </div>
       </main>
 
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

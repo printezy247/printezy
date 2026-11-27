@@ -73,8 +73,8 @@ function EzyAiSignalDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
       <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <Link to="/ezyai" search={{ tab: "live" }} className="text-sm text-muted-foreground">
           ← {t("ezyai_tab_live")}
@@ -208,7 +208,7 @@ function EzyAiSignalDetail() {
           show a stale profit.
         </p>
       </main>
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

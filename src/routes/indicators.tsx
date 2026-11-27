@@ -37,8 +37,8 @@ export function IndicatorsPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
+    <div className="ezm-light min-h-screen bg-background text-foreground">
+      <Nav theme="light" />
 
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <header className="max-w-3xl">
@@ -109,7 +109,7 @@ export function IndicatorsPage() {
         {t("indicators_footnote")}
       </p>
 
-      <Footer />
+      <Footer theme="light" />
     </div>
   );
 }

@@ -47,11 +47,13 @@ export const MACRO_FILTERS: MacroFilter[] = [
   "Sentiment",
 ];
 
-export type Impact = "high" | "medium" | "low";
+export type Impact = "high" | "medium" | "low" | "holiday";
 
 export type CalendarRow = {
   /** New York wall-clock "HH:MM" — converted to the visitor's timezone in the UI. */
   nyTime: string;
+  /** Provider timestamp, preserving the offset of the event date. */
+  timestamp?: string;
   currency: string;
   event: string;
   impact: Impact;
@@ -279,7 +281,8 @@ export const CALENDAR_CURRENCIES = [
 export const IMPACT_COLOR: Record<Impact, string> = {
   high: "#d9534f",
   medium: "#c9a13a",
-  low: "#2fbf71",
+  low: "#c28c16",
+  holiday: "#85918a",
 };
 
 export function stanceColor(stance: Stance): string {
